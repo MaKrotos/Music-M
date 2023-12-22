@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="VK_UI3.Views.MainView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VK_UI3.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:custom="using:VK_UI3.Controllers"
+    mc:Ignorable="d"
+    
+     NavigationCacheMode="Enabled"
+    
+    >
+
+    <Grid>
+        <Grid.RowDefinitions  >
+            <RowDefinition Height ="*"></RowDefinition>
+            <RowDefinition Height ="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                
+            </Grid.RowDefinitions>
+            
+            <NavigationView HorizontalAlignment="Stretch"  Margin="0,32,0,0" Name="NavWiv"
+                     Grid.RowSpan="2"
+             PaneDisplayMode="Auto" 
+             CompactPaneLength="80"
+             IsSettingsVisible="False"
+             IsBackButtonVisible="Collapsed"
+                              ItemInvoked="NavWiv_ItemInvoked"
+             IsPaneOpen="False">
+
+            <NavigationView.MenuItems >
+
+                <NavigationViewItem Content="Nav Item A">
+                    <NavigationViewItem.Icon>
+                        <SymbolIcon Symbol="Home"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Nav Item B">
+                    <NavigationViewItem.Icon>
+                        <SymbolIcon Symbol="Audio"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItemSeparator/>
+                <NavigationViewItem Content="Nav Item C">
+                    <NavigationViewItem.Icon>
+                        <SymbolIcon Symbol="Calendar"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+
+
+                <NavigationViewItem Content="Nav Item C">
+                    <NavigationViewItem.Icon>
+                        <SymbolIcon Symbol="AddFriend"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem IsEnabled="False">
+                    <TextBlock  Text="Аккаунты"></TextBlock>
+                </NavigationViewItem>
+                <NavigationViewItem  Padding="-10,0,-20,0" SelectsOnInvoked="False" >
+
+                    <Grid Margin="-1,10,10,10" Padding="0,-5,-10,-5" >
+                            <ListView SelectedIndex="{x:Bind getSelectedNumber, Mode=OneTime}"  ItemsSource="{x:Bind AccList, Mode=TwoWay}"  SelectionChanged="ListView_SelectionChanged" x:Name="AccountsList">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <custom:AccountController Margin="-1,0,0,0" accounts="{Binding }"></custom:AccountController>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+
+
+                </NavigationViewItem>
+                <NavigationViewItem Content="Nav Item C">
+                    <NavigationViewItem.Icon>
+                        <ImageIcon Source="/Assets/Icons/add_circle.svg"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.MenuItems>
+            <Grid Margin="0"  PointerEntered="ListViewItem_PointerEntered" PointerExited="ListViewItem_PointerExited">
+                <Frame Grid.Row="0" x:Name="ContentFrame">
+                    <Frame.ContentTransitions>
+                        <TransitionCollection>
+                            <NavigationThemeTransition  />
+                        </TransitionCollection>
+                    </Frame.ContentTransitions>
+                </Frame>
+            </Grid>
+            </NavigationView>
+           
+        </Grid>
+        <Frame Grid.Row="1" VerticalAlignment="Bottom"
+     Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}" CornerRadius="0" Margin="0,0,0,0">
+
+            <custom:AudioPlayer Margin="0,0,0,0"></custom:AudioPlayer>
+        </Frame>
+    </Grid>
+</Page>

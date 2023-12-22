@@ -1,0 +1,83 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <RootNamespace>VK_UI3</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Platforms>x86;x64;ARM64</Platforms>
+    <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
+    <PublishProfile>win10-$(Platform).pubxml</PublishProfile>
+    <UseWinUI>true</UseWinUI>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+    <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
+    <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
+    <GenerateTestArtifacts>True</GenerateTestArtifacts>
+    <AppxBundle>Never</AppxBundle>
+    <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+    <AppInstallerUri>https://drive.usercontent.google.com/download%3fid=1QcpZrSBN1zjcYvyljUfbdGe_fiikw7G7&amp;export=download&amp;confirm=t&amp;uuid=c2870269-7a32-4320-ab9b-10e02f9b8def</AppInstallerUri>
+    <AppxPackageDir>C:\Pablic\</AppxPackageDir>
+    <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
+    <PackageCertificateThumbprint>235554A939D15E2A8C77BA2F5A0A5CE0EFA6B878</PackageCertificateThumbprint>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Certificate.cer" />
+    <None Remove="Views\UpdatePage.xaml" />
+    <None Remove="VK UI3_TemporaryKey.pfx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\SplashScreen.scale-200.png" />
+    <Content Include="Assets\Square150x150Logo.scale-200.png" />
+    <Content Include="Assets\Square44x44Logo.scale-200.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+    <Content Include="Certificate.cer" />
+    <Content Include="icon.ico" />
+    <Content Include="VK UI3_TemporaryKey.pfx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CSCore" Version="1.2.1.2" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.4.230913002" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.755" />
+    <PackageReference Include="NAudio" Version="2.2.1" />
+    <PackageReference Include="Octokit" Version="9.0.0" />
+    <PackageReference Include="PInvoke.User32" Version="0.7.124" />
+    <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
+    <PackageReference Include="System.Management" Version="8.0.0" />
+    <PackageReference Include="VkNet" Version="1.76.0" />
+    <PackageReference Include="VkNet.AudioBypassService" Version="1.7.6" />
+    <Manifest Include="$(ApplicationManifest)" />
+  </ItemGroup>
+
+  <!-- 
+    Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging
+    Tools extension to be activated for this project even if the Windows App SDK Nuget
+    package has not yet been restored.
+  -->
+  <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+    <ProjectCapability Include="Msix" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SetupLib\SetupLib.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\UpdatePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <!-- 
+    Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution 
+    Explorer "Package and Publish" context menu entry to be enabled for this project even if 
+    the Windows App SDK Nuget package has not yet been restored.
+  -->
+  <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+    <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
+  </PropertyGroup>
+</Project>

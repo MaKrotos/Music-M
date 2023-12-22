@@ -1,0 +1,56 @@
+<UserControl Margin="4" IsHitTestVisible="True"
+         
+    x:Class="VK_UI3.Controllers.TrackController"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VK_UI3.Controllers"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:local1="using:VK_UI3.Converters"
+    xmlns:local2="using:VK_UI3.Helpers.Animations"
+    mc:Ignorable="d"
+     CornerRadius="8" d:DesignHeight="153.764" d:DesignWidth="425.452">
+    <UserControl.Resources>
+        <local1:SecondsToTimeConverter x:Key="SecondsToTimeConverter"/>
+    </UserControl.Resources>
+    <Grid x:Name="GridXvan" IsHitTestVisible="True"  CornerRadius="8" Background="{StaticResource SystemControlAcrylicElementMediumHighBrush}" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid
+       Padding="0" 
+       CornerRadius="8" 
+       Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}" Tapped="Ellipse_Tapped" Height="100" Width="100"
+            >
+            <FontIcon Glyph="&#xEC4F;" />
+            <Image x:Name="ImageThumb">
+                
+
+            </Image>
+        
+        </Grid>
+
+        <StackPanel HorizontalAlignment="Stretch" Padding="8" Grid.Column="1" VerticalAlignment="Center">
+
+            <TextBlock PointerExited="TextBlock_PointerExited" PointerEntered="TextBlock_PointerEntered" Text="{x:Bind TrackData.Audio.Artist}" FontWeight="Bold" VerticalAlignment="Bottom" FontSize="16"/>
+
+            <TextBlock  PointerEntered="TextBlock_PointerEntered" PointerExited="TextBlock_PointerExited" d:Text="Автор" Text="{x:Bind TrackData.Audio.Title}" VerticalAlignment="Top"  FontStyle="Italic" Opacity="0.7"/>
+            
+            <TextBlock d:Text="Продолжительность"  Text="{x:Bind TrackData.Audio.Duration, Mode=OneTime, Converter={StaticResource SecondsToTimeConverter}}" HorizontalAlignment="Right"/>
+        </StackPanel>
+    </Grid>
+    <VisualStateManager.VisualStateGroups>
+        <VisualStateGroup>
+            <VisualState x:Name="ImageLoaded">
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetName="RotateTransform"
+                                 Storyboard.TargetProperty="Angle"
+                                 From="0.0" To="360.0" Duration="0:1:1"
+                                 RepeatBehavior="Forever"/>
+                </Storyboard>
+            </VisualState>
+        </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
+</UserControl>

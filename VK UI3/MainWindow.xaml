@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window x:Name="mainWindoww"
+    x:Class="VK_UI3.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VK_UI3"
+   
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:custom="using:VK_UI3.Controllers"
+
+    mc:Ignorable="d">
+    <Window.SystemBackdrop>
+        <DesktopAcrylicBackdrop />
+    </Window.SystemBackdrop>
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Border Padding="0,0,0,0"  x:Name="AppTitleBar" Grid.Row="1" VerticalAlignment="Top">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" ></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"></RowDefinition>
+
+                </Grid.RowDefinitions>
+                <ImageIcon Margin="10,5,5,20" Grid.Column="0" Source="ms-appx:///Assets/StoreLogo.scale-100.png" />
+                <TextBlock Grid.Column="1" Text="VK M" x:Name="AppTitle"  VerticalAlignment="Top" Margin="8" />
+            </Grid>
+
+        </Border>
+
+        <Frame Grid.Row="1" x:Name="ContentFrame">
+            <Frame.ContentTransitions>
+                <TransitionCollection>
+                    <NavigationThemeTransition  />
+                </TransitionCollection>
+            </Frame.ContentTransitions>
+        </Frame>
+
+
+
+    </Grid>
+</Window>
