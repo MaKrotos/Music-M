@@ -10,7 +10,7 @@
   <Identity
     Name="65117MaKrotos.63979BE2EEACD"
     Publisher="CN=FDW"
-    Version="0.1.0.0" />
+    Version="0.1.1.0" />
 
   <mp:PhoneIdentity PhoneProductId="ad538670-03bf-470b-95f8-57f4f828a87d" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 

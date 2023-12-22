@@ -108,7 +108,7 @@
             label5.Size = new Size(88, 15);
             label5.TabIndex = 9;
             label5.Text = "Размер файла:";
-            label5.Click += label5_Click;
+      
             // 
             // label1
             // 
@@ -118,7 +118,7 @@
             label1.Size = new Size(374, 32);
             label1.TabIndex = 5;
             label1.Text = "Для установки VK M возможно потребуется подтвердить установку сертификата от издателя FDW.";
-            label1.Click += label1_Click;
+  
             // 
             // label6
             // 
@@ -150,7 +150,7 @@
             label8.Name = "label8";
             label8.Size = new Size(374, 176);
             label8.TabIndex = 12;
-            label8.Click += label8_Click;
+
             // 
             // label9
             // 

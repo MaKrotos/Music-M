@@ -1,12 +1,6 @@
 ﻿using Octokit;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Security.Cryptography.X509Certificates;
-using System.IO;
-using System.Net.Http;
+using System.Security.Principal;
 
 namespace SetupLib
 {
@@ -74,59 +68,67 @@ namespace SetupLib
         {
             var httpClient = new HttpClient();
 
-
-
-            // Сначала скачиваем и устанавливаем сертификат
-            using (var response = await httpClient.GetAsync(UriDownload, HttpCompletionOption.ResponseHeadersRead))
-            using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
+            // Проверяем, запущено ли приложение с правами администратора.
+            bool isElevated;
+            using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
             {
-                var path = Path.Combine(Path.GetTempPath(), Path.GetFileName(UriDownload));
-                using (var streamToWriteTo = File.Create(path))
-                {
-                    var totalRead = 0L;
-                    var buffer = new byte[8192];
-                    var isMoreToRead = true;
-
-                    do
-                    {
-                        var read = await streamToReadFrom.ReadAsync(buffer, 0, buffer.Length);
-                        if (read == 0)
-                        {
-                            isMoreToRead = false;
-                        }
-                        else
-                        {
-                            await streamToWriteTo.WriteAsync(buffer, 0, read);
-
-                            totalRead += read;
-                            var percentage = totalRead * 100d / response.Content.Headers.ContentLength.Value;
-
-                            // Вызовите событие
-                            DownloadProgressChanged?.Invoke(this, new DownloadProgressChangedEventArgs
-                            {
-                                TotalBytes = response.Content.Headers.ContentLength.Value,
-                                BytesDownloaded = totalRead,
-                                Percentage = percentage
-                            });
-                        }
-                    } while (isMoreToRead);
-                }
-
-                // Установка сертификата
-                X509Certificate2 cert = new X509Certificate2(path);
-                X509Store store = new X509Store(StoreName.TrustedPeople, StoreLocation.LocalMachine);
-                store.Open(OpenFlags.ReadWrite);
-
-                // Проверка на существование сертификата и его срок действия
-                bool certificateExists = store.Certificates.Find(X509FindType.FindByThumbprint, cert.Thumbprint, false).Count > 0;
-                if (!certificateExists || cert.NotAfter <= DateTime.Now)
-                {
-                    store.Add(cert);
-                }
-
-                store.Close();
+                WindowsPrincipal principal = new WindowsPrincipal(identity);
+                isElevated = principal.IsInRole(WindowsBuiltInRole.Administrator);
             }
 
+            if (isElevated)
+            {
+                // Сначала скачиваем и устанавливаем сертификат
+                using (var response = await httpClient.GetAsync(UriDownload, HttpCompletionOption.ResponseHeadersRead))
+                using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
+                {
+                    var path = Path.Combine(Path.GetTempPath(), Path.GetFileName(UriDownload));
+                    using (var streamToWriteTo = File.Create(path))
+                    {
+                        var totalRead = 0L;
+                        var buffer = new byte[8192];
+                        var isMoreToRead = true;
+
+                        do
+                        {
+                            var read = await streamToReadFrom.ReadAsync(buffer, 0, buffer.Length);
+                            if (read == 0)
+                            {
+                                isMoreToRead = false;
+                            }
+                            else
+                            {
+                                await streamToWriteTo.WriteAsync(buffer, 0, read);
+
+                                totalRead += read;
+                                var percentage = totalRead * 100d / response.Content.Headers.ContentLength.Value;
+
+                                // Вызовите событие
+                                DownloadProgressChanged?.Invoke(this, new DownloadProgressChangedEventArgs
+                                {
+                                    TotalBytes = response.Content.Headers.ContentLength.Value,
+                                    BytesDownloaded = totalRead,
+                                    Percentage = percentage
+                                });
+                            }
+                        } while (isMoreToRead);
+                    }
+
+                    // Установка сертификата
+                    X509Certificate2 cert = new X509Certificate2(path);
+                    X509Store store = new X509Store(StoreName.TrustedPeople, StoreLocation.LocalMachine);
+                    store.Open(OpenFlags.ReadWrite);
+
+                    // Проверка на существование сертификата и его срок действия
+                    bool certificateExists = store.Certificates.Find(X509FindType.FindByThumbprint, cert.Thumbprint, false).Count > 0;
+                    if (!certificateExists || cert.NotAfter <= DateTime.Now)
+                    {
+                        store.Add(cert);
+                    }
+
+                    store.Close();
+                }
+            }
 
             // Затем скачиваем файл .msix
 

@@ -83,6 +83,8 @@ namespace VK_UI3.Helpers.Animations
         {
             var fileName = Path.Combine(databaseFolderPath, GetHashString(newImageSourceUrl));
 
+
+            if (!Directory.Exists(databaseFolderPath)) Directory.CreateDirectory(databaseFolderPath);
             if (File.Exists(fileName))
             {
                 var bitmapImage = new BitmapImage();
@@ -109,7 +111,7 @@ namespace VK_UI3.Helpers.Animations
                         return null;
                     }
                 }
-                catch
+                catch (Exception e)
                 {
                     // Если произошла ошибка при загрузке или сохранении изображения, возвращаем null
                     return null;
