@@ -201,21 +201,6 @@ namespace SetupLib
 
 
 
-                //  System.Diagnostics.Process process = new System.Diagnostics.Process();
-                //  System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-                //  startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-                //  startInfo.FileName = "cmd.exe";
-                //  startInfo.Arguments = "/C start " + path;
-                //  process.StartInfo = startInfo;
-                //  process.Start();
-
-
-                // Получаем путь к AppInstaller из реестра
-
-                string packageName = "Microsoft.DesktopAppInstaller";
-                bool isInstalled = IsPackageInstalled(packageName);
-                if (isInstalled)
-                {
 
                     System.Diagnostics.Process process = new System.Diagnostics.Process();
                     System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
@@ -227,35 +212,6 @@ namespace SetupLib
                     process.StartInfo = startInfo;
                     process.Start();
 
-                }
-                else
-                {
-                    // Если AppInstaller не установлен, используем PowerShell для установки
-                    ProcessStartInfo startInfo = new ProcessStartInfo()
-                    {
-                        FileName = "powershell.exe",
-                        Arguments = $"-Command Add-AppxPackage -Path {path}",
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        CreateNoWindow = true,
-                        WindowStyle = ProcessWindowStyle.Hidden
-                    };
-
-                    Process process = new Process() { StartInfo = startInfo };
-                    process.Start();
-
-                    string output = process.StandardOutput.ReadToEnd();
-                    string error = process.StandardError.ReadToEnd();
-
-                    Console.WriteLine(output);
-                    if (!string.IsNullOrEmpty(error))
-                    {
-                        Console.WriteLine("Error: " + error);
-                    }
-
-                    process.WaitForExit();
-                }
             }
         }
 
