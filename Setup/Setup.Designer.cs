@@ -114,10 +114,9 @@
             label1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label1.Location = new Point(18, 9);
             label1.Name = "label1";
-            label1.Size = new Size(374, 72);
+            label1.Size = new Size(374, 52);
             label1.TabIndex = 5;
-            label1.Text = resources.GetString("label1.Text");
-            label1.Click += label1_Click;
+            label1.Text = "Это приложение установит VK M. В случае, если Windows спрашивает через что открыть файл MSIX - необходимо установить App Installer.";
             // 
             // label6
             // 

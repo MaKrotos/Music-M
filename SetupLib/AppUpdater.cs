@@ -1,13 +1,5 @@
-﻿using Microsoft.Win32;
-
-using System.Diagnostics;
-
-using System.Linq;
-using System.Management;
-using System.Security.Cryptography.X509Certificates;
+﻿using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
-using Windows.ApplicationModel;
-using Windows.Management.Deployment;
 
 namespace SetupLib
 {
@@ -215,18 +207,6 @@ namespace SetupLib
             }
         }
 
-        public static bool IsPackageInstalled(string packageName)
-        {
-            PackageManager packageManager = new PackageManager();
-            IEnumerable<Package> packages = packageManager.FindPackagesForUser(string.Empty);
-            foreach (var package in packages)
-            {
-                if (package.Id.FamilyName == packageName)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+     
     }
 }

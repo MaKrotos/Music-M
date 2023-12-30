@@ -5,8 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Configurations>Debug;Release;Зфсл;qq</Configurations>
-	  <TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
-	  <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+	
   </PropertyGroup>
 
   <ItemGroup>
