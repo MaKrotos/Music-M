@@ -22,6 +22,7 @@ using VK_UI3.Interfaces;
 using VK_UI3.Views;
 using VK_UI3.VKs;
 using VkNet.Model;
+using VkNet.Model.Attachments;
 using vkPosterBot.DB;
 using Windows.Media.Playback;
 using Windows.Storage.Streams;

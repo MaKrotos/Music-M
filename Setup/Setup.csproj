@@ -2,12 +2,15 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
+   <TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
+   <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>icon.ico</ApplicationIcon>
+    <Configurations>Debug;Release;Зфсл;qq</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,11 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Octokit" Version="9.0.0" />
-  </ItemGroup>
+  
 
-  <ItemGroup>
-    <ProjectReference Include="..\SetupLib\SetupLib.csproj" />
   </ItemGroup>
 
 </Project>

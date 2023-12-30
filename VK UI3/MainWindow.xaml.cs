@@ -5,13 +5,24 @@ using Microsoft.UI.Xaml.Media.Animation;
 using Octokit;
 using SetupLib;
 using System;
+using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using VK_UI3.DB;
-using VK_UI3.Helpers;
 using VK_UI3.Views;
-using VK_UI3.Views.LoginFrames;
+using VK_UI3.Views.LoginWindow;
+
+using VK_UI3.VKs;
 using Windows.ApplicationModel;
+using Windows.Win32;
+using Windows.Win32.UI.WindowsAndMessaging;
+using Windows.Win32.Foundation;
+
+using Windows.Win32;
+using System.IO;
+using NAudio.Utils;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using VkNet.Enums;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -21,10 +32,12 @@ namespace VK_UI3
     /// <summary>
     /// An empty window that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainWindow : Window
+    public sealed partial class MainWindow : Microsoft.UI.Xaml.Window
     {
+        internal static HWND hvn;
         public MainWindow()
         {
+            
             this.InitializeComponent();
             contentFrame = ContentFrame;
             this.ExtendsContentIntoTitleBar = true;
@@ -36,18 +49,64 @@ namespace VK_UI3
 
             var navigationInfo = new NavigationInfo { SourcePageType = this };
 
-            if (AccountsDB.GetAllAccounts().Count == 0) {
+             if (AccountsDB.GetAllAccounts().Count == 0) {
+
                 GoLogin();
-            }else
-                ContentFrame.Navigate(typeof(MainView), navigationInfo, new DrillInNavigationTransitionInfo());
+           }else
+              ContentFrame.Navigate(typeof(MainView), navigationInfo, new DrillInNavigationTransitionInfo());
             
             
             dispatcherQueue = this.DispatcherQueue;
 
-              SubClassing();
+             SubClassing();
 
-           checkUpdate();
+            string assetsPath = Windows.ApplicationModel.Package.Current.InstalledLocation.Path;
+            
+            // Составить путь к иконке
+            string iconPath = Path.Combine(assetsPath, "icon.ico");
+            LoadIcon(iconPath);
+
+
+
+            hvn = (HWND)WinRT.Interop.WindowNative.GetWindowHandle(this);
+
+            checkUpdate();
         }
+
+
+
+
+
+
+
+
+
+
+        public static DispatcherQueue dispatcherQueue { get; private set; }
+
+        public static Frame contentFrame;
+
+        public void GoLogin()
+        {
+
+            ContentFrame.Navigate(typeof(Login), this, new DrillInNavigationTransitionInfo());
+        }
+
+
+        Microsoft.Win32.SafeHandles.SafeFileHandle iIcon;
+        private void LoadIcon(string aIconName)
+        {
+            // Resolve icon path
+            string iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, aIconName);
+            // Get window handle
+            var hwnd = new Windows.Win32.Foundation.HWND(WinRT.Interop.WindowNative.GetWindowHandle(this));
+            // Load our image
+            iIcon = PInvoke.LoadImage(null, iconPath, GDI_IMAGE_TYPE.IMAGE_ICON, 16, 16, IMAGE_FLAGS.LR_LOADFROMFILE);
+            //Set our icon
+            PInvoke.SendMessage(hwnd, PInvoke.WM_SETICON, new WPARAM(0), new LPARAM(iIcon.DangerousGetHandle()));
+        }
+
+
 
         private void checkUpdate()
         {
@@ -81,121 +140,93 @@ namespace VK_UI3
       
         }
 
-        public static DispatcherQueue dispatcherQueue { get; private set; }
 
-        public static Frame contentFrame;
 
-        public void GoLogin()
+        private delegate IntPtr WinProc(HWND hWnd, uint Msg, WPARAM wParam, IntPtr lParam);
+        private WinProc newWndProc = null;
+        private IntPtr oldWndProc = IntPtr.Zero;
+
+      
+        private void SubClassing()
         {
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+
+            if (hwnd == IntPtr.Zero)
+            {
+                int error = Marshal.GetLastWin32Error();
+                throw new InvalidOperationException($"Failed to get window handler: error code {error}");
+            }
+
+            newWndProc = new(NewWindowProc);
+
+
+            oldWndProc = SetWindowLong((HWND)hwnd, WINDOW_LONG_PTR_INDEX.GWL_WNDPROC, Marshal.GetFunctionPointerForDelegate(newWndProc)); 
             
-            ContentFrame.Navigate(typeof(Login), this, new DrillInNavigationTransitionInfo());
+            if (oldWndProc == IntPtr.Zero)
+            {
+                int error = Marshal.GetLastWin32Error();
+                throw new InvalidOperationException($"Failed to set GWL_WNDPROC: error code {error}");
+            }
         }
 
-        
+
+
+        const uint WM_GETMINMAXINFO = 0x0024;
+        [StructLayout(LayoutKind.Sequential)]
+        public struct POINT
+        {
+            public int x;
+            public int y;
+        }
+        [StructLayout(LayoutKind.Sequential)]
+        public struct MINMAXINFO
+        {
+            public POINT ptReserved;
+            public POINT ptMaxSize;
+            public POINT ptMaxPosition;
+            public POINT ptMinTrackSize;
+            public POINT ptMaxTrackSize;
+        }
+
+        private static IntPtr SetWindowLong(HWND hWnd, WINDOW_LONG_PTR_INDEX nIndex, IntPtr newProc)
+        {
+            if (IntPtr.Size == 4) // 32-bit process
+            {
+                return PInvoke.SetWindowLong(hWnd, nIndex, (int)newProc);
+            }
+            else // 64-bit process
+            {
+                return PInvoke.SetWindowLongPtr(hWnd, nIndex, newProc);
+            }
+        }
 
 
 
+        private IntPtr NewWindowProc(HWND hWnd, uint Msg, WPARAM wParam, IntPtr lParam)
+        {
+            switch (Msg)
+            {
+                case WM_GETMINMAXINFO:
+                    var dpi = PInvoke.GetDpiForWindow(hWnd);
+                    float scalingFactor = (float)dpi / 96;
 
+                    MINMAXINFO minMaxInfo = Marshal.PtrToStructure<MINMAXINFO>(lParam);
+                    minMaxInfo.ptMinTrackSize.x = (int)(500 * scalingFactor);
+                    minMaxInfo.ptMinTrackSize.y = (int)(500 * scalingFactor);
+                    Marshal.StructureToPtr(minMaxInfo, lParam, true);
+                    break;
+            }
+            WNDPROC oldWndProcDelegate = (WNDPROC)Marshal.GetDelegateForFunctionPointer(oldWndProc, typeof(WNDPROC));
+            return PInvoke.CallWindowProc(oldWndProcDelegate, hWnd, Msg, wParam, lParam);
+        }
 
-
-
-
-   public delegate IntPtr WinProc(IntPtr hWnd, PInvoke.User32.WindowMessage Msg, IntPtr wParam, IntPtr lParam);
-   private WinProc newWndProc = null;
-   private IntPtr oldWndProc = IntPtr.Zero;
-   [DllImport("user32")]
-   private static extern IntPtr SetWindowLong(IntPtr hWnd, PInvoke.User32.WindowLongIndexFlags nIndex, WinProc newProc);
-   [DllImport("user32.dll")]
-   static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, PInvoke.User32.WindowMessage Msg, IntPtr wParam, IntPtr lParam);
-   private void SubClassing()
-   {
-       var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-
-       if (hwnd == IntPtr.Zero)
-       {
-           int error = Marshal.GetLastWin32Error();
-           throw new InvalidOperationException($"Failed to get window handler: error code {error}");
-       }
-
-       newWndProc = new(NewWindowProc);
-
-       // Here we use the NativeMethods class 👇
-       oldWndProc = NativeMethods.SetWindowLong(hwnd, PInvoke.User32.WindowLongIndexFlags.GWL_WNDPROC, newWndProc);
-       if (oldWndProc == IntPtr.Zero)
-       {
-           int error = Marshal.GetLastWin32Error();
-           throw new InvalidOperationException($"Failed to set GWL_WNDPROC: error code {error}");
-       }
-   }
-
-
-   public static class NativeMethods
-   {
-       // We have to handle the 32-bit and 64-bit functions separately.
-       // 'SetWindowLongPtr' is the 64-bit version of 'SetWindowLong', and isn't available in user32.dll for 32-bit processes.
-       [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
-       private static extern IntPtr SetWindowLong32(IntPtr hWnd, PInvoke.User32.WindowLongIndexFlags nIndex, WinProc newProc);
-
-       [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")]
-       private static extern IntPtr SetWindowLong64(IntPtr hWnd, PInvoke.User32.WindowLongIndexFlags nIndex, WinProc newProc);
-
-       // This does the selection for us, based on the process architecture.
-       public static IntPtr SetWindowLong(IntPtr hWnd, PInvoke.User32.WindowLongIndexFlags nIndex, WinProc newProc)
-       {
-           if (IntPtr.Size == 4) // 32-bit process
-           {
-               return SetWindowLong32(hWnd, nIndex, newProc);
-           }
-           else // 64-bit process
-           {
-               return SetWindowLong64(hWnd, nIndex, newProc);
-           }
-       }
-   }
-
-
-   int MinWidth = 600;
-   int MinHeight = 500;
-
-   [StructLayout(LayoutKind.Sequential)]
-   struct MINMAXINFO
-   {
-       public PInvoke.POINT ptReserved;
-       public PInvoke.POINT ptMaxSize;
-       public PInvoke.POINT ptMaxPosition;
-       public PInvoke.POINT ptMinTrackSize;
-       public PInvoke.POINT ptMaxTrackSize;
-   }
-
-   private IntPtr NewWindowProc(IntPtr hWnd, PInvoke.User32.WindowMessage Msg, IntPtr wParam, IntPtr lParam)
-   {
-       switch (Msg)
-       {
-           case PInvoke.User32.WindowMessage.WM_GETMINMAXINFO:
-               var dpi = PInvoke.User32.GetDpiForWindow(hWnd);
-               float scalingFactor = (float)dpi / 96;
-
-               MINMAXINFO minMaxInfo = Marshal.PtrToStructure<MINMAXINFO>(lParam);
-               minMaxInfo.ptMinTrackSize.x = (int)(MinWidth * scalingFactor);
-               minMaxInfo.ptMinTrackSize.y = (int)(MinHeight * scalingFactor);
-               Marshal.StructureToPtr(minMaxInfo, lParam, true);
-               break;
-
-       }
-       return CallWindowProc(oldWndProc, hWnd, Msg, wParam, lParam);
-   }
-
-   [ComImport]
-   [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-   [Guid("EECDBF0E-BAE9-4CB6-A68E-9598E1CB57BB")]
-   internal interface IWindowNative
-   {
-       IntPtr WindowHandle { get; }
-   }
-
-
-   
-
+        [ComImport]
+        [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        [Guid("EECDBF0E-BAE9-4CB6-A68E-9598E1CB57BB")]
+        internal interface IWindowNative
+        {
+            IntPtr WindowHandle { get; }
+        }
     }
 
 }

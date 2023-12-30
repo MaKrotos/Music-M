@@ -14,6 +14,7 @@ using VK_UI3.Helpers.Animations;
 using VK_UI3.VKs;
 using Microsoft.UI.Xaml.Media.Animation;
 using Windows.UI.Text;
+using VkNet.Model.Attachments;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -92,8 +93,6 @@ namespace VK_UI3.Controllers
 
         public TrackController()
         {
-
-           
             this.InitializeComponent();
             changeImage = new AnimationsChangeImage(this.ImageThumb, DispatcherQueue);
             this.DataContextChanged += (s, e) => { 
@@ -137,15 +136,14 @@ namespace VK_UI3.Controllers
 
                     if (audio != null && audio.Album != null)
                     {
-                        VK vk = new VK();
+                        VK vk = new VK(null);
                         //var uri = await vk.GetAlbumCover(audio.Album.OwnerId, audio.Album.Id);
                         this.DispatcherQueue.TryEnqueue(async () =>
                         {
                         //   this.ImgUri = uri;
                         });
                     }
-               
-        
+              
         }
 
         private void Ellipse_Tapped(object sender, TappedRoutedEventArgs e)

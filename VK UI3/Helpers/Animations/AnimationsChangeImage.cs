@@ -18,6 +18,7 @@ namespace VK_UI3.Helpers.Animations
         Storyboard storyboard = null;
         Image imageControl = null;
         DispatcherQueue dispatcherQueue = null;
+
         string databaseFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "photosCache");
 
         public AnimationsChangeImage(Image imageControl, DispatcherQueue dispatcherQueue)
@@ -100,6 +101,7 @@ namespace VK_UI3.Helpers.Animations
 
                     if (buffer != null && buffer.Length > 0)
                     {
+
                         await File.WriteAllBytesAsync(fileName, buffer);
 
                         var bitmapImage = new BitmapImage();

@@ -57,9 +57,9 @@
             // 
             // button1
             // 
-            button1.Location = new Point(133, 481);
+            button1.Location = new Point(18, 429);
             button1.Name = "button1";
-            button1.Size = new Size(119, 23);
+            button1.Size = new Size(374, 88);
             button1.TabIndex = 3;
             button1.Text = "Установить";
             button1.UseVisualStyleBackColor = true;
@@ -70,7 +70,7 @@
             label2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label2.AutoSize = true;
             label2.FlatStyle = FlatStyle.Flat;
-            label2.Location = new Point(18, 66);
+            label2.Location = new Point(18, 75);
             label2.Name = "label2";
             label2.Size = new Size(114, 15);
             label2.TabIndex = 6;
@@ -108,17 +108,16 @@
             label5.Size = new Size(88, 15);
             label5.TabIndex = 9;
             label5.Text = "Размер файла:";
-      
             // 
             // label1
             // 
             label1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label1.Location = new Point(18, 9);
             label1.Name = "label1";
-            label1.Size = new Size(374, 32);
+            label1.Size = new Size(374, 72);
             label1.TabIndex = 5;
-            label1.Text = "Для установки VK M возможно потребуется подтвердить установку сертификата от издателя FDW.";
-  
+            label1.Text = resources.GetString("label1.Text");
+            label1.Click += label1_Click;
             // 
             // label6
             // 
@@ -150,7 +149,6 @@
             label8.Name = "label8";
             label8.Size = new Size(374, 176);
             label8.TabIndex = 12;
-
             // 
             // label9
             // 
@@ -166,7 +164,7 @@
             label10.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label10.AutoSize = true;
             label10.FlatStyle = FlatStyle.Flat;
-            label10.Location = new Point(138, 66);
+            label10.Location = new Point(135, 75);
             label10.Name = "label10";
             label10.Size = new Size(40, 15);
             label10.TabIndex = 14;

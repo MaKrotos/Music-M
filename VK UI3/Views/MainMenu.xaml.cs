@@ -3,6 +3,8 @@ using Microsoft.UI.Xaml;
 using System.Collections.ObjectModel;
 using VK_UI3.VKs;
 using System.ComponentModel;
+using Octokit;
+using VK_UI3.DB;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -24,9 +26,11 @@ namespace VK_UI3
 
         private void loaded(object sender, RoutedEventArgs e)
         {
-        
 
-            userAudio = new UserAudio((long)VK.getVKAPI().UserId.Value);
+
+
+
+            userAudio = new UserAudio(AccountsDB.activeAccount.id);
             userAudio.onListUpdate += (sender, e) => updateList(sender, e);
           
         }

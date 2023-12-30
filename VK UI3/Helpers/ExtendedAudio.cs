@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VK_UI3.VKs;
 using VkNet.Model;
+using VkNet.Model.Attachments;
 
 namespace VK_UI3.Helpers
 {

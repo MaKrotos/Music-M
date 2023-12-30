@@ -5,6 +5,8 @@ using System.Linq;
 using VK_UI3.Helpers;
 using VK_UI3.Interfaces;
 using VkNet.Model;
+using VkNet.Model.Attachments;
+using VkNet.Model.RequestParams;
 using VkNet.Utils;
 
 namespace VK_UI3.VKs
@@ -18,14 +20,14 @@ namespace VK_UI3.VKs
 
         public override long getCount()
         {
-           return api.Audio.GetCount(base.id);
+           return api.Audio.GetCountAsync(base.id).Result;
         }
         User user;
 
         public override string getName()
         {
             List<long> ids = new List<long> { base.id };
-            user = api.Users.Get(ids)[0];
+            user = api.Users.GetAsync(ids).Result[0];
             return user.FirstName + " " + user.LastName;
         }
 
@@ -40,7 +42,7 @@ namespace VK_UI3.VKs
                 return null;
         }
 
-        public async override void GetTracks()
+        public override void GetTracks()
         {
             
             int offset = listAudio.Count;
@@ -51,12 +53,12 @@ namespace VK_UI3.VKs
                 VkCollection<Audio> audios;
                 try
                 {
-                    audios = api.Audio.Get(new AudioGetParams
+                    audios = api.Audio.GetAsync(new AudioGetParams
                     {
                         OwnerId = base.id,
                         Offset = offset,
                         Count = count
-                    });
+                    }).Result;
 
                     foreach (var item in audios)
                     {

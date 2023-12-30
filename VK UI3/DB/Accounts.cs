@@ -12,16 +12,61 @@ namespace VK_UI3.DB
     {
         public class Accounts {
             [PrimaryKey]
+           // [AutoIncrement]
             public long id { get; set; }
             public bool Active { get; set; } = false;
             public String Name { get; set; } = "Добавить";
             public String Token { get; set; } = null;
             public String UserPhoto { get; set; } = "null";
 
-            public int sortID { get; set; }
+            public DateTimeOffset? Expiration { get; set; } = null;
 
-          
+            public int sortID { get; set; }
+            public string ExchangeToken { get; set; } = null;
+
+            public string AnonToken { get; set; } = null;
+            public string DeviceId { get; set; } = null;
+
+            internal void Update()
+            {
+                if (GetAccountsByID(id) == null)
+                {
+                    DatabaseHandler.getConnect().Insert(this);
+                }
+                else 
+                {
+                    DatabaseHandler.getConnect().Update(this);
+                }
+            }
         }
+
+        private static Accounts? _activeAccount;
+
+        public static Accounts activeAccount
+        {
+            get
+            {
+
+                if (_activeAccount == null)
+                {
+                    _activeAccount = AccountsDB.GetActiveAccount();
+                }
+                if (_activeAccount == null)
+                {
+                    _activeAccount = new Accounts();
+                    _activeAccount.Active = true;
+                }
+                return _activeAccount;
+            }
+            set
+            {
+                _activeAccount = value;
+            }
+        }
+
+
+
+
 
         public static void ActivateAccount(long id)
         {
@@ -59,7 +104,26 @@ namespace VK_UI3.DB
             return listActiv;
         }
 
+
+        internal static Accounts GetActiveAccount()
+        {
+            var acs = GetActiveAccounts();
+
+            if (acs.Count < 1) return null;
+            else return acs[0];
+        }
+
+
         // Получить аккаунты по имени
+
+        public static Accounts GetAccountsByID(long id)
+        {
+            var a = DatabaseHandler.getConnect().Table<Accounts>().Where(a => a.id == id).ToList(); 
+            if (a.Count < 1) return null;
+            return a[0];
+        }
+
+
         public static List<Accounts> GetAccountsByName(string name)
         {
             return DatabaseHandler.getConnect().Table<Accounts>().Where(a => a.Name == name).ToList();
@@ -94,6 +158,8 @@ namespace VK_UI3.DB
                 DatabaseHandler.getConnect().Update(accounts[i]);
             }
         }
+
+       
     }
 
 }

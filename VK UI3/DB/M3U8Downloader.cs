@@ -12,6 +12,7 @@
 
 
     using System.Collections.Generic;
+    using VkNet.Model.Attachments;
 
     public class M3U8Downloader
     {

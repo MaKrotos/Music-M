@@ -1,23 +1,13 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using VK_UI3.DB;
-using VK_UI3.Helpers;
-using VK_UI3.Views.LoginFrames;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using VK_UI3.Views.LoginWindow;
 using static VK_UI3.DB.AccountsDB;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -138,12 +128,14 @@ namespace VK_UI3.Views
                 {
                     AccountsList.SelectedIndex = -1;
                 }
+                AccountsDB.activeAccount = new AccountsDB.Accounts();
                 this.Frame.Navigate(typeof(Login), this, new DrillInNavigationTransitionInfo());
                 previousSelectedAccount = AccountsList.SelectedIndex;
             }
             else {
 
                 AccountsDB.ActivateAccount(selectedAccount.id);
+                activeAccount = selectedAccount;
                 var a = ContentFrame.Content.GetType(); 
                 ContentFrame.Navigate(a, this, new DrillInNavigationTransitionInfo());
        

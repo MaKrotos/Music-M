@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+  
+
+    x:Class="VK_UI3.Controllers.ChooseLoginWayControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VK_UI3.Controllers"
+ 
+    CornerRadius="8" Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+
+    <Grid>
+        
+       
+        
+        <StackPanel Orientation="Horizontal">
+            <FontIcon x:Name="fontIcon" VerticalAlignment="Center" Margin="10"/>
+            <StackPanel>
+                <TextBlock x:Name="MainTxT" FontSize="24" VerticalAlignment="Center" Margin="0"/>
+                <TextBlock x:Name="secondTXT" Text="Текст с пониженной прозрачностью и размером" FontSize="14" Opacity="0.5" VerticalAlignment="Center" Margin="0"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

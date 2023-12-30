@@ -1,17 +1,24 @@
-﻿using Octokit;
+﻿using Microsoft.Win32;
+
+using System.Diagnostics;
+
+using System.Linq;
+using System.Management;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
+using Windows.ApplicationModel;
+using Windows.Management.Deployment;
 
 namespace SetupLib
 {
     public class AppUpdater
     {
         public string currentVersion;
-        private readonly GitHubClient client;
+        private readonly Octokit.GitHubClient client;
 
         public AppUpdater(string currentVersion)
         {
-            client = new GitHubClient(new Octokit.ProductHeaderValue("VKUI3"));
+            client = new Octokit.GitHubClient(new Octokit.ProductHeaderValue("VKUI3"));
             this.currentVersion = currentVersion;
         }
 
@@ -39,30 +46,51 @@ namespace SetupLib
             var releases = await client.Repository.Release.GetAll("MaKrotos", "VKUI3");
             var latestRelease = releases[0];
 
-            if (latestRelease.TagName != currentVersion)
+            if (latestRelease.TagName == currentVersion)
             {
-                Console.WriteLine($"New version available: {latestRelease.TagName}");
+                Console.WriteLine("Ваше приложение обновлено до последней версии.");
+                return false;
+            }
 
-                this.version = latestRelease.TagName;
-                this.Name = latestRelease.Name;
-                this.Tit = latestRelease.Body.ToString();
+            if (string.Compare(latestRelease.TagName, currentVersion) < 0)
+            {
+                Console.WriteLine("Версия вашего приложения выше, чем последняя версия.");
+                return false;
+            }
 
-                // Ищем файлы .cer и .msix в активах
-                var cerAsset = latestRelease.Assets.FirstOrDefault(asset => asset.Name.EndsWith(".cer"));
-                var msixAsset = latestRelease.Assets.FirstOrDefault(asset => asset.Name.EndsWith(".msix"));
+            Console.WriteLine($"Доступна новая версия: {latestRelease.TagName}");
 
-                if (cerAsset != null && msixAsset != null)
+            this.version = latestRelease.TagName;
+            this.Name = latestRelease.Name;
+            this.Tit = latestRelease.Body.ToString();
+
+            // Ищем файлы .cer и .msix в активах
+            var cerAsset = latestRelease.Assets.FirstOrDefault(asset => asset.Name.EndsWith(".cer"))?? null;
+            var msixAsset = latestRelease.Assets.FirstOrDefault(asset => asset.Name.EndsWith(".msix"));
+
+            if (cerAsset == null)
+            {
+                foreach (var item in releases)
                 {
-                    this.sizeFile = msixAsset.Size;
-                    this.UriDownload = cerAsset.BrowserDownloadUrl;
-                    this.UriDownloadMSIX = msixAsset.BrowserDownloadUrl;
-                    return true;
+                     cerAsset = latestRelease.Assets.FirstOrDefault(asset => asset.Name.EndsWith(".cer")) ?? null;
+                    if (cerAsset != null)
+                    {
+                        break;
+                    }
                 }
             }
 
-            Console.WriteLine("Your app is up to date.");
+            if (cerAsset != null && msixAsset != null)
+            {
+                this.sizeFile = msixAsset.Size;
+                this.UriDownload = cerAsset.BrowserDownloadUrl;
+                this.UriDownloadMSIX = msixAsset.BrowserDownloadUrl;
+                return true;
+            }
+
             return false;
         }
+
 
         public async Task DownloadAndOpenFile()
         {
@@ -104,12 +132,15 @@ namespace SetupLib
                                 var percentage = totalRead * 100d / response.Content.Headers.ContentLength.Value;
 
                                 // Вызовите событие
+
+                                /*
                                 DownloadProgressChanged?.Invoke(this, new DownloadProgressChangedEventArgs
                                 {
                                     TotalBytes = response.Content.Headers.ContentLength.Value,
                                     BytesDownloaded = totalRead,
                                     Percentage = percentage
                                 });
+                                */
                             }
                         } while (isMoreToRead);
                     }
@@ -167,14 +198,79 @@ namespace SetupLib
                     } while (isMoreToRead);
                 }
 
-                System.Diagnostics.Process process = new System.Diagnostics.Process();
-                System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-                startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-                startInfo.FileName = "cmd.exe";
-                startInfo.Arguments = "/C start " + path;
-                process.StartInfo = startInfo;
-                process.Start();
+
+
+
+                //  System.Diagnostics.Process process = new System.Diagnostics.Process();
+                //  System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                //  startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                //  startInfo.FileName = "cmd.exe";
+                //  startInfo.Arguments = "/C start " + path;
+                //  process.StartInfo = startInfo;
+                //  process.Start();
+
+
+                // Получаем путь к AppInstaller из реестра
+
+                string packageName = "Microsoft.DesktopAppInstaller";
+                bool isInstalled = IsPackageInstalled(packageName);
+                if (isInstalled)
+                {
+
+                    System.Diagnostics.Process process = new System.Diagnostics.Process();
+                    System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                    startInfo.UseShellExecute = false;
+                    startInfo.CreateNoWindow = true;
+                    startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                    startInfo.FileName = "powershell.exe";
+                    startInfo.Arguments = "-NoProfile -ExecutionPolicy unrestricted -Command &{" + path + "}";
+                    process.StartInfo = startInfo;
+                    process.Start();
+
+                }
+                else
+                {
+                    // Если AppInstaller не установлен, используем PowerShell для установки
+                    ProcessStartInfo startInfo = new ProcessStartInfo()
+                    {
+                        FileName = "powershell.exe",
+                        Arguments = $"-Command Add-AppxPackage -Path {path}",
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        CreateNoWindow = true,
+                        WindowStyle = ProcessWindowStyle.Hidden
+                    };
+
+                    Process process = new Process() { StartInfo = startInfo };
+                    process.Start();
+
+                    string output = process.StandardOutput.ReadToEnd();
+                    string error = process.StandardError.ReadToEnd();
+
+                    Console.WriteLine(output);
+                    if (!string.IsNullOrEmpty(error))
+                    {
+                        Console.WriteLine("Error: " + error);
+                    }
+
+                    process.WaitForExit();
+                }
             }
+        }
+
+        public static bool IsPackageInstalled(string packageName)
+        {
+            PackageManager packageManager = new PackageManager();
+            IEnumerable<Package> packages = packageManager.FindPackagesForUser(string.Empty);
+            foreach (var package in packages)
+            {
+                if (package.Id.FamilyName == packageName)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

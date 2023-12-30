@@ -1,0 +1,51 @@
+<Page
+    x:Class="VK_UI3.Views.LoginWindow.ChooseVerMethods"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VK_UI3.Views.LoginWindow"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:converters="using:VK_UI3.Converters"
+    mc:Ignorable="d"
+    xmlns:custom="using:VK_UI3.Controllers"
+    VerticalAlignment="Center" HorizontalAlignment="Center"
+   >
+    <Page.Resources>
+        <ThemeShadow x:Name="SharedShadow" />
+    </Page.Resources>
+    <Grid
+        Translation="0,0,24"
+            CornerRadius="8" Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}" Margin="50" VerticalAlignment="Center" HorizontalAlignment="Center"
+        >
+        <Grid.Shadow>
+            <ThemeShadow />
+        </Grid.Shadow>
+
+        <ListView Padding="0,3,0,3" CanReorderItems="false" x:Name="LoginsListView" SelectionChanged="LoginsListView_SelectionChanged" ItemsSource="{x:Bind VerificationMethods, Mode=OneWay}"    SelectionMode="Single">
+            
+            
+            
+            <ListView.ItemTemplate>
+             
+
+                        <DataTemplate >
+                   
+                    <custom:ChooseLoginWayControl
+               
+                        Margin="10"
+                        FocusVisualPrimaryBrush="Transparent"
+                     FocusVisualSecondaryThickness="0"
+                     loginWay="{Binding }">
+
+                        <custom:ChooseLoginWayControl.Shadow>
+                            <ThemeShadow x:Name="SharedShadow" />
+                        </custom:ChooseLoginWayControl.Shadow>
+
+
+                    </custom:ChooseLoginWayControl>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+
+</Page>

@@ -18,7 +18,6 @@
                         
                         FocusVisualPrimaryBrush="Transparent"
                         FocusVisualSecondaryThickness="0"
-                        
                         TrackData="{Binding }"></custom:TrackController>
                 </DataTemplate>
             </ListView.ItemTemplate>

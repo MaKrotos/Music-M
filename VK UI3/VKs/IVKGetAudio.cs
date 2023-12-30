@@ -6,11 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using VK_UI3.Helpers;
 using VK_UI3.VKs;
-using VkNet;
-using VkNet.Model;
+using VkNet.Abstractions;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 
 
@@ -19,7 +19,7 @@ namespace VK_UI3.Interfaces
 {
     public abstract class IVKGetAudio
     {
-        public VkApi api;
+        public IVkApi api;
         public long id;
         bool shuffle = false;
         Uri photoUri;
@@ -55,7 +55,7 @@ namespace VK_UI3.Interfaces
         }
         public IVKGetAudio(long id)
         {
-            this.api = VK.getVKAPI();
+            this.api = new VK().getVKAPI();
             this.id = id;
             Task.Run(() =>
             {
@@ -165,15 +165,11 @@ namespace VK_UI3.Interfaces
             NotifyOnListUpdate();
         }
 
-
         public void SaveToFile()
         {
             // Reset the shuffle state
             shuffle = false;
             listAudioShuffle.Clear();
-
-            // Create a binary formatter
-            var formatter = new BinaryFormatter();
 
             // Get the path to the AppData folder
             var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -185,18 +181,15 @@ namespace VK_UI3.Interfaces
             Directory.CreateDirectory(databaseFolderPath);
 
             // Create a file stream
-            using (var stream = new FileStream(Path.Combine(databaseFolderPath, $"{id}.bin"), FileMode.Create, FileAccess.Write))
+            using (var stream = new FileStream(Path.Combine(databaseFolderPath, $"{id}.json"), FileMode.Create))
             {
-                // Serialize this object
-                formatter.Serialize(stream, this);
+                // Serialize this object using JsonSerializer
+                JsonSerializer.Serialize(stream, this);
             }
         }
 
         public static IVKGetAudio RestoreFromFile(long id)
         {
-            // Create a binary formatter
-            var formatter = new BinaryFormatter();
-
             // Get the path to the AppData folder
             var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
@@ -204,12 +197,14 @@ namespace VK_UI3.Interfaces
             var databaseFolderPath = Path.Combine(appDataPath, "classesListCache");
 
             // Create a file stream
-            using (var stream = new FileStream(Path.Combine(databaseFolderPath, $"{id}.bin"), FileMode.Open, FileAccess.Read))
+            using (var stream = new FileStream(Path.Combine(databaseFolderPath, $"{id}.json"), FileMode.Open))
             {
-                // Deserialize the object
-                return (IVKGetAudio)formatter.Deserialize(stream);
+                // Deserialize this object using JsonSerializer
+                return JsonSerializer.Deserialize<IVKGetAudio>(stream);
             }
         }
+
+
     }
 
 }
