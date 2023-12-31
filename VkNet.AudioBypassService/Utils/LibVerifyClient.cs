@@ -9,7 +9,7 @@ namespace VkNet.AudioBypassService.Utils;
 public class LibVerifyClient
 {
     private static readonly Guid DeviceId = new("4bdec837-2820-4854-8c73-61a79577482e");
-    private const string DeviceName = "MusicX+MusicX";
+    private const string DeviceName = "VK M+VK M";
     
     private readonly HttpClient _httpClient = new()
     {
@@ -19,7 +19,7 @@ public class LibVerifyClient
     public LibVerifyClient()
     {
         _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent",
-            "Dalvik/2.1.0 (Linux; U; Android 12; MusicX Build/QQ3A.200705.002)");
+            "Dalvik/2.1.0 (Linux; U; Android 12; VK M Build/QQ3A.200705.002)");
     }
     
     public Task<VerifyResponse> VerifyAsync(string externalId, string phone)

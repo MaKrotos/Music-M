@@ -33,12 +33,18 @@ public partial class AuthCategory : IAuthCategory
         _tokenStore = tokenStore;
         _versionManager = versionManager;
     }
-
-    [GeneratedRegex("""\"anonymous_token\"\:\s?\"(?<token>[\w\.\=\-]*)\"\,?""", RegexOptions.Multiline)]
-    private static partial Regex AnonTokenRegex();
-    
-    [GeneratedRegex("""\"code_auth_verification_hash\"\:\s?\"(?<hash>[\w\.\=\-]*)\"\,?""", RegexOptions.Multiline)]
     private static partial Regex AuthVerifyHashRegex();
+
+    private static partial Regex AnonTokenRegex();
+    private static partial Regex AnonTokenRegex()
+    {
+        return new Regex("\"anonymous_token\"\\:\\s?\"(?<token>[\\w\\.\\=\\-]*)\"\\,?", RegexOptions.Multiline);
+    }
+
+    private static partial Regex AuthVerifyHashRegex()
+    {
+        return new Regex("\"code_auth_verification_hash\"\\:\\s?\"(?<hash>[\\w\\.\\=\\-]*)\"\\,?", RegexOptions.Multiline);
+    }
 
     private async ValueTask<string> GetAnonTokenAsync()
     {
@@ -122,8 +128,8 @@ public partial class AuthCategory : IAuthCategory
         {
             { "func_v", 30 },
             { "androidVersion", 32 },
-            { "androidManufacturer", "MusicX" },
-            { "androidModel", "MusicX" },
+            { "androidManufacturer", "VK M" },
+            { "androidModel", "VK M" },
             { "needExchangeToken", true },
             { "fields", fields }
         });

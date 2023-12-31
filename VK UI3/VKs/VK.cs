@@ -3,37 +3,25 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using VK_UI3.DB;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.Marshalling;
 using System.Text;
 using System.Text.Json;
-using System.Linq;
 using System.Text.Json.Nodes;
 using Windows.Win32;
 using VK_UI3.Views.LoginWindow;
 using QRCoder;
 using VkNet.Abstractions;
 using Windows.Win32.Foundation;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.Json;
-using Windows.Win32;
 using Windows.Win32.Networking.WindowsWebServices;
-using System.Runtime.InteropServices.Marshalling;
 
 using VK_UI3.Helpers;
-using System.Text;
 
 using IAuthCategory = VkNet.AudioBypassService.Abstractions.Categories.IAuthCategory;
 using VkNet.AudioBypassService.Models.Ecosystem;
 using VkNet.AudioBypassService.Models.Auth;
 using VkNet.AudioBypassService.Abstractions.Categories;
-using System.Text.Json.Nodes;
-using System.ComponentModel;
 using Microsoft.UI.Xaml.Media.Animation;
 using VK_UI3.Views;
-using static System.Net.WebRequestMethods;
 using VkNet.Utils;
 using VkNet.Model.Attachments;
 using VkNet.Model.RequestParams;
@@ -141,7 +129,7 @@ namespace VK_UI3.VKs
 
         private async Task LoadQrCode(bool forceRegenerate = false)
         {
-            var (_, hash, _, url, _) = await _authCategory.GetAuthCodeAsync("MusicX Player", forceRegenerate);
+            var (_, hash, _, url, _) = await _authCategory.GetAuthCodeAsync("VK M Player", forceRegenerate);
             QRCodeGenerator generator = new QRCodeGenerator();
 
             var qrCode = generator.CreateQrCode(new PayloadGenerator.Url(url)); /*
@@ -620,7 +608,12 @@ namespace VK_UI3.VKs
                 JsonSerializer.Serialize(new PInvoke.SecurityKeyClientData(PInvoke.SecurityKeyClientData.GetAssertion,
                     data.Challenge, "https://id.vk.ru"));
 
-            var clientDataJsonPtr = Utf8StringMarshaller.ConvertToUnmanaged(clientDataJson);
+
+            byte[] bytes = Encoding.UTF8.GetBytes(clientDataJson);
+            IntPtr clientDataJsonPtr = Marshal.AllocHGlobal(bytes.Length);
+            Marshal.Copy(bytes, 0, clientDataJsonPtr, bytes.Length);
+
+          
             var sha256Ptr = Marshal.StringToHGlobalUni("SHA-256");
 
             HRESULT hResult;
@@ -630,7 +623,7 @@ namespace VK_UI3.VKs
                 fixed (WEBAUTHN_CREDENTIAL* credListPtr = &credList[0])
                     hResult = PInvoke.WebAuthNAuthenticatorGetAssertion(new(hWnd), data.RpId, new()
                     {
-                        pbClientDataJSON = clientDataJsonPtr,
+                        pbClientDataJSON = (byte*)clientDataJsonPtr,
                         cbClientDataJSON = (uint)Encoding.UTF8.GetByteCount(clientDataJson),
                         dwVersion = 2,
                         pwszHashAlgId = (char*)sha256Ptr,
@@ -649,7 +642,7 @@ namespace VK_UI3.VKs
             }
             finally
             {
-                Utf8StringMarshaller.Free(clientDataJsonPtr);
+                Marshal.FreeHGlobal(clientDataJsonPtr);
 
                 foreach (var credential in credList)
                 {
