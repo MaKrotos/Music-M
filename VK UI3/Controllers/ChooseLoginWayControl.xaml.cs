@@ -74,6 +74,19 @@ namespace VK_UI3.Controllers
                         MainTxT.Text = "Электронная почта";
                         secondTXT.Text = "Вам будет отправлен код на электронную почту";
                     }
+                    else if (loginWay.Name.ToString() == "password")
+                    {
+                        fontIcon.Glyph = "\uE8AC";
+                        MainTxT.Text = "Пароль";
+                        secondTXT.Text = "Введите пароль для входа в свой аккаунт.";
+                    }
+                    else
+                    {
+
+                        fontIcon.Glyph = "?";
+                        MainTxT.Text = "Нереализованный метод ("+loginWay.Name.ToString()+")";
+                        secondTXT.Text = "???";
+                    }
                 }
 
             };

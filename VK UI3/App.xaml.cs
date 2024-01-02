@@ -12,6 +12,10 @@ using System;
 using VK_UI3.DB;
 using VkNet.Abstractions;
 using VkNet.AudioBypassService.Models.Auth;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
+
 using System.Threading.Tasks;
 using VK_UI3.VKs.Ext;
 using System.Runtime.InteropServices;
@@ -99,7 +103,8 @@ namespace VK_UI3
             m_window.Activate();
 
 
-
+            AppCenter.Start("4f42c41a-220a-497f-9b87-f2d601a6d674",
+                  typeof(Analytics), typeof(Crashes));
 
             // Set the window procedure
             // Check if the OS is 64-bit

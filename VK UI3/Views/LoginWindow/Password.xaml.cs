@@ -83,8 +83,10 @@ namespace VK_UI3.Views.LoginWindow
 
         private void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
+
          
-           
+
+
             vk.AuthAsync(passText.Password);
         }
 

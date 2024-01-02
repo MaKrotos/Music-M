@@ -314,25 +314,37 @@ namespace VK_UI3.Controllers
         {
             // Код для выполнения при завершении воспроизведения медиафайла
 
-            switch (SettingsTable.GetSetting("playNext").settingValue)
+
+      
+
+
+            if ((int) Math.Round(sender.Position.TotalSeconds) == iVKGetAudio.GetTrackPlay().Audio.Duration)
             {
-                case "RepeatOne":
-                    PlayTrack();
-                    break;
+                switch (SettingsTable.GetSetting("playNext").settingValue)
+                {
+                    case "RepeatOne":
+                        PlayTrack();
+                        break;
 
-                case "Shuffle":
-                    PlayNextTrack();
+                    case "Shuffle":
+                        PlayNextTrack();
 
-                    break;
+                        break;
 
-                case "RepeatAll":
+                    case "RepeatAll":
 
-                    PlayNextTrack();
-                    break;
+                        PlayNextTrack();
+                        break;
 
 
-                default:
-                    break;
+                    default:
+                        break;
+                }
+
+            }
+            else
+            {
+                Console.WriteLine("Что-то не так");
             }
         }
         private void PlaybackSession_PositionChanged(MediaPlaybackSession sender, object args)

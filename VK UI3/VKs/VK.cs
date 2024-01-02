@@ -33,7 +33,7 @@ namespace VK_UI3.VKs
     internal class VK
     {
         public readonly IVkApi api = App._host.Services.GetRequiredService<IVkApi>();
-        private readonly IAuthCategory _authCategory = App._host.Services.GetRequiredService<IAuthCategory>();
+        public readonly IAuthCategory _authCategory = App._host.Services.GetRequiredService<IAuthCategory>();
         Login login;
         private readonly IEcosystemCategory _ecosystemCategory = App._host.Services.GetRequiredService<IEcosystemCategory>();
         private TaskCompletionSource<string>? _codeTask;
@@ -201,7 +201,7 @@ namespace VK_UI3.VKs
                     var (_, isPhone, authFlow, flowNames, sid, nextStep) = await _authCategory.ValidateAccountAsync(arg, passkeySupported: true, loginWays:
                     new[]
                     {
-                    LoginWay.Password, LoginWay.Push, LoginWay.Sms, LoginWay.CallReset, LoginWay.ReserveCode,
+                    LoginWay.Push, LoginWay.Sms, LoginWay.CallReset, LoginWay.ReserveCode,
                     LoginWay.Codegen, LoginWay.Email, LoginWay.Passkey
                     });
                 
@@ -424,6 +424,23 @@ namespace VK_UI3.VKs
                 codeLength = requestedCodeLength;
                 phone ??= smsInfo;
             }
+            else if (loginWay.ToString() == "password")
+            {
+
+                Password passview = new Password();
+
+
+
+                passview.vk = this;
+                passview.FirstName = "Незнакомец";
+                passview.Photo200 =  "null";
+                passview.Phone = llogin ?? null;
+
+
+                login.Frame.Navigate(typeof(Password), passview);
+
+                return;
+            }
 
             phone ??= llogin;
 
@@ -477,11 +494,15 @@ namespace VK_UI3.VKs
             login.Frame.Navigate(typeof(waitPage));
             try
             {
-                await _vkApiAuth.AuthorizeAsync(new AndroidApiAuthParams(llogin, Sid, ActionRequestedAsync,
+
+
+               await _vkApiAuth.AuthorizeAsync(new AndroidApiAuthParams(llogin, Sid, ActionRequestedAsync,
                     new[] { LoginWay.Push, LoginWay.Email }, password)
                 {
                     AndroidGrantType = _grantType
                 });
+
+
 
                 await LoggedInAsync();
             }catch (Exception ex) 
