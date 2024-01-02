@@ -1,1 +1,1 @@
-![image](https://github.com/MaKrotos/VKUI3/assets/43302537/8d67a87c-b720-4a63-8d08-db588c47c549)
+![image](https://github.com/MaKrotos/VKUI3/assets/43302537/92fdfc4a-9755-4ad1-a6e6-529da307c991)
