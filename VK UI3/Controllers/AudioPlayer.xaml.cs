@@ -282,6 +282,7 @@ namespace VK_UI3.Controllers
             return sessionManager;
         }
 
+
         private void CommandManager_PreviousReceived(MediaPlaybackCommandManager sender, MediaPlaybackCommandManagerPreviousReceivedEventArgs args)
         {
             PlayPreviousTrack();
@@ -296,6 +297,13 @@ namespace VK_UI3.Controllers
 
         private void PlaybackSession_BufferedRangesChanged(MediaPlaybackSession sender, object args)
         {
+            var a = (int) Math.Round(sender.NaturalDuration.TotalSeconds);
+            var b = TrackDataThis.Duration;
+
+            if (Math.Abs(a - b) > 1)
+            {
+                PlayTrack();
+            }
 
             //  throw new NotImplementedException();
         }
@@ -318,8 +326,7 @@ namespace VK_UI3.Controllers
       
 
 
-            if ((int) Math.Round(sender.Position.TotalSeconds) == iVKGetAudio.GetTrackPlay().Audio.Duration)
-            {
+            
                 switch (SettingsTable.GetSetting("playNext").settingValue)
                 {
                     case "RepeatOne":
@@ -341,11 +348,7 @@ namespace VK_UI3.Controllers
                         break;
                 }
 
-            }
-            else
-            {
-                Console.WriteLine("Что-то не так");
-            }
+          
         }
         private void PlaybackSession_PositionChanged(MediaPlaybackSession sender, object args)
         {
@@ -593,18 +596,18 @@ namespace VK_UI3.Controllers
            
         }
 
-        private static void PlayTrack(long? v = null)
+        private async static void PlayTrack(long? v = null)
         {
-        
-
-
             if (v != null) iVKGetAudio.currentTrack = (long)v;
           
+
+
            var mediaSource = Windows.Media.Core.MediaSource.CreateFromUri(new Uri(_TrackDataThis.Url.ToString()));
            var mediaPlaybackItem = new Windows.Media.Playback.MediaPlaybackItem(mediaSource);
 
+          
 
-           
+
             MediaItemDisplayProperties props = mediaPlaybackItem.GetDisplayProperties();
             props.Type = Windows.Media.MediaPlaybackType.Music;
             props.MusicProperties.Title = _TrackDataThis.Title;
@@ -630,8 +633,10 @@ namespace VK_UI3.Controllers
             else props.Thumbnail = null;
             mediaPlaybackItem.ApplyDisplayProperties(props);
 
+            mediaPlayer.PlaybackSession.Position = TimeSpan.Zero;
             mediaPlayer.Pause();
-            mediaPlayer.Source = null;
+         
+            // mediaPlayer.Source = null;
             mediaPlayer.Volume = 1;
             mediaPlayer.Source = mediaPlaybackItem;
             mediaPlayer.Play();
