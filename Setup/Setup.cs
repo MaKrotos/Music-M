@@ -27,6 +27,7 @@ namespace Setup
             label8.Text = appUpdater.Tit;
             label7.Text = Math.Round((float)appUpdater.sizeFile / 1024 / 1024, 2).ToString() + " Ìב";
             label10.Text = appUpdater.version;
+            button1.Enabled = true;
 
         }
         private void AppUpdater_DownloadProgressChanged(object sender, AppUpdater.DownloadProgressChangedEventArgs e)

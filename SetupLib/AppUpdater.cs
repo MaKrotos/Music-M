@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System.Diagnostics;
+using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 
 namespace SetupLib
@@ -191,8 +192,9 @@ namespace SetupLib
                 }
 
 
-
-
+                bool isInstalled = IsAppInstalled("AppInstaller");
+                if (isInstalled)
+                {
 
                     System.Diagnostics.Process process = new System.Diagnostics.Process();
                     System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
@@ -204,9 +206,63 @@ namespace SetupLib
                     process.StartInfo = startInfo;
                     process.Start();
 
+                }
+                else
+                {
+
+                    string appName = "FDW.VKM";
+                    string command = $"Add-AppxPackage -Path {path}";
+                    ProcessStartInfo startInfo = new ProcessStartInfo()
+                    {
+                        FileName = "powershell.exe",
+                        Arguments = $"-Command \"{command}\"",
+                        RedirectStandardOutput = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                    };
+                    Process process = new Process() { StartInfo = startInfo };
+                    process.Start();
+                    process.WaitForExit();
+
+                    command = $"if ((Get-AppxPackage).Name -like '*{appName}*') {{ (Get-AppxPackage -Name *{appName}*).PackageFamilyName }} else {{ Write-Output \"false\" }}";
+                    startInfo.Arguments = $"-Command \"{command}\"";
+                    process = new Process() { StartInfo = startInfo };
+                    process.Start();
+                    string output = process.StandardOutput.ReadToEnd();
+                    process.WaitForExit();
+
+                    if (!output.Contains("false"))
+                    {
+                        Process.Start("explorer.exe", $"shell:AppsFolder\\{output.Trim()}!App");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{appName} не найден");
+                    }
+
+                }
             }
         }
 
-     
+        static bool IsAppInstalled(string appName)
+        {
+            string command = $"if ((Get-AppxPackage).Name -like '*{appName}*') {{ Write-Output \"True\" }} else {{ Write-Output \"False\" }}";
+            ProcessStartInfo startInfo = new ProcessStartInfo()
+            {
+                FileName = "powershell.exe",
+                Arguments = $"-Command \"{command}\"",
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = false,
+            };
+            Process process = new Process() { StartInfo = startInfo };
+            process.Start();
+            string output = process.StandardOutput.ReadToEnd();
+       
+            return output.Contains("True");
+        }
+
+
+
     }
 }

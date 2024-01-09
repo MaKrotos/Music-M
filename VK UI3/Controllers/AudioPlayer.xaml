@@ -132,7 +132,7 @@
                         ValueChanged="SoundSlider_ValueChanged"
                         PointerEntered="SoundSlider_PointerEntered"
                         PointerExited="SoundSlider_PointerExited"
-                        StepFrequency="0.1"
+                        StepFrequency="0.01"
                         MinWidth="75" MaxWidth="200" />
 
 

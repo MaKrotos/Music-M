@@ -57,6 +57,7 @@
             // 
             // button1
             // 
+            button1.Enabled = false;
             button1.Location = new Point(18, 429);
             button1.Name = "button1";
             button1.Size = new Size(374, 88);
