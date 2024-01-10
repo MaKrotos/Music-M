@@ -5,7 +5,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:VK_UI3">
     <Application.Resources>
-        <ResourceDictionary>
+
+            <ResourceDictionary x:Key="Default">
+                <AcrylicBrush x:Key="CustomAcrylicInAppBrush" 
+            TintOpacity="0.1" Opacity="0.9" TintColor="#FF000000" FallbackColor="#FF008000" />
+    
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
                 <!-- Other merged dictionaries here -->

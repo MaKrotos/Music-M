@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="VK_UI3.Views.Search.SearchView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VK_UI3.Views.Search"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <StackPanel>
+            <TextBox x:Name="SearchBox" Header="Search" Margin="10"/>
+            <ListView x:Name="SearchResults" Margin="10"/>
+            <ProgressRing x:Name="LoadingIndicator" IsActive="False" Margin="10" Opacity="0">
+                <ProgressRing.Resources>
+                    <Storyboard x:Name="FadeInAnimation">
+                        <DoubleAnimation Storyboard.TargetName="LoadingIndicator"
+                                         Storyboard.TargetProperty="Opacity"
+                                         From="0.0" To="1.0" Duration="0:0:1"/>
+                    </Storyboard>
+                    <Storyboard x:Name="FadeOutAnimation">
+                        <DoubleAnimation Storyboard.TargetName="LoadingIndicator"
+                                         Storyboard.TargetProperty="Opacity"
+                                         From="1.0" To="0.0" Duration="0:0:1"/>
+                    </Storyboard>
+                </ProgressRing.Resources>
+            </ProgressRing>
+        </StackPanel>
+    </Grid>
+</Page>

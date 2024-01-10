@@ -100,13 +100,21 @@ namespace VK_UI3.Views.LoginWindow
         }
         private void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
-            
+
+            sumbit();
+
+
+        }
+
+        private void sumbit() 
+        {
+
             Submitted.SetResult(CodeBox.Text);
             Submitted = new TaskCompletionSource<string?>();
-           
-           
+
+
             vk.Vk2FaCompleteAsync(CodeBox.Text);
-          
+
         }
 
         private void ShowAnotherVerificationMethodsButton_Click(object sender, RoutedEventArgs e)
@@ -114,6 +122,14 @@ namespace VK_UI3.Views.LoginWindow
             vk.ShowAnotherVerificationMethodsAsync();
         }
 
+        private void passpey_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
+            if (e.Key == Windows.System.VirtualKey.Enter)
+            {
 
+                sumbit();
+            }
+            
+        }
     }
 }

@@ -10,7 +10,7 @@
 	<Identity
 	  Name="FDW.VKM"
 	  Publisher="CN=FDW"
-	  Version="0.1.4.1" />
+	  Version="0.1.4.2" />
 
 	<mp:PhoneIdentity PhoneProductId="f1cec595-5648-4d9e-bef5-71ee6b866717" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 

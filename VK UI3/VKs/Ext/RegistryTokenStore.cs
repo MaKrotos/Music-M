@@ -11,9 +11,6 @@ using VkNet.Extensions.DependencyInjection;
 
 public class RegistryTokenStore : IVkTokenStore, IExchangeTokenStore, IDeviceIdStore
 {
-
-   
-
     private DateTimeOffset? Expiration
     {
         get => activeAccount?.Expiration;
@@ -74,13 +71,5 @@ public class RegistryTokenStore : IVkTokenStore, IExchangeTokenStore, IDeviceIdS
         return ValueTask.CompletedTask;
     }
 
-    /*
-    private activeAccounts GetActiveactiveAccount()
-    {
-        var a = activeAccountsDB.GetActiveactiveAccounts();
-        if (a.Count == 0)
-            throw new InvalidOperationException("Authorization is required");
-        return a[0];
-    }
-    */
+   
 }

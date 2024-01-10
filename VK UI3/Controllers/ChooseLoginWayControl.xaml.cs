@@ -38,7 +38,15 @@ namespace VK_UI3.Controllers
 
                 if (loginWay != null)
                 {
-                    if (loginWay.Name == LoginWay.Push)
+                  
+
+                    if (loginWay.Name == LoginWay.Codegen)
+                    {
+                        fontIcon.Glyph = "\uECAD";
+                        MainTxT.Text = "Генератор кода";
+                        secondTXT.Text = "Воспользуйтесь кодом из приложения генерации кодов авторизации";
+                    } 
+                    else if (loginWay.Name == LoginWay.Push)
                     {
                         fontIcon.Glyph = "\uE90A";
                         MainTxT.Text = "PUSH уведомление";
@@ -74,7 +82,7 @@ namespace VK_UI3.Controllers
                         MainTxT.Text = "Электронная почта";
                         secondTXT.Text = "Вам будет отправлен код на электронную почту";
                     }
-                    else if (loginWay.Name.ToString() == "password")
+                    else if (loginWay.Name == LoginWay.Password)
                     {
                         fontIcon.Glyph = "\uE8AC";
                         MainTxT.Text = "Пароль";
@@ -82,7 +90,6 @@ namespace VK_UI3.Controllers
                     }
                     else
                     {
-
                         fontIcon.Glyph = "?";
                         MainTxT.Text = "Нереализованный метод ("+loginWay.Name.ToString()+")";
                         secondTXT.Text = "???";

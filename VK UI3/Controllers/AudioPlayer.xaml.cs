@@ -593,17 +593,17 @@ namespace VK_UI3.Controllers
             iVKGetAudio.getPreviusTrackForPlay();
             PlayTrack();
             
-           
         }
 
         private async static void PlayTrack(long? v = null)
         {
             if (v != null) iVKGetAudio.currentTrack = (long)v;
-          
+
+            iVKGetAudio.ChangePlayAudio();
 
 
-           var mediaSource = Windows.Media.Core.MediaSource.CreateFromUri(new Uri(_TrackDataThis.Url.ToString()));
-           var mediaPlaybackItem = new Windows.Media.Playback.MediaPlaybackItem(mediaSource);
+            var mediaSource = Windows.Media.Core.MediaSource.CreateFromUri(new Uri(_TrackDataThis.Url.ToString()));
+            var mediaPlaybackItem = new Windows.Media.Playback.MediaPlaybackItem(mediaSource);
 
           
 
@@ -640,7 +640,7 @@ namespace VK_UI3.Controllers
             mediaPlayer.Volume = 1;
             mediaPlayer.Source = mediaPlaybackItem;
             mediaPlayer.Play();
-
+           
         }
 
        
@@ -836,10 +836,9 @@ namespace VK_UI3.Controllers
         
         }
 
-        internal static void PlayList(UserAudio userAudio)
+        internal static void PlayList(IVKGetAudio userAudio)
         {
             iVKGetAudio = userAudio;
-            iVKGetAudio.getSetNumberPlay();
             AudioPlayer.PlayTrack();
             NotifyoniVKUpdate();
         }

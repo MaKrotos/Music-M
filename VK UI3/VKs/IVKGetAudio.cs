@@ -26,10 +26,10 @@ namespace VK_UI3.Interfaces
 
         public string name;
 
-        protected ObservableCollection<ExtendedAudio> listAudioShuffle = new ObservableCollection<ExtendedAudio>();
-        protected ObservableCollection<ExtendedAudio> listAudioTrue = new ObservableCollection<ExtendedAudio>();
+        protected List<ExtendedAudio> listAudioShuffle = new List<ExtendedAudio>();
+        protected List<ExtendedAudio> listAudioTrue = new List<ExtendedAudio>();
 
-        public ObservableCollection<ExtendedAudio> listAudio { get {
+        public List<ExtendedAudio> listAudio { get {
                 if (shuffle) return listAudioShuffle;
                 else return listAudioTrue;
                
@@ -37,8 +37,17 @@ namespace VK_UI3.Interfaces
         }
         public event EventHandler onListUpdate; // Событие OnDeviceAttached
         public long countTracks { get; set; }
-        public long currentTrack { get; set; }
+        public long? currentTrack { get; set; }
 
+        // Добавляем делегат и событие
+        public delegate void ChangedPlayAudio(object sender, EventArgs e);
+        public event ChangedPlayAudio AudioPlayedChangeEvent;
+
+        // Метод для вызова события
+        public void ChangePlayAudio()
+        {
+            AudioPlayedChangeEvent?.Invoke(this, EventArgs.Empty);
+        }
 
         public void shareToVK() 
         {
@@ -51,6 +60,11 @@ namespace VK_UI3.Interfaces
 
         public void NotifyOnListUpdate()
         {
+            for (int i = 0; i < listAudio.Count; i++)
+            {
+                listAudio[i].NumberInList = i;
+            }
+
             onListUpdate?.Invoke(this, EventArgs.Empty);
         }
         public IVKGetAudio(long id)
@@ -72,71 +86,75 @@ namespace VK_UI3.Interfaces
 
         public abstract long getCount();
 
-        
-        public void getSetNumberPlay() 
-        {
-            int i = 0;
-            foreach (var item in listAudio)
-            {
-                if (item.PlayThis) {
 
-                 
-                    currentTrack = i;
-                }
-                item.PlayThis = false;
-                i++;
+
+
+
+        public void setShuffle()
+        {
+            if (!shuffle)
+            {
+                shuffle = true;
+                ShuffleList();
+                NotifyOnListUpdate();
+            }
+        }
+
+        public void ShuffleList()
+        {
+            Random rng = new Random();
+            listAudioShuffle = listAudioTrue.OrderBy(x => rng.Next()).ToList();
+
+            currentTrack = listAudioShuffle.FindIndex(x => x.NumberInList == currentTrack);
+        }
+
+        internal void UnShuffleList()
+        {
+            if (shuffle)
+            {
+                shuffle = false;
+                listAudioShuffle.Clear();
+
+                currentTrack = listAudio.FindIndex(x => x.NumberInList == currentTrack);
+
+                NotifyOnListUpdate();
             }
         }
 
 
 
-        public void setShuffle() {
-
-            if (shuffle) return;
-            GetTrackPlay().PlayThis = true;
-            shuffle = true;
-            ShuffleList();
-            getSetNumberPlay();
-            NotifyOnListUpdate();
-        }
-
-
-        public void ShuffleList()
-        {
-            Random rng = new Random();
-            listAudioShuffle = new ObservableCollection<ExtendedAudio>(listAudioTrue.OrderBy(x => rng.Next()));
-        }
-
-
-
-
         public ExtendedAudio getNextTrackForPlay() 
         {
+        
             if (currentTrack >= countTracks - 1)
                 currentTrack = 0;
             else
             {
                 currentTrack++;
             }
+         
             return GetTrackPlay();
+         
         }
 
         public ExtendedAudio getPreviusTrackForPlay()
 
         {
+      
             if (currentTrack <= 0)
                 currentTrack = countTracks - 1;
             else
             {
                 currentTrack--;
             }
+         
             return GetTrackPlay();
 
         }
 
         public ExtendedAudio GetTrackPlay()
         {
-            return GetTrackPlay(currentTrack);
+            return GetTrackPlay((long)currentTrack);
         }
         public ExtendedAudio GetTrackPlay(long tracI)
         {
@@ -149,21 +167,14 @@ namespace VK_UI3.Interfaces
                 {
                     GetTracks();
                     return GetTrackPlay(tracI);
-                }
+            }
         
             return listAudio[(int)tracI];
         }
     
         public abstract void GetTracks();
 
-        internal void UnShuffleList()
-        {
-            GetTrackPlay().PlayThis = true;
-            shuffle = false;
-            listAudioShuffle.Clear();
-            getSetNumberPlay();
-            NotifyOnListUpdate();
-        }
+      
 
         public void SaveToFile()
         {

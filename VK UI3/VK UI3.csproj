@@ -36,6 +36,7 @@
     <None Remove="Views\LoginWindow\OtpCode.xaml" />
     <None Remove="Views\LoginWindow\Password.xaml" />
     <None Remove="Views\ModalsPages\CaptchaEnter.xaml" />
+    <None Remove="Views\Search\SearchView.xaml" />
     <None Remove="Views\UpdatePage.xaml" />
   </ItemGroup>
   <ItemGroup>
@@ -97,6 +98,9 @@
     <None Update="Views\LoginWindow\waitPage - Копировать.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
+    <Page Update="Views\Search\SearchView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\ModalsPages\CaptchaEnter.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -137,5 +141,8 @@
   </PropertyGroup>
   <ItemGroup>
     <CustomAdditionalCompileInputs Remove="Views\LoginWindow\waitPage.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="VKs\Friends\" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,6 @@
 <UserControl Margin="4" IsHitTestVisible="True"
          
+    x:Name="UCcontrol"
     x:Class="VK_UI3.Controllers.TrackController"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,9 +10,34 @@
     xmlns:local1="using:VK_UI3.Converters"
     xmlns:local2="using:VK_UI3.Helpers.Animations"
     mc:Ignorable="d"
-     CornerRadius="8" d:DesignHeight="153.764" d:DesignWidth="425.452">
+    PointerEntered="UCcontrol_PointerEntered"
+    PointerExited="UCcontrol_PointerExited"
+
+    Translation="0,0,16"
+    CornerRadius="8" d:DesignHeight="153.764" d:DesignWidth="425.452">
+    <UserControl.Shadow>
+        <ThemeShadow />
+    </UserControl.Shadow>
+    <UserControl.Transform3D>
+        <CompositeTransform3D x:Name="UCTransform" TranslateX="0" TranslateY="0" TranslateZ="0"/>
+    </UserControl.Transform3D>
     <UserControl.Resources>
         <local1:SecondsToTimeConverter x:Key="SecondsToTimeConverter"/>
+
+        <Storyboard x:Name="FadeInAnimation">
+           
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="UCTransform"
+                                                       Storyboard.TargetProperty="TranslateZ">
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="25"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Name="FadeOutAnimation">
+           
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="UCTransform"
+                                                       Storyboard.TargetProperty="TranslateZ">
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="0"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
     </UserControl.Resources>
     <Grid x:Name="GridXvan" IsHitTestVisible="True"  CornerRadius="8" Background="{StaticResource SystemControlAcrylicElementMediumHighBrush}" >
         <Grid.ColumnDefinitions>
@@ -19,7 +45,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Grid
+       <Grid
        Padding="0" 
        CornerRadius="8" 
        Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}" Tapped="Ellipse_Tapped" Height="100" Width="100"
@@ -29,7 +55,23 @@
                 
 
             </Image>
-        
+            <Grid x:Name="GridPlayIcon" Opacity="0" CornerRadius="8" Background="{StaticResource CustomAcrylicInAppBrush}">
+                <SymbolIcon x:Name="PlayBTN" Symbol="Play"/>
+                <Grid.Resources>
+                    <!-- Анимация прозрачности от 0 до 1 -->
+                    <Storyboard x:Name="FadeInAnimationGridPlayIcon">
+                        <DoubleAnimation Storyboard.TargetName="GridPlayIcon"
+                             Storyboard.TargetProperty="Opacity"
+                             To="1" Duration="0:0:0.25"/>
+                    </Storyboard>
+                    <!-- Анимация прозрачности от 1 до 0 -->
+                    <Storyboard x:Name="FadeOutAnimationGridPlayIcon">
+                        <DoubleAnimation Storyboard.TargetName="GridPlayIcon"
+                             Storyboard.TargetProperty="Opacity"
+                             To="0" Duration="0:0:0.25"/>
+                    </Storyboard>
+                </Grid.Resources>
+            </Grid>
         </Grid>
 
         <StackPanel HorizontalAlignment="Stretch" Padding="8" Grid.Column="1" VerticalAlignment="Center">

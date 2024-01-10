@@ -253,7 +253,7 @@ namespace SetupLib
                 Arguments = $"-Command \"{command}\"",
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
-                CreateNoWindow = false,
+                CreateNoWindow = true,
             };
             Process process = new Process() { StartInfo = startInfo };
             process.Start();

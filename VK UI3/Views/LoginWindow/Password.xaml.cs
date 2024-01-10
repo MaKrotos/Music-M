@@ -25,8 +25,7 @@ namespace VK_UI3.Views.LoginWindow
 
 
         public string FirstName { get; set;  } = "Незнакомец";
-        public string Photo200 { get; set; } = null;
-
+        public string Photo200 { get; set; } = "null";
         public string Phone { get; set; } = "***********";
        
 
@@ -40,9 +39,8 @@ namespace VK_UI3.Views.LoginWindow
         public Password()
         {
             this.InitializeComponent();
-
-
         }
+        
 
         private async void BackButton(object sender, RoutedEventArgs e)
         {
@@ -76,18 +74,16 @@ namespace VK_UI3.Views.LoginWindow
                 Submitted =   viewModel.Submitted;
 
                 this.vk = viewModel.vk;
-                
-              
+
+                if (FirstName == "Незнакомец") NameT.Visibility = Visibility.Collapsed;
+                if (Photo200 == "null") imagesName.Visibility = Visibility.Collapsed;
+                if (Phone == "***********") phoneText.Visibility = Visibility.Collapsed;
             }
         }
 
         private void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
-
-         
-
-
-            vk.AuthAsync(passText.Password);
+            sumbit();
         }
 
         private void ShowAnotherVerificationMethodsButton_Click(object sender, RoutedEventArgs e)
@@ -96,6 +92,18 @@ namespace VK_UI3.Views.LoginWindow
             Submitted = new TaskCompletionSource<string?>();
         }
 
+        private void passText_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
+            if (e.Key == Windows.System.VirtualKey.Enter)
+            {
 
+                sumbit();
+            }
+        }
+
+        private void sumbit()
+        {
+            vk.AuthAsync(passText.Password);
+        }
     }
 }

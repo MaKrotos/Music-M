@@ -25,7 +25,7 @@ namespace VK_UI3.Helpers.Animations
 
             if (storyboard == null) storyboard = new Storyboard();
 
-            if (symbolNow != null && symbolNow == newSymbol) return;
+            if (symbolNow != null && (symbolNow == newSymbol && iconControl.Symbol == newSymbol)) return;
 
             symbolNow = newSymbol;
 
@@ -40,7 +40,7 @@ namespace VK_UI3.Helpers.Animations
             {
                 From = iconControl.Opacity,
                 To = 0.0,
-                Duration = TimeSpan.FromMilliseconds(50),
+                Duration = TimeSpan.FromMilliseconds(100),
             };
 
             // Создаем объект Storyboard для управления анимацией

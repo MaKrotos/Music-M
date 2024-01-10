@@ -24,14 +24,14 @@
                     Style="{StaticResource SubtitleTextBlockStyle}"
                     HorizontalAlignment="Center"
                     />
-          
-     
-            <TextBox Margin="0,10,0,0" TextAlignment="Center" Name="CodeBox" PlaceholderText="2Auth код" MaxLength="{x:Bind CodeLength, Mode=OneWay}" />
-            <TextBlock Opacity="0.70"  FontSize="12" Text="" Margin="0,16,0,0" MaxWidth="250" TextAlignment="Center"
-x:Name="passpey"
-Style="{StaticResource SubtitleTextBlockStyle}"
-HorizontalAlignment="Center"
-/>
+
+
+            <TextBox KeyDown="passpey_KeyDown" Margin="0,10,0,0" TextAlignment="Center" Name="CodeBox" PlaceholderText="2Auth код" MaxLength="{x:Bind CodeLength, Mode=OneWay}" />
+            <TextBlock  Opacity="0.70"  FontSize="12" Text="" Margin="0,16,0,0" MaxWidth="250" TextAlignment="Center"
+                x:Name="passpey"
+                Style="{StaticResource SubtitleTextBlockStyle}"
+                HorizontalAlignment="Center"
+                />
             <Button HorizontalAlignment="Stretch"  Margin="0,20,0,0" Content="Продолжить" Click="SubmitButton_Click"/>
             <Button HorizontalAlignment="Stretch" x:Name="goAnotherBTN"  Margin="0,10,0,0" Content="Другие варианты входа" Click="ShowAnotherVerificationMethodsButton_Click"/>
 

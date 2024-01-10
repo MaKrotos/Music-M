@@ -15,6 +15,7 @@ using VK_UI3.VKs;
 using Microsoft.UI.Xaml.Media.Animation;
 using Windows.UI.Text;
 using VkNet.Model.Attachments;
+using System.Linq;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -96,14 +97,27 @@ namespace VK_UI3.Controllers
             this.InitializeComponent();
             changeImage = new AnimationsChangeImage(this.ImageThumb, DispatcherQueue);
             this.DataContextChanged += (s, e) => { 
-                Bindings.Update(); 
-                LoadImage(); 
+                Bindings.Update();
+                LoadImage();
+
+                changeIconPlayBTN = new AnimationsChangeIcon(PlayBTN);
+                if (TrackData != null)
+                {
+                    //
+
+                    if (!attached)
+                    {
+                        TrackData.userAudio.AudioPlayedChangeEvent += UserAudio_AudioPlayedChangeEvent;
+                        attached = true;
+                    }
+
+
+                    Symbol symbol = TrackData.PlayThis ? Symbol.Pause : Symbol.Play;
+                    ChangeSymbolIcon(symbol);
+                    HandleAnimation(TrackData.PlayThis);
+                }
             };    
             this.DefaultStyleKey = typeof(TrackController);
-
-
-           
-
             Loaded += TrackController_Loaded;
 
             //this.Image.ImageSource = new BitmapImage(new Uri(Cover));
@@ -113,9 +127,49 @@ namespace VK_UI3.Controllers
           
         }
 
+        private void UserAudio_AudioPlayedChangeEvent(object sender, EventArgs e)
+        {
+            try
+            {
+                Symbol symbol = TrackData.PlayThis ? Symbol.Pause : Symbol.Play;
+                ChangeSymbolIcon(symbol);
+                HandleAnimation(TrackData.PlayThis);
+            }
+            catch (Exception ex) { }
+        }
+
+        private void ChangeSymbolIcon(Symbol symbol)
+        {
+            if (GridPlayIcon.Opacity != 0)
+            {
+                changeIconPlayBTN.ChangeSymbolIconWithAnimation(symbol);
+            }
+            else
+            {
+                PlayBTN.Symbol = symbol;
+            }
+        }
+
+        private void HandleAnimation(bool playThis)
+        {
+            if (playThis)
+            {
+                FadeOutAnimationGridPlayIcon.Pause();
+                FadeInAnimationGridPlayIcon.Begin();
+            }
+            else if (!entered)
+            {
+                FadeInAnimationGridPlayIcon.Pause();
+                FadeOutAnimationGridPlayIcon.Begin();
+            }
+        }
+
+
+        bool attached = false;
+
         private void TrackController_Loaded(object sender, RoutedEventArgs e)
         {
-          
+           
         }
 
         private async Task<IRandomAccessStream> GetImageStreamAsync(string uri)
@@ -145,6 +199,8 @@ namespace VK_UI3.Controllers
                     }
               
         }
+        AnimationsChangeIcon changeIconPlayBTN = null;
+        private bool entered = false;
 
         private void Ellipse_Tapped(object sender, TappedRoutedEventArgs e)
         {
@@ -152,8 +208,7 @@ namespace VK_UI3.Controllers
 
 
             //   AudioPlayer.PlayTrack(TrackData.AudioList, TrackData.NumberList);
-            TrackData.PlayThis = true;
-            AudioPlayer.PlayList(TrackData.userAudio);
+
 
             // Получение объекта MediaPlaybackSession
             //var playbackSession = AudioPlayer.mediaPlayer.PlaybackSession;
@@ -175,6 +230,14 @@ namespace VK_UI3.Controllers
             }
             */
 
+            //   AudioPlayer.PlayTrack(TrackData.AudioList, TrackData.NumberList);
+
+            TrackData.userAudio.currentTrack = TrackData.NumberInList; 
+            AudioPlayer.PlayList(TrackData.userAudio);
+
+            
+
+
 
         }
 
@@ -191,6 +254,37 @@ namespace VK_UI3.Controllers
         {
             TextBlock textBlock = sender as TextBlock;
             textBlock.TextDecorations = TextDecorations.None;
+        }
+
+        private void UCcontrol_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            //FadeInAnimation.Begin();
+            entered = true;
+           
+            Symbol symbol = TrackData.PlayThis ? Symbol.Pause : Symbol.Play;
+            if (GridPlayIcon.Opacity != 0) 
+            { 
+                changeIconPlayBTN.ChangeSymbolIconWithAnimation(symbol); 
+            }
+            else
+            {
+                PlayBTN.Symbol = symbol;
+            }
+
+
+            FadeOutAnimationGridPlayIcon.Pause();
+            FadeInAnimationGridPlayIcon.Begin();
+        }
+
+        private void UCcontrol_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+
+            entered = false;
+            if (TrackData.PlayThis) return;
+            FadeInAnimationGridPlayIcon.Pause();
+            FadeOutAnimationGridPlayIcon.Begin();
+
+            //FadeOutAnimation.Begin();
         }
     }
 }
