@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Dispatching;
+﻿#define SKIP_ERROR_PRONE_CODE
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -189,14 +190,16 @@ namespace VK_UI3
         }
         private static IntPtr SetWindowLong(HWND hWnd, WINDOW_LONG_PTR_INDEX nIndex, IntPtr newProc)
         {
-            if (IntPtr.Size == 4) // 32-bit process
+
+#if !SKIP_ERROR_PRONE_CODE
+            if (IntPtr.Size != 4) // 32-bit process
             {
-                return new IntPtr(PInvoke.SetWindowLong(hWnd, nIndex, newProc.ToInt32()));
-            }
-            else // 64-bit process
-            {
-                return PInvoke.SetWindowLongPtr(hWnd, nIndex, newProc);
-            }
+              
+                      return PInvoke.SetWindowLongPtr(hWnd, nIndex, newProc);
+
+        }
+#endif
+            return new IntPtr(PInvoke.SetWindowLong(hWnd, nIndex, newProc.ToInt32()));
         }
 
 

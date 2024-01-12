@@ -187,6 +187,7 @@
             Controls.Add(label1);
             Controls.Add(button1);
             Controls.Add(progressBar1);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Setup";
             Text = "Установщик VK M";

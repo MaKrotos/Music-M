@@ -20,14 +20,15 @@
     <UseRidGraph>true</UseRidGraph>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <AppInstallerUri>https://drive.usercontent.google.com/download%3fid=1QcpZrSBN1zjcYvyljUfbdGe_fiikw7G7&amp;export=download&amp;confirm=t&amp;uuid=c2870269-7a32-4320-ab9b-10e02f9b8def</AppInstallerUri>
-    <AppxPackageDir>C:\Pablic\</AppxPackageDir>
-    <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
+	<AppxPackageDir>C:\Public\$(Platform)\</AppxPackageDir>
+	<GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
     <PackageCertificateThumbprint>235554A939D15E2A8C77BA2F5A0A5CE0EFA6B878</PackageCertificateThumbprint>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Configurations>Debug;Release;qq</Configurations>
-    <AppxBundlePlatforms>x64</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x86|x64|arm64</AppxBundlePlatforms>
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <NoWin32Manifest>true</NoWin32Manifest>
+	  <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Certificate.cer" />

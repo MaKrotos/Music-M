@@ -10,7 +10,6 @@ CallWindowProc
 LoadImage
 SendMessage
 WM_SETICON
-WindowLongIndexFlags
 GetDpiForWindow
 SetWindowLong
 DefWindowProc

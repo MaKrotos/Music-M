@@ -30,6 +30,7 @@ namespace SetupLib
         public string version;
         public string Name { get; private set; }
         public string Tit { get; private set; }
+        public string date { get; private set; }
         public int sizeFile;
         public string UriDownload { get; private set; }
         public string UriDownloadMSIX { get; private set; }
@@ -37,52 +38,55 @@ namespace SetupLib
         public async Task<bool> CheckForUpdates()
         {
             var releases = await client.Repository.Release.GetAll("MaKrotos", "VKUI3");
-            var latestRelease = releases[0];
 
-            if (latestRelease.TagName == currentVersion)
+            foreach (var release in releases)
             {
-                Console.WriteLine("Ваше приложение обновлено до последней версии.");
-                return false;
-            }
-
-            if (string.Compare(latestRelease.TagName, currentVersion) < 0)
-            {
-                Console.WriteLine("Версия вашего приложения выше, чем последняя версия.");
-                return false;
-            }
-
-            Console.WriteLine($"Доступна новая версия: {latestRelease.TagName}");
-
-            this.version = latestRelease.TagName;
-            this.Name = latestRelease.Name;
-            this.Tit = latestRelease.Body.ToString();
-
-            // Ищем файлы .cer и .msix в активах
-            var cerAsset = latestRelease.Assets.FirstOrDefault(asset => asset.Name.EndsWith(".cer"))?? null;
-            var msixAsset = latestRelease.Assets.FirstOrDefault(asset => asset.Name.EndsWith(".msix"));
-
-            if (cerAsset == null)
-            {
-                foreach (var item in releases)
+                if (string.Compare(release.TagName, currentVersion) <= 0)
                 {
-                     cerAsset = latestRelease.Assets.FirstOrDefault(asset => asset.Name.EndsWith(".cer")) ?? null;
+                    Console.WriteLine("Версия вашего приложения не ниже, чем последняя версия.");
+                    return false;
+                }
+
+                var msixAsset = release.Assets.FirstOrDefault(asset => asset.Name.EndsWith(".msixbundle"))
+                    ?? release.Assets.FirstOrDefault(asset => asset.Name.EndsWith(".msix")) ?? null;
+
+                if (msixAsset != null)
+                {
+                    Console.WriteLine($"Доступна новая версия: {release.TagName}");
+
+                    this.version = release.TagName;
+                    this.Name = release.Name;
+                    this.Tit = release.Body.ToString();
+
+                    var cerAsset = release.Assets.FirstOrDefault(asset => asset.Name.EndsWith(".cer")) ?? null;
+
+                    if (cerAsset == null)
+                    {
+                        // Если сертификат не найден, ищем его в более старых релизах
+                        foreach (var oldRelease in releases.Where(r => string.Compare(r.TagName, release.TagName) < 0))
+                        {
+                            cerAsset = oldRelease.Assets.FirstOrDefault(asset => asset.Name.EndsWith(".cer")) ?? null;
+                            if (cerAsset != null)
+                            {
+                                break;
+                            }
+                        }
+                    }
+
                     if (cerAsset != null)
                     {
-                        break;
+                        this.sizeFile = msixAsset.Size;
+                        this.UriDownload = cerAsset.BrowserDownloadUrl;
+                        this.UriDownloadMSIX = msixAsset.BrowserDownloadUrl;
+                        return true;
                     }
                 }
             }
 
-            if (cerAsset != null && msixAsset != null)
-            {
-                this.sizeFile = msixAsset.Size;
-                this.UriDownload = cerAsset.BrowserDownloadUrl;
-                this.UriDownloadMSIX = msixAsset.BrowserDownloadUrl;
-                return true;
-            }
-
+            Console.WriteLine("В папке релиза нет файла msixAsset.");
             return false;
         }
+
 
 
         public async Task DownloadAndOpenFile()
@@ -211,7 +215,7 @@ namespace SetupLib
                 {
 
                     string appName = "FDW.VKM";
-                    string command = $"Add-AppxPackage -Path {path}";
+                    string command = $"Add-AppxPackage -Path {path}; if ((Get-AppxPackage).Name -like '*{appName}*') {{ $pkg = (Get-AppxPackage -Name *{appName}*).PackageFamilyName; Start-Process \"explorer.exe\" -ArgumentList \"shell:AppsFolder\\$pkg!App\" }} else {{ Write-Output \"false\" }}";
                     ProcessStartInfo startInfo = new ProcessStartInfo()
                     {
                         FileName = "powershell.exe",
@@ -222,23 +226,14 @@ namespace SetupLib
                     };
                     Process process = new Process() { StartInfo = startInfo };
                     process.Start();
-                    process.WaitForExit();
-
-                    command = $"if ((Get-AppxPackage).Name -like '*{appName}*') {{ (Get-AppxPackage -Name *{appName}*).PackageFamilyName }} else {{ Write-Output \"false\" }}";
-                    startInfo.Arguments = $"-Command \"{command}\"";
-                    process = new Process() { StartInfo = startInfo };
-                    process.Start();
                     string output = process.StandardOutput.ReadToEnd();
                     process.WaitForExit();
 
-                    if (!output.Contains("false"))
-                    {
-                        Process.Start("explorer.exe", $"shell:AppsFolder\\{output.Trim()}!App");
-                    }
-                    else
+                    if (output.Contains("false"))
                     {
                         Console.WriteLine($"{appName} не найден");
                     }
+
 
                 }
             }
