@@ -16,7 +16,7 @@
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
     <GenerateTestArtifacts>False</GenerateTestArtifacts>
-    <AppxBundle>Always</AppxBundle>
+    <AppxBundle>Never</AppxBundle>
     <UseRidGraph>true</UseRidGraph>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <AppInstallerUri>https://drive.usercontent.google.com/download%3fid=1QcpZrSBN1zjcYvyljUfbdGe_fiikw7G7&amp;export=download&amp;confirm=t&amp;uuid=c2870269-7a32-4320-ab9b-10e02f9b8def</AppInstallerUri>
@@ -30,6 +30,12 @@
     <NoWin32Manifest>true</NoWin32Manifest>
 	  <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="VKs\Friends\**" />
+    <EmbeddedResource Remove="VKs\Friends\**" />
+    <None Remove="VKs\Friends\**" />
+    <Page Remove="VKs\Friends\**" />
+  </ItemGroup>
   <ItemGroup>
     <None Remove="Certificate.cer" />
     <None Remove="Controllers\ChooseLoginWayControl.xaml" />
@@ -144,6 +150,6 @@
     <CustomAdditionalCompileInputs Remove="Views\LoginWindow\waitPage.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="VKs\Friends\" />
+    <PRIResource Remove="VKs\Friends\**" />
   </ItemGroup>
 </Project>

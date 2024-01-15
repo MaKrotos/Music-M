@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 
@@ -46,9 +47,24 @@ namespace SetupLib
                     Console.WriteLine("Версия вашего приложения не ниже, чем последняя версия.");
                     return false;
                 }
+                string architecture;
+                if (Environment.Is64BitOperatingSystem)
+                {
+                    architecture = "x64";
+                }
+                else if (RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
+                {
+                    architecture = "ARM64";
+                }
+                else
+                {
+                    architecture = "x86";
+                }
 
                 var msixAsset = release.Assets.FirstOrDefault(asset => asset.Name.EndsWith(".msixbundle"))
-                    ?? release.Assets.FirstOrDefault(asset => asset.Name.EndsWith(".msix")) ?? null;
+                    ?? release.Assets.FirstOrDefault(asset => asset.Name.Contains(architecture) && asset.Name.EndsWith(".msix")) ?? null;
+
+
 
                 if (msixAsset != null)
                 {
@@ -103,6 +119,8 @@ namespace SetupLib
 
             if (isElevated)
             {
+            
+
                 // Сначала скачиваем и устанавливаем сертификат
                 using (var response = await httpClient.GetAsync(UriDownload, HttpCompletionOption.ResponseHeadersRead))
                 using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
@@ -158,8 +176,66 @@ namespace SetupLib
                 }
             }
 
-            // Затем скачиваем файл .msix
+            if (!IsAppInstalled("WindowsAppRuntime"))
+            {
+                // Затем скачиваем файл .msix
+                using (var response = await httpClient.GetAsync(GetOSArchitectureURI()))
+                using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
+                {
+                    var path = Path.Combine(Path.GetTempPath(), Path.GetFileName(UriDownloadMSIX));
+                    using (var streamToWriteTo = File.Create(path))
+                    {
+                        var totalRead = 0L;
+                        var buffer = new byte[8192];
+                        var isMoreToRead = true;
 
+                        do
+                        {
+                            var read = await streamToReadFrom.ReadAsync(buffer, 0, buffer.Length);
+                            if (read == 0)
+                            {
+                                isMoreToRead = false;
+                            }
+                            else
+                            {
+                                await streamToWriteTo.WriteAsync(buffer, 0, read);
+
+                                totalRead += read;
+                                var percentage = totalRead * 100d / response.Content.Headers.ContentLength.Value;
+
+                                // Вызовите событие
+                                DownloadProgressChanged?.Invoke(this, new DownloadProgressChangedEventArgs
+                                {
+                                    TotalBytes = response.Content.Headers.ContentLength.Value,
+                                    BytesDownloaded = totalRead,
+                                    Percentage = percentage
+                                });
+                            }
+                        } while (isMoreToRead);
+                    }
+
+
+
+
+                    string command = $"Add-AppxPackage -Path {path}";
+                    ProcessStartInfo startInfo = new ProcessStartInfo()
+                    {
+                        FileName = "powershell.exe",
+                        Arguments = $"-Command \"{command}\"",
+                        RedirectStandardOutput = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                    };
+                    Process process = new Process() { StartInfo = startInfo };
+                    process.Start();
+                    string output = process.StandardOutput.ReadToEnd();
+                    process.WaitForExit();
+
+                }
+            }
+
+
+            // Затем скачиваем файл .msix
             using (var response = await httpClient.GetAsync(UriDownloadMSIX))
             using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
             {
@@ -239,6 +315,9 @@ namespace SetupLib
             }
         }
 
+
+
+
         static bool IsAppInstalled(string appName)
         {
             string command = $"if ((Get-AppxPackage).Name -like '*{appName}*') {{ Write-Output \"True\" }} else {{ Write-Output \"False\" }}";
@@ -256,6 +335,31 @@ namespace SetupLib
        
             return output.Contains("True");
         }
+
+        public static Uri GetOSArchitectureURI()
+        {
+            if (RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
+            {
+                return new Uri("https://github.com/MaKrotos/VKUI3/releases/download/0.1.0.0/Microsoft.WindowsAppRuntimeARM.1.4.msix");
+            }
+            
+            else if (RuntimeInformation.ProcessArchitecture == Architecture.X64)
+            {
+                return new Uri("https://github.com/MaKrotos/VKUI3/releases/download/0.1.0.0/Microsoft.WindowsAppRuntimeX64.1.4.msix");
+            }
+            else if (RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.X86)
+            {
+                return new Uri("https://github.com/MaKrotos/VKUI3/releases/download/0.1.0.0/Microsoft.WindowsAppRuntimeX86.1.4.msix");
+            }
+            else
+            {
+                throw new Exception("Неизвестная архитектура");
+            }
+        }
+
+
+
+      
 
 
 
