@@ -8,7 +8,7 @@
     <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
     <PublishProfile>win-$(Platform).pubxml</PublishProfile>
     <UseWinUI>true</UseWinUI>
-	  <GeneratePInvoke>true</GeneratePInvoke>
+	<GeneratePInvoke>true</GeneratePInvoke>
     <EnableMsixTooling>true</EnableMsixTooling>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
@@ -28,9 +28,32 @@
     <AppxBundlePlatforms>x86|x64|arm64</AppxBundlePlatforms>
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <NoWin32Manifest>true</NoWin32Manifest>
+    <PlatformTarget>x64</PlatformTarget>
 
   </PropertyGroup>
-  <ItemGroup>
+
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+		<PlatformTarget>x64</PlatformTarget>
+		<DefineConstants>X64</DefineConstants>
+	</PropertyGroup>
+
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <PlatformTarget>x64</PlatformTarget>
+	  <DefineConstants>X64</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+		<PlatformTarget>x64</PlatformTarget>
+		<DefineConstants>X64</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <PlatformTarget>x64</PlatformTarget>
+	  <DefineConstants>X64</DefineConstants>
+	</PropertyGroup>
+
+
+	<ItemGroup>
     <Compile Remove="VKs\Friends\**" />
     <EmbeddedResource Remove="VKs\Friends\**" />
     <None Remove="VKs\Friends\**" />
@@ -144,6 +167,9 @@
     <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LayoutDir />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LayoutDir />
   </PropertyGroup>
   <ItemGroup>

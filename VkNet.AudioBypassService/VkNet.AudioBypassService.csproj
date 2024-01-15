@@ -12,7 +12,7 @@
 		<PackageTags>vknet;vk;api;audio;bypass</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Configurations>Debug;Release</Configurations>
-		<Platforms>x64</Platforms>
+		<Platforms>x64;AnyCPU</Platforms>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="JetBrains.Annotations" Version="2021.3.0" PrivateAssets="all" />
