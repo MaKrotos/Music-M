@@ -1,12 +1,6 @@
-name: .NET Setup flow
+name: Build Windows Forms Application
 
 on:
-  workflow_dispatch:
-    inputs:
-      name:
-        description: 'NET Setup flow'
-        required: true
-        default: 'World'
   push:
     branches: [ main ]
   pull_request:
@@ -20,19 +14,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.101
-
-    - name: Install dependencies
-      run: dotnet restore
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.0.2
 
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: msbuild Setup/Setup.csproj /p:Configuration=Release /p:Platform=x86
 
-    - name: Test
-      run: dotnet test --no-restore --verbosity normal
-
-    - name: Publish
-      run: dotnet publish --configuration Release --no-build
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: windows-forms-app
+        path: Setup/bin/Release/
