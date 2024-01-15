@@ -53,16 +53,15 @@ jobs:
         Configuration: ${{ matrix.configuration }}
 
     # Decode the base 64 encoded pfx and save the Signing_Certificate
-    - name: Decode the pfx
+    - name: Install PFX certificate
       run: |
-        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.PFX_CERTIFICATE }}")
         $certificatePath = "GitHubActionsWorkflow.pfx"
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
-    
-        # Import the pfx using the password
         $password = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -Force -AsPlainText
-        $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2
-        $cert.Import($certificatePath, $password, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet)
+        $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2($certificatePath, $password)
+        Import-PfxCertificate -CertStoreLocation Cert:\LocalMachine\My -FilePath $cert
+
 
 
     # Create the app package by building and packaging the project
