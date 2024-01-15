@@ -1,11 +1,11 @@
-name: Build and Run Windows Forms Application
+name: Build Setup
 
 on:
-  workflow_dispatch:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -15,16 +15,16 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v1.0.2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.100
+
+    - name: Restore dependencies
+      run: dotnet restore
 
     - name: Build
-      run: msbuild Setup/Setup.csproj /p:Configuration=Release /p:Platform=x86
+      run: dotnet build --configuration Release --no-restore
 
-    - name: Run
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: windows-forms-app
-        path: Setup/bin/Release/
+    - name: Publish
+      run: dotnet publish --configuration Release --no-build --output ./published
