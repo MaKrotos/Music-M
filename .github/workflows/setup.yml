@@ -1,6 +1,7 @@
-name: Build Windows Forms Application
+name: Build and Run Windows Forms Application
 
 on:
+  workflow_dispatch:
   push:
     branches: [ main ]
   pull_request:
@@ -19,6 +20,8 @@ jobs:
 
     - name: Build
       run: msbuild Setup/Setup.csproj /p:Configuration=Release /p:Platform=x86
+
+    - name: Run
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
