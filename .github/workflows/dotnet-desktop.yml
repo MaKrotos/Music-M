@@ -60,7 +60,7 @@ jobs:
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
         $password = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -Force -AsPlainText
         $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2($certificatePath, $password)
-        Import-PfxCertificate -CertStoreLocation Cert:\LocalMachine\My -FilePath $cert
+
 
 
 
