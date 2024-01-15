@@ -191,7 +191,7 @@ namespace VK_UI3
         private static IntPtr SetWindowLong(HWND hWnd, WINDOW_LONG_PTR_INDEX nIndex, IntPtr newProc)
         {
 
-#if !SKIP_ERROR_PRONE_CODE
+#if !x86
             if (IntPtr.Size != 4) // 32-bit process
             {
               

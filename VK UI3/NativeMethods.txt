@@ -12,7 +12,7 @@ SendMessage
 WM_SETICON
 GetDpiForWindow
 SetWindowLong
-DefWindowProc
 SetWindowLongPtr
+DefWindowProc
 CallWindowProc
 GetWindow
