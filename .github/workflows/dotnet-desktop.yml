@@ -192,9 +192,9 @@ jobs:
     # Сборка проекта Windows Forms
     - name: Build Windows Forms project
       run: |
-        $pfxPath = "$env:TEMP\cert.pfx"
+
         $securePfxPwd = ConvertTo-SecureString -String "${{ secrets.CERT_PASSWORD }}" -Force -AsPlainText
-        Import-PfxCertificate -FilePath $pfxPath -CertStoreLocation Cert:\CurrentUser\My -Password $securePfxPwd
+        Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation Cert:\CurrentUser\My -Password $securePfxPwd
         $certThumbprint = (Get-PfxCertificate -FilePath $pfxPath).Thumbprint
         msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$env:Platform /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$pfxPath /p:Thumbprint=$certThumbprint
       env:
