@@ -22,7 +22,7 @@ jobs:
     strategy:
       matrix:
         configuration: [Release]
-        platform: [Any CPU]
+        platform: [x86, x64, ARM64]
 
     runs-on: windows-latest  # For a list of available runner types, refer to
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
@@ -115,7 +115,7 @@ jobs:
     - name: Create the app package
       run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$env:Platform /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true
       env:
-        Appx_Bundle: Never
+        Appx_Bundle: Always  # Changed from 'Never' to 'Always'
         Appx_Package_Build_Mode: SideloadOnly
         Appx_Package_Dir: Packages\
         Configuration: ${{ matrix.configuration }}
@@ -135,6 +135,7 @@ jobs:
       with:
         name: MSIX Package
         path: ${{ env.Solution_Name }}\\Packages
+
 
 
 
