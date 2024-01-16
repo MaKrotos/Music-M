@@ -170,6 +170,19 @@ jobs:
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.0.2
 
+    # Decode the base 64 encoded pfx and save the Signing_Certificate
+    - name: Decode the pfx
+      run: |
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
+        $certificatePath = "$(System.DefaultWorkingDirectory)/GitHubActionsWorkflow.pfx"
+        [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
+    
+    - name: Decrypt the pfx
+      run: |
+        $pfx_password = "${{ secrets.PFX_PASSWORD }}"
+        $secure_pfx_password = ConvertTo-SecureString -String $pfx_password -Force -AsPlainText
+        $cert = New-Object -TypeName System.Security.Cryptography.X509Certificates.X509Certificate2 ($certificatePath)
+
     # Восстановление приложения для заполнения папки obj с RuntimeIdentifiers
     - name: Restore the application
       run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
@@ -178,7 +191,13 @@ jobs:
 
     # Сборка проекта Windows Forms
     - name: Build Windows Forms project
-      run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$env:Platform
+      run: |
+        $pfxPath = "$env:TEMP\cert.pfx"
+        $securePfxPwd = ConvertTo-SecureString -String "${{ secrets.CERT_PASSWORD }}" -Force -AsPlainText
+        Import-PfxCertificate -FilePath $pfxPath -CertStoreLocation Cert:\CurrentUser\My -Password $securePfxPwd
+        $certThumbprint = (Get-PfxCertificate -FilePath $pfxPath).Thumbprint
+        msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$env:Platform /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$pfxPath /p:Thumbprint=$certThumbprint
       env:
         Configuration: ${{ matrix.configuration }}
         Platform: ${{ matrix.platform }}
+
