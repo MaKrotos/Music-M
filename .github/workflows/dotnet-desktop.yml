@@ -44,6 +44,11 @@ jobs:
         } else {
           Write-Host "Certificate does not exist at $certificatePath"
         }
+
+    - name: Print working directory
+      run: |
+        Write-Host "Current working directory: $(Get-Location)"
+
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     - name: Decode the pfx
       run: |
@@ -61,6 +66,10 @@ jobs:
           Write-Host "Certificate does not exist at $certificatePath"
         }
 
+    - name: Print working directory
+      run: |
+        Write-Host "Current working directory: $(Get-Location)"
+
     - name: Decrypt the pfx
       run: |
         $pfx_password = "${{ secrets.PFX_PASSWORD }}"
@@ -77,6 +86,9 @@ jobs:
           Write-Host "Certificate does not exist at $certificatePath"
         }
 
+    - name: Print working directory
+      run: |
+        Write-Host "Current working directory: $(Get-Location)"
 
     # Install the .NET Core workload
     - name: Install .NET Core
@@ -95,7 +107,9 @@ jobs:
         Configuration: ${{ matrix.configuration }}
 
 
-
+    - name: Print working directory
+      run: |
+        Write-Host "Current working directory: $(Get-Location)"
 
     # Create the app package by building and packaging the project
     - name: Create the app package
@@ -106,6 +120,10 @@ jobs:
         Appx_Package_Dir: Packages\
         Configuration: ${{ matrix.configuration }}
         Platform: ${{ matrix.platform }}
+
+    - name: Print working directory
+      run: |
+        Write-Host "Current working directory: $(Get-Location)"
 
     # Remove the pfx
     - name: Remove the pfx
