@@ -188,16 +188,18 @@ namespace VK_UI3
             public POINT ptMinTrackSize;
             public POINT ptMaxTrackSize;
         }
+
         private static IntPtr SetWindowLong(HWND hWnd, WINDOW_LONG_PTR_INDEX nIndex, IntPtr newProc)
         {
             if (Environment.Is64BitOperatingSystem)
             {
+#if X64
                 return PInvoke.SetWindowLongPtr(hWnd, nIndex, newProc);
+#endif
             }
-            else
-            {
-                return new IntPtr(PInvoke.SetWindowLong(hWnd, nIndex, newProc.ToInt32()));
-            }
+
+            return new IntPtr(PInvoke.SetWindowLong(hWnd, nIndex, newProc.ToInt32()));
+
         }
 
 
