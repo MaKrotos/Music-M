@@ -63,8 +63,8 @@ jobs:
       run: |
         $pfx_password = "${{ secrets.PFX_PASSWORD }}"
         $secure_pfx_password = ConvertTo-SecureString -String $pfx_password -Force -AsPlainText
-        $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2
-        $cert.Import($certificatePath, $secure_pfx_password, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet)
+        $cert = New-Object -TypeName System.Security.Cryptography.X509Certificates.X509Certificate2 ($certificatePath)
+
 
 
     # Create the app package by building and packaging the project
