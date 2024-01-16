@@ -190,12 +190,16 @@ namespace VK_UI3
         }
         private static IntPtr SetWindowLong(HWND hWnd, WINDOW_LONG_PTR_INDEX nIndex, IntPtr newProc)
         {
-#if X64
-        return PInvoke.SetWindowLongPtr(hWnd, nIndex, newProc);
-#else
-            return new IntPtr(PInvoke.SetWindowLong(hWnd, nIndex, newProc.ToInt32()));
-#endif
+            if (Environment.Is64BitOperatingSystem)
+            {
+                return PInvoke.SetWindowLongPtr(hWnd, nIndex, newProc);
+            }
+            else
+            {
+                return new IntPtr(PInvoke.SetWindowLong(hWnd, nIndex, newProc.ToInt32()));
+            }
         }
+
 
 
 

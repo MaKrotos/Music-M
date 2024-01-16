@@ -47,22 +47,10 @@ namespace SetupLib
                     Console.WriteLine("Версия вашего приложения не ниже, чем последняя версия.");
                     return false;
                 }
-                string architecture;
-                if (Environment.Is64BitOperatingSystem)
-                {
-                    architecture = "x64";
-                }
-                else if (RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
-                {
-                    architecture = "ARM64";
-                }
-                else
-                {
-                    architecture = "x86";
-                }
+               
 
                 var msixAsset = release.Assets.FirstOrDefault(asset => asset.Name.EndsWith(".msixbundle"))
-                    ?? release.Assets.FirstOrDefault(asset => asset.Name.Contains(architecture) && asset.Name.EndsWith(".msix")) ?? null;
+                    ?? release.Assets.FirstOrDefault(asset =>  asset.Name.EndsWith(".msix")) ?? null;
 
 
 
