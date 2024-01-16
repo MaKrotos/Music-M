@@ -42,11 +42,9 @@
     <DefaultLanguage>ru-RU</DefaultLanguage>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
     <EntryPointProjectUniqueName>..\VK UI3\VK UI3.csproj</EntryPointProjectUniqueName>
-    <PackageCertificateThumbprint>235554A939D15E2A8C77BA2F5A0A5CE0EFA6B878</PackageCertificateThumbprint>
-    <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
-    <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <AppxBundlePlatforms>x64</AppxBundlePlatforms>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
   </PropertyGroup>
