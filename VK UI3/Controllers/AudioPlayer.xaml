@@ -123,17 +123,18 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Slider  
-                    VerticalAlignment="Center"
-                        Grid.Column="0"
-                        Maximum="1"
-                        Minimum="0"
-                        Value="{x:Bind simpleAudioBind, Mode=TwoWay}"
-                        x:Name="SoundSlider"
-                        ValueChanged="SoundSlider_ValueChanged"
-                        PointerEntered="SoundSlider_PointerEntered"
-                        PointerExited="SoundSlider_PointerExited"
-                        StepFrequency="0.01"
-                        MinWidth="75" MaxWidth="200" />
+    VerticalAlignment="Center"
+    Grid.Column="0"
+    Maximum="100"
+    Minimum="0"
+    Value="{x:Bind simpleAudioBind, Mode=TwoWay}"
+    x:Name="SoundSlider"
+    ValueChanged="SoundSlider_ValueChanged"
+    PointerEntered="SoundSlider_PointerEntered"
+    PointerExited="SoundSlider_PointerExited"
+    StepFrequency="1"
+    MinWidth="75" MaxWidth="200" />
+
 
 
                 <Button Margin="8,0,8,0" Tapped="goToPlayList_BTN"  Width="45" Height="45" Grid.Column="1">

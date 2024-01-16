@@ -26,6 +26,7 @@ using VkNet.Model.Attachments;
 using vkPosterBot.DB;
 using Windows.Media.Playback;
 using Windows.Storage.Streams;
+using Windows.UI.Core;
 
 
 
@@ -170,13 +171,15 @@ namespace VK_UI3.Controllers
             statusAnimate = new AnimationsChangeFontIcon(StatusBTNIcon);
             setStatusIcon();
 
+
             oniVKUpdate += AudioPlayer_oniVKUpdate;
 
             this.Loaded += AudioPlayer_Loaded;
 
 
 
-
+            VolumeSlider.Value = 100;
+            mediaPlayer.Volume = 1f;
 
 
             TrackDuration = 0;
@@ -211,10 +214,21 @@ namespace VK_UI3.Controllers
         }
         double actualHeight = 0;
 
+
+
+        public double simpleAudioBind
+        {
+            get
+            {
+                if (mediaPlayer == null) return 100;
+                return mediaPlayer.Volume * 100;
+            }
+            set { mediaPlayer.Volume = value / 100; }
+        }
+
+
         private void AudioPlayer_oniVKUpdate(object sender, EventArgs e)
         {
-
-
             //   pageRa.Height = actualHeight;
             DisableAllChildren(this, true);
             setButtonPlayNext();
@@ -285,12 +299,7 @@ namespace VK_UI3.Controllers
 
         private void MediaPlayer_MediaEnded(Windows.Media.Playback.MediaPlayer sender, object args)
         {
-            // Код для выполнения при завершении воспроизведения медиафайла
-
-
-      
-
-
+ 
             
                 switch (SettingsTable.GetSetting("playNext").settingValue)
                 {
@@ -373,13 +382,23 @@ namespace VK_UI3.Controllers
         AnimationsChangeText changeText = null;
         AnimationsChangeText changeText2 = null;
 
+    
+ 
         private void MediaPlayer_SourceChanged(Windows.Media.Playback.MediaPlayer sender, object args)
         {
-            //Код для выполнения при изменении источника медиаплеера
+
 
             var source = sender.Source as Windows.Media.Playback.MediaPlaybackItem;
 
             TrackDuration = Convert.ToInt32(sender.NaturalDuration.TotalSeconds);
+        
+
+            
+
+
+
+
+
             OnPropertyChanged(nameof(TrackDuration));
             OnPropertyChanged(nameof(TrackPosition));
             OnPropertyChanged(nameof(TrackDataThis));
@@ -535,7 +554,8 @@ namespace VK_UI3.Controllers
             mediaPlayer.Pause();
          
             // mediaPlayer.Source = null;
-            mediaPlayer.Volume = 1;
+          
+            
             mediaPlayer.Source = mediaPlaybackItem;
             mediaPlayer.Play();
            
@@ -727,5 +747,7 @@ namespace VK_UI3.Controllers
             AudioPlayer.PlayTrack();
             NotifyoniVKUpdate();
         }
+
+
     }
 }
