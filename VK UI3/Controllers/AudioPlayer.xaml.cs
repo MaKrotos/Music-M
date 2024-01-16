@@ -1,6 +1,6 @@
 
 
-using CSCore.CoreAudioAPI;
+//using CSCore.CoreAudioAPI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -36,7 +36,7 @@ namespace VK_UI3.Controllers
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
-    public sealed partial class AudioPlayer : Microsoft.UI.Xaml.Controls.Page, IAudioSessionEvents, INotifyPropertyChanged
+    public sealed partial class AudioPlayer : Microsoft.UI.Xaml.Controls.Page, INotifyPropertyChanged
     /// </summary>
     {
 
@@ -155,7 +155,7 @@ namespace VK_UI3.Controllers
 
         [DllImport("user32.dll")]
         public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
-        AudioSessionControl contr = null;
+      //  AudioSessionControl contr = null;
         AnimationsChangeFontIcon animateFontIcon = null;
         public AudioPlayer()
         {
@@ -245,41 +245,6 @@ namespace VK_UI3.Controllers
                 }
                 DisableAllChildren(child, enable);
             }
-        }
-
-
-        private void Contr_ChannelVolumeChanged(object sender, AudioSessionChannelVolumeChangedEventArgs e)
-        {
-
-        }
-
-        private void channelVolumeChanged(object sender, AudioSessionChannelVolumeChangedEventArgs e)
-        {
-            contr.ChannelVolumeChanged += Contr_ChannelVolumeChanged;
-        }
-
-        private void Session_ChannelVolumeChanged(object sender, AudioSessionChannelVolumeChangedEventArgs e)
-        {
-
-        }
-
-        private static AudioSessionManager2 GetDefaultAudioSessionManager2(CSCore.CoreAudioAPI.DataFlow dataFlow)
-        {
-            AudioSessionManager2 sessionManager = null;
-            Thread thread = new Thread(() =>
-            {
-                using (var enumerator = new CSCore.CoreAudioAPI.MMDeviceEnumerator())
-                {
-                    using (var device = enumerator.GetDefaultAudioEndpoint(dataFlow, CSCore.CoreAudioAPI.Role.Multimedia))
-                    {
-                        sessionManager = AudioSessionManager2.FromMMDevice(device);
-                    }
-                }
-            });
-            thread.SetApartmentState(ApartmentState.MTA);
-            thread.Start();
-            thread.Join();
-            return sessionManager;
         }
 
 
@@ -401,24 +366,9 @@ namespace VK_UI3.Controllers
         public Storyboard storyboard = new Storyboard();
         Symbol? symbolNow = null;
 
-        SimpleAudioVolume simpleAudio;
+      
 
-        float simpleAudioBind { get { 
-                if (simpleAudio == null) return 0f;
-                return simpleAudio.MasterVolume;
-            
-            }
-        set {
-                SettingsTable.SetSetting(
-                   "volume",
-                   value.ToString()
-                   );
-                simpleAudio.MasterVolume = value;
-               
-            }
-        }
-
-        AudioSessionControl session = null;
+      
         AnimationsChangeImage changeImage = null;
         AnimationsChangeText changeText = null;
         AnimationsChangeText changeText2 = null;
@@ -433,58 +383,6 @@ namespace VK_UI3.Controllers
             OnPropertyChanged(nameof(TrackDuration));
             OnPropertyChanged(nameof(TrackPosition));
             OnPropertyChanged(nameof(TrackDataThis));
-
-            if (session == null)
-            {
-                var sessionManager = GetDefaultAudioSessionManager2(CSCore.CoreAudioAPI.DataFlow.Render);
-                {
-
-                    if (session == null)
-                    {
-                        var sessionEnumerator = sessionManager.GetSessionEnumerator();
-                        {
-                            // Получаем PID текущего процесса
-                            int currentProcessId = Process.GetCurrentProcess().Id;
-
-                            foreach (var session in sessionEnumerator)
-                            {
-                                // Получаем PID для текущей аудиосессии
-                                var audioSessionControl = session.QueryInterface<AudioSessionControl2>();
-                                int sessionProcessId = audioSessionControl.ProcessID;
-
-                                // Проверяем, является ли это текущим экземпляром приложения
-                                if (sessionProcessId == currentProcessId)
-                                {
-                                    // Регистрируем события изменения громкости
-
-                                    session.RegisterAudioSessionNotification(this);
-
-                                    var simpleAudioVolume = session.QueryInterface<SimpleAudioVolume>();
-                                    {
-
-                                        float currentVolume = simpleAudioVolume.MasterVolume;
-                                        Console.WriteLine(currentVolume);
-                                        simpleAudio = simpleAudioVolume;
-
-                                        var sett = SettingsTable.GetSetting("volume");
-                                        if (sett == null)
-                                            SettingsTable.SetSetting("volume", 1f.ToString());
-
-                                        simpleAudioVolume.MasterVolume = float.Parse(SettingsTable.GetSetting("volume").settingValue);
-                                        
-
-                                        OnPropertyChanged(nameof(simpleAudioBind));
-                                        // Изменяем громкость
-                                        // simpleAudioVolume.MasterVolume = 0.5f; // 50%
-
-                                        Console.WriteLine(simpleAudioVolume.MasterVolume);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
 
             changeImage.ChangeImageWithAnimation(Thumbnail);
             changeText.ChangeTextWithAnimation(TrackDataThis.Artist);
@@ -682,20 +580,7 @@ namespace VK_UI3.Controllers
           
         }
 
-        public void OnStateChanged(AudioSessionState newState)
-        {
-         
-        }
-
-        public void OnSessionDisconnected(AudioSessionDisconnectReason disconnectReason)
-        {
-            session = null;
-        }
-        bool manualSoundVolume = false;
-        public void OnSimpleVolumeChanged(float newVolume, bool newMute, ref Guid eventContext)
-        {
-            OnPropertyChanged(nameof(simpleAudioBind));
-        }
+     
 
         private void SoundSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
