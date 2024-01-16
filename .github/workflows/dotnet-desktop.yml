@@ -22,7 +22,7 @@ jobs:
     strategy:
       matrix:
         configuration: [Release]
-        platform: [x64, x86, ARM64]
+        platform: [Any CPU]
 
     runs-on: windows-latest  # For a list of available runner types, refer to
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
@@ -35,6 +35,48 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
+
+    - name: Check if certificate exists
+      run: |
+        $certificatePath = "GitHubActionsWorkflow.pfx"
+        if (Test-Path $certificatePath) {
+          Write-Host "Certificate exists at $certificatePath"
+        } else {
+          Write-Host "Certificate does not exist at $certificatePath"
+        }
+    # Decode the base 64 encoded pfx and save the Signing_Certificate
+    - name: Decode the pfx
+      run: |
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
+        $certificatePath = "GitHubActionsWorkflow.pfx"
+        [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
+
+
+    - name: Check if certificate exists
+      run: |
+        $certificatePath = "GitHubActionsWorkflow.pfx"
+        if (Test-Path $certificatePath) {
+          Write-Host "Certificate exists at $certificatePath"
+        } else {
+          Write-Host "Certificate does not exist at $certificatePath"
+        }
+
+    - name: Decrypt the pfx
+      run: |
+        $pfx_password = "${{ secrets.PFX_PASSWORD }}"
+        $secure_pfx_password = ConvertTo-SecureString -String $pfx_password -Force -AsPlainText
+        $cert = New-Object -TypeName System.Security.Cryptography.X509Certificates.X509Certificate2 ($certificatePath)
+
+
+    - name: Check if certificate exists
+      run: |
+        $certificatePath = "GitHubActionsWorkflow.pfx"
+        if (Test-Path $certificatePath) {
+          Write-Host "Certificate exists at $certificatePath"
+        } else {
+          Write-Host "Certificate does not exist at $certificatePath"
+        }
+
 
     # Install the .NET Core workload
     - name: Install .NET Core
@@ -52,18 +94,6 @@ jobs:
       env:
         Configuration: ${{ matrix.configuration }}
 
-    # Decode the base 64 encoded pfx and save the Signing_Certificate
-    - name: Decode the pfx
-      run: |
-        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
-        $certificatePath = "GitHubActionsWorkflow.pfx"
-        [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
-
-    - name: Decrypt the pfx
-      run: |
-        $pfx_password = "${{ secrets.PFX_PASSWORD }}"
-        $secure_pfx_password = ConvertTo-SecureString -String $pfx_password -Force -AsPlainText
-        $cert = New-Object -TypeName System.Security.Cryptography.X509Certificates.X509Certificate2 ($certificatePath)
 
 
 
