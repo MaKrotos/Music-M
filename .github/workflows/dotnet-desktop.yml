@@ -81,70 +81,69 @@ jobs:
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     - name: Decode the pfx
       run: |
-        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
-        $certificatePath = "GitHubActionsWorkflow.pfx"
-        [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
+        echo "${{ secrets.BASE64_ENCODED_PFX }}" | base64 --decode > GitHubActionsWorkflow.pfx
+        echo "$(pwd)/GitHubActionsWorkflow.pfx" > certificatePath.txt
     
     - name: Decrypt the pfx
       run: |
-        $pfx_password = "${{ secrets.PFX_PASSWORD }}"
-        $secure_pfx_password = ConvertTo-SecureString -String $pfx_password -Force -AsPlainText
-        $cert = New-Object -TypeName System.Security.Cryptography.X509Certificates.X509Certificate2 ($certificatePath)
+        echo "${{ secrets.PFX_PASSWORD }}" > pfxPassword.txt
     
-# Create the app package by building and packaging the project
-- name: Create the app package
-  run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$env:Platform /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile="GitHubActionsWorkflow.pfx" /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true
-  env:
-    Appx_Bundle: Always  # Changed from 'Never' to 'Always'
-    Appx_Package_Build_Mode: SideloadOnly
-    Appx_Package_Dir: Packages\
-    Configuration: ${{ matrix.configuration }}
-    Platform: ${{ matrix.platform }}
+    # Create the app package by building and packaging the project
+    - name: Create the app package
+      run: |
+        msbuild ${{ env.Solution_Name }} /p:Configuration=${{ env.Configuration }} /p:Platform=${{ env.Platform }} /p:UapAppxPackageBuildMode=${{ env.Appx_Package_Build_Mode }} /p:AppxBundle=${{ env.Appx_Bundle }} /p:PackageCertificateKeyFile=$(cat certificatePath.txt) /p:AppxPackageDir="${{ env.Appx_Package_Dir }}" /p:GenerateAppxPackageOnBuild=true
+      env:
+        Appx_Bundle: Always  # Changed from 'Never' to 'Always'
+        Appx_Package_Build_Mode: SideloadOnly
+        Appx_Package_Dir: Packages\
+        Configuration: ${{ matrix.configuration }}
+        Platform: ${{ matrix.platform }}
 
-- name: Print working directory
-  run: |
-    Write-Host "Current working directory: $(Get-Location)"
-
-# Remove the pfx
-- name: Remove the pfx
-  run: Remove-Item -path GitHubActionsWorkflow.pfx
-
-# Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
-- name: Upload MSIX package
-  uses: actions/upload-artifact@v2
-  with:
-    name: MSIX Package
-    path: ${{ env.Solution_Name }}\\Packages
-
-- name: Upload .cer, .msixbundle, and .msix files
-  uses: actions/upload-artifact@v2
-  with:
-    name: Release Files
-    path: |
-      *.cer
-      *.msixbundle
-      *.msix
-
-# Extract version from Package.appxmanifest
-- name: Extract version
-  id: get_version
-  run: |
-    $xml = xml/Package.appxmanifest)
-    $ns = @{default='http://schemas.microsoft.com/appx/manifest/foundation/windows10'}
-    $version = $xml.SelectSingleNode('//default:Identity', $ns).Version
-    echo "VERSION=$version" >> $GITHUB_ENV
-
-# Create a new release
-- name: Create Release
-  id: create_release
-  uses: actions/create-release@v1
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  with:
-    tag_name: ${{ env.VERSION }}
-    release_name: AutoBuild
-    draft: false
-    prerelease: true
+    
+    - name: Print working directory
+      run: |
+        Write-Host "Current working directory: $(Get-Location)"
+    
+    # Remove the pfx
+    - name: Remove the pfx
+      run: Remove-Item -path GitHubActionsWorkflow.pfx
+    
+    # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
+    - name: Upload MSIX package
+      uses: actions/upload-artifact@v2
+      with:
+        name: MSIX Package
+        path: ${{ env.Solution_Name }}\\Packages
+    
+    - name: Upload .cer, .msixbundle, and .msix files
+      uses: actions/upload-artifact@v2
+      with:
+        name: Release Files
+        path: |
+          *.cer
+          *.msixbundle
+          *.msix
+    
+    # Extract version from Package.appxmanifest
+    - name: Extract version
+      id: get_version
+      run: |
+        $xml = xml/Package.appxmanifest)
+        $ns = @{default='http://schemas.microsoft.com/appx/manifest/foundation/windows10'}
+        $version = $xml.SelectSingleNode('//default:Identity', $ns).Version
+        echo "VERSION=$version" >> $GITHUB_ENV
+    
+    # Create a new release
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ env.VERSION }}
+        release_name: AutoBuild
+        draft: false
+        prerelease: true
 
 
 
