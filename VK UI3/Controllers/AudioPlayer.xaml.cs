@@ -590,12 +590,12 @@ namespace VK_UI3.Controllers
 
         private void SoundSlider_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
-            manualSoundVolume = true;
+            //manualSoundVolume = true;
         }
 
         private void SoundSlider_PointerExited(object sender, PointerRoutedEventArgs e)
         {
-            manualSoundVolume = false;
+            //manualSoundVolume = false;
         }
 
         private void setButtonPlayNext() {
