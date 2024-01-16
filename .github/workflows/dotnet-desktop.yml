@@ -45,50 +45,10 @@ jobs:
           Write-Host "Certificate does not exist at $certificatePath"
         }
 
-    - name: Print working directory
-      run: |
-        Write-Host "Current working directory: $(Get-Location)"
-
-    # Decode the base 64 encoded pfx and save the Signing_Certificate
-    - name: Decode the pfx
-      run: |
-        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
-        $certificatePath = "GitHubActionsWorkflow.pfx"
-        [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
 
 
-    - name: Check if certificate exists
-      run: |
-        $certificatePath = "GitHubActionsWorkflow.pfx"
-        if (Test-Path $certificatePath) {
-          Write-Host "Certificate exists at $certificatePath"
-        } else {
-          Write-Host "Certificate does not exist at $certificatePath"
-        }
-
-    - name: Print working directory
-      run: |
-        Write-Host "Current working directory: $(Get-Location)"
-
-    - name: Decrypt the pfx
-      run: |
-        $pfx_password = "${{ secrets.PFX_PASSWORD }}"
-        $secure_pfx_password = ConvertTo-SecureString -String $pfx_password -Force -AsPlainText
-        $cert = New-Object -TypeName System.Security.Cryptography.X509Certificates.X509Certificate2 ($certificatePath)
 
 
-    - name: Check if certificate exists
-      run: |
-        $certificatePath = "GitHubActionsWorkflow.pfx"
-        if (Test-Path $certificatePath) {
-          Write-Host "Certificate exists at $certificatePath"
-        } else {
-          Write-Host "Certificate does not exist at $certificatePath"
-        }
-
-    - name: Print working directory
-      run: |
-        Write-Host "Current working directory: $(Get-Location)"
 
     # Install the .NET Core workload
     - name: Install .NET Core
@@ -111,15 +71,30 @@ jobs:
       run: |
         Write-Host "Current working directory: $(Get-Location)"
 
+
+    # Decode the base 64 encoded pfx and save the Signing_Certificate
+    - name: Decode the pfx
+      run: |
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
+        $certificatePath = "$(System.DefaultWorkingDirectory)/GitHubActionsWorkflow.pfx"
+        [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
+    
+    - name: Decrypt the pfx
+      run: |
+        $pfx_password = "${{ secrets.PFX_PASSWORD }}"
+        $secure_pfx_password = ConvertTo-SecureString -String $pfx_password -Force -AsPlainText
+        $cert = New-Object -TypeName System.Security.Cryptography.X509Certificates.X509Certificate2 ($certificatePath)
+    
     # Create the app package by building and packaging the project
     - name: Create the app package
-      run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$env:Platform /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true
+      run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$env:Platform /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile="$(System.DefaultWorkingDirectory)/GitHubActionsWorkflow.pfx" /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true
       env:
         Appx_Bundle: Always  # Changed from 'Never' to 'Always'
         Appx_Package_Build_Mode: SideloadOnly
         Appx_Package_Dir: Packages\
         Configuration: ${{ matrix.configuration }}
         Platform: ${{ matrix.platform }}
+
 
     - name: Print working directory
       run: |
@@ -136,7 +111,14 @@ jobs:
         name: MSIX Package
         path: ${{ env.Solution_Name }}\\Packages
 
-
+    - name: Upload .cer, .msixbundle, and .msix files
+      uses: actions/upload-artifact@v2
+      with:
+        name: Release Files
+        path: |
+          *.cer
+          *.msixbundle
+          *.msix
 
 
 
