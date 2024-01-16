@@ -1,7 +1,9 @@
 # This workflow will build, sign, and package a WinUI 3 MSIX desktop application
 # built on .NET.
 
+
 name: WinUI 3 MSIX app
+
 
 on:
   workflow_dispatch:
@@ -31,9 +33,13 @@ jobs:
       Solution_Name: "VK UI3 (Package)"                         # Replace with your solution name, i.e. App1.sln.
 
     steps:
+
+
+    
     - name: Checkout
       uses: actions/checkout@v2
       with:
+        node-version: 16
         fetch-depth: 0
 
     - name: Check if certificate exists
