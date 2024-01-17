@@ -41,21 +41,12 @@ jobs:
         node-version: 16
         fetch-depth: 0
 
-# Decode the base 64 encoded pfx and save the Signing_Certificate
+    # Decode the base 64 encoded pfx and save the Signing_Certificate
     - name: Decode the pfx
       run: |
         $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
-        $certificatePath = "GitHubActionsWorkflow.pfx"
+        $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
-
-    - name: Check if certificate exists
-      run: |
-        $certificatePath = "GitHubActionsWorkflow.pfx"
-        if (Test-Path $certificatePath) {
-          Write-Host "Certificate exists at $certificatePath"
-        } else {
-          Write-Host "Certificate does not exist at $certificatePath"
-        }
 
 
 
@@ -90,19 +81,18 @@ jobs:
 
     # Create the app package by building and packaging the project
     - name: Create the app package
-      run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$env:Platform /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:PackageCertificatePassword="${{ secrets.PFX_PASSWORD }}" /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true      
+      run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$env:Platform /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile="$certificatePath" /p:PackageCertificatePassword="${{ secrets.PFX_PASSWORD }}" /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true      
       env:
         Appx_Bundle: Always
         Appx_Package_Build_Mode: SideloadOnly
         Appx_Package_Dir: Packages\
         Configuration: ${{ matrix.configuration }}
         Platform: ${{ matrix.platform }}
-
     
     # Remove the pfx
     - name: Remove the pfx
-      run: Remove-Item -path GitHubActionsWorkflow.pfx
-    
+      run: Remove-Item -path "$certificatePath"
+        
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
     - name: Upload MSIX package
       uses: actions/upload-artifact@v2
