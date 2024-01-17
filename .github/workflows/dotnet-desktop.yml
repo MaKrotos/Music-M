@@ -77,17 +77,22 @@ jobs:
       run: |
         Write-Host "Current working directory: $(Get-Location)"
 
-
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     - name: Decode the pfx
       run: |
-        echo "${{ secrets.BASE64_ENCODED_PFX }}" | base64 --decode > GitHubActionsWorkflow.pfx
-        echo "$(pwd)/GitHubActionsWorkflow.pfx" > certificatePath.txt
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
+        $certificatePath = "GitHubActionsWorkflow.pfx"
+        [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
     
     - name: Decrypt the pfx
       run: |
-        echo "${{ secrets.PFX_PASSWORD }}" > pfxPassword.txt
-    
+        $cert = New-Object -TypeName System.Security.Cryptography.X509Certificates.X509Certificate2 ($certificatePath)
+
+    - name: Save the decrypted certificate
+      run: |
+        $cert.Export('Cert') | Set-Content -Path $certificatePath
+
+
     # Create the app package by building and packaging the project
     - name: Create the app package
       run: |
@@ -100,9 +105,7 @@ jobs:
         Platform: ${{ matrix.platform }}
 
     
-    - name: Print working directory
-      run: |
-        Write-Host "Current working directory: $(Get-Location)"
+
     
     # Remove the pfx
     - name: Remove the pfx
@@ -199,8 +202,6 @@ jobs:
     
     - name: Decrypt the pfx
       run: |
-        $pfx_password = "${{ secrets.PFX_PASSWORD }}"
-        $secure_pfx_password = ConvertTo-SecureString -String $pfx_password -Force -AsPlainText
         $cert = New-Object -TypeName System.Security.Cryptography.X509Certificates.X509Certificate2 ($certificatePath)
 
     # Восстановление приложения для заполнения папки obj с RuntimeIdentifiers
@@ -212,10 +213,7 @@ jobs:
     # Сборка проекта Windows Forms
     - name: Build Windows Forms project
       run: |
-
-        $securePfxPwd = ConvertTo-SecureString -String "${{ secrets.CERT_PASSWORD }}" -Force -AsPlainText
-        Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation Cert:\CurrentUser\My -Password $securePfxPwd
-        $certThumbprint = (Get-PfxCertificate -FilePath $pfxPath).Thumbprint
+        $certThumbprint = $cert.Thumbprint
         msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$env:Platform /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$pfxPath /p:Thumbprint=$certThumbprint
       env:
         Configuration: ${{ matrix.configuration }}
