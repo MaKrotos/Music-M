@@ -84,21 +84,9 @@ jobs:
         $certificatePath = "GitHubActionsWorkflow.pfx"
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
 
-    - name: Decrypt the key
-      run: |
-        $SecureString = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -AsPlainText -Force
-        $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecureString)
-        $UnsecurePassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
-        $mypwd = ConvertTo-SecureString -String $UnsecurePassword -Force -AsPlainText
-        $pfxcert = New-Object -TypeName System.Security.Cryptography.X509Certificates.X509Certificate2 ("GitHubActionsWorkflow.pfx", $mypwd, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet)
-
-
-        
-
     # Create the app package by building and packaging the project
     - name: Create the app package
-      run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$env:Platform /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true
-      env:
+      run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$env:Platform /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:PackageCertificatePassword="${{ secrets.PFX_PASSWORD }}" /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true      env:
         Appx_Bundle: Always
         Appx_Package_Build_Mode: SideloadOnly
         Appx_Package_Dir: Packages\
@@ -199,25 +187,16 @@ jobs:
         $certificatePath = "GitHubActionsWorkflow.pfx"
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
     
-    - name: Decrypt the key
-      run: |
-        $SecureString = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -AsPlainText -Force
-        $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecureString)
-        $UnsecurePassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
-        $mypwd = ConvertTo-SecureString -String $UnsecurePassword -Force -AsPlainText
-        $pfxcert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2("GitHubActionsWorkflow.pfx", $mypwd, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet)
-    
     # Восстановление приложения для заполнения папки obj с RuntimeIdentifiers
     - name: Restore the application
-      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
+      run: dotnet restore $env:Solution_Name
       env:
         Configuration: ${{ matrix.configuration }}
     
-    # Сборка проекта Windows Forms
     - name: Build Windows Forms project
       run: |
         $certThumbprint = $pfxcert.Thumbprint
-        msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$env:Platform /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$pfxPath /p:Thumbprint=$certThumbprint
+        dotnet publish $env:Solution_Name --configuration $env:Configuration --runtime win10-x64 --output ./publish /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$pfxPath /p:Thumbprint=$certThumbprint
       env:
         Configuration: ${{ matrix.configuration }}
         Platform: ${{ matrix.platform }}
