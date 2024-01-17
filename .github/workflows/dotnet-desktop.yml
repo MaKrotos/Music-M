@@ -86,7 +86,8 @@ jobs:
 
     # Create the app package by building and packaging the project
     - name: Create the app package
-      run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$env:Platform /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:PackageCertificatePassword="${{ secrets.PFX_PASSWORD }}" /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true      env:
+      run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$env:Platform /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:PackageCertificatePassword="${{ secrets.PFX_PASSWORD }}" /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true      
+      env:
         Appx_Bundle: Always
         Appx_Package_Build_Mode: SideloadOnly
         Appx_Package_Dir: Packages\
@@ -184,6 +185,7 @@ jobs:
     - name: Decode the pfx
       run: |
         $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
+        $pfxPassword = "${{ secrets.PFX_PASSWORD }}"
         $certificatePath = "GitHubActionsWorkflow.pfx"
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
     
@@ -196,7 +198,7 @@ jobs:
     - name: Build Windows Forms project
       run: |
         $certThumbprint = $pfxcert.Thumbprint
-        dotnet publish $env:Solution_Name --configuration $env:Configuration --runtime win10-x64 --output ./publish /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$pfxPath /p:Thumbprint=$certThumbprint
+        dotnet publish $env:Solution_Name --configuration $env:Configuration --runtime win10-x64 --output ./publish /p:SignAssembly=true /p:AssemblyOriginatorKeyFile=$pfxPath /p:Thumbprint=$certThumbprint /p:Password=$pfxPassword
       env:
         Configuration: ${{ matrix.configuration }}
         Platform: ${{ matrix.platform }}
