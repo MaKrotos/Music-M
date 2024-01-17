@@ -103,16 +103,14 @@ jobs:
 
     # Create the app package by building and packaging the project
     - name: Create the app package
-      run: 
+      run: |
         $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
         msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$env:Platform /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile="$certificatePath" /p:PackageCertificatePassword="${{ secrets.PFX_PASSWORD }}" /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true      
       env:
         Appx_Bundle: Always
         Appx_Package_Build_Mode: SideloadOnly
-        Appx_Package_Dir: Packages\
-        Configuration: ${{ matrix.configuration }}
-        Platform: ${{ matrix.platform }}
-    
+        Appx_Package_Dir: Packages
+        
     # Remove the pfx
     - name: Remove the pfx
       run: Remove-Item -path "$certificatePath"
