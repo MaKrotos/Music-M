@@ -35,6 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MusicX.Core\MusicX.Core.csproj" />
     <ProjectReference Include="..\SetupLib\SetupLib.csproj" />
     <ProjectReference Include="..\VkNet.AudioBypassService\VkNet.AudioBypassService.csproj" />
     <ProjectReference Include="..\VkNet.Extensions.DependencyInjection\VkNet.Extensions.DependencyInjection.csproj" />

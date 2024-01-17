@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	  <Version>0.39</Version>
+	  <Configurations>Debug;Release</Configurations>
+	  <Platforms>Any CPU</Platforms>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="C:\Users\Fooxb\.nuget\packages\nlog.config\4.7.14\contentFiles\any\any\NLog.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Clowd.Squirrel" Version="3.0.210-g5f9f594" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.10" />
+    <PackageReference Include="NLog" Version="4.7.14" />
+    <PackageReference Include="NLog.Schema" Version="5.0.0-rc2" />
+    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+    <PackageReference Include="VkNet" Version="1.70.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VkNet.AudioBypassService\VkNet.AudioBypassService.csproj" />
+    <ProjectReference Include="..\VkNet.Extensions.DependencyInjection\VkNet.Extensions.DependencyInjection.csproj" />
+  </ItemGroup>
+
+</Project>

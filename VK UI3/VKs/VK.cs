@@ -26,7 +26,10 @@ using VkNet.Utils;
 using VkNet.Model.Attachments;
 using VkNet.Model.RequestParams;
 using System.Collections.Generic;
+
 using VkNet.Enums.Filters;
+using MusicX.Core.Services;
+using Microsoft.AppCenter.Crashes;
 
 namespace VK_UI3.VKs
 {
@@ -39,6 +42,8 @@ namespace VK_UI3.VKs
         private TaskCompletionSource<string>? _codeTask;
         private readonly IVkApiAuthAsync _vkApiAuth = App._host.Services.GetRequiredService<IVkApiAuthAsync>();
         private readonly IVkApiAuthAsync _vkApi = App._host.Services.GetRequiredService<IVkApiAuthAsync>();
+        public static readonly VkService vkService = App._host.Services.GetRequiredService<VkService>();
+       
 
         public event EventHandler? LoggedIn;
 
@@ -46,7 +51,90 @@ namespace VK_UI3.VKs
 
         public TokenChecker checker = App._host.Services.GetRequiredService<TokenChecker>();
 
-        public VK()
+        public static readonly BoomService boomService = App._host.Services.GetRequiredService<BoomService>();
+
+        public static readonly SafeBoomService safeBoomService = new SafeBoomService(boomService);
+        
+
+        public class SafeBoomService
+        {
+            private readonly BoomService _boomService;
+            
+            public SafeBoomService(BoomService boomService)
+            {
+                _boomService = boomService;
+        
+            }
+
+            public T CallWithRetry<T>(Func<BoomService, T> func)
+            {
+                int retryCount = 0;
+                while (retryCount < 5)
+                {
+                    try
+                    {
+                        return func(_boomService);
+                    }
+                    catch (Exception ex)
+                    {
+                   
+                        AuthBoomAsync();
+                        Console.WriteLine($"Произошла ошибка: {ex.Message}");
+                        retryCount++;
+                    }
+                }
+                throw new Exception("Превышено максимальное количество попыток");
+            }
+
+            public async Task<T> CallWithRetryAsync<T>(Func<BoomService, Task<T>> func)
+            {
+                int retryCount = 0;
+                while (retryCount < 5)
+                {
+                    try
+                    {
+                        return await func(_boomService);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Выполните здесь определенное действие
+                        // Например, запись в лог
+                        await AuthBoomAsync();
+                        Console.WriteLine($"Произошла ошибка: {ex.Message}");
+                        retryCount++;
+                    }
+                }
+                throw new Exception("Превышено максимальное количество попыток");
+            }
+
+
+        }
+
+
+        protected static async Task AuthBoomAsync()
+        {
+            try
+            {
+                var boomVkToken = await vkService.GetBoomToken();
+
+                var boomToken = await boomService.AuthByTokenAsync(boomVkToken.Token, boomVkToken.Uuid);
+
+                boomService.SetToken(boomToken.AccessToken);
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+
+
+            }
+
+
+        }
+
+            public VK()
         {
            
 

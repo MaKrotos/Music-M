@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualBasic;
+using MusicX.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,7 +12,9 @@ using System.Threading.Tasks;
 using VK_UI3.Helpers;
 using VK_UI3.VKs;
 using VkNet.Abstractions;
+using Windows.Foundation;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
+using static VK_UI3.VKs.VK;
 
 
 
@@ -51,7 +54,6 @@ namespace VK_UI3.Interfaces
 
         public void shareToVK() 
         {
-
             var a = GetTrackPlay().Audio;
             api.Audio.SetBroadcastAsync(
                a.OwnerId + "_" + a.Id
@@ -60,6 +62,7 @@ namespace VK_UI3.Interfaces
 
         public void NotifyOnListUpdate()
         {
+
             for (int i = 0; i < listAudio.Count; i++)
             {
                 listAudio[i].NumberInList = i;
@@ -78,7 +81,18 @@ namespace VK_UI3.Interfaces
             });
             name = getName();
             photoUri = getPhoto();
+
+            // var result = safeBoomService.CallWithRetry(bs => bs.GetUserTopTracks().Result);
+
+            exits();
         }
+
+        private async void exits()
+        {
+         //   var result = await safeBoomService.CallWithRetryAsync(bs =>  bs.GetUserInfoAsync());
+
+        }
+
         public abstract Uri getPhoto();
 
         public abstract string getName();

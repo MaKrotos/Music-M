@@ -1,0 +1,31 @@
+﻿namespace MusicX.Core.Models.Genius;
+
+public record Result(
+    string Type,
+    int AnnotationCount,
+    string ApiPath,
+    string ArtistNames,
+    string FullTitle,
+    string HeaderImageThumbnailUrl,
+    string HeaderImageUrl,
+    int Id,
+    bool Instrumental,
+    int LyricsOwnerId,
+    string LyricsState,
+    int LyricsUpdatedAt,
+    string Path,
+    int? PyongsCount,
+    string RelationshipsIndexUrl,
+    ReleaseDateComponents ReleaseDateComponents,
+    string ReleaseDateForDisplay,
+    string ReleaseDateWithAbbreviatedMonthForDisplay,
+    string SongArtImageThumbnailUrl,
+    string SongArtImageUrl,
+    Stats Stats,
+    string Title,
+    string TitleWithFeatured,
+    int UpdatedByHumanAt,
+    string Url,
+    IReadOnlyList<FeaturedArtist> FeaturedArtists,
+    PrimaryArtist PrimaryArtist
+);

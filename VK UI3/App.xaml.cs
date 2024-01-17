@@ -22,6 +22,9 @@ using System.Runtime.InteropServices;
 using Windows.Win32;
 using WinRT.Interop;
 using Windows.Win32.Foundation;
+using MusicX.Core.Services;
+using NLog;
+using VK_UI3.Services;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -54,10 +57,14 @@ namespace VK_UI3
             services.AddSingleton<IVkTokenStore, RegistryTokenStore>();
             services.AddSingleton<IDeviceIdStore, RegistryTokenStore>();
             services.AddSingleton<IExchangeTokenStore, RegistryTokenStore>();
-            
+            services.AddSingleton(LogManager.Setup().GetLogger("Common"));
             services.AddSingleton<IAsyncCaptchaSolver, CaptchaSolverService>();
-
             services.AddSingleton<TokenChecker>();
+
+            services.AddSingleton<VkService>();
+            services.AddSingleton<BoomService>();
+
+            services.AddSingleton<ICustomSectionsService, CustomSectionsService>();
 
 
             var container  = services.BuildServiceProvider();
