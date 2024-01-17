@@ -95,8 +95,10 @@ jobs:
 
     - name: Install PFX certificate
       run: |
+        $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
         $password = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -Force -AsPlainText
         Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation Cert:\LocalMachine\My -Password $password
+
 
 
     # Create the app package by building and packaging the project
