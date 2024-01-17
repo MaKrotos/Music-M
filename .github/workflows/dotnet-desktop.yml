@@ -86,7 +86,7 @@ jobs:
 
     - name: Decrypt the key
       run: |
-        $SecureString = ConvertTo-SecureString -String "${{ secrets.KEY_PASSWORD }}" -AsPlainText -Force
+        $SecureString = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -AsPlainText -Force
         $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecureString)
         $UnsecurePassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
         $mypwd = ConvertTo-SecureString -String $UnsecurePassword -Force -AsPlainText
@@ -201,7 +201,7 @@ jobs:
 
     - name: Decrypt the key
       run: |
-        $SecureString = ConvertTo-SecureString -String "${{ secrets.KEY_PASSWORD }}" -AsPlainText -Force
+        $SecureString = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -AsPlainText -Force
         $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecureString)
         $UnsecurePassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
         $mypwd = ConvertTo-SecureString -String $UnsecurePassword -Force -AsPlainText
