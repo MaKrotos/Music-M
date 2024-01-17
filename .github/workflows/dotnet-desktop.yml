@@ -77,12 +77,6 @@ jobs:
       run: |
         Write-Host "Current working directory: $(Get-Location)"
 
-    # Decode the base 64 encoded pfx and save the Signing_Certificate
-    - name: Decode the pfx
-      run: |
-        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
-        $certificatePath = "GitHubActionsWorkflow.pfx"
-        [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
     
 # Decode the base 64 encoded pfx and save the Signing_Certificate
     - name: Decode the pfx
