@@ -84,27 +84,33 @@ jobs:
         $certificatePath = "GitHubActionsWorkflow.pfx"
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
     
-    - name: Decrypt the pfx
+# Decode the base 64 encoded pfx and save the Signing_Certificate
+    - name: Decode the pfx
       run: |
-        $cert = New-Object -TypeName System.Security.Cryptography.X509Certificates.X509Certificate2 ($certificatePath)
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
+        $certificatePath = "GitHubActionsWorkflow.pfx"
+        [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
 
-    - name: Save the decrypted certificate
+    - name: Decrypt the key
       run: |
-        $cert.Export('Cert') | Set-Content -Path $certificatePath
+        $SecureString = ConvertTo-SecureString -String "${{ secrets.KEY_PASSWORD }}" -AsPlainText -Force
+        $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecureString)
+        $UnsecurePassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
+        $mypwd = ConvertTo-SecureString -String $UnsecurePassword -Force -AsPlainText
+        $pfxcert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2
+        $pfxcert.Import("GitHubActionsWorkflow.pfx", $mypwd, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet)
 
+        
 
     # Create the app package by building and packaging the project
     - name: Create the app package
-      run: |
-        msbuild ${{ env.Solution_Name }} /p:Configuration=${{ env.Configuration }} /p:Platform=${{ env.Platform }} /p:UapAppxPackageBuildMode=${{ env.Appx_Package_Build_Mode }} /p:AppxBundle=${{ env.Appx_Bundle }} /p:PackageCertificateKeyFile=$(cat certificatePath.txt) /p:AppxPackageDir="${{ env.Appx_Package_Dir }}" /p:GenerateAppxPackageOnBuild=true
+      run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$env:Platform /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true
       env:
-        Appx_Bundle: Always  # Changed from 'Never' to 'Always'
+        Appx_Bundle: Always
         Appx_Package_Build_Mode: SideloadOnly
         Appx_Package_Dir: Packages\
         Configuration: ${{ matrix.configuration }}
         Platform: ${{ matrix.platform }}
-
-    
 
     
     # Remove the pfx
