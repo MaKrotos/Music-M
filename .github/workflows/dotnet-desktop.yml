@@ -90,8 +90,8 @@ jobs:
         $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecureString)
         $UnsecurePassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
         $mypwd = ConvertTo-SecureString -String $UnsecurePassword -Force -AsPlainText
-        $pfxcert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2
-        $pfxcert.Import("GitHubActionsWorkflow.pfx", $mypwd, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet)
+        $pfxcert = New-Object -TypeName System.Security.Cryptography.X509Certificates.X509Certificate2 ("GitHubActionsWorkflow.pfx", $mypwd, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet)
+
 
         
 
@@ -191,29 +191,28 @@ jobs:
     # Добавление MSBuild в PATH
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.0.2
-
+    
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     - name: Decode the pfx
       run: |
         $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
         $certificatePath = "GitHubActionsWorkflow.pfx"
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
-
+    
     - name: Decrypt the key
       run: |
         $SecureString = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -AsPlainText -Force
         $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecureString)
         $UnsecurePassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
         $mypwd = ConvertTo-SecureString -String $UnsecurePassword -Force -AsPlainText
-        $pfxcert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2
-        $pfxcert.Import("GitHubActionsWorkflow.pfx", $mypwd, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet)
-
+        $pfxcert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2("GitHubActionsWorkflow.pfx", $mypwd, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet)
+    
     # Восстановление приложения для заполнения папки obj с RuntimeIdentifiers
     - name: Restore the application
       run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
       env:
         Configuration: ${{ matrix.configuration }}
-
+    
     # Сборка проекта Windows Forms
     - name: Build Windows Forms project
       run: |
