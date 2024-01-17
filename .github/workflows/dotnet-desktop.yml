@@ -61,7 +61,8 @@ jobs:
 
     - name: Display disk tree
       run: |
-        du -ah . | sort -n -r | head -n 20
+        Get-ChildItem -Recurse | Sort-Object Length -Descending
+
 
 
 
