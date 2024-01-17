@@ -41,6 +41,13 @@ jobs:
         node-version: 16
         fetch-depth: 0
 
+# Decode the base 64 encoded pfx and save the Signing_Certificate
+    - name: Decode the pfx
+      run: |
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
+        $certificatePath = "GitHubActionsWorkflow.pfx"
+        [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
+
     - name: Check if certificate exists
       run: |
         $certificatePath = "GitHubActionsWorkflow.pfx"
@@ -52,6 +59,9 @@ jobs:
 
 
 
+    - name: Display disk tree
+      run: |
+        du -ah . | sort -n -r | head -n 20
 
 
 
@@ -76,13 +86,6 @@ jobs:
       run: |
         Write-Host "Current working directory: $(Get-Location)"
 
-    
-# Decode the base 64 encoded pfx and save the Signing_Certificate
-    - name: Decode the pfx
-      run: |
-        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
-        $certificatePath = "GitHubActionsWorkflow.pfx"
-        [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
 
     # Create the app package by building and packaging the project
     - name: Create the app package
