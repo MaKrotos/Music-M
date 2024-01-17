@@ -78,6 +78,20 @@ jobs:
       run: |
         Write-Host "Current working directory: $(Get-Location)"
 
+    - name: Get Certificate Thumbprint
+      run: |
+        $pfxPassword = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -AsPlainText -Force
+        $pfxCert = Get-PfxCertificate -FilePath $certificatePath -Password $pfxPassword
+        Write-Host "Certificate Thumbprint: $($pfxCert.Thumbprint)"
+
+    - name: Replace Certificate Thumbprint in Project File
+      run: |
+        $projectFile = "VK UI3 (Package)/VK UI3 (Package).wapproj"
+        $content = Get-Content -Path $projectFile -Raw
+        $content = $content -replace '(?<=<PackageCertificateThumbprint>).+?(?=</PackageCertificateThumbprint>)', $pfxCert.Thumbprint
+        Set-Content -Path $projectFile -Value $content
+
+
 
     # Create the app package by building and packaging the project
     - name: Create the app package
