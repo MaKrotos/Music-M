@@ -78,14 +78,16 @@ jobs:
       run: |
         Write-Host "Current working directory: $(Get-Location)"
 
-    - name: Get Certificate Thumbprint
+    - name: Get Certificate Thumbprint and Replace in Project File
       run: |
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
+        $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
+        [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
+    
         $pfxPassword = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -AsPlainText -Force
         $pfxCert = Get-PfxCertificate -FilePath $certificatePath -Password $pfxPassword
         Write-Host "Certificate Thumbprint: $($pfxCert.Thumbprint)"
-
-    - name: Replace Certificate Thumbprint in Project File
-      run: |
+    
         $projectFile = "VK UI3 (Package)/VK UI3 (Package).wapproj"
         $content = Get-Content -Path $projectFile -Raw
         $content = $content -replace '(?<=<PackageCertificateThumbprint>).+?(?=</PackageCertificateThumbprint>)', $pfxCert.Thumbprint
