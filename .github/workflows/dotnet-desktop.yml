@@ -93,6 +93,10 @@ jobs:
         $content = $content -replace '(?<=<PackageCertificateThumbprint>).+?(?=</PackageCertificateThumbprint>)', $pfxCert.Thumbprint
         Set-Content -Path $projectFile -Value $content
 
+    - name: Install PFX certificate
+      run: |
+        $password = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -Force -AsPlainText
+        Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation Cert:\LocalMachine\My -Password $password
 
 
     # Create the app package by building and packaging the project
