@@ -44,7 +44,6 @@ namespace VK_UI3
                 //   this.ImgUri = uri;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             });
-
         }
 
         private void updateList(object sender, EventArgs e)

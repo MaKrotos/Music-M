@@ -5,8 +5,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:VK_UI3.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:custom="using:VK_UI3.Controllers"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:custom="using:VK_UI3.Controllers"
     mc:Ignorable="d"
+
     
      NavigationCacheMode="Enabled"
     
@@ -22,67 +24,56 @@
                 <RowDefinition Height="*"></RowDefinition>
                 
             </Grid.RowDefinitions>
-            
+
             <NavigationView HorizontalAlignment="Stretch"  Margin="0,32,0,0" Name="NavWiv"
                      Grid.RowSpan="2"
              PaneDisplayMode="Auto" 
+             SelectionChanged="NavWiv_SelectionChanged"
              CompactPaneLength="80"
-             IsSettingsVisible="False"
+             IsSettingsVisible="True"
              IsBackButtonVisible="Collapsed"
-                              ItemInvoked="NavWiv_ItemInvoked"
+                      
              IsPaneOpen="False">
+              
+                <NavigationView.MenuItems >
 
-            <NavigationView.MenuItems >
-
-                <NavigationViewItem Content="Nav Item A">
+                <NavigationViewItem Content="Моя музыка">
                     <NavigationViewItem.Icon>
                         <SymbolIcon Symbol="Home"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Content="Nav Item B">
-                    <NavigationViewItem.Icon>
-                        <SymbolIcon Symbol="Audio"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
+                    
                 <NavigationViewItemSeparator/>
-                <NavigationViewItem Content="Nav Item C">
-                    <NavigationViewItem.Icon>
-                        <SymbolIcon Symbol="Calendar"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
 
 
 
-                <NavigationViewItem Content="Nav Item C">
-                    <NavigationViewItem.Icon>
-                        <SymbolIcon Symbol="AddFriend"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
+                    <NavigationViewItemHeader Content="Аккаунты"/>
 
-                <NavigationViewItem IsEnabled="False">
-                    <TextBlock  Text="Аккаунты"></TextBlock>
-                </NavigationViewItem>
-                <NavigationViewItem  Padding="-10,0,-20,0" SelectsOnInvoked="False" >
-
-                    <Grid Margin="-1,10,10,10" Padding="0,-5,-10,-5" >
+                    <NavigationViewItem  Padding="-10,0,-20,0" SelectsOnInvoked="False" >
+                        
+                        <Grid Margin="-1,10,10,10" Padding="0,-5,-10,-5" >
                             <ListView SelectedIndex="{x:Bind getSelectedNumber, Mode=OneTime}"  ItemsSource="{x:Bind AccList, Mode=TwoWay}"  SelectionChanged="ListView_SelectionChanged" x:Name="AccountsList">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <custom:AccountController Margin="-1,0,0,0" accounts="{Binding }"></custom:AccountController>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </Grid>
-
-
-                </NavigationViewItem>
-                <NavigationViewItem Content="Nav Item C">
-                    <NavigationViewItem.Icon>
-                        <ImageIcon Source="/Assets/Icons/add_circle.svg"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <custom:AccountController Margin="-1,0,0,0" accounts="{Binding }"></custom:AccountController>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                        
+                    </NavigationViewItem>
+            
             </NavigationView.MenuItems>
-            <Grid Margin="0"  PointerEntered="ListViewItem_PointerEntered" PointerExited="ListViewItem_PointerExited">
+
+
+      
+
+
+
+
+
+
+                <Grid Margin="0"  PointerEntered="ListViewItem_PointerEntered" PointerExited="ListViewItem_PointerExited">
                 <Frame Grid.Row="0" x:Name="ContentFrame">
                     <Frame.ContentTransitions>
                         <TransitionCollection>

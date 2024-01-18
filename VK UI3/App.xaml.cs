@@ -25,6 +25,7 @@ using Windows.Win32.Foundation;
 using MusicX.Core.Services;
 using NLog;
 using VK_UI3.Services;
+using MusicX.Services;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -62,12 +63,16 @@ namespace VK_UI3
             services.AddSingleton<TokenChecker>();
 
             services.AddSingleton<VkService>();
+            services.AddSingleton<ListenTogetherService>();
+            services.AddSingleton<UserRadioService>();
             services.AddSingleton<BoomService>();
 
             services.AddSingleton<ICustomSectionsService, CustomSectionsService>();
 
+            var container = StaticService.Container = services.BuildServiceProvider();
 
-            var container  = services.BuildServiceProvider();
+
+           // var container  = services.BuildServiceProvider();
             if (AccountsDB.activeAccount.Token == null)
             {
                 Task.Run(

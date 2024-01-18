@@ -7,32 +7,31 @@ using Microsoft.Extensions.DependencyInjection;
 using MusicX.Core.Models;
 using MusicX.Core.Models.General;
 using MusicX.Core.Services;
-
-
+using VK_UI3.Helpers;
+using MusicX.Shared.ListenTogether.Radio;
 using NLog;
+using VK_UI3.Services;
 using VkNet.Abstractions;
 using VkNet.Enums.SafetyEnums;
 using VkNet.Model;
 using Button = MusicX.Core.Models.Button;
-using MusicX.Core.Services;
 
-namespace VK_UI3.Services;
-
+namespace MusicX.Services;
 
 public class CustomSectionsService : ICustomSectionsService
 {
     public const string CustomLinkRegex = @"^[c-]?\d*$";
-    
+
     private readonly IVkApiCategories _vkCategories;
     private readonly IVkApiInvoke _apiInvoke;
-
+    private readonly UserRadioService _userRadioService;
     private readonly Logger _logger;
 
-    public CustomSectionsService(IVkApiCategories vkCategories, IVkApiInvoke apiInvoke, Logger logger)
+    public CustomSectionsService(IVkApiCategories vkCategories, IVkApiInvoke apiInvoke, UserRadioService userRadioService, Logger logger)
     {
         _vkCategories = vkCategories;
         _apiInvoke = apiInvoke;
-   
+        _userRadioService = userRadioService;
         _logger = logger;
     }
 
@@ -51,7 +50,25 @@ public class CustomSectionsService : ICustomSectionsService
         };
     }
 
-   
+    public async ValueTask<ResponseData?> HandleSectionRequest(string id, string? nextFrom) =>
+        id switch
+        {
+            "profiles" => new()
+            {
+                Section = await GetCatalogsSectionAsync()
+            },
+            "attachments_full" => new()
+            {
+                Section = await GetAttachmentConvsSectionAsync(nextFrom)
+            },
+            "search" => new()
+            {
+                Section = await GetSearchSectionAsync()
+            },
+            _ when Regex.IsMatch(id, CustomLinkRegex) => await GetAttachmentsSectionAsync(id, nextFrom),
+            _ => null
+        };
+
     private async Task<Section> GetSearchSectionAsync()
     {
         var vkService = StaticService.Container.GetRequiredService<VkService>();
@@ -94,7 +111,7 @@ public class CustomSectionsService : ICustomSectionsService
                     }
                 }
             };
-        
+
         if (attachments.Length == 0)
             return new()
             {
@@ -102,14 +119,14 @@ public class CustomSectionsService : ICustomSectionsService
                 {
                     Id = id
                 }
-            }; 
+            };
 
         var audios = attachments.Select(b =>
         {
             b.Attachment.Audio.ParentBlockId = id;
             return b.Attachment.Audio;
         }).ToList();
-        
+
         var response = new ResponseData
         {
             Section = new()
@@ -131,7 +148,7 @@ public class CustomSectionsService : ICustomSectionsService
             },
             Audios = audios
         };
-        
+
         if (startFrom is null)
             response.Section.Blocks.InsertRange(0, new Block[]
             {
@@ -170,9 +187,226 @@ public class CustomSectionsService : ICustomSectionsService
         return response;
     }
 
-    public ValueTask<ResponseData> HandleSectionRequest(string id, string nextFrom = null)
+    private async Task<Section> GetAttachmentConvsSectionAsync(string? startFrom)
     {
-        throw new NotImplementedException();
+        ulong? offset = startFrom is null ? null : ulong.Parse(startFrom);
+
+        var convs = await _vkCategories.Messages.GetConversationsAsync(new()
+        {
+            Extended = true,
+            Offset = offset
+        });
+
+        return new()
+        {
+            Id = "attachments_full",
+            NextFrom = offset.GetValueOrDefault() + (ulong)convs.Items.Count < (ulong)convs.Count
+                ? (offset.GetValueOrDefault() + (ulong)convs.Items.Count).ToString()
+                : null!,
+            Blocks = new()
+            {
+                MapLinksBlock(convs, true)
+            }
+        };
+    }
+
+    private async Task<Section> GetCatalogsSectionAsync()
+    {
+        var convs = await _vkCategories.Messages.GetConversationsAsync(new()
+        {
+            Extended = true,
+            Count = 10
+        });
+
+        List<Station> stations = null;
+        try
+        {
+            stations = await _userRadioService.GetStationsList();
+
+        }
+        catch (Exception ex)
+        {
+            _logger.Info($"Ошибка получения списка радиостанций: {ex}");
+            _logger.Error(ex);
+        }
+
+        var buttons = convs.Count > 10
+            ? new()
+            {
+                new()
+                {
+                    Title = "Показать все",
+                    SectionId = "attachments_full"
+                }
+            }
+            : new List<Button>();
+
+        return new()
+        {
+            Title = "Профили",
+            Id = "profiles",
+            Blocks = new()
+            {
+                new()
+                {
+                    Id = Random.Shared.Next().ToString(),
+                    DataType = "none",
+                    Layout = new()
+                    {
+                        Name = "header_extended",
+                        Title = "Вложения"
+                    },
+                    Buttons = buttons
+                },
+                MapLinksBlock(convs),
+
+                new()
+                {
+                    Id = Random.Shared.Next().ToString(),
+                    DataType = "none",
+                    Layout = new()
+                    {
+                        Name = "separator",
+                    },
+                },
+
+
+                new()
+                {
+                    Id = Random.Shared.Next().ToString(),
+                    DataType = "none",
+                    Layout = new()
+                    {
+                        Name = "header_extended",
+                        Title = "Радиостанции пользователей"
+                    }
+                },
+
+                MapStationsBlock(stations),
+
+                new()
+                {
+                    Id = Random.Shared.Next().ToString(),
+                    DataType = "none",
+                    Layout = new()
+                    {
+                        Name = "separator",
+                    },
+                },
+
+                GetPlaceholderBlock(),
+            }
+        };
+    }
+
+    private Block GetPlaceholderBlock()
+    {
+        return new()
+        {
+            Id = Random.Shared.Next().ToString(),
+            DataType = "placeholder",
+            Placeholders = new List<Placeholder>()
+                    {
+                        new Placeholder()
+                        {
+                            Text = "Этот раздел будет пополнятся со временем :) Следите за новостями!",
+                            Id = "jksdfksdkf",
+                            Title = "Это ещё не все!",
+                            Icons = new List<Core.Models.Image>()
+                            {
+                                new Core.Models.Image()
+                                {
+                                    Url = "https://sun2-17.userapi.com/O1eJDSj3KbMqaJMxBP46CTWtWTLytlS-4JSrEA/X8a7Q4les5o.png"
+                                }
+                            },
+                            Buttons = new List<Button>
+                            {
+                                new Button()
+                                {
+                                    Title = "Телеграм канал",
+                                    Action = new ActionButton()
+                                    {
+                                        Url = "https://t.me/MusicXPlayer",
+                                        Type = "custom_open_browser"
+                                    }
+                                }
+                            }
+                        }
+                    },
+        };
+    }
+
+
+    private Block MapStationsBlock(List<Station> stations)
+    {
+        return new()
+        {
+            Id = Random.Shared.Next().ToString(),
+
+            DataType = "stations",
+
+            Layout = new()
+            {
+                Name = "large_slider"
+            },
+
+            Stations = stations
+        };
+    }
+
+    private static Block MapLinksBlock(GetConversationsResult convs, bool full = false)
+    {
+        return new()
+        {
+            Id = Random.Shared.Next().ToString(),
+            DataType = "links",
+            Layout = new()
+            {
+                Name = full ? "list" : "large_slider"
+            },
+            Links = convs.Items.Where(b => b.Conversation.CanWrite.Allowed).Select(b =>
+            {
+                var type = b.Conversation.Peer.Type;
+                var id = b.Conversation.Peer.Id.ToString();
+
+                var name = true switch
+                {
+                    _ when type == ConversationPeerType.Chat => b.Conversation.ChatSettings.Title,
+                    _ when type == ConversationPeerType.Group => convs.Groups.Single(g =>
+                        g.Id == b.Conversation.Peer.LocalId).Name,
+                    _ when type == ConversationPeerType.User => convs.Profiles.Single(g =>
+                        g.Id == b.Conversation.Peer.Id).GetFullName(),
+                    _ => "<unnamed>"
+                };
+
+                return new Link
+                {
+                    Id = id,
+                    Url = $"https://vk.com/history{id}_audio",
+                    Title = name,
+                    Meta = new()
+                    {
+                        ContentType = true switch
+                        {
+                            _ when type == ConversationPeerType.Chat => "chat",
+                            _ when type == ConversationPeerType.Group => "group",
+                            _ when type == ConversationPeerType.User => "user",
+                            _ => string.Empty
+                        }
+                    },
+                    Image = true switch
+                    {
+                        _ when type == ConversationPeerType.Chat => b.Conversation.ChatSettings
+                            .ToImageList(convs.Profiles),
+                        _ when type == ConversationPeerType.Group => convs.Groups.Single(g =>
+                            g.Id == b.Conversation.Peer.LocalId).ToImageList(),
+                        _ when type == ConversationPeerType.User => convs.Profiles.Single(g =>
+                            g.Id == b.Conversation.Peer.Id).ToImageList(),
+                        _ => new()
+                    }
+                };
+            }).ToList()
+        };
     }
 }
 

@@ -1,4 +1,4 @@
-﻿
+﻿using MusicX.Shared.ListenTogether.Radio;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -111,6 +111,6 @@ namespace MusicX.Core.Models
         
         public List<AudioFollowingsUpdateInfo> FollowingsUpdateInfos { get; set; } = new List<AudioFollowingsUpdateInfo>();
 
-     
+        public List<Station> Stations { get; set; } = new List<Station>();
     }
 }

@@ -1,13 +1,24 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
+using MusicX.Core.Services;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms.VisualStyles;
+using VK_UI3.Controllers;
 using VK_UI3.DB;
+using VK_UI3.Services;
 using VK_UI3.Views.LoginWindow;
+using VK_UI3.VKs;
+using Windows.Foundation;
 using static VK_UI3.DB.AccountsDB;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -18,22 +29,162 @@ namespace VK_UI3.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainView : Page
+    public sealed partial class MainView : Page, INotifyPropertyChanged
     {
 
         public MainView()
         {
             this.InitializeComponent();
 
-           // FramePlayer.RenderTransform = trans;
 
-
+            // FramePlayer.RenderTransform = trans;
 
 
             ContentFrame.Navigate(typeof(MainMenu), null, new DrillInNavigationTransitionInfo());
+
+            createNavigation();
+        }
+        protected void OnPropertyChanged(string propertyName)
+        {
+            this.DispatcherQueue.TryEnqueue(async () =>
+            {
+                //   this.ImgUri = uri;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            });
         }
 
-        
+
+        public ObservableCollection<NavSettings> navSettings = new ObservableCollection<NavSettings>();
+
+        private async void createNavigation()
+        {
+            var catalogs = await VK.vkService.GetAudioCatalogAsync();
+            var updatesSection = await VK.vkService.GetAudioCatalogAsync("https://vk.com/audio?section=updates");
+
+            if (updatesSection.Catalog?.Sections?.Count > 0)
+            {
+                var section = updatesSection.Catalog.Sections[0];
+                section.Title = "Подписки";
+                catalogs.Catalog.Sections.Insert(catalogs.Catalog.Sections.Count - 1, section);
+            }
+
+            var sectionsService = StaticService.Container.GetRequiredService<ICustomSectionsService>();
+
+            catalogs.Catalog.Sections.AddRange(await sectionsService.GetSectionsAsync().ToArrayAsync());
+
+            var icons = new List<Symbol>
+                {
+                   Symbol.MusicInfo,
+                   Symbol.More,
+                   Symbol.Pictures,
+                   Symbol.Map,
+                       
+                };
+
+            var rand = new Random();
+
+            foreach (var section in catalogs.Catalog.Sections)
+            {
+                Symbol icon;
+
+               if (section.Title.ToLower() == "главная")
+                {
+                    icon = Symbol.Home;
+                }
+                else if (section.Title.ToLower() == "моя музыка")
+                {
+                    icon = Symbol.Audio;
+                }
+                else if (section.Title.ToLower() == "обзор")
+                {
+                    icon = Symbol.PreviewLink;
+                }
+                else if (section.Title.ToLower() == "подкасты")
+                {
+                    icon = Symbol.Microphone;
+                }
+                else if (section.Title.ToLower() == "подписки")
+                {
+                    icon = Symbol.Favorite;
+                }
+                else if (section.Title.ToLower() == "каталоги")
+                {
+                    icon = Symbol.Library;
+                }
+                else if (section.Title.ToLower() == "поиск")
+                {
+                    icon = Symbol.Find;
+                }
+
+                else if (section.Title.ToLower().StartsWith("книги"))
+                {
+                    continue;
+                }
+                else
+                {
+                    var number = rand.Next(0, icons.Count);
+                    icon = icons[number];
+                    icons.RemoveAt(number);
+                }
+
+
+
+                if (section.Title.ToLower() == "моя музыка") section.Title = "Музыка";
+
+                var navSet = new NavSettings() { Icon = icon, MyMusicItem = section.Title, section = section };
+                navSettings.Add(navSet);
+
+                //  var viewModel = ActivatorUtilities.CreateInstance<SectionViewModel>(StaticService.Container);
+                //  viewModel.SectionId = section.Id;
+
+                //  var navigationItem = new NavigationBarItem() { Tag = section.Id, PageDataContext = viewModel, Icon = icon, Content = section.Title, PageType = typeof(SectionView) };
+                //  navigationBar.Items.Add(navigationItem);
+
+              
+
+
+            }
+
+
+            int index = NavWiv.MenuItems.IndexOf(NavWiv.MenuItems.OfType<NavigationViewItemHeader>().First());
+            foreach (var setting in navSettings)
+            {
+                this.DispatcherQueue.TryEnqueue(() =>
+                {
+                    var navViewItem = new NavMenuController
+                    {
+                        navSettings = setting,
+                        Content = setting.MyMusicItem,
+                        Icon = new SymbolIcon(setting.Icon)
+
+                    };
+                    NavWiv.MenuItems.Insert(index, navViewItem);
+                    index++;
+                });
+            }
+
+
+        }
+
+
+        public async void RemoveNavItems()
+        {
+            var separator = NavWiv.MenuItems.OfType<NavigationViewItemSeparator>().First();
+            var header = NavWiv.MenuItems.OfType<NavigationViewItemHeader>().First();
+
+            int startIndex = NavWiv.MenuItems.IndexOf(separator);
+            int endIndex = NavWiv.MenuItems.IndexOf(header);
+
+            for (int i = endIndex; i > startIndex; i--)
+            {
+                this.DispatcherQueue.TryEnqueue(() =>
+                {
+                    NavWiv.MenuItems.RemoveAt(i);
+                });
+            }
+        }
+
+
         public static ObservableCollection<Accounts> Accounts { get; set; } = new ObservableCollection<Accounts>();
 
         ObservableCollection<Accounts> AccList { 
@@ -105,8 +256,6 @@ namespace VK_UI3.Views
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-        
-           
             var selectedAccount = (Accounts)AccountsList.SelectedItem;
             // selectedAccount.itemSelected();
             if (selectedAccount == null) return;
@@ -155,36 +304,13 @@ namespace VK_UI3.Views
 
         }
 
-        private void NavWiv_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
-        {
-            var invokedItem = args.InvokedItem as string;
-            switch (invokedItem)
-            {
-                case "Nav Item A":
-                    // Навигация к странице A
-
-                    ContentFrame.Navigate(typeof(MainMenu), null, new DrillInNavigationTransitionInfo());
-
-
-
-                    break;
-                case "Nav Item B":
-                    // Навигация к странице B
-                    break;
-                case "Nav Item C":
-                    // Навигация к странице C
-                    break;
-                default:
-                    break;
-                    // и так далее...
-            }
-        }
-
         // Объект TranslateTransform, который будет использоваться для анимации
         TranslateTransform trans = new TranslateTransform();
 
         // Storyboard, который будет использоваться для управления анимацией
         Storyboard sb = new Storyboard();
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public void LowerFrame()
         {
@@ -267,6 +393,49 @@ namespace VK_UI3.Views
 
           
 
+        }
+
+        private void NavWiv_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        {
+            var invokedItem = sender.SelectedItem as NavigationViewItem;
+
+            if (invokedItem == null)
+            {
+                sender.SelectedItem = sender.MenuItems[0];
+                return;
+            }
+
+            if (invokedItem != null && invokedItem.Content != null)
+            {
+                switch (invokedItem.Content.ToString().ToLower())
+                {
+                    case "моя музыка":
+                        ContentFrame.Navigate(typeof(MainMenu), null, new DrillInNavigationTransitionInfo());
+                        break;
+
+                    default:
+                        var Item = sender.SelectedItem as NavMenuController;
+
+                        getsect(Item.navSettings.section.Id, Item.navSettings.section.NextFrom);
+
+                        // RemoveNavItems();
+                        break;
+                        // и так далее...
+                }
+            }
+            else
+            {
+            
+
+
+
+            }
+        }
+
+        private async void getsect(string section, string from)
+        {
+            //var a= await VK.vkService.GetSectionAsync(section, from);
+            //ContentFrame.Navigate(typeof(MainMenu), null, new DrillInNavigationTransitionInfo());
         }
     }
 

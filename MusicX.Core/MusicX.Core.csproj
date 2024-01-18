@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
 	  <Version>0.39</Version>
 	  <Configurations>Debug;Release</Configurations>
-	  <Platforms>Any CPU</Platforms>
+	  <Platforms>x64</Platforms>
 
   </PropertyGroup>
 
@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MusicX.Shared\MusicX.Shared.csproj" />
     <ProjectReference Include="..\VkNet.AudioBypassService\VkNet.AudioBypassService.csproj" />
     <ProjectReference Include="..\VkNet.Extensions.DependencyInjection\VkNet.Extensions.DependencyInjection.csproj" />
   </ItemGroup>

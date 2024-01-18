@@ -16,6 +16,10 @@
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
 		<DefineConstants>X64</DefineConstants>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="Controllers\NavMenuController.xaml" />
+	</ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.3" />
     <PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.3" />
@@ -36,8 +40,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MusicX.Core\MusicX.Core.csproj" />
+    <ProjectReference Include="..\MusicX.Shared\MusicX.Shared.csproj" />
     <ProjectReference Include="..\SetupLib\SetupLib.csproj" />
     <ProjectReference Include="..\VkNet.AudioBypassService\VkNet.AudioBypassService.csproj" />
     <ProjectReference Include="..\VkNet.Extensions.DependencyInjection\VkNet.Extensions.DependencyInjection.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Controllers\NavMenuController.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 </Project>
