@@ -109,7 +109,10 @@ jobs:
       env:
         Appx_Bundle: Always
         Appx_Package_Build_Mode: SideloadOnly
-        Appx_Package_Dir: Packages
+        Appx_Package_Dir: Packages\
+        Configuration: ${{ matrix.configuration }}
+        Platform: ${{ matrix.platform }}
+
         
     # Remove the pfx
     - name: Remove the pfx
