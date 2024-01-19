@@ -154,6 +154,7 @@ jobs:
         echo "VERSION=$version" >> $GITHUB_ENV
       continue-on-error: true
 
+
     
     # Проверка наличия релиза
     - name: Проверить релиз
