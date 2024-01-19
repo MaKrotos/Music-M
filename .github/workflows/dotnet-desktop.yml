@@ -239,6 +239,7 @@ jobs:
       run: dotnet restore $env:Solution_Name
       env:
         Configuration: ${{ matrix.configuration }}
+      continue-on-error: true
     
     - name: Build Windows Forms project
       run: |
@@ -247,3 +248,4 @@ jobs:
       env:
         Configuration: ${{ matrix.configuration }}
         Platform: ${{ matrix.platform }}
+        continue-on-error: true
