@@ -119,7 +119,7 @@ jobs:
         Appx_Package_Build_Mode: SideloadOnly
         Appx_Package_Dir: Packages\
         Configuration: ${{ matrix.configuration }}
-        Platform: ${{ matrix.platform }}
+        Platform: "x64,x86,ARM64"
 
 
         
