@@ -118,7 +118,7 @@ jobs:
         Appx_Package_Build_Mode: SideloadOnly
         Appx_Package_Dir: Packages\
         Configuration: ${{ matrix.configuration }}
-        Platform: ${{ matrix.platform }}
+        Platform: "Any CPU"
 
         
     # Remove the pfx
