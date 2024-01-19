@@ -157,7 +157,6 @@ jobs:
         echo "Версия: $version"
       continue-on-error: true
     
-    # Проверка наличия релиза
     - name: Проверить релиз
       id: check_release
       run: |
@@ -168,7 +167,6 @@ jobs:
         }
       continue-on-error: true
     
-    # Создание нового релиза, если он еще не существует
     - name: Создать релиз
       id: create_release
       uses: actions/create-release@v1
@@ -182,8 +180,7 @@ jobs:
         prerelease: true
       if: env.RELEASE_EXISTS == 0
       continue-on-error: true
-        
-        
+
 
 
 
