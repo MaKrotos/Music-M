@@ -145,45 +145,45 @@ jobs:
           *.msixbundle
           *.msix
     
-- name: Извлечь версию
-  id: get_version
-  run: |
-    $doc = New-Object xml
-    $doc.Load((Convert-Path 'D:\a\VKUI3\VKUI3\VK UI3 (Package)\Package.appxmanifest'))
-    $nsManager = New-Object System.Xml.XmlNamespaceManager($doc.NameTable)
-    $nsManager.AddNamespace('default', 'http://schemas.microsoft.com/appx/manifest/foundation/windows10')
-    $version = $doc.SelectSingleNode('//default:Identity', $nsManager).Version
-    echo "VERSION=$version" >> $GITHUB_ENV
-    echo "Версия: $version"
-  continue-on-error: true
-
-# Проверка наличия релиза
-- name: Проверить релиз
-  id: check_release
-  run: |
-    if (curl --silent --head --fail "https://github.com/$GITHUB_REPOSITORY/releases/tag/${{ env.VERSION }}") { 
-      echo "RELEASE_EXISTS=1" >> $GITHUB_ENV
-    } else {
-      echo "RELEASE_EXISTS=0" >> $GITHUB_ENV
-    }
-  continue-on-error: true
-
-# Создание нового релиза, если он еще не существует
-- name: Создать релиз
-  id: create_release
-  uses: actions/create-release@v1
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  with:
-    tag_name: ${{ env.VERSION }}
-    release_name: ${{ github.event.inputs.namevers }}
-    body: ${{ github.event.inputs.descr }}
-    draft: false
-    prerelease: true
-  if: env.RELEASE_EXISTS == 0
-  continue-on-error: true
+    - name: Извлечь версию
+      id: get_version
+      run: |
+        $doc = New-Object xml
+        $doc.Load((Convert-Path 'D:\a\VKUI3\VKUI3\VK UI3 (Package)\Package.appxmanifest'))
+        $nsManager = New-Object System.Xml.XmlNamespaceManager($doc.NameTable)
+        $nsManager.AddNamespace('default', 'http://schemas.microsoft.com/appx/manifest/foundation/windows10')
+        $version = $doc.SelectSingleNode('//default:Identity', $nsManager).Version
+        echo "VERSION=$version" >> $GITHUB_ENV
+        echo "Версия: $version"
+      continue-on-error: true
     
+    # Проверка наличия релиза
+    - name: Проверить релиз
+      id: check_release
+      run: |
+        if (curl --silent --head --fail "https://github.com/$GITHUB_REPOSITORY/releases/tag/${{ env.VERSION }}") { 
+          echo "RELEASE_EXISTS=1" >> $GITHUB_ENV
+        } else {
+          echo "RELEASE_EXISTS=0" >> $GITHUB_ENV
+        }
+      continue-on-error: true
     
+    # Создание нового релиза, если он еще не существует
+    - name: Создать релиз
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ env.VERSION }}
+        release_name: ${{ github.event.inputs.namevers }}
+        body: ${{ github.event.inputs.descr }}
+        draft: false
+        prerelease: true
+      if: env.RELEASE_EXISTS == 0
+      continue-on-error: true
+        
+        
 
 
 
