@@ -116,7 +116,9 @@ jobs:
         
     # Remove the pfx
     - name: Remove the pfx
-      run: Remove-Item -path "$certificatePath"
+      run: |
+        $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
+        Remove-Item -path "$certificatePath"
         
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
     - name: Upload MSIX package
