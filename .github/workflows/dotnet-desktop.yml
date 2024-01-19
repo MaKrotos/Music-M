@@ -32,6 +32,7 @@ jobs:
     strategy:
       matrix:
         configuration: [Release]
+        platform: [x64]
 
 
     runs-on: windows-latest  # For a list of available runner types, refer to
@@ -118,7 +119,7 @@ jobs:
         Appx_Package_Build_Mode: SideloadOnly
         Appx_Package_Dir: Packages\
         Configuration: ${{ matrix.configuration }}
-        Platform: "Any CPU"
+
 
         
     # Remove the pfx
