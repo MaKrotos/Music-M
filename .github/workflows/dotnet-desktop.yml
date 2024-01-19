@@ -136,8 +136,8 @@ jobs:
           *.msixbundle
           *.msix
     
-    # Extract version from Package.appxmanifest
-    - name: Extract version
+    # Извлечение версии из Package.appxmanifest
+    - name: Извлечь версию
       id: get_version
       run: |
         $xml = xml
@@ -145,8 +145,18 @@ jobs:
         $version = $xml.SelectSingleNode('//default:Identity', $ns).Version
         echo "VERSION=$version" >> $GITHUB_ENV
     
-    # Create a new release
-    - name: Create Release
+    # Проверка наличия релиза
+    - name: Проверить релиз
+      id: check_release
+      run: |
+        if curl --silent --head --fail "https://github.com/$GITHUB_REPOSITORY/releases/tag/${{ env.VERSION }}"; then
+          echo "RELEASE_EXISTS=1" >> $GITHUB_ENV
+        else
+          echo "RELEASE_EXISTS=0" >> $GITHUB_ENV
+        fi
+    
+    # Создание нового релиза, если он еще не существует
+    - name: Создать релиз
       id: create_release
       uses: actions/create-release@v1
       env:
@@ -156,6 +166,8 @@ jobs:
         release_name: AutoBuild
         draft: false
         prerelease: true
+      if: env.RELEASE_EXISTS == 0
+
     
     
 
