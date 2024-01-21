@@ -141,8 +141,13 @@ jobs:
     - name: Move specific files to the parent folder
       run: |
         Get-ChildItem -Path "${{ env.Solution_Name }}\\Packages" -Include *.cer, *.msixbundle, *.msix -File -Recurse | ForEach-Object {
-          Move-Item -Path $_.FullName -Destination "${{ env.Solution_Name }}\\Packages"
+          try {
+            Move-Item -Path $_.FullName -Destination "${{ env.Solution_Name }}\\Packages" -ErrorAction Stop
+          } catch {
+            Write-Output "File $($_.Name) already exists in the destination folder."
+          }
         }
+
         
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
     - name: Upload MSIX package
