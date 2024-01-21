@@ -180,8 +180,8 @@ jobs:
       id: check_release
       run: |
         VERSION=$(echo ${{ env.VERSION }})
-        RELEASES=$(curl --silent "https://api.github.com/repos/<username>/<repo>/releases")
-        if echo "$RELEASES" | grep -q "$VERSION"; then
+        RELEASE=$(curl --silent "https://api.github.com/repos/<username>/<repo>/releases/tags/$VERSION")
+        if [[ "$RELEASE" == *"\"tag_name\": \"$VERSION\""* ]]; then
           echo "Релиз с тегом $VERSION уже существует"
           echo "EXISTING_RELEASE=true" >> $GITHUB_ENV
         else
