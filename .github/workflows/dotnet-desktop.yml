@@ -133,7 +133,7 @@ jobs:
     # Rename the .cer file
     - name: Rename the .cer file
       run: |
-        Get-ChildItem -Path ${{ env.Solution_Name }}\\Packages -Filter *.cer -Recurse -Depth 1 | ForEach-Object {
+        Get-ChildItem -Path "${{ env.Solution_Name }}\\Packages" -Filter *.cer -Recurse -Depth 1 | ForEach-Object {
           Rename-Item -Path $_.FullName -NewName "Certificate.cer"
         }
     
