@@ -133,19 +133,15 @@ jobs:
           Rename-Item -Path $_.FullName -NewName "Certificate.cer"
         }
 
-    # Move only specific files from subfolders to the parent folder
-    - name: Переместить файлы
+    # Move .msix, .cer, and .msixbundle files from subfolders to the Packages folder
+    - name: Move files to the Packages folder
       run: |
-        Get-ChildItem -Path "${{ env.Solution_Name }}\\Packages" -Directory | ForEach-Object {
-          $firstLevelSubfolder = $_.FullName
-          Get-ChildItem -Path $firstLevelSubfolder -Directory | ForEach-Object {
-            Get-ChildItem -Path $_.FullName -Include *.cer, *.msixbundle, *.msix -File | ForEach-Object {
-              try {
-                Write-Output "Перемещение файла $($_.Name)"
-                Move-Item -Path $_.FullName -Destination "${{ env.Solution_Name }}\\Packages" -ErrorAction Stop
-              } catch {
-                Write-Output "Файл $($_.Name) уже существует в целевой папке."
-              }
+        $fileTypes = "*.msix", "*.cer", "*.msixbundle"
+        foreach ($fileType in $fileTypes) {
+          Get-ChildItem -Path "${{ env.Solution_Name }}\\Packages" -Filter $fileType -Recurse -Depth 1 | ForEach-Object {
+            $destinationFile = "${{ env.Solution_Name }}\\Packages\\" + $_.Name
+            if (-Not (Test-Path -Path $destinationFile)) {
+              Move-Item -Path $_.FullName -Destination $destinationFile
             }
           }
         }
