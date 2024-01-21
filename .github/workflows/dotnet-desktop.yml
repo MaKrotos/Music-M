@@ -138,9 +138,11 @@ jobs:
         }
 
     # Move only specific files from subfolders to the parent folder
-    - name: Переместить определенные файлы в родительскую папку
-      run: |
-        Get-ChildItem -Path "${{ env.Solution_Name }}\\Packages" -Directory | ForEach-Object {
+    - name: Переместить файлы
+    run: |
+      Get-ChildItem -Path "${{ env.Solution_Name }}\\Packages" -Directory | ForEach-Object {
+        $firstLevelSubfolder = $_.FullName
+        Get-ChildItem -Path $firstLevelSubfolder -Directory | ForEach-Object {
           Get-ChildItem -Path $_.FullName -Include *.cer, *.msixbundle, *.msix -File | ForEach-Object {
             try {
               Move-Item -Path $_.FullName -Destination "${{ env.Solution_Name }}\\Packages" -ErrorAction Stop
@@ -149,7 +151,7 @@ jobs:
             }
           }
         }
-
+      }
 
         
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
