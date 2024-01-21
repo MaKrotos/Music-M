@@ -138,15 +138,18 @@ jobs:
         }
 
     # Move only specific files from subfolders to the parent folder
-    - name: Move specific files to the parent folder
+    - name: Переместить определенные файлы в родительскую папку
       run: |
-        Get-ChildItem -Path "${{ env.Solution_Name }}\\Packages" -Include *.cer, *.msixbundle, *.msix -File -Recurse | ForEach-Object {
-          try {
-            Move-Item -Path $_.FullName -Destination "${{ env.Solution_Name }}\\Packages" -ErrorAction Stop
-          } catch {
-            Write-Output "File $($_.Name) already exists in the destination folder."
+        Get-ChildItem -Path "${{ env.Solution_Name }}\\Packages" -Directory | ForEach-Object {
+          Get-ChildItem -Path $_.FullName -Include *.cer, *.msixbundle, *.msix -File | ForEach-Object {
+            try {
+              Move-Item -Path $_.FullName -Destination "${{ env.Solution_Name }}\\Packages" -ErrorAction Stop
+            } catch {
+              Write-Output "Файл $($_.Name) уже существует в целевой папке."
+            }
           }
         }
+
 
         
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
@@ -172,25 +175,38 @@ jobs:
         echo "Версия: $version"
       continue-on-error: true
     
-    - name: Проверить релиз
+    - name: Проверить существующий релиз
       id: check_release
       run: |
-        if (curl --silent --head --fail "https://github.com/$GITHUB_REPOSITORY/releases/tag/${{ env.VERSION }}") { 
-          echo "RELEASE_EXISTS=1" >> $GITHUB_ENV
-        } else {
-          echo "RELEASE_EXISTS=0" >> $GITHUB_ENV
-        }
+        VERSION=$(echo ${{ env.VERSION }})
+        RELEASES=$(curl --silent "https://api.github.com/repos/<username>/<repo>/releases")
+        if echo "$RELEASES" | grep -q "$VERSION"; then
+          echo "Релиз с тегом $VERSION уже существует"
+          echo "EXISTING_RELEASE=true" >> $GITHUB_ENV
+        else
+          echo "Релиз с тегом $VERSION не найден"
+          echo "EXISTING_RELEASE=false" >> $GITHUB_ENV
+        fi
       continue-on-error: true
-    
+ 
     - name: Создать релиз
       id: create_release
-      uses: actions/create-release@v1
-      with:
-        tag_name: ${{ env.VERSION }}
-        release_name: ${{ github.event.inputs.namevers }}
-        body: ${{ github.event.inputs.descr }}
-        draft: false
-        prerelease: true
+      run: |
+        if [ "${{ env.EXISTING_RELEASE }}" = "false" ]; then
+          curl --silent -X POST -H "Authorization: token <your_token>" \
+            -d '{
+              "tag_name": "${{ env.VERSION }}",
+              "target_commitish": "master",
+              "name": "${{ github.event.inputs.namevers }}",
+              "body": "${{ github.event.inputs.descr }}",
+              "draft": false,
+              "prerelease": true
+            }' \
+            "https://api.github.com/repos/<username>/<repo>/releases"
+          echo "Релиз с тегом ${{ env.VERSION }} создан"
+        else
+          echo "Релиз с тегом ${{ env.VERSION }} уже существует, создание нового релиза пропущено"
+        fi
       if: env.RELEASE_EXISTS == 0 && github.event.inputs.release == true
       continue-on-error: true
 
