@@ -7,18 +7,19 @@ name: WinUI 3 MSIX app
 on:
   workflow_dispatch:
     inputs:
-      logLevel:
-        description: 'Log level'
-        required: true
-        default: 'warning'
       namevers:
-        description: 'Log level'
+        description: 'Название релиза'
         required: true
         default: 'Автосборка'
       descr:
-        description: 'Log level'
+        description: 'Описание релиза'
         required: true
         default: '❌ Описание сборки отсутствует'
+      release:
+        description: 'Выкинуть в релиз?'
+        required: true
+        default: false
+        type: boolean
 
   push:
     branches: [ main ]
@@ -156,6 +157,8 @@ jobs:
         echo "VERSION=$version" >> $GITHUB_ENV
         echo "Версия: $version"
       continue-on-error: true
+      env:
+        VERSION: ${{ steps.get_version.outputs.VERSION }}
     
     - name: Проверить релиз
       id: check_release
@@ -166,22 +169,23 @@ jobs:
           echo "RELEASE_EXISTS=0" >> $GITHUB_ENV
         }
       continue-on-error: true
+      env:
+        VERSION: ${{ steps.get_version.outputs.VERSION }}
     
     - name: Создать релиз
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VERSION: ${{ steps.get_version.outputs.VERSION }}
       with:
         tag_name: ${{ env.VERSION }}
         release_name: ${{ github.event.inputs.namevers }}
         body: ${{ github.event.inputs.descr }}
         draft: false
         prerelease: true
-      if: env.RELEASE_EXISTS == 0
+      if: env.RELEASE_EXISTS == 0 && github.event.inputs.release == true
       continue-on-error: true
-
-
 
 
 
