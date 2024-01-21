@@ -112,7 +112,7 @@ jobs:
     # Create the app package by building and packaging the project
     - name: Create the app package
       run: |
-        $platforms = "x64", "x86", "ARM"
+        $platforms = "x64", "x86", "ARM64"
         foreach ($platform in $platforms) {
           $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
           msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$platform /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile="$certificatePath" /p:PackageCertificatePassword="${{ secrets.PFX_PASSWORD }}" /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true
@@ -123,9 +123,6 @@ jobs:
         Appx_Package_Dir: Packages\
         Configuration: ${{ matrix.configuration }}
 
-
-
-        
     # Remove the pfx
     - name: Remove the pfx
       run: |
