@@ -61,10 +61,6 @@ jobs:
 
 
 
-    - name: Display disk tree
-      run: |
-        Get-ChildItem -Recurse | Sort-Object Length -Descending
-
 
     # Install the .NET Core workload
     - name: Install .NET Core
@@ -153,6 +149,12 @@ jobs:
           }
         }
 
+
+
+    - name: Display disk tree
+      run: |
+        Get-ChildItem -Recurse | Sort-Object Length -Descending
+
         
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
     - name: Upload MSIX package
@@ -190,7 +192,7 @@ jobs:
           echo "EXISTING_RELEASE=false" >> $GITHUB_ENV
         fi
       continue-on-error: true
- 
+    
     - name: Создать релиз
       id: create_release
       run: |
@@ -209,15 +211,10 @@ jobs:
         else
           echo "Релиз с тегом ${{ env.VERSION }} уже существует, создание нового релиза пропущено"
         fi
-      if: env.RELEASE_EXISTS == 0 && github.event.inputs.release == true
+      if: env.EXISTING_RELEASE == "false" && github.event.inputs.release == true
       continue-on-error: true
-
-
-
-
-
-
-
+    
+    
 
 
 
