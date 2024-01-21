@@ -175,42 +175,29 @@ jobs:
         echo "VERSION=$version" >> $GITHUB_ENV
         echo "Версия: $version"
       continue-on-error: true
-    
-    - name: Проверить существующий релиз
+
+    - name: Проверить релиз
       id: check_release
       run: |
-        VERSION=$(echo ${{ env.VERSION }})
-        RELEASE=$(curl --silent "https://api.github.com/repos/<username>/<repo>/releases/tags/$VERSION")
-        if [[ "$RELEASE" == *"\"tag_name\": \"$VERSION\""* ]]; then
-          echo "Релиз с тегом $VERSION уже существует"
-          echo "EXISTING_RELEASE=true" >> $GITHUB_ENV
+        response=$(curl --silent --show-error --fail --location "https://api.github.com/repos/${{ github.repository }}/releases/tags/$VERSION" -H "Authorization: token ${{ secrets.TOKEN }}")
+        if [ $? -ne 0 ]; then
+          echo "RELEASE_EXISTS=false" >> $GITHUB_ENV
         else
-          echo "Релиз с тегом $VERSION не найден"
-          echo "EXISTING_RELEASE=false" >> $GITHUB_ENV
+          echo "RELEASE_EXISTS=true" >> $GITHUB_ENV
         fi
       continue-on-error: true
     
     - name: Создать релиз
-      id: create_release
+      if: env.RELEASE_EXISTS == 'false'
       run: |
-        $REPO_NAME = ${{ github.repository }}.Split('/')[1]
-        
-        if (${{ env.EXISTING_RELEASE }} -eq "false") {
-          $body = @{
-            "tag_name" = "${{ env.VERSION }}"
-            "target_commitish" = "master"
-            "name" = "${{ github.event.inputs.namevers }}"
-            "body" = "${{ github.event.inputs.descr }}"
-            "draft" = $false
-            "prerelease" = $true
-          } | ConvertTo-Json
-    
-          Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository_owner }}/$REPO_NAME/releases" -Method Post -Body $body -Headers @{Authorization = "Bearer ${{ secrets.TOKEN }}"}
-          Write-Host "Релиз с тегом ${{ env.VERSION }} создан"
-        } else {
-          Write-Host "Релиз с тегом ${{ env.VERSION }} уже существует, создание нового релиза пропущено"
-        }
-      continue-on-error: true
+        response=$(curl --silent --show-error --fail --location --request POST "https://api.github.com/repos/${{ github.repository }}/releases" -H "Authorization: token ${{ secrets.TOKEN }}" --header 'Content-Type: application/json' --data-raw '{
+          "tag_name": "'"$VERSION"'",
+          "name": "'"$VERSION"'"
+        }')
+        if [ $? -ne 0 ]; then
+          echo "Failed to create release"
+          exit 1
+        fi
 
 
 
