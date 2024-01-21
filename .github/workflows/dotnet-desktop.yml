@@ -14,7 +14,7 @@ on:
       descr:
         description: 'Описание релиза'
         required: true
-        default: '❌ Описание сборки отсутствует'
+        default: '❌ Описание сборки отсутствует'  
       release:
         description: 'Выкинуть в релиз?'
         required: true
@@ -188,33 +188,29 @@ jobs:
           echo "Релиз с тегом $VERSION не найден"
           echo "EXISTING_RELEASE=false" >> $GITHUB_ENV
         fi
-      shell: bash
       continue-on-error: true
     
     - name: Создать релиз
       id: create_release
       run: |
-        REPO_NAME=$(echo ${{ github.repository }} | cut -d '/' -f 2)
+        $REPO_NAME = ${{ github.repository }}.Split('/')[1]
         
-        if [ "${{ env.EXISTING_RELEASE }}" = "false" ]; then
-          curl --silent -X POST -H "Authorization: token ${{ secrets.TOKEN }}" \
-            -d '{
-              "tag_name": "${{ env.VERSION }}",
-              "target_commitish": "master",
-              "name": "${{ github.event.inputs.namevers }}",
-              "body": "${{ github.event.inputs.descr }}",
-              "draft": false,
-              "prerelease": true
-            }' \
-            "https://api.github.com/repos/${{ github.repository_owner }}/$REPO_NAME/releases"
-          echo "Релиз с тегом ${{ env.VERSION }} создан"
-        else
-          echo "Релиз с тегом ${{ env.VERSION }} уже существует, создание нового релиза пропущено"
-        fi
-              shell: bash
+        if (${{ env.EXISTING_RELEASE }} -eq "false") {
+          $body = @{
+            "tag_name" = "${{ env.VERSION }}"
+            "target_commitish" = "master"
+            "name" = "${{ github.event.inputs.namevers }}"
+            "body" = "${{ github.event.inputs.descr }}"
+            "draft" = $false
+            "prerelease" = $true
+          } | ConvertTo-Json
+    
+          Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository_owner }}/$REPO_NAME/releases" -Method Post -Body $body -Headers @{Authorization = "Bearer ${{ secrets.TOKEN }}"}
+          Write-Host "Релиз с тегом ${{ env.VERSION }} создан"
+        } else {
+          Write-Host "Релиз с тегом ${{ env.VERSION }} уже существует, создание нового релиза пропущено"
+        }
       continue-on-error: true
-
-
 
 
 
