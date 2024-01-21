@@ -130,22 +130,24 @@ jobs:
         $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
         Remove-Item -path "$certificatePath"
         
+    # Rename the .cer file
+    - name: Rename the .cer file
+      run: |
+        Get-ChildItem -Path ${{ env.Solution_Name }}\\Packages -Filter *.cer -Recurse -Depth 1 | ForEach-Object {
+          Rename-Item -Path $_.FullName -NewName "Certificate.cer"
+        }
+    
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
     - name: Upload MSIX package
       uses: actions/upload-artifact@v2
       with:
         name: MSIX Package
-        path: ${{ env.Solution_Name }}\\Packages
-    
-    - name: Upload .cer, .msixbundle, and .msix files
-      uses: actions/upload-artifact@v2
-      with:
-        name: Release Files
         path: |
-          *.cer
-          *.msixbundle
-          *.msix
+          ${{ env.Solution_Name }}\\Packages\*\*.cer
+          ${{ env.Solution_Name }}\\Packages\*\*.msixbundle
+          ${{ env.Solution_Name }}\\Packages\*\*.msix
     
+
     - name: Извлечь версию
       id: get_version
       run: |
@@ -157,8 +159,6 @@ jobs:
         echo "VERSION=$version" >> $GITHUB_ENV
         echo "Версия: $version"
       continue-on-error: true
-      env:
-        VERSION: ${{ steps.get_version.outputs.VERSION }}
     
     - name: Проверить релиз
       id: check_release
@@ -169,15 +169,10 @@ jobs:
           echo "RELEASE_EXISTS=0" >> $GITHUB_ENV
         }
       continue-on-error: true
-      env:
-        VERSION: ${{ steps.get_version.outputs.VERSION }}
     
     - name: Создать релиз
       id: create_release
       uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        VERSION: ${{ steps.get_version.outputs.VERSION }}
       with:
         tag_name: ${{ env.VERSION }}
         release_name: ${{ github.event.inputs.namevers }}
