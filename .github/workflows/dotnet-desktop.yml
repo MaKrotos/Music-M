@@ -136,7 +136,14 @@ jobs:
         Get-ChildItem -Path "${{ env.Solution_Name }}\\Packages" -Filter *.cer -Recurse -Depth 1 | ForEach-Object {
           Rename-Item -Path $_.FullName -NewName "Certificate.cer"
         }
-    
+
+    # Move only specific files from subfolders to the parent folder
+    - name: Move specific files to the parent folder
+      run: |
+        Get-ChildItem -Path "${{ env.Solution_Name }}\\Packages" -Include *.cer, *.msixbundle, *.msix -File -Recurse | ForEach-Object {
+          Move-Item -Path $_.FullName -Destination "${{ env.Solution_Name }}\\Packages"
+        }
+        
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
     - name: Upload MSIX package
       uses: actions/upload-artifact@v2
