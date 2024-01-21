@@ -211,7 +211,6 @@ jobs:
         else
           echo "Релиз с тегом ${{ env.VERSION }} уже существует, создание нового релиза пропущено"
         fi
-      if: env.EXISTING_RELEASE == "false" && github.event.inputs.release == true
       continue-on-error: true
     
     
