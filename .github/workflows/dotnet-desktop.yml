@@ -179,25 +179,26 @@ jobs:
     - name: Проверить релиз
       id: check_release
       run: |
-        response=$(curl --silent --show-error --fail --location "https://api.github.com/repos/${{ github.repository }}/releases/tags/$VERSION" -H "Authorization: token ${{ secrets.TOKEN }}")
-        if [ $? -ne 0 ]; then
-          echo "RELEASE_EXISTS=false" >> $GITHUB_ENV
-        else
-          echo "RELEASE_EXISTS=true" >> $GITHUB_ENV
-        fi
+        $response = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases/tags/$VERSION" -Headers @{"Authorization"="token ${{ secrets.TOKEN }}"} -Method Get -ErrorAction SilentlyContinue
+        if ($LASTEXITCODE -ne 0) {
+          echo "RELEASE_EXISTS=false" >> $env:GITHUB_ENV
+        } else {
+          echo "RELEASE_EXISTS=true" >> $env:GITHUB_ENV
+        }
+      shell: pwsh
       continue-on-error: true
     
     - name: Создать релиз
       if: env.RELEASE_EXISTS == 'false'
       run: |
-        response=$(curl --silent --show-error --fail --location --request POST "https://api.github.com/repos/${{ github.repository }}/releases" -H "Authorization: token ${{ secrets.TOKEN }}" --header 'Content-Type: application/json' --data-raw '{
-          "tag_name": "'"$VERSION"'",
-          "name": "'"$VERSION"'"
-        }')
-        if [ $? -ne 0 ]; then
-          echo "Failed to create release"
+        $response = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases" -Headers @{"Authorization"="token ${{ secrets.TOKEN }}"} -Method Post -Body (@{
+          "tag_name" = "$VERSION"
+          "name" = "$VERSION"
+        } | ConvertTo-Json)
+        if ($LASTEXITCODE -ne 0) {
+          Write-Output "Failed to create release"
           exit 1
-        fi
-
+        }
+      shell: pwsh
 
 
