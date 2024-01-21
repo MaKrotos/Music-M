@@ -188,6 +188,7 @@ jobs:
           echo "Релиз с тегом $VERSION не найден"
           echo "EXISTING_RELEASE=false" >> $GITHUB_ENV
         fi
+      shell: bash
       continue-on-error: true
     
     - name: Создать релиз
@@ -208,9 +209,8 @@ jobs:
         else
           echo "Релиз с тегом ${{ env.VERSION }} уже существует, создание нового релиза пропущено"
         fi
+      shell: bash
       continue-on-error: true
-    
-    
 
 
 
