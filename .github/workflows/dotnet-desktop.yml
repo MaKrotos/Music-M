@@ -141,6 +141,7 @@ jobs:
           Get-ChildItem -Path $firstLevelSubfolder -Directory | ForEach-Object {
             Get-ChildItem -Path $_.FullName -Include *.cer, *.msixbundle, *.msix -File | ForEach-Object {
               try {
+                Write-Output "Перемещение файла $($_.Name)"
                 Move-Item -Path $_.FullName -Destination "${{ env.Solution_Name }}\\Packages" -ErrorAction Stop
               } catch {
                 Write-Output "Файл $($_.Name) уже существует в целевой папке."
