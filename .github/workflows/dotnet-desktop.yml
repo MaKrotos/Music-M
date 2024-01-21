@@ -180,14 +180,14 @@ jobs:
       id: check_release
       run: |
         $response = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases/tags/$VERSION" -Headers @{"Authorization"="token ${{ secrets.TOKEN }}"} -Method Get -ErrorAction SilentlyContinue
-        if ($LASTEXITCODE -ne 0) {
+        if (!$?) {
           echo "RELEASE_EXISTS=false" >> $env:GITHUB_ENV
         } else {
           echo "RELEASE_EXISTS=true" >> $env:GITHUB_ENV
         }
       shell: pwsh
       continue-on-error: true
-    
+
     - name: Создать релиз
       if: env.RELEASE_EXISTS == 'false'
       run: |
