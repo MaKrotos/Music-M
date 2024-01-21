@@ -155,9 +155,9 @@ jobs:
       with:
         name: MSIX Package
         path: |
-          ${{ env.Solution_Name }}\\Packages\*\*.cer
-          ${{ env.Solution_Name }}\\Packages\*\*.msixbundle
-          ${{ env.Solution_Name }}\\Packages\*\*.msix
+          ${{ env.Solution_Name }}\\Packages\*.cer
+          ${{ env.Solution_Name }}\\Packages\*.msixbundle
+          ${{ env.Solution_Name }}\\Packages\*.msix
     
 
     - name: Извлечь версию
