@@ -172,16 +172,14 @@ jobs:
         $nsManager = New-Object System.Xml.XmlNamespaceManager($doc.NameTable)
         $nsManager.AddNamespace('default', 'http://schemas.microsoft.com/appx/manifest/foundation/windows10')
         $version = $doc.SelectSingleNode('//default:Identity', $nsManager).Version
-        echo "VERSION=$version" >> $GITHUB_ENV
+        echo "::set-output name=VERSION::$version"
         echo "Версия: $version"
       continue-on-error: true
-
+    
     - name: Вывести версию
       run: |
-        echo "Извлеченная версия: ${{ env.VERSION }}"
-
-      
-
+        echo "Извлеченная версия: ${{ steps.get_version.outputs.VERSION }}"
+    
     - name: Получить релизы
       id: get_releases
       run: |
@@ -191,11 +189,11 @@ jobs:
         $releases = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases" -Headers $headers
         echo "::set-output name=releases::$releases"
       shell: pwsh
-
+    
     - name: Проверить существование релиза
       id: check_release
       run: |
-        $version = "${{ env.VERSION }}"
+        $version = "${{ steps.get_version.outputs.VERSION }}"
         $headers = @{
           "Authorization" = "token ${{ secrets.TOKEN }}"
         }
@@ -209,19 +207,19 @@ jobs:
           echo "::set-output name=exists::false"
         }
       shell: pwsh
-
+    
     - name: Создать релиз
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
       with:
-        tag_name: ${{ env.VERSION }}
-        release_name: Release ${{ env.VERSION }}
+        tag_name: ${{ steps.get_version.outputs.VERSION }}
+        release_name: Release ${{ steps.get_version.outputs.VERSION }}
         draft: false
         prerelease: false
       if: steps.check_release.outputs.exists == 'false'
-
+    
 
       
 
