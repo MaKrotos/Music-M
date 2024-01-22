@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
 	  <Version>0.39</Version>
 	  <Configurations>Debug;Release</Configurations>
-	  <Platforms>x64</Platforms>
+	  <Platforms>x86;x64;ARM64</Platforms>
 
   </PropertyGroup>
 
