@@ -144,8 +144,10 @@
             // label8
             // 
             label8.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            label8.AutoEllipsis = true;
             label8.FlatStyle = FlatStyle.System;
             label8.Location = new Point(18, 168);
+            label8.MaximumSize = new Size(374, 176);
             label8.Name = "label8";
             label8.Size = new Size(374, 176);
             label8.TabIndex = 12;

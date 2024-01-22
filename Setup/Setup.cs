@@ -42,10 +42,10 @@ namespace Setup
             appUpdater.DownloadProgressChanged += AppUpdater_DownloadProgressChanged;
             button1.Enabled = false;
             await appUpdater.DownloadAndOpenFile();
-          
+
             Close();
         }
 
-     
+       
     }
 }
