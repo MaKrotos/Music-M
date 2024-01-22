@@ -10,7 +10,7 @@ on:
       namevers:
         description: 'Название релиза'
         required: true
-        default: 'Автосборка'
+        default: '🤖 Автосборка'
       descr:
         description: 'Описание релиза'
         required: true
@@ -228,19 +228,18 @@ jobs:
         prerelease: ${{ github.event.inputs.prerelease }}
       if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
     
-
     - name: Загрузить артефакты в релиз
       run: |
-        FILES="./${{ env.Solution_Name }}/Packages/*"
-        for file in $FILES
-        do
-          name=$(basename $file)
-          echo "Загрузка $name..."
-          curl \
-            -H "Authorization: token ${{ secrets.TOKEN }}" \
-            -H "Content-Type: $(file -b --mime-type $file)" \
-            --data-binary @"$file" \
-            "${{ steps.create_release.outputs.upload_url }}/assets?name=$name"
-        done
-      shell: bash
+        $files = Get-ChildItem -Path "${{ env.Solution_Name }}\\Packages" -Include *.cer, *.msixbundle, *.msix -Recurse
+        foreach ($file in $files) {
+          echo "Загрузка файла $file..."
+          Invoke-RestMethod `
+            -Method Post `
+            -Uri "${{ steps.create_release.outputs.upload_url }}" `
+            -Headers @{Authorization = "Bearer ${{ secrets.TOKEN }}"} `
+            -InFile $file.FullName `
+            -ContentType 'application/octet-stream' `
+            -Body @{name = $file.Name}
+        }
+      shell: pwsh
 
