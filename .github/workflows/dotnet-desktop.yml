@@ -192,8 +192,12 @@ jobs:
       id: check_release
       run: |
         $version = "${{ env.VERSION }}"
-        $releases = "${{ steps.get_releases.outputs.releases }}"
-        if ($releases -match $version) {
+        $headers = @{
+          "Authorization" = "token ${{ secrets.TOKEN }}"
+        }
+        $releases = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases" -Headers $headers
+        $release = $releases | Where-Object { $_.tag_name -eq $version -and $_.draft -eq $false -and $_.prerelease -eq $false }
+        if ($release) {
           Write-Host "Релиз с тегом $version уже существует"
           echo "::set-output name=exists::true"
         } else {
