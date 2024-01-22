@@ -236,6 +236,7 @@ jobs:
           curl \
             -H "Authorization: token ${{ secrets.TOKEN }}" \
             -H "Content-Type: $(file -b --mime-type $file)" \
-            --data-binary @$file \
+            --data-binary "@$file" \
             "${{ steps.create_release.outputs.upload_url }}?name=$(basename $file)"
         }
+
