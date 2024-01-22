@@ -64,7 +64,7 @@ namespace VK_UI3.Views
             if (updatesSection.Catalog?.Sections?.Count > 0)
             {
                 var section = updatesSection.Catalog.Sections[0];
-                section.Title = "РџРѕРґРїРёСЃРєРё";
+                section.Title = "Подписки";
                 catalogs.Catalog.Sections.Insert(catalogs.Catalog.Sections.Count - 1, section);
             }
 
@@ -78,7 +78,7 @@ namespace VK_UI3.Views
                    Symbol.More,
                    Symbol.Pictures,
                    Symbol.Map,
-                       
+
                 };
 
             var rand = new Random();
@@ -87,36 +87,36 @@ namespace VK_UI3.Views
             {
                 Symbol icon;
 
-               if (section.Title.ToLower() == "РіР»Р°РІРЅР°СЏ")
+                if (section.Title.ToLower() == "главная")
                 {
                     icon = Symbol.Home;
                 }
-                else if (section.Title.ToLower() == "РјРѕСЏ РјСѓР·С‹РєР°")
+                else if (section.Title.ToLower() == "моя музыка")
                 {
                     icon = Symbol.Audio;
                 }
-                else if (section.Title.ToLower() == "РѕР±Р·РѕСЂ")
+                else if (section.Title.ToLower() == "обзор")
                 {
                     icon = Symbol.PreviewLink;
                 }
-                else if (section.Title.ToLower() == "РїРѕРґРєР°СЃС‚С‹")
+                else if (section.Title.ToLower() == "подкасты")
                 {
                     icon = Symbol.Microphone;
                 }
-                else if (section.Title.ToLower() == "РїРѕРґРїРёСЃРєРё")
+                else if (section.Title.ToLower() == "подписки")
                 {
                     icon = Symbol.Favorite;
                 }
-                else if (section.Title.ToLower() == "РєР°С‚Р°Р»РѕРіРё")
+                else if (section.Title.ToLower() == "каталоги")
                 {
                     icon = Symbol.Library;
                 }
-                else if (section.Title.ToLower() == "РїРѕРёСЃРє")
+                else if (section.Title.ToLower() == "поиск")
                 {
                     icon = Symbol.Find;
                 }
 
-                else if (section.Title.ToLower().StartsWith("РєРЅРёРіРё"))
+                else if (section.Title.ToLower().StartsWith("книги"))
                 {
                     continue;
                 }
@@ -129,7 +129,7 @@ namespace VK_UI3.Views
 
 
 
-                if (section.Title.ToLower() == "РјРѕСЏ РјСѓР·С‹РєР°") section.Title = "РњСѓР·С‹РєР°";
+                if (section.Title.ToLower() == "моя музыка") section.Title = "Музыка";
 
                 var navSet = new NavSettings() { Icon = icon, MyMusicItem = section.Title, section = section };
                 navSettings.Add(navSet);
@@ -140,7 +140,7 @@ namespace VK_UI3.Views
                 //  var navigationItem = new NavigationBarItem() { Tag = section.Id, PageDataContext = viewModel, Icon = icon, Content = section.Title, PageType = typeof(SectionView) };
                 //  navigationBar.Items.Add(navigationItem);
 
-              
+
 
 
             }
@@ -187,21 +187,25 @@ namespace VK_UI3.Views
 
         public static ObservableCollection<Accounts> Accounts { get; set; } = new ObservableCollection<Accounts>();
 
-        ObservableCollection<Accounts> AccList { 
+        ObservableCollection<Accounts> AccList
+        {
             get { return Accounts; }
-             set { Accounts = value; 
+            set
+            {
+                Accounts = value;
             }
         }
 
         int getSelectedNumber
         {
-            get {
+            get
+            {
                 int a = -1;
                 foreach (var item in Accounts)
                 {
                     a++;
                     if (item.Active) return a;
-                    
+
                 }
                 return -1;
             }
@@ -211,23 +215,23 @@ namespace VK_UI3.Views
         private async void ListViewItem_PointerExited(object sender, PointerRoutedEventArgs e)
         {
 
-           
+
 
         }
 
 
-    
+
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-  
-            // РџСЂРѕРІРµСЂСЊС‚Рµ, СЏРІР»СЏРµС‚СЃСЏ Р»Рё РїРµСЂРµРґР°РЅРЅС‹Р№ РїР°СЂР°РјРµС‚СЂ С‚РёРїРѕРј NavigationInfo
+
+            // Проверьте, является ли переданный параметр типом NavigationInfo
             if (e.Parameter is NavigationInfo navigationInfo)
             {
-                // РСЃРїРѕР»СЊР·СѓР№С‚Рµ navigationInfo Р·РґРµСЃСЊ
+                // Используйте navigationInfo здесь
                 // ((MainWindow) navigationInfo.SourcePageType).GoLogin();
-                mainWindow = (MainWindow) navigationInfo.SourcePageType;
+                mainWindow = (MainWindow)navigationInfo.SourcePageType;
             }
             updateAccounts();
         }
@@ -243,7 +247,7 @@ namespace VK_UI3.Views
                 Accounts.Add(item);
                 if (item.Active)
                 {
-                   //AccountsList.SelectedIndex = i;
+                    //AccountsList.SelectedIndex = i;
                 }
                 i++;
             }
@@ -252,20 +256,20 @@ namespace VK_UI3.Views
 
         MainWindow mainWindow = null;
 
-        private int previousSelectedAccount =-1;
+        private int previousSelectedAccount = -1;
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var selectedAccount = (Accounts)AccountsList.SelectedItem;
             // selectedAccount.itemSelected();
             if (selectedAccount == null) return;
-                if (selectedAccount.Token == null)
+            if (selectedAccount.Token == null)
             {
 
-                // РЎРѕР·РґР°Р№С‚Рµ РѕР±СЉРµРєС‚ NavigationInfo Рё СѓСЃС‚Р°РЅРѕРІРёС‚Рµ РёСЃС…РѕРґРЅСѓСЋ СЃС‚СЂР°РЅРёС†Сѓ
+                // Создайте объект NavigationInfo и установите исходную страницу
                 //  var navigationInfo = new NavigationInfo { SourcePageType = this };
 
-              
+
 
                 //  PopupFrame.Navigate(typeof(Login), navigationInfo, new DrillInNavigationTransitionInfo());
                 //  CustomPopup.IsOpen = true;
@@ -281,20 +285,21 @@ namespace VK_UI3.Views
                 this.Frame.Navigate(typeof(Login), this, new DrillInNavigationTransitionInfo());
                 previousSelectedAccount = AccountsList.SelectedIndex;
             }
-            else {
+            else
+            {
 
                 AccountsDB.ActivateAccount(selectedAccount.id);
                 activeAccount = selectedAccount;
-                var a = ContentFrame.Content.GetType(); 
+                var a = ContentFrame.Content.GetType();
                 ContentFrame.Navigate(a, this, new DrillInNavigationTransitionInfo());
-       
+
             }
 
-      
+
 
         }
-        
-  
+
+
 
 
 
@@ -304,75 +309,75 @@ namespace VK_UI3.Views
 
         }
 
-        // РћР±СЉРµРєС‚ TranslateTransform, РєРѕС‚РѕСЂС‹Р№ Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ РґР»СЏ Р°РЅРёРјР°С†РёРё
+        // Объект TranslateTransform, который будет использоваться для анимации
         TranslateTransform trans = new TranslateTransform();
 
-        // Storyboard, РєРѕС‚РѕСЂС‹Р№ Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ РґР»СЏ СѓРїСЂР°РІР»РµРЅРёСЏ Р°РЅРёРјР°С†РёРµР№
+        // Storyboard, который будет использоваться для управления анимацией
         Storyboard sb = new Storyboard();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void LowerFrame()
         {
-            // РћСЃС‚Р°РЅРѕРІРёС‚СЊ С‚РµРєСѓС‰СѓСЋ Р°РЅРёРјР°С†РёСЋ, РµСЃР»Рё РѕРЅР° РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ
+            // Остановить текущую анимацию, если она выполняется
             if (sb.GetCurrentState() == ClockState.Active)
             {
                 sb.Stop();
             }
             sb = new Storyboard();
 
-            // РЎРѕР·РґР°Р№С‚Рµ РЅРѕРІС‹Р№ РѕР±СЉРµРєС‚ DoubleAnimation
+            // Создайте новый объект DoubleAnimation
             DoubleAnimation da = new DoubleAnimation();
 
-            // РЈСЃС‚Р°РЅРѕРІРёС‚Рµ РЅР°С‡Р°Р»СЊРЅРѕРµ Рё РєРѕРЅРµС‡РЅРѕРµ Р·РЅР°С‡РµРЅРёСЏ
-            da.From = trans.Y; // РЅР°С‡Р°Р»СЊРЅРѕРµ РїРѕР»РѕР¶РµРЅРёРµ
-          //  da.To = FramePlayer.ActualHeight - 50; // РєРѕРЅРµС‡РЅРѕРµ РїРѕР»РѕР¶РµРЅРёРµ
+            // Установите начальное и конечное значения
+            da.From = trans.Y; // начальное положение
+                               //  da.To = FramePlayer.ActualHeight - 50; // конечное положение
 
-            // РЈСЃС‚Р°РЅРѕРІРёС‚Рµ РїСЂРѕРґРѕР»Р¶РёС‚РµР»СЊРЅРѕСЃС‚СЊ Р°РЅРёРјР°С†РёРё
-            da.Duration = new Duration(TimeSpan.FromMilliseconds(250)); // РїСЂРѕРґРѕР»Р¶РёС‚РµР»СЊРЅРѕСЃС‚СЊ РІ СЃРµРєСѓРЅРґР°С…
+            // Установите продолжительность анимации
+            da.Duration = new Duration(TimeSpan.FromMilliseconds(250)); // продолжительность в секундах
 
-          
 
-            // Р”РѕР±Р°РІСЊС‚Рµ Р°РЅРёРјР°С†РёСЋ РІ Storyboard
+
+            // Добавьте анимацию в Storyboard
             sb.Children.Add(da);
 
-            // РЈСЃС‚Р°РЅРѕРІРёС‚Рµ С†РµР»РµРІРѕР№ РѕР±СЉРµРєС‚ Рё СЃРІРѕР№СЃС‚РІРѕ РґР»СЏ Р°РЅРёРјР°С†РёРё
+            // Установите целевой объект и свойство для анимации
             Storyboard.SetTarget(da, trans);
             Storyboard.SetTargetProperty(da, "Y");
 
-            // Р—Р°РїСѓСЃС‚РёС‚Рµ Р°РЅРёРјР°С†РёСЋ
+            // Запустите анимацию
             sb.Begin();
         }
 
 
         public void RaiseFrame()
         {
-            // РћСЃС‚Р°РЅРѕРІРёС‚СЊ С‚РµРєСѓС‰СѓСЋ Р°РЅРёРјР°С†РёСЋ, РµСЃР»Рё РѕРЅР° РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ
+            // Остановить текущую анимацию, если она выполняется
             if (sb.GetCurrentState() == ClockState.Active)
             {
                 sb.Stop();
-                
+
             }
             sb = new Storyboard();
 
-            // РЎРѕР·РґР°Р№С‚Рµ РЅРѕРІС‹Р№ РѕР±СЉРµРєС‚ DoubleAnimation
+            // Создайте новый объект DoubleAnimation
             DoubleAnimation da = new DoubleAnimation();
 
-            // РЈСЃС‚Р°РЅРѕРІРёС‚Рµ РЅР°С‡Р°Р»СЊРЅРѕРµ Рё РєРѕРЅРµС‡РЅРѕРµ Р·РЅР°С‡РµРЅРёСЏ
-            da.From = trans.Y; // РЅР°С‡Р°Р»СЊРЅРѕРµ РїРѕР»РѕР¶РµРЅРёРµ
-            da.To = 0; // РєРѕРЅРµС‡РЅРѕРµ РїРѕР»РѕР¶РµРЅРёРµ (РІРµСЂРЅСѓС‚СЊСЃСЏ РѕР±СЂР°С‚РЅРѕ)
+            // Установите начальное и конечное значения
+            da.From = trans.Y; // начальное положение
+            da.To = 0; // конечное положение (вернуться обратно)
 
-            // РЈСЃС‚Р°РЅРѕРІРёС‚Рµ РїСЂРѕРґРѕР»Р¶РёС‚РµР»СЊРЅРѕСЃС‚СЊ Р°РЅРёРјР°С†РёРё
-            da.Duration = new Duration(TimeSpan.FromMilliseconds(250)); // РїСЂРѕРґРѕР»Р¶РёС‚РµР»СЊРЅРѕСЃС‚СЊ РІ СЃРµРєСѓРЅРґР°С…
-           
-            // Р”РѕР±Р°РІСЊС‚Рµ Р°РЅРёРјР°С†РёСЋ РІ Storyboard
+            // Установите продолжительность анимации
+            da.Duration = new Duration(TimeSpan.FromMilliseconds(250)); // продолжительность в секундах
+
+            // Добавьте анимацию в Storyboard
             sb.Children.Add(da);
 
-            // РЈСЃС‚Р°РЅРѕРІРёС‚Рµ С†РµР»РµРІРѕР№ РѕР±СЉРµРєС‚ Рё СЃРІРѕР№СЃС‚РІРѕ РґР»СЏ Р°РЅРёРјР°С†РёРё
+            // Установите целевой объект и свойство для анимации
             Storyboard.SetTarget(da, trans);
             Storyboard.SetTargetProperty(da, "Y");
 
-            // Р—Р°РїСѓСЃС‚РёС‚Рµ Р°РЅРёРјР°С†РёСЋ
+            // Запустите анимацию
             sb.Begin();
         }
 
@@ -382,7 +387,7 @@ namespace VK_UI3.Views
 
         private void FramePlayer_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
-           // RaiseFrame();
+            // RaiseFrame();
 
         }
 
@@ -391,7 +396,7 @@ namespace VK_UI3.Views
 
             //  LowerFrame();
 
-          
+
 
         }
 
@@ -409,13 +414,13 @@ namespace VK_UI3.Views
             {
                 switch (invokedItem.Content.ToString().ToLower())
                 {
-                    case "РјРѕСЏ РјСѓР·С‹РєР°":
+                    case "моя музыка":
                         ContentFrame.Navigate(typeof(MainMenu), null, new DrillInNavigationTransitionInfo());
                         break;
 
-                    case "РїР°СЂР°РјРµС‚СЂС‹":
+                    case "параметры":
 
-                    break;
+                        break;
 
                     default:
                         var Item = sender.SelectedItem as NavMenuController;
@@ -424,12 +429,12 @@ namespace VK_UI3.Views
 
                         // RemoveNavItems();
                         break;
-                        // Рё С‚Р°Рє РґР°Р»РµРµ...
+                        // и так далее...
                 }
             }
             else
             {
-            
+
 
 
 
@@ -447,7 +452,7 @@ namespace VK_UI3.Views
     public class NavigationInfo
     {
         public Object SourcePageType { get; set; }
-        // Р”РѕР±Р°РІСЊС‚Рµ Р·РґРµСЃСЊ РґСЂСѓРіРёРµ СЃРІРѕР№СЃС‚РІР°, РµСЃР»Рё СЌС‚Рѕ РЅРµРѕР±С…РѕРґРёРјРѕ
+        // Добавьте здесь другие свойства, если это необходимо
 
     }
 }
