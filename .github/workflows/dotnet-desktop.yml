@@ -176,6 +176,10 @@ jobs:
         echo "Версия: $version"
       continue-on-error: true
 
+    - name: Вывести версию
+      run: |
+        echo "Извлеченная версия: ${{ env.VERSION }}"
+
       
 
     - name: Получить релизы
