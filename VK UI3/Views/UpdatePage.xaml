@@ -26,7 +26,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Horizontal" Margin="10">
-                    <ImageIcon Source="ms-appx:///Assets/StoreLogo.scale-100.png" Width="50" Height="50"/>
+                    <ImageIcon Source="ms-appx:///Assets/StoreLogo.scale-400.png" Width="50" Height="50"/>
                     <TextBlock Text="VK M" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" Margin="10,0,0,0"/>
                 </StackPanel>
                 <StackPanel Grid.Row="1" Margin="10">
