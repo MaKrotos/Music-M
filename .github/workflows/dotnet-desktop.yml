@@ -231,18 +231,16 @@ jobs:
 
     - name: Загрузить артефакты в релиз
       run: |
-        Install-Module -Name Invoke-WebRequest2 -Force -Scope CurrentUser
-        $files = Get-ChildItem -Path "./${{ env.Solution_Name }}/Packages/*" -Include *.cer, *.msixbundle, *.msix
-        foreach ($file in $files)
-        {
-          $name = $file.Name
-          Write-Host "Загрузка $name..."
-          Invoke-WebRequest2 `
-            -Method Post `
-            -Headers @{"Authorization" = "token ${{ secrets.TOKEN }}"} `
-            -InFile $file.FullName `
-            -Uri "${{ steps.create_release.outputs.upload_url }}/assets?name=$name" `
-            -ContentType "application/octet-stream"
-        }
-      shell: pwsh
+        FILES=./${{ env.Solution_Name }}/Packages/*
+        for file in $FILES
+        do
+          name=$(basename $file)
+          echo "Загрузка $name..."
+          curl \
+            -H "Authorization: token ${{ secrets.TOKEN }}" \
+            -H "Content-Type: $(file -b --mime-type $file)" \
+            --data-binary @"$file" \
+            "${{ steps.create_release.outputs.upload_url }}/assets?name=$name"
+        done
+      shell: bash
 
