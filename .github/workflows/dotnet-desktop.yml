@@ -116,11 +116,10 @@ jobs:
     # Create the app package by building and packaging the project
     - name: Create the app package
       run: |
-        chcp 65001
         $platforms = "x64", "x86", "ARM64"
         foreach ($platform in $platforms) {
           $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
-          msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$platform /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile="$certificatePath" /p:PackageCertificatePassword="${{ secrets.PFX_PASSWORD }}" /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true /utf-8
+          msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$platform /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile="$certificatePath" /p:PackageCertificatePassword="${{ secrets.PFX_PASSWORD }}" /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true
         }
       env:
         Appx_Bundle: Never
