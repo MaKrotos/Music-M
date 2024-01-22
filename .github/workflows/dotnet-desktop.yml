@@ -177,39 +177,42 @@ jobs:
       continue-on-error: true
 
       
+
     - name: Получить релизы
       id: get_releases
       run: |
-        releases=$(curl --silent --show-error --location --header "Authorization: token ${{ secrets.TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/releases")
+        $headers = @{
+          "Authorization" = "token ${{ secrets.GITHUB_TOKEN }}"
+        }
+        $releases = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases" -Headers $headers
         echo "::set-output name=releases::$releases"
-    
+      shell: pwsh
+
     - name: Проверить существование релиза
       id: check_release
       run: |
-        version=${{ env.VERSION }}
-        releases=${{ steps.get_releases.outputs.releases }}
-        if echo "$releases" | grep -q "\"tag_name\":\"$version\""; then
-          echo "Релиз с тегом $version уже существует"
+        $version = "${{ env.VERSION }}"
+        $releases = "${{ steps.get_releases.outputs.releases }}"
+        if ($releases -match $version) {
+          Write-Host "Релиз с тегом $version уже существует"
           echo "::set-output name=exists::true"
-        else
-          echo "Релиз с тегом $version не найден"
+        } else {
+          Write-Host "Релиз с тегом $version не найден"
           echo "::set-output name=exists::false"
-        fi
-    
+        }
+      shell: pwsh
+
     - name: Создать релиз
       id: create_release
       uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ env.VERSION }}
         release_name: Release ${{ env.VERSION }}
         draft: false
         prerelease: false
       if: steps.check_release.outputs.exists == 'false'
-
-
-
 
 
       
