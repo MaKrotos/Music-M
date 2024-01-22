@@ -29,7 +29,7 @@
                     <RowDefinition Height="50"></RowDefinition>
 
                 </Grid.RowDefinitions>
-                <ImageIcon Margin="10,5,5,20" Grid.Column="0" Source="ms-appx:///Assets/StoreLogo.scale-100.png" />
+                <ImageIcon Margin="10,5,5,20" Grid.Column="0" Source="ms-appx:///Assets/StoreLogo.scale-400.png" />
                 <TextBlock Grid.Column="1" Text="VK M" x:Name="AppTitle"  VerticalAlignment="Top" Margin="8" />
             </Grid>
 
