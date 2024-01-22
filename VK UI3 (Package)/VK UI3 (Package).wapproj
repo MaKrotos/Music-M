@@ -134,10 +134,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VK UI3\VK UI3.csproj">
-		
 			<SkipGetTargetFrameworkProperties>True</SkipGetTargetFrameworkProperties>
 			<PublishProfile>Properties\PublishProfiles\win10-$(Platform).pubxml</PublishProfile>
-
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

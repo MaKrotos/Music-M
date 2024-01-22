@@ -1,4 +1,4 @@
-﻿using static VK_UI3.DB.AccountsDB;
+using static VK_UI3.DB.AccountsDB;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;

@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualBasic;
+using Microsoft.VisualBasic;
 using MusicX.Core.Services;
 using System;
 using System.Collections.Generic;

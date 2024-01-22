@@ -58,7 +58,7 @@ namespace VK_UI3
 
 
           //  Shuffle(Tracks);
-            // Добавьте новый элемент в Tracks здесь
+            // Р”РѕР±Р°РІСЊС‚Рµ РЅРѕРІС‹Р№ СЌР»РµРјРµРЅС‚ РІ Tracks Р·РґРµСЃСЊ
         }
 
         public void Shuffle<T>(ObservableCollection<T> collection)

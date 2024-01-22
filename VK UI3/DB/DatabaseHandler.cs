@@ -1,4 +1,4 @@
-﻿
+
 using Microsoft.UI.Xaml;
 using SQLite;
 using System;
