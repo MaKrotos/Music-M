@@ -229,12 +229,17 @@ jobs:
       if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
     
 
-    - name: Загрузить файлы в релиз
-      uses: xresloader/upload-to-github-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        file: ${{ env.Solution_Name }}\\Packages\*.cer;${{ env.Solution_Name }}\\Packages\*.msixbundle;${{ env.Solution_Name }}\\Packages\*.msix
-        tags: true
-        draft: false
-    
+    - name: Загрузить артефакты в релиз
+      run: |
+        $files = Get-ChildItem -Path "./${{ env.Solution_Name }}/Packages/*" -Include *.cer, *.msixbundle, *.msix
+        foreach ($file in $files)
+        {
+          $name = $file.Name
+          Write-Host "Загрузка $name..."
+          Invoke-RestMethod `
+            -Method Post `
+            -Headers @{"Authorization" = "token ${{ secrets.TOKEN }}"; "Content-Type" = "application/octet-stream"} `
+            -InFile $file.FullName `
+            -Uri "${{ steps.create_release.outputs.upload_url }}/assets?name=$name"
+        }
+      shell: pwsh
