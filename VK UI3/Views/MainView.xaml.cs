@@ -413,6 +413,10 @@ namespace VK_UI3.Views
                         ContentFrame.Navigate(typeof(MainMenu), null, new DrillInNavigationTransitionInfo());
                         break;
 
+                    case "параметры":
+
+                    break;
+
                     default:
                         var Item = sender.SelectedItem as NavMenuController;
 
