@@ -229,5 +229,12 @@ jobs:
       if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
     
 
-      
-
+    - name: Загрузить файлы в релиз
+      uses: xresloader/upload-to-github-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        file: ${{ env.Solution_Name }}\\Packages\*.cer;${{ env.Solution_Name }}\\Packages\*.msixbundle;${{ env.Solution_Name }}\\Packages\*.msix
+        tags: true
+        draft: false
+    
