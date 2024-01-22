@@ -182,7 +182,7 @@ jobs:
       id: get_releases
       run: |
         $headers = @{
-          "Authorization" = "token ${{ secrets.GITHUB_TOKEN }}"
+          "Authorization" = "token ${{ secrets.TOKEN }}"
         }
         $releases = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases" -Headers $headers
         echo "::set-output name=releases::$releases"
@@ -206,7 +206,7 @@ jobs:
       id: create_release
       uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
       with:
         tag_name: ${{ env.VERSION }}
         release_name: Release ${{ env.VERSION }}
