@@ -1,4 +1,4 @@
-#define SKIP_ERROR_PRONE_CODE
+﻿#define SKIP_ERROR_PRONE_CODE
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
