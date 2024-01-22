@@ -231,7 +231,7 @@ jobs:
 
     - name: Загрузить артефакты в релиз
       run: |
-        FILES=./${{ env.Solution_Name }}/Packages/*
+        FILES="./${{ env.Solution_Name }}/Packages/*"
         for file in $FILES
         do
           name=$(basename $file)
