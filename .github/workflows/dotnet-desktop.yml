@@ -228,15 +228,13 @@ jobs:
         prerelease: ${{ github.event.inputs.prerelease }}
       if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
     
-    - name: Загрузить все файлы в релиз
-      run: |
-        $files = Get-ChildItem -Path "${{ env.Solution_Name }}\\Packages\\" -Recurse
-        foreach ($file in $files) {
-          echo "Загрузка файла $file..."
-          curl \
-            -H "Authorization: token ${{ secrets.TOKEN }}" \
-            -H "Content-Type: $(file -b --mime-type $file)" \
-            --data-binary "@$file" \
-            "${{ steps.create_release.outputs.upload_url }}?name=$(basename $file)"
-        }
+    - name: Загрузить файлы в релиз
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.TOKEN }}
+        file: ${{ env.Solution_Name }}/Packages/*
+        asset_name: ${{ env.Solution_Name }}-release-files
+        tag: ${{ steps.get_version.outputs.VERSION }}
+        overwrite: true
+        file_glob: true
 
