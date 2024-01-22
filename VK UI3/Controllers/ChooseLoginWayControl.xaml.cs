@@ -43,55 +43,55 @@ namespace VK_UI3.Controllers
                     if (loginWay.Name == LoginWay.Codegen)
                     {
                         fontIcon.Glyph = "\uECAD";
-                        MainTxT.Text = "Генератор кода";
-                        secondTXT.Text = "Воспользуйтесь кодом из приложения генерации кодов авторизации";
+                        MainTxT.Text = "Р“РµРЅРµСЂР°С‚РѕСЂ РєРѕРґР°";
+                        secondTXT.Text = "Р’РѕСЃРїРѕР»СЊР·СѓР№С‚РµСЃСЊ РєРѕРґРѕРј РёР· РїСЂРёР»РѕР¶РµРЅРёСЏ РіРµРЅРµСЂР°С†РёРё РєРѕРґРѕРІ Р°РІС‚РѕСЂРёР·Р°С†РёРё";
                     } 
                     else if (loginWay.Name == LoginWay.Push)
                     {
                         fontIcon.Glyph = "\uE90A";
-                        MainTxT.Text = "PUSH уведомление";
-                        secondTXT.Text = "Вам будет отправлено PUSH уведомление для авторизации";
+                        MainTxT.Text = "PUSH СѓРІРµРґРѕРјР»РµРЅРёРµ";
+                        secondTXT.Text = "Р’Р°Рј Р±СѓРґРµС‚ РѕС‚РїСЂР°РІР»РµРЅРѕ PUSH СѓРІРµРґРѕРјР»РµРЅРёРµ РґР»СЏ Р°РІС‚РѕСЂРёР·Р°С†РёРё";
                     }
                     else if (loginWay.Name == LoginWay.Passkey)
                     {
                         fontIcon.Glyph = "\uE928";
                         MainTxT.Text = "OnePass";
-                        secondTXT.Text = "Воспользуйтесь OnePass для авторизации";
+                        secondTXT.Text = "Р’РѕСЃРїРѕР»СЊР·СѓР№С‚РµСЃСЊ OnePass РґР»СЏ Р°РІС‚РѕСЂРёР·Р°С†РёРё";
                     }
                     else if (loginWay.Name == LoginWay.CallReset)
                     {
                         fontIcon.Glyph = "\uE717";
-                        MainTxT.Text = "Звонок";
-                        secondTXT.Text = "Вам позвонят и продиктуют код.";
+                        MainTxT.Text = "Р—РІРѕРЅРѕРє";
+                        secondTXT.Text = "Р’Р°Рј РїРѕР·РІРѕРЅСЏС‚ Рё РїСЂРѕРґРёРєС‚СѓСЋС‚ РєРѕРґ.";
                     }
                     else if (loginWay.Name == LoginWay.Sms)
                     {
                         fontIcon.Glyph = "\uE8BD";
-                        MainTxT.Text = "Sms уведомление";
-                        secondTXT.Text = "Вам будет отправлено СМС сообщение для авторизации";
+                        MainTxT.Text = "Sms СѓРІРµРґРѕРјР»РµРЅРёРµ";
+                        secondTXT.Text = "Р’Р°Рј Р±СѓРґРµС‚ РѕС‚РїСЂР°РІР»РµРЅРѕ РЎРњРЎ СЃРѕРѕР±С‰РµРЅРёРµ РґР»СЏ Р°РІС‚РѕСЂРёР·Р°С†РёРё";
                     }
                     else if (loginWay.Name == LoginWay.ReserveCode)
                     {
                         fontIcon.Glyph = "\uE821";
-                        MainTxT.Text = "Резервный код";
-                        secondTXT.Text = "Воспользуйтесь резервным кодом для авторизации";
+                        MainTxT.Text = "Р РµР·РµСЂРІРЅС‹Р№ РєРѕРґ";
+                        secondTXT.Text = "Р’РѕСЃРїРѕР»СЊР·СѓР№С‚РµСЃСЊ СЂРµР·РµСЂРІРЅС‹Рј РєРѕРґРѕРј РґР»СЏ Р°РІС‚РѕСЂРёР·Р°С†РёРё";
                     }
                     else if (loginWay.Name == LoginWay.Email)
                     {
                         fontIcon.Glyph = "\uE715";
-                        MainTxT.Text = "Электронная почта";
-                        secondTXT.Text = "Вам будет отправлен код на электронную почту";
+                        MainTxT.Text = "Р­Р»РµРєС‚СЂРѕРЅРЅР°СЏ РїРѕС‡С‚Р°";
+                        secondTXT.Text = "Р’Р°Рј Р±СѓРґРµС‚ РѕС‚РїСЂР°РІР»РµРЅ РєРѕРґ РЅР° СЌР»РµРєС‚СЂРѕРЅРЅСѓСЋ РїРѕС‡С‚Сѓ";
                     }
                     else if (loginWay.Name == LoginWay.Password)
                     {
                         fontIcon.Glyph = "\uE8AC";
-                        MainTxT.Text = "Пароль";
-                        secondTXT.Text = "Введите пароль для входа в свой аккаунт.";
+                        MainTxT.Text = "РџР°СЂРѕР»СЊ";
+                        secondTXT.Text = "Р’РІРµРґРёС‚Рµ РїР°СЂРѕР»СЊ РґР»СЏ РІС…РѕРґР° РІ СЃРІРѕР№ Р°РєРєР°СѓРЅС‚.";
                     }
                     else
                     {
                         fontIcon.Glyph = "?";
-                        MainTxT.Text = "Нереализованный метод ("+loginWay.Name.ToString()+")";
+                        MainTxT.Text = "РќРµСЂРµР°Р»РёР·РѕРІР°РЅРЅС‹Р№ РјРµС‚РѕРґ ("+loginWay.Name.ToString()+")";
                         secondTXT.Text = "???";
                     }
                 }

@@ -65,7 +65,7 @@ namespace VK_UI3.Controllers
 
         private void Delete_Click(object sender, RoutedEventArgs e)
         {
-            // Здесь добавьте код для удаления элемента
+            // Р—РґРµСЃСЊ РґРѕР±Р°РІСЊС‚Рµ РєРѕРґ РґР»СЏ СѓРґР°Р»РµРЅРёСЏ СЌР»РµРјРµРЅС‚Р°
             DatabaseHandler.getConnect().Delete<Accounts>(this.accounts.id);
             MainView.updateAccounts();
         }

@@ -210,10 +210,10 @@ namespace VK_UI3.Controllers
             //   AudioPlayer.PlayTrack(TrackData.AudioList, TrackData.NumberList);
 
 
-            // Получение объекта MediaPlaybackSession
+            // РџРѕР»СѓС‡РµРЅРёРµ РѕР±СЉРµРєС‚Р° MediaPlaybackSession
             //var playbackSession = AudioPlayer.mediaPlayer.PlaybackSession;
 
-            // Получение прогресса буферизации
+            // РџРѕР»СѓС‡РµРЅРёРµ РїСЂРѕРіСЂРµСЃСЃР° Р±СѓС„РµСЂРёР·Р°С†РёРё
             //double bufferingProgress = playbackSession.BufferingProgress;
 
 
