@@ -47,11 +47,12 @@ namespace SetupLib
                     Console.WriteLine("Версия вашего приложения не ниже, чем последняя версия.");
                     return false;
                 }
-               
 
-                var msixAsset = release.Assets.FirstOrDefault(asset => asset.Name.EndsWith(".msixbundle"))
-                    ?? release.Assets.FirstOrDefault(asset =>  asset.Name.EndsWith(".msix")) ?? null;
+                string osArchitecture = GetOSArchitecture();
 
+
+                var msixAsset = release.Assets.FirstOrDefault(asset => asset.Name.Contains(osArchitecture) && asset.Name.EndsWith(".msix"))
+                                      ?? release.Assets.FirstOrDefault(asset => asset.Name.EndsWith(".msixbundle")) ?? null;
 
 
                 if (msixAsset != null)
@@ -164,6 +165,9 @@ namespace SetupLib
                 }
             }
 
+            bool isInstalled = IsAppInstalled("AppInstaller");
+
+            if (!isInstalled)
             if (!IsAppInstalled("WindowsAppRuntime"))
             {
                 // Затем скачиваем файл .msix
@@ -260,7 +264,7 @@ namespace SetupLib
                 }
 
 
-                bool isInstalled = IsAppInstalled("AppInstaller");
+         
                 if (isInstalled)
                 {
 
@@ -323,6 +327,29 @@ namespace SetupLib
        
             return output.Contains("True");
         }
+
+
+        public static string GetOSArchitecture()
+        {
+            if (RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
+            {
+                return "ARM64";
+            }
+
+            else if (RuntimeInformation.ProcessArchitecture == Architecture.X64)
+            {
+                return "x64";
+            }
+            else if (RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.X86)
+            {
+                return "x86";
+            }
+            else
+            {
+                throw new Exception("Неизвестная архитектура");
+            }
+        }
+
 
         public static Uri GetOSArchitectureURI()
         {
