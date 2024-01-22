@@ -176,29 +176,41 @@ jobs:
         echo "Версия: $version"
       continue-on-error: true
 
-    - name: Проверить релиз
+      
+    - name: Получить релизы
+      id: get_releases
+      run: |
+        releases=$(curl --silent --show-error --location --header "Authorization: token ${{ secrets.TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/releases")
+        echo "::set-output name=releases::$releases"
+    
+    - name: Проверить существование релиза
       id: check_release
       run: |
-        $response = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases/tags/$VERSION" -Headers @{"Authorization"="token ${{ secrets.TOKEN }}"} -Method Get -ErrorAction SilentlyContinue
-        if (!$?) {
-          echo "RELEASE_EXISTS=false" >> $env:GITHUB_ENV
-        } else {
-          echo "RELEASE_EXISTS=true" >> $env:GITHUB_ENV
-        }
-      shell: pwsh
-      continue-on-error: true
-
+        version=${{ env.VERSION }}
+        releases=${{ steps.get_releases.outputs.releases }}
+        if echo "$releases" | grep -q "\"tag_name\":\"$version\""; then
+          echo "Релиз с тегом $version уже существует"
+          echo "::set-output name=exists::true"
+        else
+          echo "Релиз с тегом $version не найден"
+          echo "::set-output name=exists::false"
+        fi
+    
     - name: Создать релиз
-      if: env.RELEASE_EXISTS == 'false'
-      run: |
-        $response = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases" -Headers @{"Authorization"="token ${{ secrets.TOKEN }}"} -Method Post -Body (@{
-          "tag_name" = "$VERSION"
-          "name" = "$VERSION"
-        } | ConvertTo-Json)
-        if ($LASTEXITCODE -ne 0) {
-          Write-Output "Failed to create release"
-          exit 1
-        }
-      shell: pwsh
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      with:
+        tag_name: ${{ env.VERSION }}
+        release_name: Release ${{ env.VERSION }}
+        draft: false
+        prerelease: false
+      if: steps.check_release.outputs.exists == 'false'
 
+
+
+
+
+      
 
