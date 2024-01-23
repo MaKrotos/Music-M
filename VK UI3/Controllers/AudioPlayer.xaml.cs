@@ -336,7 +336,7 @@ namespace VK_UI3.Controllers
         private void MediaPlayer_MediaOpened(Windows.Media.Playback.MediaPlayer sender, object args)
         {
             // Код для выполнения при открытии медиафайла
-            TrackDuration = Convert.ToInt32(sender.NaturalDuration.TotalSeconds);
+            TrackDuration = TrackDataThis.Duration;
         }
         private void MediaPlayer_MediaFailed(Windows.Media.Playback.MediaPlayer sender, Windows.Media.Playback.MediaPlayerFailedEventArgs args)
         {
@@ -390,7 +390,7 @@ namespace VK_UI3.Controllers
 
             var source = sender.Source as Windows.Media.Playback.MediaPlaybackItem;
 
-            TrackDuration = Convert.ToInt32(sender.NaturalDuration.TotalSeconds);
+            TrackDuration = TrackDataThis.Duration;
         
 
             

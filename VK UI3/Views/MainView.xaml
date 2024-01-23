@@ -13,6 +13,9 @@
      NavigationCacheMode="Enabled"
     
     >
+    <Page.Resources>
+        <ThemeShadow x:Name="SharedShadow" />
+    </Page.Resources>
 
     <Grid>
         <Grid.RowDefinitions  >
@@ -39,19 +42,20 @@
 
                 <NavigationViewItem Content="Моя музыка">
                     <NavigationViewItem.Icon>
-                        <SymbolIcon Symbol="Home"/>
-                    </NavigationViewItem.Icon>
+                            <FontIcon Glyph="&#xEC4F;" />
+                        </NavigationViewItem.Icon>
                 </NavigationViewItem>
                     
                 <NavigationViewItemSeparator/>
 
 
 
+                    
                     <NavigationViewItemHeader Content="Аккаунты"/>
+                    <NavigationViewItemSeparator/>
+                    <NavigationViewItem   Padding="-10,0,-20,0" SelectsOnInvoked="False" >
 
-                    <NavigationViewItem  Padding="-10,0,-20,0" SelectsOnInvoked="False" >
-                        
-                        <Grid Margin="-1,10,10,10" Padding="0,-5,-10,-5" >
+                        <Grid Translation="0,0,24" Margin="-1,10,10,10" Padding="0,-5,-10,-5" >
                             <ListView SelectedIndex="{x:Bind getSelectedNumber, Mode=OneTime}"  ItemsSource="{x:Bind AccList, Mode=TwoWay}"  SelectionChanged="ListView_SelectionChanged" x:Name="AccountsList">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
