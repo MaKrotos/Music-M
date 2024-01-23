@@ -182,6 +182,7 @@ jobs:
         echo "::set-output name=VERSION::$version"
         echo "Версия: $version"
       continue-on-error: true
+      if: github.event.inputs.release == 'true'
     
     - name: Вывести версию
       run: |
@@ -196,6 +197,7 @@ jobs:
         $releases = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases" -Headers $headers
         echo "::set-output name=releases::$releases"
       shell: pwsh
+      if: github.event.inputs.release == 'true'
     
     - name: Проверить существование релиза
       id: check_release
@@ -214,6 +216,7 @@ jobs:
           echo "::set-output name=exists::false"
         }
       shell: pwsh
+      if: github.event.inputs.release == 'true'
     
     - name: Создать релиз
       id: create_release
@@ -237,4 +240,5 @@ jobs:
         tag: ${{ steps.get_version.outputs.VERSION }}
         overwrite: true
         file_glob: true
+      if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
 
