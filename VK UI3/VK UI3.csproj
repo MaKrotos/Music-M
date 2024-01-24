@@ -20,6 +20,10 @@
 
 	<ItemGroup>
 	  <None Remove="Controllers\NavMenuController.xaml" />
+	  <None Remove="Controls\BlockControl.xaml" />
+	  <None Remove="Controls\DefaultControl.xaml" />
+	  <None Remove="Controls\TitleBlockControl.xaml" />
+	  <None Remove="Views\SectionView.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -60,9 +64,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Controls\DefaultControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\BlockControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\TitleBlockControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="icon.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\SectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

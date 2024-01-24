@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
+using MusicX.Core.Models;
 using MusicX.Core.Services;
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,7 @@ namespace VK_UI3.Views
     public sealed partial class MainView : Page, INotifyPropertyChanged
     {
 
+        public static Frame frame;
         public MainView()
         {
             this.InitializeComponent();
@@ -41,7 +43,7 @@ namespace VK_UI3.Views
 
 
             ContentFrame.Navigate(typeof(MainMenu), null, new DrillInNavigationTransitionInfo());
-
+            frame = ContentFrame;
             createNavigation();
         }
         protected void OnPropertyChanged(string propertyName)
@@ -424,8 +426,9 @@ namespace VK_UI3.Views
 
                     default:
                         var Item = sender.SelectedItem as NavMenuController;
+                        ContentFrame.Navigate(typeof(SectionView), Item.navSettings.section, new DrillInNavigationTransitionInfo());
+                    
 
-                        getsect(Item.navSettings.section.Id, Item.navSettings.section.NextFrom);
 
                         // RemoveNavItems();
                         break;
@@ -440,14 +443,19 @@ namespace VK_UI3.Views
 
             }
         }
-
-        private async void getsect(string section, string from)
+        public static void OpenSection(string sectionID)
         {
-            //var a= await VK.vkService.GetSectionAsync(section, from);
-            //ContentFrame.Navigate(typeof(MainMenu), null, new DrillInNavigationTransitionInfo());
+
+            frame.Navigate(typeof(SectionView), sectionID, new DrillInNavigationTransitionInfo());
+        }
+        public static void OpenSection(Section section)
+        {
+
+            frame.Navigate(typeof(SectionView), section, new DrillInNavigationTransitionInfo());
         }
     }
 
+   
 
     public class NavigationInfo
     {

@@ -38,8 +38,6 @@ namespace VK_UI3.Controllers
 
                 if (loginWay != null)
                 {
-                  
-
                     if (loginWay.Name == LoginWay.Codegen)
                     {
                         fontIcon.Glyph = "\uECAD";
