@@ -30,8 +30,6 @@ namespace VK_UI3.Views.LoginWindow
             this.InitializeComponent();
 
 
-      
-           
             
             //BackBTN.IsEnabled = this.Frame.CanGoBack;
             this.Loaded += Login_Loaded;

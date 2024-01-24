@@ -1,0 +1,208 @@
+using Microsoft.AppCenter.Crashes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+using MusicX.Core.Models;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using VK_UI3.Services;
+using VK_UI3.Views;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
+
+// To learn more about WinUI, the WinUI project structure,
+// and more about our project templates, see: http://aka.ms/winui-project-info.
+
+namespace VK_UI3.Controls
+{
+    public partial class TitleBlockControl : UserControl
+    {
+        public TitleBlockControl()
+        {
+            InitializeComponent();
+            this.Loaded += TitleBlockControl_Loaded;
+            
+        }
+
+   
+        private void TitleBlockControl_Loaded(object sender, RoutedEventArgs e)
+    {
+            if (DataContext is not Block block)
+                return;
+
+           
+            Buttons.SelectionChanged += ButtonsComboBox_SelectionChanged;
+
+            if (block.Layout.Name == "header_compact")
+            {
+                Title.Opacity = 0.5;
+                Title.FontSize = 15;
+            }
+
+            Title.Text = block.Layout.Title;
+
+            if (block.Layout.TopTitle is not null || block.Layout.Subtitle is not null)
+            {
+                Subtitle.Text = block.Layout.TopTitle?.Text ?? block.Layout.Subtitle;
+                Subtitle.Visibility = Visibility.Visible;
+            }
+
+            if (block.Badge != null)
+            {
+                BadgeHeader.Text = block.Badge.Text;
+                BadgeHeader.Visibility = Visibility.Visible;
+            }
+
+            if (block.Buttons != null && block.Buttons.Count > 0) //ios
+            {
+                if (block.Buttons[0].Options.Count > 0)
+                {
+                    ButtonsGrid.Visibility = Visibility.Visible;
+                    TitleButtons.Text = block.Buttons[0].Title;
+                    Buttons.Visibility = Visibility.Visible;
+                    MoreButton.Visibility = Visibility.Collapsed;
+                    foreach (var option in block.Buttons[0].Options)
+                    {
+                        Buttons.Items.Add(new TextBlock() { Text = option.Text });
+                    }
+                    //Buttons.SelectedIndex = 0;
+                    return;
+                }
+                else
+                {
+                    MoreButton.Visibility = Visibility.Visible;
+
+                    MoreButton.Content = block.Buttons[0].Title;
+
+                    return;
+
+                }
+            }
+            else
+            {
+
+                if (block.Actions.Count > 0)
+                {
+
+                    if (block.Actions[0].Options.Count > 0) //android
+                    {
+                        ButtonsGrid.Visibility = Visibility.Visible;
+                        TitleButtons.Text = block.Actions[0].Title;
+                        Buttons.Visibility = Visibility.Visible;
+                        MoreButton.Visibility = Visibility.Collapsed;
+
+
+                        foreach (var option in block.Actions[0].Options)
+                        {
+                            Buttons.Items.Add(new TextBlock() { Text = option.Text });
+                        }
+
+                        return;
+                    }
+                    else
+                    {
+                        MoreButton.Visibility = Visibility.Visible;
+
+                        MoreButton.Content = block.Actions[0].Title;
+
+                        return;
+
+                    }
+
+                }
+
+                return;
+            }
+        }
+
+        private async void MoreButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is not Block block)
+                return;
+            try
+            {
+             
+
+                if (block.Actions.Count > 0)
+                {
+                    var bnt = block.Actions[0];
+
+                    MainView.OpenSection(bnt.SectionId);
+                    return;
+                }
+
+                var button = block.Buttons[0];
+
+                MainView.OpenSection(button.SectionId);
+            }
+            catch (Exception ex)
+            {
+
+                var properties = new Dictionary<string, string>
+            {
+#if DEBUG
+                { "IsDebug", "True" },
+#endif
+                {"Version", StaticService.Version }
+            };
+                Crashes.TrackError(ex, properties);
+
+               
+            }
+
+
+        }
+
+        private async void ButtonsComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DataContext is not Block block)
+                return;
+            try
+            {
+                var comboBox = sender as ComboBox;
+
+                var current = comboBox.SelectedIndex;
+
+                OptionButton option;
+                if (block.Buttons != null)
+                {
+                    option = block.Buttons[0].Options[current];
+
+                }
+                else
+                {
+                    option = block.Actions[0].Options[current];
+
+                }
+
+
+                SectionView.openedSectionView.ReplaceBlocks(option.ReplacementId);
+            }
+            catch (Exception ex)
+            {
+
+                var properties = new Dictionary<string, string>
+            {
+#if DEBUG
+                { "IsDebug", "True" },
+#endif
+                {"Version", StaticService.Version }
+            };
+                Crashes.TrackError(ex, properties);
+
+            
+            }
+
+
+            //throw new NotImplementedException();
+        }
+    }
+
+}

@@ -34,7 +34,7 @@
              SelectionChanged="NavWiv_SelectionChanged"
              CompactPaneLength="80"
              IsSettingsVisible="True"
-             IsBackButtonVisible="Collapsed"
+    
                       
              IsPaneOpen="False">
               

@@ -13,7 +13,7 @@
     <Grid>
         <ListView Padding="0,16,0,16" AllowDrop="True"  CanReorderItems="false" x:Name="TrackListView" ItemsSource="{x:Bind userAudio.listAudio, Mode=OneWay}"   IsItemClickEnabled="False" SelectionMode="None">
             <ListView.ItemTemplate>
-                <DataTemplate >
+                <DataTemplate>
                     <custom:TrackController
                         
                         FocusVisualPrimaryBrush="Transparent"
