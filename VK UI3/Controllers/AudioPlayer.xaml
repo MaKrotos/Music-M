@@ -10,7 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:local1="using:VK_UI3.Converters"
         xmlns:local2="using:VK_UI3.Helpers.Animations"
-      
+      Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}"
     mc:Ignorable="d"
   >
     <Page.Resources>

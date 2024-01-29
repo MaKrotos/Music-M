@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="VK_UI3.Controls.TrackControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VK_UI3.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+   Translation="0,0,24"
+    mc:Ignorable="d">
+
+    <UserControl.ContextFlyout>
+        <MenuFlyout>
+            <MenuFlyoutItem Text="Добавить/Удалить" Click="AddRemove_Click" Icon="AddFriend" />
+            <MenuFlyoutItem Text="Перейти к артисту" Click="GoToArtist_Click" />
+            <MenuFlyoutItem Text="Добавить в плейлист" Click="AddToPlaylist_Click" Icon="Add" />
+            <MenuFlyoutItem Text="Пропускать треки исполнителя" Click="AddArtistIgnore_Click" Icon="BlockContact" />
+            <MenuFlyoutItem Text="Скачать" Click="Download_Click" Icon="Download" />
+            <MenuFlyoutItem Text="Возпроизвести следующим" Click="PlayNext_Click" Icon="Play" />
+            <MenuFlyoutItem Text="Добавить в очередь" Click="AddToQueue_Click" Icon="Add" />
+        </MenuFlyout>
+    </UserControl.ContextFlyout>
+
+    <UserControl.Shadow>
+        <ThemeShadow />
+    </UserControl.Shadow>
+
+
+
+    <Grid
+     
+        x:Name="Card"
+        Margin="0,0,0,0"
+        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+        
+        BorderBrush="{ThemeResource ApplicationForegroundThemeBrush}"
+        CornerRadius="5"
+        BorderThickness="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+       
+
+
+
+        <Grid HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <Grid Margin="8,6.5,6,6" VerticalAlignment="Center">
+
+                    <Rectangle
+                       Grid.Row="0"
+                       Width="45"
+                       Height="45"
+                       Fill="Black"
+                       Opacity="0.1"
+                       RadiusX="5"
+                       RadiusY="5" />
+                    <SymbolIcon
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       
+                       Foreground="White"
+                       Symbol="MusicInfo" />
+
+                    <Rectangle
+                       x:Name="rectangle"
+                       Width="45"
+                       Height="45"
+                       RadiusX="3"
+                       RadiusY="3">
+                        <Rectangle.Fill>
+                            <ImageBrush x:Name="Cover" Stretch="UniformToFill">
+                                <ImageBrush.RelativeTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform CenterX="0.5" CenterY="0.5" />
+                                        <SkewTransform CenterX="0.5" CenterY="0.5" />
+                                        <RotateTransform CenterX="0.5" CenterY="0.5" />
+                                        <TranslateTransform />
+                                    </TransformGroup>
+                                </ImageBrush.RelativeTransform>
+                            </ImageBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+
+                    <Grid x:Name="PlayButtons" Visibility="Collapsed">
+                        <Rectangle
+                           Width="45"
+                           Height="45"
+                           Fill="Black"
+                           Opacity="0.6"
+                           RadiusX="3"
+                           RadiusY="3" />
+                        <SymbolIcon
+                           x:Name="IconPlay"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                        
+                           Foreground="White"
+                           Symbol="Play" />
+
+                    </Grid>
+                </Grid>
+                <Grid x:Name="ChartGrid" Visibility="Collapsed">
+                    <Rectangle
+                       Width="25"
+                       Height="25"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Fill="Black"
+                       Opacity="0.2"
+                       RadiusX="100"
+                       RadiusY="100" />
+                    <TextBlock
+                       x:Name="ChartPositionText"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontWeight="ExtraBlack"
+                       
+                       Text="1" />
+                </Grid>
+                <StackPanel Margin="5,0,0,0" VerticalAlignment="Center" MaxWidth="170" x:Name="TextsPanel">
+                    <StackPanel x:Name="NamePanel" Orientation="Horizontal">
+
+                        <TextBlock
+                            x:Name="Title"
+                            FontSize="16"
+                            FontWeight="SemiBold"
+    
+                            PointerEntered="Title_PointerEntered"
+                            PointerExited="Title_PointerExited"
+                            PointerPressed="Title_PointerPressed"
+                            Text="Title"
+                            TextTrimming="CharacterEllipsis">
+                            <ToolTipService.ToolTip>
+                                <ToolTip Content="Перейти к альбому" />
+                            </ToolTipService.ToolTip>
+                        </TextBlock>
+
+                        <TextBlock
+                           x:Name="Subtitle"
+                           Margin="5,3,2,0"
+                           
+                           Opacity="0.3"
+                           Text="Subtitle"
+                           TextTrimming="CharacterEllipsis" />
+
+                   
+                    </StackPanel>
+                    <Grid x:Name="ArtistTextGrid" HorizontalAlignment="Left" Width="900">
+                        <TextBlock
+                           HorizontalAlignment="Left"
+                           x:Name="Artists"
+                           Margin="0,2,0,0"
+                           FontSize="11"
+                           
+                           Opacity="0.6"
+                           Text="Artist"
+                           TextWrapping="NoWrap"
+                           TextTrimming="CharacterEllipsis">
+                            <ToolTipService.ToolTip>
+                               <ToolTip Content="Перейти к исполнителю" />
+                           </ToolTipService.ToolTip>
+                        </TextBlock>
+                    </Grid>
+
+                </StackPanel>
+            </StackPanel>
+
+
+            <Button
+                x:Name="RecommendedAudio"
+                Margin="0,0,10,0"
+                HorizontalAlignment="Right"
+          
+                Click="RecommendedAudio_Click"
+                FontSize="20"
+                Visibility="Collapsed">
+                <Button.Content>
+                    <SymbolIcon Symbol="Save" />
+                </Button.Content>
+                <ToolTipService.ToolTip>
+                    <ToolTip Content="Показать похожие треки" />
+                </ToolTipService.ToolTip>
+            </Button>
+
+
+
+
+
+            <TextBlock
+               x:Name="Time"
+               Grid.Column="1"
+               Margin="3,0,25,0"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Center"
+               
+               Opacity="0.5"
+               Text="02:20" />
+        </Grid>
+
+
+    </Grid>
+</UserControl>

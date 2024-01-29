@@ -11,6 +11,7 @@ using MusicX.Core.Models;
 using MusicX.Core.Services;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -36,6 +37,7 @@ namespace VK_UI3.Views
     public sealed partial class SectionView : Page, INotifyPropertyChanged
     {
         public Section section;
+       
         public SectionView()
         {
             this.InitializeComponent();
@@ -59,6 +61,11 @@ namespace VK_UI3.Views
             openedSectionView = this;
             // Параметр передается как объект, поэтому его нужно привести к нужному типу
             var section = e.Parameter as Section;
+            foreach (var item in section.Blocks)
+            {
+                blocks.Add(item);
+            }
+          
 
             if (section != null)
             {
@@ -79,48 +86,58 @@ namespace VK_UI3.Views
 
         private async void loadSection(string sectionID)
         {
+            blocks.Clear();
             var sectin =  await VK.vkService.GetSectionAsync(sectionID);
             this.section = sectin.Section;
+            foreach (var item in section.Blocks)
+            {
+                blocks.Add(item);
+            }
 
 
 
             OnPropertyChanged(nameof(section));
         }
         private bool nowOpenSearchSug = false;
+
+
+        public ObservableCollection<Block> blocks = new ObservableCollection<Block>();
+
+
         internal async void ReplaceBlocks(string replaceId)
         {
             nowOpenSearchSug = false;
             try
             {
-                var replaces = await VK.vkService.ReplaceBlockAsync(replaceId).ConfigureAwait(false);
+                var replaces = await (VK.vkService.ReplaceBlockAsync(replaceId).ConfigureAwait(false));
 
                 var toReplaceBlockIds = replaces.Replacements.ReplacementsModels.SelectMany(b => b.FromBlockIds)
                     .ToHashSet();
 
-                var newBlocks = new List<Block>();
+                // Найти блоки, которые нужно заменить
+                var blocksToReplace = blocks.Where(block => toReplaceBlockIds.Contains(block.Id)).ToList();
 
-                foreach (var block in section.Blocks)
+                this.DispatcherQueue.TryEnqueue(() =>
                 {
-                    if (!toReplaceBlockIds.Contains(block.Id))
+                    // Удалить блоки
+                    foreach (var block in blocksToReplace)
                     {
-                        newBlocks.Add(block);
+                        blocks.Remove(block);
                     }
-                    else
-                    {
-                        newBlocks.AddRange(replaces.Replacements.ReplacementsModels
-                            .Where(b => b.FromBlockIds.Contains(block.Id))
-                            .SelectMany(b => b.ToBlocks));
-                    }
-                }
 
-                section.Blocks = newBlocks;
-                OnPropertyChanged(nameof(section));
+                    // Добавить новые блоки
+                    foreach (var block in replaces.Replacements.ReplacementsModels.SelectMany(b => b.ToBlocks))
+                    {
+                        blocks.Add(block);
+                    }
+                });
             }
             catch (Exception ex)
             {
                 // Обработка исключений
             }
         }
+
 
 
     }
@@ -131,7 +148,7 @@ namespace VK_UI3.Views
         protected override DataTemplate? SelectTemplateCore(object? item, DependencyObject container)
         {
            
-                var control = (ListViewItem)container;
+             
          
                     if (item is Block)
                     {
@@ -161,7 +178,6 @@ namespace VK_UI3.Views
         }
 
 
-        DefaultControl? FallbackTemplate = new DefaultControl();
    
     }
 }

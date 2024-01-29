@@ -22,8 +22,15 @@
 	  <None Remove="Controllers\NavMenuController.xaml" />
 	  <None Remove="Controls\BlockControl.xaml" />
 	  <None Remove="Controls\DefaultControl.xaml" />
+	  <None Remove="Controls\ListTracks.xaml" />
 	  <None Remove="Controls\TitleBlockControl.xaml" />
+	  <None Remove="Controls\TrackControl.xaml" />
 	  <None Remove="Views\SectionView.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Remove="Controls\ListPlaylists.xaml" />
+	  <Page Remove="Controls\PlaylistControl.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -71,6 +78,21 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Controls\TitleBlockControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\ListTracks.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\TrackControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <None Update="Controls\ListPlaylists.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Controls\PlaylistControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <Page Update="Controls\TrackControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <None Update="icon.ico">

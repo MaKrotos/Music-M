@@ -207,30 +207,7 @@ namespace VK_UI3.Controllers
 
 
 
-            //   AudioPlayer.PlayTrack(TrackData.AudioList, TrackData.NumberList);
-
-
-            // Получение объекта MediaPlaybackSession
-            //var playbackSession = AudioPlayer.mediaPlayer.PlaybackSession;
-
-            // Получение прогресса буферизации
-            //double bufferingProgress = playbackSession.BufferingProgress;
-
-
-            /*
-            M3U8Downloader m3U8Downloader = new M3U8Downloader(this.TrackData.Url.ToString(), TrackData.Title);
-      
-            var datasegment = m3U8Downloader.getSegmentByTime(0);
-            
-            using (var mp3Stream = new MemoryStream(datasegment.segment))
-            {
-                System.Media.SoundPlayer player = new System.Media.SoundPlayer(mp3Stream);
-                player.Play();
-
-            }
-            */
-
-            //   AudioPlayer.PlayTrack(TrackData.AudioList, TrackData.NumberList);
+         
 
             TrackData.userAudio.currentTrack = TrackData.NumberInList; 
             AudioPlayer.PlayList(TrackData.userAudio);
