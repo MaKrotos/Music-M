@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media.Imaging;
 
@@ -17,6 +18,7 @@ namespace VK_UI3.Helpers.Animations
         string imageSourceNow = null;
         Storyboard storyboard = null;
         Image imageControl = null;
+        ImageBrush imageBrushControl = null;
         DispatcherQueue dispatcherQueue = null;
 
         string databaseFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "photosCache");
@@ -24,6 +26,12 @@ namespace VK_UI3.Helpers.Animations
         public AnimationsChangeImage(Image imageControl, DispatcherQueue dispatcherQueue)
         {
             this.imageControl = imageControl;
+            this.dispatcherQueue = dispatcherQueue;
+        }
+
+        public AnimationsChangeImage(ImageBrush imageBrushControl, DispatcherQueue dispatcherQueue)
+        {
+            this.imageBrushControl = imageBrushControl;
             this.dispatcherQueue = dispatcherQueue;
         }
 
@@ -43,13 +51,13 @@ namespace VK_UI3.Helpers.Animations
 
                 var animation = new DoubleAnimation
                 {
-                    From = imageControl.Opacity,
+                    From = imageControl != null ? imageControl.Opacity : imageBrushControl.Opacity,
                     To = 0.0,
                     Duration = TimeSpan.FromMilliseconds(50),
                 };
 
                 storyboard = new Storyboard();
-                Storyboard.SetTarget(animation, imageControl);
+                Storyboard.SetTarget(animation, imageControl != null ? imageControl : imageBrushControl);
                 Storyboard.SetTargetProperty(animation, "Opacity");
 
                 storyboard.Children.Add(animation);
@@ -59,17 +67,24 @@ namespace VK_UI3.Helpers.Animations
                     if (newImageSourceUrl == null || newImageSourceUrl == "null") return;
                     var bitmapImage = await GetImageAsync(newImageSourceUrl);
 
-                    imageControl.Source = bitmapImage;
+                    if (imageControl != null)
+                    {
+                        imageControl.Source = bitmapImage;
+                    }
+                    else
+                    {
+                        imageBrushControl.ImageSource = bitmapImage;
+                    }
 
                     var animation = new DoubleAnimation
                     {
-                        From = imageControl.Opacity,
+                        From = imageControl != null ? imageControl.Opacity : imageBrushControl.Opacity,
                         To = 1,
                         Duration = TimeSpan.FromMilliseconds(500),
                     };
 
                     storyboard = new Storyboard();
-                    Storyboard.SetTarget(animation, imageControl);
+                    Storyboard.SetTarget(animation, imageControl != null ? imageControl : imageBrushControl);
                     Storyboard.SetTargetProperty(animation, "Opacity");
 
                     storyboard.Children.Add(animation);
@@ -83,7 +98,6 @@ namespace VK_UI3.Helpers.Animations
         private async Task<BitmapImage> GetImageAsync(string newImageSourceUrl)
         {
             var fileName = Path.Combine(databaseFolderPath, GetHashString(newImageSourceUrl));
-
 
             if (!Directory.Exists(databaseFolderPath)) Directory.CreateDirectory(databaseFolderPath);
             if (File.Exists(fileName))
@@ -101,7 +115,6 @@ namespace VK_UI3.Helpers.Animations
 
                     if (buffer != null && buffer.Length > 0)
                     {
-
                         await File.WriteAllBytesAsync(fileName, buffer);
 
                         var bitmapImage = new BitmapImage();
@@ -120,7 +133,6 @@ namespace VK_UI3.Helpers.Animations
                 }
             }
         }
-
 
         private string GetHashString(string inputString)
         {

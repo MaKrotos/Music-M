@@ -331,16 +331,16 @@ namespace SetupLib
 
         public static string GetOSArchitecture()
         {
-            if (RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
+            if (RuntimeInformation.OSArchitecture == Architecture.Arm64)
             {
                 return "ARM64";
             }
 
-            else if (RuntimeInformation.ProcessArchitecture == Architecture.X64)
+            else if (RuntimeInformation.OSArchitecture == Architecture.X64)
             {
                 return "x64";
             }
-            else if (RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.X86)
+            else if (RuntimeInformation.OSArchitecture == Architecture.X86)
             {
                 return "x86";
             }
@@ -353,16 +353,16 @@ namespace SetupLib
 
         public static Uri GetOSArchitectureURI()
         {
-            if (RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
+            if (RuntimeInformation.OSArchitecture == Architecture.Arm64)
             {
                 return new Uri("https://github.com/MaKrotos/VKUI3/releases/download/0.1.0.0/Microsoft.WindowsAppRuntimeARM.1.4.msix");
             }
             
-            else if (RuntimeInformation.ProcessArchitecture == Architecture.X64)
+            else if (RuntimeInformation.OSArchitecture == Architecture.X64)
             {
                 return new Uri("https://github.com/MaKrotos/VKUI3/releases/download/0.1.0.0/Microsoft.WindowsAppRuntimeX64.1.4.msix");
             }
-            else if (RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.X86)
+            else if (RuntimeInformation.OSArchitecture == Architecture.X86)
             {
                 return new Uri("https://github.com/MaKrotos/VKUI3/releases/download/0.1.0.0/Microsoft.WindowsAppRuntimeX86.1.4.msix");
             }

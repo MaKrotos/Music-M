@@ -90,7 +90,7 @@
            
         </Grid>
         <Frame Grid.Row="1" VerticalAlignment="Bottom"
-     Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}" CornerRadius="0" Margin="0,0,0,0">
+            Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}" CornerRadius="0" Margin="0,0,0,0">
 
             <custom:AudioPlayer Margin="0,0,0,0"></custom:AudioPlayer>
         </Frame>

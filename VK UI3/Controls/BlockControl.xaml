@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:VK_UI3.Controls"
     xmlns:controls="using:VK_UI3.Controls" 
+    Margin="0"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ContentTemplateSelector="{DynamicResource BlockTemplateSelector}"
@@ -17,9 +18,16 @@
         </DataTemplate>
 
         <DataTemplate x:Key="none_separator">
-            <Rectangle Margin="5 10" Height="1" Opacity="0.1" Fill="{ThemeResource SystemColorWindowTextColor}" />
+            <Rectangle Margin="0" Height="1" Opacity="0.1" Fill="{ThemeResource SystemColorWindowColor}" />
         </DataTemplate>
 
+
+        <DataTemplate x:Key="music_audios_triple_stacked_slider" >
+            <controls:ListTracks Tracks="{Binding Audios}"  />
+        </DataTemplate>
+        <DataTemplate x:Key="music_audios_music_chart_triple_stacked_slider" >
+            <controls:ListTracks Tracks="{Binding Audios}"  />
+        </DataTemplate>
 
 
         <DataTemplate x:Key="default">

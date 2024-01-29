@@ -10,7 +10,7 @@
     mc:Ignorable="d">
     <Grid
         x:Name="TitleBlock"
-        Margin="0,0,0,13"
+        Margin="15,0,15,10"
         HorizontalAlignment="Stretch">
 
         <Grid.ColumnDefinitions>
@@ -57,18 +57,21 @@
             HorizontalAlignment="Right"
             Visibility="Collapsed">
             <TextBlock
+                HorizontalAlignment="Right"
                 x:Name="TitleButtons"
                 Margin="10,5,0,0"
                 
-                Text="brr" />
+                Text="" />
 
 
             <ComboBox
+                 HorizontalAlignment="Right"
                 x:Name="Buttons"
                 Grid.Column="1"
                 VerticalContentAlignment="Center"
                 Background="Transparent"
                 BorderBrush="#424242"
+                Text="dddd"
                  />
 
 
@@ -76,6 +79,7 @@
 
 
         <Button
+            
             x:Name="MoreButton"
             Grid.Column="1"
             Height="30"

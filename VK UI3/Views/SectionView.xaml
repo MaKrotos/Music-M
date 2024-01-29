@@ -7,13 +7,14 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Padding="0"
+    >
 
     <Page.Resources>
         <local:BlockTemplateSelector x:Key="SectionTemplateSelector"/>
     </Page.Resources>
 
     <Grid>
-        <ListView ItemTemplateSelector="{StaticResource SectionTemplateSelector}" ItemsSource="{x:Bind section.Blocks, Mode=OneWay}"/>
+        <ListView Padding="-15,0,-15,0" Margin="0" x:Name="ListBlocks" SelectionMode="None" ItemTemplateSelector="{StaticResource SectionTemplateSelector}" ItemsSource="{x:Bind blocks, Mode=OneWay}"/>
     </Grid>
 </Page>

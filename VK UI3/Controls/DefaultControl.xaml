@@ -9,7 +9,8 @@
     mc:Ignorable="d">
 
     <Grid>
-        <TextBlock Text="Данное окно еще не реализовано" 
+        
+        <TextBlock x:Name="block_not" Text="Блок не реализован!" 
                    HorizontalAlignment="Center" 
                    VerticalAlignment="Center" />
     </Grid>

@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using MusicX.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,12 +23,19 @@ namespace VK_UI3.Controls
     {
         public DefaultControl()
         {
+
             this.InitializeComponent();
             this.Loaded += DefaultControl_Loaded;
         }
         private void DefaultControl_Loaded(object sender, RoutedEventArgs e)
         {
             var data = this.DataContext;
+
+            if (DataContext is not Block block)
+                return;
+
+            string key = (string.IsNullOrEmpty(block.Layout?.Name) ? block.DataType : $"{block.DataType}_{block.Layout.Name}");
+            block_not.Text += " (" + key + ") ";
             // “еперь вы можете использовать данные
         } 
     }

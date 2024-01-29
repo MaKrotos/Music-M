@@ -65,14 +65,19 @@ namespace VK_UI3.Controls
                 if (block.Buttons[0].Options.Count > 0)
                 {
                     ButtonsGrid.Visibility = Visibility.Visible;
-                    TitleButtons.Text = block.Buttons[0].Title;
+                  //  TitleButtons.Text = block.Buttons[0].Title;
                     Buttons.Visibility = Visibility.Visible;
                     MoreButton.Visibility = Visibility.Collapsed;
-                    foreach (var option in block.Buttons[0].Options)
+
+                    foreach (var option in block.Actions[0].Options)
                     {
                         Buttons.Items.Add(new TextBlock() { Text = option.Text });
+                        if (option.Text == block.Actions[0].Title)
+                            Buttons.SelectedIndex = Buttons.Items.Count - 1;
                     }
-                    //Buttons.SelectedIndex = 0;
+
+                    Buttons.SelectedIndex = 0;
+                    isProgrammingChange = false;
                     return;
                 }
                 else
@@ -94,7 +99,7 @@ namespace VK_UI3.Controls
                     if (block.Actions[0].Options.Count > 0) //android
                     {
                         ButtonsGrid.Visibility = Visibility.Visible;
-                        TitleButtons.Text = block.Actions[0].Title;
+                       // TitleButtons.Text = block.Actions[0].Title;
                         Buttons.Visibility = Visibility.Visible;
                         MoreButton.Visibility = Visibility.Collapsed;
 
@@ -102,8 +107,12 @@ namespace VK_UI3.Controls
                         foreach (var option in block.Actions[0].Options)
                         {
                             Buttons.Items.Add(new TextBlock() { Text = option.Text });
+                            if (option.Text == block.Actions[0].Title)
+                                Buttons.SelectedIndex = Buttons.Items.Count - 1;
                         }
 
+                       
+                        isProgrammingChange = false;
                         return;
                     }
                     else
@@ -111,11 +120,12 @@ namespace VK_UI3.Controls
                         MoreButton.Visibility = Visibility.Visible;
 
                         MoreButton.Content = block.Actions[0].Title;
+                     
 
                         return;
 
                     }
-
+                   
                 }
 
                 return;
@@ -140,6 +150,7 @@ namespace VK_UI3.Controls
 
                 var button = block.Buttons[0];
 
+
                 MainView.OpenSection(button.SectionId);
             }
             catch (Exception ex)
@@ -160,8 +171,10 @@ namespace VK_UI3.Controls
 
         }
 
+        bool isProgrammingChange = true;
         private async void ButtonsComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (isProgrammingChange) return;
             if (DataContext is not Block block)
                 return;
             try
