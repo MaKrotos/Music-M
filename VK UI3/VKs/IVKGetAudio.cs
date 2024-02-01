@@ -27,6 +27,8 @@ namespace VK_UI3.Interfaces
         public IVkApi api;
         public string id;
         bool shuffle = false;
+ 
+
         Uri photoUri;
 
         public string name;
@@ -43,6 +45,7 @@ namespace VK_UI3.Interfaces
         public event EventHandler onListUpdate; // Событие OnDeviceAttached
         public long? countTracks { get; set; }
         public long? currentTrack { get; set; }
+
 
         // Добавляем делегат и событие
         public delegate void ChangedPlayAudio(object sender, EventArgs e);
@@ -92,6 +95,7 @@ namespace VK_UI3.Interfaces
             this.photoUri = null;
             this.name = null;
             this.Next = block.NextFrom;
+           
 
             if (block.Audios != null)
             {
@@ -221,18 +225,32 @@ namespace VK_UI3.Interfaces
             return GetTrackPlay();
 
         }
-
+       public bool itsAll = false;
         public ExtendedAudio GetTrackPlay()
         {
+            if (!itsAll)
+            {
+                Task.Run(() =>
+                {
+                    countTracks = getCount();
+                    this.GetTracks();
+                });
+            }
             return GetTrackPlay((long)currentTrack);
         }
+
+        public bool getLoadedTracks = false;
         public ExtendedAudio GetTrackPlay(long tracI)
         {
+            while (currentTrack + 1 > listAudio.Count)
+            {
+                GetTracks();
+            }
+
             if (tracI > countTracks)
             {
                 return null;
-            }
-          
+            } 
                 if (listAudio.Count < (tracI))
                 {
                     GetTracks();

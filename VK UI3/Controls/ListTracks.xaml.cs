@@ -71,6 +71,7 @@ namespace VK_UI3.Controls
                     return;
              
                 sectionAudio = new SectionAudio(block);
+                sectionAudio.countTracks = block.Audios.Count;
                 OnPropertyChanged(nameof(sectionAudio));
 
                 sectionAudio.onListUpdate += SectionAudio_onListUpdate;

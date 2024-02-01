@@ -45,6 +45,8 @@ namespace VK_UI3.VKs
 
         public override void GetTracks()
         {
+            if (getLoadedTracks) return;
+                getLoadedTracks = true;
         
             int offset = listAudio.Count;
             int count = 100;
@@ -74,9 +76,14 @@ namespace VK_UI3.VKs
                     Console.WriteLine(e);
                 }
             }
-            NotifyOnListUpdate();
-        }
 
+            if (countTracks == listAudio.Count()) itsAll = true;
+
+            NotifyOnListUpdate();
+            getLoadedTracks = false;
+        }
       
+
+
     }
 }

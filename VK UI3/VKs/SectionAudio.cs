@@ -37,11 +37,16 @@ namespace VK_UI3.VKs
 
         public override async void GetTracks()
         {
+            if (getLoadedTracks) return;
+            getLoadedTracks = true;
 
             var audios = (await VK.vkService.GetSectionAsync(SectionID, Next)).Audios;
 
             if (audios.Count == 0)
+            {
                 countTracks = listAudioTrue.Count;
+                itsAll = true;
+            }
             foreach (var item in audios)
             {
                 ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
@@ -49,7 +54,8 @@ namespace VK_UI3.VKs
 
                 NotifyOnListUpdate();
             }
-
+            
+            getLoadedTracks = false;
         }
     }
 }
