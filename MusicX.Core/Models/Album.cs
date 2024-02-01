@@ -22,18 +22,19 @@ namespace MusicX.Core.Models
         [JsonProperty("thumb")]
         public Photo Thumb { get; set; }
 
-        public string Cover
+        public string? Cover
         {
             get
             {
-                if (Thumb == null) return null;
-                if (Thumb.Photo68 != null) return Thumb.Photo68;
-                if (Thumb.Photo135 != null) return Thumb.Photo135;
-                if (Thumb.Photo270 != null) return Thumb.Photo270;
-                if (Thumb.Photo300 != null) return Thumb.Photo300;
-                if (Thumb.Photo600 != null) return Thumb.Photo600;
-                if (Thumb.Photo1200 != null) return Thumb.Photo1200;
-                return null;
+                return Thumb.Photo270 ??
+                    Thumb.Photo300 ??
+                    Thumb.Photo600 ??
+                    Thumb.Photo1200 ??
+                    Thumb.Photo135 ??
+                    Thumb.Photo68 ??
+                    null;
+
+               
             }
         }
     }

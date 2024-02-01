@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MusicX.Core.Models
 {
-    public class Audio : IEquatable<Audio>
+    public class Audio : VkNet.Model.Attachments.Audio
     {
         [JsonProperty("artist")]
         public string Artist { get; set; }
@@ -110,6 +110,28 @@ namespace MusicX.Core.Models
                 return false;
             return Equals((Audio)obj);
         }
+        public static MusicX.Core.Models.Audio ConvertToMusicXAudio(VkNet.Model.Attachments.Audio vkAudio)
+        {
+            // Сериализация объекта vkAudio в JSON
+            string json = JsonConvert.SerializeObject(vkAudio);
+
+            // Десериализация JSON обратно в MusicX.Core.Models.Audio
+            var musicXAudio = JsonConvert.DeserializeObject<MusicX.Core.Models.Audio>(json);
+
+            return musicXAudio;
+        }
+
+        public bool Equals(VkNet.Model.Attachments.Audio? other)
+        {
+            if (ReferenceEquals(null, other))
+                return false;
+            if (ReferenceEquals(this, other))
+                return true;
+            if (other.GetType() != typeof(Audio))
+                return false;
+            return Equals((VkNet.Model.Attachments.Audio)other);
+        }
+
         public override int GetHashCode()
         {
             return Id.GetHashCode();

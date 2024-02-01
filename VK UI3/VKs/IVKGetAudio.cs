@@ -1,4 +1,5 @@
 using Microsoft.VisualBasic;
+using MusicX.Core.Models;
 using MusicX.Core.Services;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 using VK_UI3.Helpers;
 using VK_UI3.VKs;
 using VkNet.Abstractions;
+using VkNet.Model.Attachments;
 using Windows.Foundation;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 using static VK_UI3.VKs.VK;
@@ -23,7 +25,7 @@ namespace VK_UI3.Interfaces
     public abstract class IVKGetAudio
     {
         public IVkApi api;
-        public long id;
+        public string id;
         bool shuffle = false;
         Uri photoUri;
 
@@ -39,7 +41,7 @@ namespace VK_UI3.Interfaces
                         } 
         }
         public event EventHandler onListUpdate; // Событие OnDeviceAttached
-        public long countTracks { get; set; }
+        public long? countTracks { get; set; }
         public long? currentTrack { get; set; }
 
         // Добавляем делегат и событие
@@ -51,6 +53,65 @@ namespace VK_UI3.Interfaces
         {
             AudioPlayedChangeEvent?.Invoke(this, EventArgs.Empty);
         }
+        public string Next;
+
+        public IVKGetAudio(string sectionID, Uri photoLink = null, string name = null, List<MusicX.Core.Models.Audio> audios = null, string next = null)
+        {
+            this.api = new VK().getVKAPI();
+            this.id = sectionID;
+
+            this.photoUri = photoLink ?? getPhoto();
+            this.name = name ?? getName();
+            this.Next = next;
+
+            if (audios != null)
+            {
+                foreach (var audio in audios)
+                {
+                    ExtendedAudio extendedAudio = new ExtendedAudio((VkNet.Model.Attachments.Audio)audio, this);
+                    listAudioTrue.Add(extendedAudio);
+                }
+            }
+            else
+            {
+                Task.Run(() =>
+                {
+                    countTracks = getCount();
+                    this.GetTracks();
+                });
+            }
+        }
+
+
+
+        public IVKGetAudio(MusicX.Core.Models.Block block)
+        {
+            this.api = new VK().getVKAPI();
+            this.id = block.Id;
+
+            this.photoUri = null;
+            this.name = null;
+            this.Next = block.NextFrom;
+
+            if (block.Audios != null)
+            {
+                foreach (var audio in block.Audios)
+                {
+                    ExtendedAudio extendedAudio = new ExtendedAudio(audio, this);
+                    listAudioTrue.Add(extendedAudio);
+                    NotifyOnListUpdate();
+                }
+            }
+            else
+            {
+                Task.Run(() =>
+                {
+                    countTracks = getCount();
+                    this.GetTracks();
+                });
+            }
+        }
+
 
         public void shareToVK() 
         {
@@ -73,32 +134,27 @@ namespace VK_UI3.Interfaces
         public IVKGetAudio(long id)
         {
             this.api = new VK().getVKAPI();
-            this.id = id;
+            this.id =  id.ToString();
             Task.Run(() =>
             {
                 countTracks = getCount();
                 this.GetTracks();
+                NotifyOnListUpdate();
             });
             name = getName();
             photoUri = getPhoto();
 
-            // var result = safeBoomService.CallWithRetry(bs => bs.GetUserTopTracks().Result);
-
-            exits();
+          
+          
         }
 
-        private async void exits()
-        {
-         //   var result = await safeBoomService.CallWithRetryAsync(bs =>  bs.GetUserInfoAsync());
+       
+        public abstract Uri? getPhoto();
 
-        }
-
-        public abstract Uri getPhoto();
-
-        public abstract string getName();
+        public abstract string? getName();
        
 
-        public abstract long getCount();
+        public abstract long? getCount();
 
 
 

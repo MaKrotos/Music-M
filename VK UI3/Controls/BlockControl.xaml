@@ -23,7 +23,7 @@
 
 
         <DataTemplate x:Key="music_audios_triple_stacked_slider" >
-            <controls:ListTracks Tracks="{Binding Audios}"  />
+            <controls:ListTracks  Tracks="{Binding Audios}"  />
         </DataTemplate>
         <DataTemplate x:Key="music_audios_music_chart_triple_stacked_slider" >
             <controls:ListTracks Tracks="{Binding Audios}"  />

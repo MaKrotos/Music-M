@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <UserControl
     x:Class="VK_UI3.Controls.ListTracks"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -8,29 +7,40 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:custom="using:VK_UI3.Controls"
     Margin="10"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    Loaded="UserControl_Loaded">
+    <UserControl.Resources>
+     
+    </UserControl.Resources>
     <UserControl.Shadow>
         <ThemeShadow />
     </UserControl.Shadow>
-    <Grid>
-        <ScrollView>
-            <GridView  SelectionMode="None" ItemsSource="{x:Bind _tracks, Mode=OneWay}">
-                <GridView.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <ItemsWrapGrid Orientation="Vertical" MaximumRowsOrColumns="2"/>
-                    </ItemsPanelTemplate>
-                </GridView.ItemsPanel>
 
-                <GridView.ItemTemplate>
-                    <DataTemplate>
-                        <custom:TrackControl
-                        
-                         FocusVisualPrimaryBrush="Transparent"
-                         FocusVisualSecondaryThickness="0"
-                         ></custom:TrackControl>
-                    </DataTemplate>
-                </GridView.ItemTemplate>
-            </GridView>
-        </ScrollView>
+    <Grid Height="Auto" x:Name="gridCh">
+        <GridView ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.HorizontalScrollMode="Enabled" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Visible" SizeChanged="gridV_SizeChanged" x:Name="gridV"  SelectionMode="None" ItemsSource="{x:Bind sectionAudio.listAudio, Mode=OneWay}">
+            
+            
+            <GridView.ItemContainerStyle>
+                <Style TargetType="GridViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                    <Setter x:Name="WSetter" Property="Width" Value="300" />
+                </Style>
+            </GridView.ItemContainerStyle>
+            <GridView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <ItemsWrapGrid Orientation="Vertical" MaximumRowsOrColumns="3" />
+                </ItemsPanelTemplate>
+            </GridView.ItemsPanel>
+            <GridView.ItemTemplate>
+                <DataTemplate>
+                    <custom:TrackControl
+                    x:Name="trControl"
+                    FocusVisualPrimaryBrush="Transparent"
+                    FocusVisualSecondaryThickness="0"
+                ></custom:TrackControl>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+        </GridView>
     </Grid>
 </UserControl>

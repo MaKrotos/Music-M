@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using MusicX.Core.Models;
 using System;
@@ -14,7 +15,10 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using VK_UI3.Helpers.Animations;
 using VK_UI3.Services;
+using VK_UI3.VKs;
+using Windows.ApplicationModel.Email;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
@@ -33,24 +37,46 @@ namespace VK_UI3.Controls
 
             this.Unloaded += ListTracks_Unloaded;
             this.Loaded += ListTracks_Loaded;
+
+
+         
+    
+
         }
 
-        private void ListTracks_Loaded(object sender, RoutedEventArgs e)
+     
+          
+
+
+        private SectionAudio sectionAudio;
+
+        private async void ListTracks_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
+                // Установите From в текущую высоту gridCh
+
+
+                // Установите To в текущую высоту gridV
+              
+                // Установите From в текущую высоту gridCh
+                //  ((DoubleAnimation)Storyboard1.Children[0]).From = gridCh.Height;
+                // Storyboard1.Begin();
+                // gridV.Height = 0;z3
+
+           
+
+
                 if (DataContext is not Block block)
                     return;
+             
+                sectionAudio = new SectionAudio(block);
+                OnPropertyChanged(nameof(sectionAudio));
 
-
-
-                foreach (var audio in ((Block)DataContext).Audios)
-                {
-                    _tracks.Add(audio);
-
-
-                }
-
+                sectionAudio.onListUpdate += SectionAudio_onListUpdate;
+              //  double itemWidth = Math.Floor(gridV.Width / 300);
+              //  WSetter.Value = gridV.ActualWidth / itemWidth - 5;
+                //  var a = await VK.vkService.GetSectionAsync(((Block)DataContext).Id, ((Block)DataContext).NextFrom);
             }
             catch (Exception ex)
             {
@@ -65,6 +91,20 @@ namespace VK_UI3.Controls
 
 
             }
+        }
+        protected void OnPropertyChanged(string propertyName)
+        {
+            this.DispatcherQueue.TryEnqueue(async () =>
+            {
+                //   this.ImgUri = uri;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+              
+            });
+           
+        }
+        private void SectionAudio_onListUpdate(object sender, EventArgs e)
+        {
+            OnPropertyChanged(nameof(sectionAudio));
         }
 
         private void ListTracks_Unloaded(object sender, RoutedEventArgs e)
@@ -89,8 +129,34 @@ namespace VK_UI3.Controls
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-          
 
+   
         }
+
+        int itCounts = 0;
+        private void gridV_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            try
+            {
+               // itCounts = (int)Math.Floor(e.NewSize.Width / 300);
+              
+
+                if (e.NewSize.Width != e.PreviousSize.Width)
+                {
+                 //   WSetter.Value = e.NewSize.Width / itCounts - 5;
+                }
+                else
+                {
+                   
+                }
+            }
+            catch {
+            }
+
+
+
+            
+        }
+
     }
 }

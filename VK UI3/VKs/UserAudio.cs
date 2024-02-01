@@ -15,18 +15,19 @@ namespace VK_UI3.VKs
     {
         public  UserAudio(long id) : base(id)
         {
-         base.id = id;
+            base.id = id.ToString();
+            NotifyOnListUpdate();
         }
 
-        public override long getCount()
+        public override long? getCount()
         {
-           return api.Audio.GetCountAsync(base.id).Result;
+           return api.Audio.GetCountAsync(long.Parse(base.id)).Result;
         }
         User user;
 
         public override string getName()
         {
-            List<long> ids = new List<long> { base.id };
+            List<long> ids = new List<long> { long.Parse(base.id) };
             user = api.Users.GetAsync(ids).Result[0];
             return user.FirstName + " " + user.LastName;
         }
@@ -44,18 +45,18 @@ namespace VK_UI3.VKs
 
         public override void GetTracks()
         {
-            
+        
             int offset = listAudio.Count;
-            int count = 6000;
+            int count = 100;
 
-            if (countTracks <= listAudio.Count) return;
-
+            if (countTracks > listAudio.Count)
+            {
                 VkCollection<Audio> audios;
                 try
                 {
                     audios = api.Audio.GetAsync(new AudioGetParams
                     {
-                        OwnerId = base.id,
+                        OwnerId = int.Parse(base.id),
                         Offset = offset,
                         Count = count
                     }).Result;
@@ -64,7 +65,7 @@ namespace VK_UI3.VKs
                     {
                         ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
                         listAudio.Add(extendedAudio);
-                      
+
                     }
 
                 }
@@ -72,6 +73,7 @@ namespace VK_UI3.VKs
                 {
                     Console.WriteLine(e);
                 }
+            }
             NotifyOnListUpdate();
         }
 

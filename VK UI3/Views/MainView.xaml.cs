@@ -21,6 +21,7 @@ using VK_UI3.Views.LoginWindow;
 using VK_UI3.VKs;
 using Windows.Foundation;
 using static VK_UI3.DB.AccountsDB;
+using static VK_UI3.Views.SectionView;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -426,7 +427,7 @@ namespace VK_UI3.Views
 
                     default:
                         var Item = sender.SelectedItem as NavMenuController;
-                        ContentFrame.Navigate(typeof(SectionView), Item.navSettings.section, new DrillInNavigationTransitionInfo());
+                        OpenSection(Item.navSettings.section.Id);
                     
 
 
@@ -443,16 +444,14 @@ namespace VK_UI3.Views
 
             }
         }
-        public static void OpenSection(string sectionID)
+        public static void OpenSection(string sectionID, SectionType sectionType = SectionType.None)
         {
-
-            frame.Navigate(typeof(SectionView), sectionID, new DrillInNavigationTransitionInfo());
+            var sectionView = new SectionView();
+            sectionView.SectionID = sectionID;
+            sectionView.sectionType = sectionType;
+            frame.Navigate(typeof(SectionView), sectionView, new DrillInNavigationTransitionInfo());
         }
-        public static void OpenSection(Section section)
-        {
-
-            frame.Navigate(typeof(SectionView), section, new DrillInNavigationTransitionInfo());
-        }
+       
     }
 
    

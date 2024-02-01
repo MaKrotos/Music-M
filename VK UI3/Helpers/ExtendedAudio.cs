@@ -13,22 +13,20 @@ namespace VK_UI3.Helpers
 {
     public class ExtendedAudio
     {
-
-      
-
-        public ExtendedAudio(Audio audio, UserAudio userAudio)
+        public ExtendedAudio(Audio audio, IVKGetAudio iVKGetAudio)
         {
             Audio = audio;
-        //    this.NumberList = NumberList;
-        
-            this.userAudio = userAudio;
+            this.iVKGetAudio = iVKGetAudio;
         }
 
-       public  bool PlayThis { get {
+        public bool PlayThis
+        {
+            get
+            {
                 if (NumberInList == null) return false;
-                return (NumberInList == userAudio.currentTrack);
-            }  
-       }
+                return (NumberInList == iVKGetAudio.currentTrack);
+            }
+        }
 
         public Audio Audio { get; set; }
 
@@ -36,6 +34,6 @@ namespace VK_UI3.Helpers
 
         public long? NumberInList = null;
 
-        public IVKGetAudio userAudio { get; set; }
+        public IVKGetAudio iVKGetAudio { get; set; }
     }
 }

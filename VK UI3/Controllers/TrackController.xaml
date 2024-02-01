@@ -55,7 +55,7 @@
                 
 
             </Image>
-            <Grid x:Name="GridPlayIcon" Opacity="0" CornerRadius="8" Background="{StaticResource CustomAcrylicInAppBrush}">
+            <Grid x:Name="GridPlayIcon" Opacity="0" CornerRadius="0" Background="{StaticResource CustomAcrylicInAppBrush}">
                 <SymbolIcon x:Name="PlayBTN" Symbol="Play"/>
                 <Grid.Resources>
                     <!-- Анимация прозрачности от 0 до 1 -->

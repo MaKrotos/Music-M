@@ -1,4 +1,5 @@
 using Microsoft.AppCenter.Crashes;
+using Microsoft.UI.Content;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -9,6 +10,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using MusicX.Core.Models;
 using MusicX.Core.Services;
+using ProtoBuf.Meta;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -37,6 +39,8 @@ namespace VK_UI3.Views
     public sealed partial class SectionView : Page, INotifyPropertyChanged
     {
         public Section section;
+        public string SectionID;
+        public SectionType sectionType;
        
         public SectionView()
         {
@@ -54,50 +58,136 @@ namespace VK_UI3.Views
             });
         }
         public static SectionView openedSectionView;
+
+        public enum SectionType
+        {
+            None,
+            Artist,
+            Search
+        }
+
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
 
             openedSectionView = this;
-            // Параметр передается как объект, поэтому его нужно привести к нужному типу
-            var section = e.Parameter as Section;
-            foreach (var item in section.Blocks)
-            {
-                blocks.Add(item);
-            }
-          
-
-            if (section != null)
-            {
+            
            
-                loadSection(section.Id);
-            }
-            else
-            {
-                 var sectionID = e.Parameter as String;
-                if (sectionID != null)
-                {
-                   
-                    loadSection(sectionID);
-                }
-            }
+         
+            var section = e.Parameter as SectionView;
+
+            if (section == null) return;
+
+            this.section = section.section;
+            this.sectionType = section.sectionType;
+            this.SectionID = section.SectionID;
+
+            LoadAsync();
 
         }
 
-        private async void loadSection(string sectionID)
+        private async Task LoadArtistSection(string artistId)
+        {
+            try
+            {
+                var artist = await VK.vkService.GetAudioArtistAsync(artistId);
+                loadSection(artist.Catalog.DefaultSection);
+            }
+            catch (Exception ex)
+            {
+                var properties = new Dictionary<string, string>
+                {
+#if DEBUG
+                    { "IsDebug", "True" },
+#endif
+                    {"Version", StaticService.Version }
+                };
+                Crashes.TrackError(ex, properties);
+             
+            }
+        }
+
+        private async Task LoadSearchSection(string query)
+        {
+            try
+            {
+                if (query == null && nowOpenSearchSug) return;
+
+                var res = await VK.vkService.GetAudioSearchAsync(query);
+
+                if (query == null)
+                {
+
+                    try
+                    {
+                        res.Catalog.Sections[0].Blocks[1].Suggestions = res.Suggestions;
+                         loadBlocks(res.Catalog.Sections[0].Blocks, null);
+                        nowOpenSearchSug = true;
+                    }
+                    catch (Exception ex)
+                    {
+                         loadBlocks(res.Catalog.Sections[0].Blocks, null);
+                    }
+
+                    return;
+                }
+
+                nowOpenSearchSug = false;
+                loadSection(res.Catalog.DefaultSection);
+
+            }
+            catch (Exception ex)
+            {
+                var properties = new Dictionary<string, string>
+                {
+#if DEBUG
+                    { "IsDebug", "True" },
+#endif
+                    {"Version", StaticService.Version }
+                };
+                Crashes.TrackError(ex, properties);
+     
+
+            }
+        }
+
+        public async Task LoadAsync()
+        {
+          
+            try
+            {
+                await (sectionType switch
+                {
+                    SectionType.None => loadSection(this.SectionID),
+                    SectionType.Artist => LoadArtistSection(this.SectionID),
+                    SectionType.Search => LoadSearchSection(this.SectionID),
+                    _ => throw new ArgumentOutOfRangeException()
+                });
+            }
+            finally
+            {
+              //  ContentState = ContentState.Loaded;
+            }
+        }
+
+
+        private async Task loadSection(string sectionID, bool showTitle = false)
         {
             blocks.Clear();
             var sectin =  await VK.vkService.GetSectionAsync(sectionID);
             this.section = sectin.Section;
-            foreach (var item in section.Blocks)
+            loadBlocks(section.Blocks, section.NextFrom);
+        }
+
+        private void loadBlocks(List<Block> block, string nextValue)
+        {
+            foreach (var item in block)
             {
                 blocks.Add(item);
             }
-
-
-
             OnPropertyChanged(nameof(section));
         }
+
         private bool nowOpenSearchSug = false;
 
 
@@ -147,32 +237,19 @@ namespace VK_UI3.Views
 
         protected override DataTemplate? SelectTemplateCore(object? item, DependencyObject container)
         {
-           
-             
-         
-                    if (item is Block)
-                    {
-                        BlockControl blockControl = new BlockControl();
-                        var block = (Block)item;
-                        object resource;
-                        string key = (string.IsNullOrEmpty(block.Layout?.Name) ? block.DataType : $"{block.DataType}_{block.Layout.Name}");
-                        if (blockControl.Resources.TryGetValue(key, out resource))
-                        {
-                            return resource as DataTemplate;
-                        }
-                        else if (blockControl.Resources.TryGetValue(block.DataType, out resource))
-                        {
-                            return resource as DataTemplate;
-                        }
-                        else
-                        {
-                            blockControl.Resources.TryGetValue("default", out resource);
-                            return resource as DataTemplate;
-                        }
-                        
-                    }
-                
-          
+
+
+
+            if (item is Block block)
+            {
+                BlockControl blockControl = new BlockControl();
+                string key = string.IsNullOrEmpty(block.Layout?.Name) ? block.DataType : $"{block.DataType}_{block.Layout.Name}";
+
+                if (blockControl.Resources.TryGetValue(key, out object resource) || blockControl.Resources.TryGetValue(block.DataType, out resource) || blockControl.Resources.TryGetValue("default", out resource))
+                {
+                    return resource as DataTemplate;
+                }
+            }
 
             return null;
         }

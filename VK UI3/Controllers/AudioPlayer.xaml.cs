@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
+using MusicX.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -48,8 +49,8 @@ namespace VK_UI3.Controllers
         {
 
             oniVKUpdate?.Invoke(null, EventArgs.Empty);
-           
-        
+
+
         }
 
         public MediaPlayer MediaPlayer
@@ -82,12 +83,15 @@ namespace VK_UI3.Controllers
         public static event EventHandler TrackDataThisChanged;
 
 
-        public static Audio _TrackDataThis
+
+        public static MusicX.Core.Models.Audio _TrackDataThis
         {
-            get {
+            get
+            {
                 if (iVKGetAudio != null)
-                    if (iVKGetAudio.countTracks != 0) return iVKGetAudio.GetTrackPlay().Audio;
-                return _trackDataThis; }
+                    if (iVKGetAudio.countTracks != 0) return MusicX.Core.Models.Audio.ConvertToMusicXAudio(iVKGetAudio.GetTrackPlay().Audio);
+                return _trackDataThis;
+            }
             set
             {
                 if (_trackDataThis != value)
@@ -98,11 +102,21 @@ namespace VK_UI3.Controllers
             }
         }
 
-        private static Audio _trackDataThis;
-        public Audio TrackDataThis
+        private static MusicX.Core.Models.Audio _trackDataThis;
+        public MusicX.Core.Models.Audio TrackDataThis
         {
             get { return _TrackDataThis; }
         }
+
+        /// <summary>
+        /// ///////////////////////
+        /// </summary>
+
+       
+
+
+
+
 
         private int _trackDuration = 0;
         public int TrackDuration
@@ -156,7 +170,7 @@ namespace VK_UI3.Controllers
 
         [DllImport("user32.dll")]
         public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
-      //  AudioSessionControl contr = null;
+        //  AudioSessionControl contr = null;
         AnimationsChangeFontIcon animateFontIcon = null;
         public AudioPlayer()
         {
@@ -276,7 +290,7 @@ namespace VK_UI3.Controllers
 
         private void PlaybackSession_BufferedRangesChanged(MediaPlaybackSession sender, object args)
         {
-            var a = (int) Math.Round(sender.NaturalDuration.TotalSeconds);
+            var a = (int)Math.Round(sender.NaturalDuration.TotalSeconds);
             var b = TrackDataThis.Duration;
 
             if (Math.Abs(a - b) > 1)
@@ -299,30 +313,30 @@ namespace VK_UI3.Controllers
 
         private void MediaPlayer_MediaEnded(Windows.Media.Playback.MediaPlayer sender, object args)
         {
- 
-            
-                switch (SettingsTable.GetSetting("playNext").settingValue)
-                {
-                    case "RepeatOne":
-                        PlayTrack();
-                        break;
-
-                    case "Shuffle":
-                        PlayNextTrack();
-
-                        break;
-
-                    case "RepeatAll":
-
-                        PlayNextTrack();
-                        break;
 
 
-                    default:
-                        break;
-                }
+            switch (SettingsTable.GetSetting("playNext").settingValue)
+            {
+                case "RepeatOne":
+                    PlayTrack();
+                    break;
 
-          
+                case "Shuffle":
+                    PlayNextTrack();
+
+                    break;
+
+                case "RepeatAll":
+
+                    PlayNextTrack();
+                    break;
+
+
+                default:
+                    break;
+            }
+
+
         }
         private void PlaybackSession_PositionChanged(MediaPlaybackSession sender, object args)
         {
@@ -336,7 +350,7 @@ namespace VK_UI3.Controllers
         private void MediaPlayer_MediaOpened(Windows.Media.Playback.MediaPlayer sender, object args)
         {
             // Код для выполнения при открытии медиафайла
-            TrackDuration = TrackDataThis.Duration;
+            TrackDuration = (int) TrackDataThis.Duration;
         }
         private void MediaPlayer_MediaFailed(Windows.Media.Playback.MediaPlayer sender, Windows.Media.Playback.MediaPlayerFailedEventArgs args)
         {
@@ -375,28 +389,22 @@ namespace VK_UI3.Controllers
         public Storyboard storyboard = new Storyboard();
         Symbol? symbolNow = null;
 
-      
 
-      
+
+
         AnimationsChangeImage changeImage = null;
         AnimationsChangeText changeText = null;
         AnimationsChangeText changeText2 = null;
 
-    
- 
+
+
         private void MediaPlayer_SourceChanged(Windows.Media.Playback.MediaPlayer sender, object args)
         {
 
 
             var source = sender.Source as Windows.Media.Playback.MediaPlaybackItem;
 
-            TrackDuration = TrackDataThis.Duration;
-        
-
-            
-
-
-
+            TrackDuration = (int) TrackDataThis.Duration;
 
 
             OnPropertyChanged(nameof(TrackDuration));
@@ -407,7 +415,7 @@ namespace VK_UI3.Controllers
             changeText.ChangeTextWithAnimation(TrackDataThis.Artist);
             changeText2.ChangeTextWithAnimation(TrackDataThis.Title);
 
-           
+
 
 
             if (bool.Parse(SettingsTable.GetSetting("shareFriend").settingValue))
@@ -489,10 +497,10 @@ namespace VK_UI3.Controllers
             }
 
         }
-       
+
         public static IVKGetAudio iVKGetAudio = null;
-    
-     
+
+
 
 
         internal static void PlayNextTrack()
@@ -501,7 +509,7 @@ namespace VK_UI3.Controllers
 
             iVKGetAudio.getNextTrackForPlay();
             PlayTrack();
-       
+
         }
 
         internal static void PlayPreviousTrack()
@@ -509,11 +517,13 @@ namespace VK_UI3.Controllers
 
             iVKGetAudio.getPreviusTrackForPlay();
             PlayTrack();
-            
+
         }
 
         private async static void PlayTrack(long? v = null)
         {
+
+
             if (v != null) iVKGetAudio.currentTrack = (long)v;
 
             iVKGetAudio.ChangePlayAudio();
@@ -522,7 +532,7 @@ namespace VK_UI3.Controllers
             var mediaSource = Windows.Media.Core.MediaSource.CreateFromUri(new Uri(_TrackDataThis.Url.ToString()));
             var mediaPlaybackItem = new Windows.Media.Playback.MediaPlaybackItem(mediaSource);
 
-          
+
 
 
             MediaItemDisplayProperties props = mediaPlaybackItem.GetDisplayProperties();
@@ -536,9 +546,7 @@ namespace VK_UI3.Controllers
                 RandomAccessStreamReference imageStreamRef = RandomAccessStreamReference.CreateFromUri(new Uri(
                     _TrackDataThis.Album.Thumb.Photo600 ??
                     _TrackDataThis.Album.Thumb.Photo270 ??
-                    _TrackDataThis.Album.Thumb.Photo300 
-                
-     
+                    _TrackDataThis.Album.Thumb.Photo300
                     ));
 
                 props.Thumbnail = imageStreamRef;
@@ -552,16 +560,16 @@ namespace VK_UI3.Controllers
 
             mediaPlayer.PlaybackSession.Position = TimeSpan.Zero;
             mediaPlayer.Pause();
-         
-            // mediaPlayer.Source = null;
-          
-            
+
+
             mediaPlayer.Source = mediaPlaybackItem;
             mediaPlayer.Play();
-           
+
+
+
         }
 
-       
+
 
         private void PreviousBTN_Tapped(object sender, TappedRoutedEventArgs e)
         {
@@ -576,12 +584,12 @@ namespace VK_UI3.Controllers
 
         public void OnDisplayNameChanged(string newDisplayName, ref Guid eventContext)
         {
-        
+
         }
 
         public void OnIconPathChanged(string newIconPath, ref Guid eventContext)
         {
-          
+
         }
 
         public void OnSimpleVolumeChanged(float volume, bool isMuted)
@@ -592,20 +600,20 @@ namespace VK_UI3.Controllers
 
         public void OnChannelVolumeChanged(int channelCount, float[] newChannelVolumeArray, int changedChannel, ref Guid eventContext)
         {
-           
+
         }
 
         public void OnGroupingParamChanged(ref Guid newGroupingParam, ref Guid eventContext)
         {
-          
+
         }
 
-     
+
 
         private void SoundSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-          //  if (simpleAudio != null)
-          //  simpleAudio.MasterVolume = (float) e.NewValue;
+            //  if (simpleAudio != null)
+            //  simpleAudio.MasterVolume = (float) e.NewValue;
         }
 
         private void SoundSlider_PointerEntered(object sender, PointerRoutedEventArgs e)
@@ -638,7 +646,7 @@ namespace VK_UI3.Controllers
                     animateFontIcon.ChangeFontIconWithAnimation("\uE8B1");
                     if (iVKGetAudio != null)
                     {
-                      
+
                         iVKGetAudio.setShuffle();
                     }
                     break;
@@ -647,7 +655,7 @@ namespace VK_UI3.Controllers
                     animateFontIcon.ChangeFontIconWithAnimation("\uE8EE");
                     if (iVKGetAudio != null)
                     {
-                       
+
                         iVKGetAudio.UnShuffleList();
                     }
                     break;
@@ -657,7 +665,7 @@ namespace VK_UI3.Controllers
                     break;
             }
 
-         
+
         }
 
         private void repeatBTN_Tapped(object sender, TappedRoutedEventArgs e)
@@ -667,17 +675,17 @@ namespace VK_UI3.Controllers
             {
                 case "RepeatOne":
                     SettingsTable.SetSetting("playNext", "RepeatAll");
-                   
+
                     break;
 
                 case "Shuffle":
                     SettingsTable.SetSetting("playNext", "RepeatOne");
-              
+
                     break;
 
                 case "RepeatAll":
                     SettingsTable.SetSetting("playNext", "Shuffle");
-                    
+
                     break;
 
 
@@ -685,13 +693,13 @@ namespace VK_UI3.Controllers
                     break;
             }
             setButtonPlayNext();
-      
+
 
         }
         AnimationsChangeFontIcon statusAnimate;
 
 
-        public void setStatusIcon() 
+        public void setStatusIcon()
         {
 
             var share = SettingsTable.GetSetting("shareFriend");
@@ -726,7 +734,7 @@ namespace VK_UI3.Controllers
             {
                 SettingsTable.SetSetting("shareFriend", "false");
             }
-            
+
 
 
 
@@ -736,18 +744,18 @@ namespace VK_UI3.Controllers
 
         private void NextBTN_Tapped(object sender, TappedRoutedEventArgs e)
         {
-          
-                PlayNextTrack();
-        
+
+            PlayNextTrack();
+
         }
 
         internal static void PlayList(IVKGetAudio userAudio)
         {
+           
             iVKGetAudio = userAudio;
             AudioPlayer.PlayTrack();
             NotifyoniVKUpdate();
         }
-
-
+      
     }
 }

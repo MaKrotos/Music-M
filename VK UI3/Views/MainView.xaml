@@ -37,20 +37,20 @@
     
                       
              IsPaneOpen="False">
-              
+
                 <NavigationView.MenuItems >
 
-                <NavigationViewItem Content="Моя музыка">
-                    <NavigationViewItem.Icon>
+                    <NavigationViewItem Content="Моя музыка">
+                        <NavigationViewItem.Icon>
                             <FontIcon Glyph="&#xEC4F;" />
                         </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                    
-                <NavigationViewItemSeparator/>
+                    </NavigationViewItem>
+
+                    <NavigationViewItemSeparator/>
 
 
 
-                    
+
                     <NavigationViewItemHeader Content="Аккаунты"/>
                     <NavigationViewItemSeparator/>
                     <NavigationViewItem   Padding="-10,0,-20,0" SelectsOnInvoked="False" >
@@ -64,19 +64,10 @@
                                 </ListView.ItemTemplate>
                             </ListView>
                         </Grid>
-                        
+
                     </NavigationViewItem>
-            
-            </NavigationView.MenuItems>
 
-
-      
-
-
-
-
-
-
+                </NavigationView.MenuItems>
                 <Grid Margin="0"  PointerEntered="ListViewItem_PointerEntered" PointerExited="ListViewItem_PointerExited">
                 <Frame Grid.Row="0" x:Name="ContentFrame">
                     <Frame.ContentTransitions>

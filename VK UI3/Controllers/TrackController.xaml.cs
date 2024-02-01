@@ -107,7 +107,7 @@ namespace VK_UI3.Controllers
 
                     if (!attached)
                     {
-                        TrackData.userAudio.AudioPlayedChangeEvent += UserAudio_AudioPlayedChangeEvent;
+                        TrackData.iVKGetAudio.AudioPlayedChangeEvent += UserAudio_AudioPlayedChangeEvent;
                         attached = true;
                     }
 
@@ -209,12 +209,8 @@ namespace VK_UI3.Controllers
 
          
 
-            TrackData.userAudio.currentTrack = TrackData.NumberInList; 
-            AudioPlayer.PlayList(TrackData.userAudio);
-
-            
-
-
+            TrackData.iVKGetAudio.currentTrack = TrackData.NumberInList; 
+            AudioPlayer.PlayList(TrackData.iVKGetAudio);
 
         }
 
