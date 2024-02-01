@@ -40,7 +40,7 @@ namespace VK_UI3.VKs
             if (getLoadedTracks) return;
             getLoadedTracks = true;
 
-            var audios = (await VK.vkService.GetSectionAsync(SectionID, Next)).Audios;
+            var audios = (await VK.vkService.GetSectionAsync(id, Next)).Audios;
 
             if (audios.Count == 0)
             {
