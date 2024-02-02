@@ -1,8 +1,10 @@
 ﻿using Microsoft.AppCenter.Crashes;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using MusicX.Core.Models;
+using MusicX.Core.Services;
 using MusicX.Shared.Player;
 using System;
 using System.Collections.Generic;
@@ -13,6 +15,7 @@ using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
 using VK_UI3.Services;
 using VK_UI3.Views;
+using VK_UI3.VKs;
 using VkNet.Model;
 using static VK_UI3.Views.SectionView;
 
@@ -84,7 +87,7 @@ namespace VK_UI3.Controls
                     // Artists.MouseLeave += Artists_MouseLeave;
                     // Artists.MouseLeftButtonDown += Artists_MouseLeftButtonDown;
 
-                    MenuFlyoutItem itemToRemove = (MenuFlyoutItem)FindName("GoArtist");
+                    MenuFlyoutSubItem itemToRemove = (MenuFlyoutSubItem)FindName("GoArtist");
                     if (itemToRemove != null)
                     {
                         flyOutm.Items.Remove(itemToRemove);
@@ -92,6 +95,38 @@ namespace VK_UI3.Controls
                 }
                 else
                 {
+
+                    MenuFlyoutSubItem goArtistItem = (MenuFlyoutSubItem)FindName("GoArtist");
+                    if (goArtistItem != null)
+                    {
+                        goArtistItem.Items.Clear();
+                        foreach (var artist in track.MainArtists)
+                        {
+                            var menuItem = new MenuFlyoutItem
+                            {
+                                Text = artist.Name,
+                                Icon = new SymbolIcon(Symbol.ContactInfo)
+                            };
+
+                            menuItem.Click += (s, e) =>
+                            {
+
+
+                                try
+                                {
+                                    MainView.OpenSection(artist.Id, SectionType.Artist);
+
+                                }
+                                catch (Exception ex)
+                                {
+
+                                }
+
+                            };
+                            goArtistItem.Items.Add(menuItem);
+                        }
+                    }
+
 
                 }
             }
@@ -217,6 +252,18 @@ namespace VK_UI3.Controls
         public void AddRemove_Click(object sender, RoutedEventArgs e)
         {
             // Ваш код здесь
+
+            var vkService = VK.vkService;
+
+            if (audio.OwnerId == AccountsDB.activeAccount.id)
+            {
+                 vkService.AudioDeleteAsync(audio.Id, audio.OwnerId);
+            }
+            else
+            {
+                 vkService.AudioAddAsync(audio.Id, audio.OwnerId);
+                            
+            }
         }
         public void AddArtistIgnore_Click(object sender, RoutedEventArgs e)
         {
@@ -257,10 +304,14 @@ namespace VK_UI3.Controls
 
         private void UCcontrol_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
- 
-            dataTrack.iVKGetAudio.currentTrack = dataTrack.NumberInList;
-            AudioPlayer.PlayList(dataTrack.iVKGetAudio);
+            if (e.GetCurrentPoint(sender as UIElement).Properties.IsLeftButtonPressed)
+            {
+                dataTrack.iVKGetAudio.currentTrack = dataTrack.NumberInList;
+                AudioPlayer.PlayList(dataTrack.iVKGetAudio);
+            }
         }
+
+
     }
 }
 

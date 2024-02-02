@@ -18,7 +18,9 @@
     <UserControl.ContextFlyout>
         <MenuFlyout x:Name="flyOutm">
             <MenuFlyoutItem x:Name="AddRemove" Text="Добавить" Click="AddRemove_Click" Icon="Add" />
-            <MenuFlyoutItem x:Name="GoArtist" Text="Перейти к исполнителю" Click="GoArtist_Click" Icon="ContactInfo" />
+            <MenuFlyoutSubItem x:Name="GoArtist" Text="Перейти к исполнителю" Icon="ContactInfo">
+                
+            </MenuFlyoutSubItem>
             <MenuFlyoutItem Text="Добавить в плейлист" Click="AddToPlaylist_Click" Icon="Add" />
             <MenuFlyoutItem Text="Пропускать треки исполнителя" Click="AddArtistIgnore_Click" Icon="BlockContact" />
             <MenuFlyoutItem Text="Скачать" Click="Download_Click" Icon="Download" />
