@@ -27,7 +27,7 @@ namespace VK_UI3.Interfaces
         public IVkApi api;
         public string id;
         bool shuffle = false;
- 
+
 
         Uri photoUri;
 
@@ -36,11 +36,14 @@ namespace VK_UI3.Interfaces
         protected List<ExtendedAudio> listAudioShuffle = new List<ExtendedAudio>();
         protected List<ExtendedAudio> listAudioTrue = new List<ExtendedAudio>();
 
-        public List<ExtendedAudio> listAudio { get {
+        public List<ExtendedAudio> listAudio
+        {
+            get
+            {
                 if (shuffle) return listAudioShuffle;
                 else return listAudioTrue;
-               
-                        } 
+
+            }
         }
         public event EventHandler onListUpdate; // Событие OnDeviceAttached
         public long? countTracks { get; set; }
@@ -56,7 +59,7 @@ namespace VK_UI3.Interfaces
         {
             AudioPlayedChangeEvent?.Invoke(this, EventArgs.Empty);
         }
-        public string Next;
+        public string? Next;
 
         public IVKGetAudio(string sectionID, Uri photoLink = null, string name = null, List<MusicX.Core.Models.Audio> audios = null, string next = null)
         {
@@ -77,11 +80,8 @@ namespace VK_UI3.Interfaces
             }
             else
             {
-                Task.Run(() =>
-                {
-                    countTracks = getCount();
-                    this.GetTracks();
-                });
+                countTracks = getCount();
+                this.GetTracks();
             }
         }
 
@@ -95,7 +95,7 @@ namespace VK_UI3.Interfaces
             this.photoUri = null;
             this.name = null;
             this.Next = block.NextFrom;
-           
+
 
             if (block.Audios != null)
             {
@@ -108,16 +108,15 @@ namespace VK_UI3.Interfaces
             }
             else
             {
-                Task.Run(() =>
-                {
-                    countTracks = getCount();
-                    this.GetTracks();
-                });
+
+                countTracks = getCount();
+                this.GetTracks();
+
             }
         }
 
 
-        public void shareToVK() 
+        public void shareToVK()
         {
             var a = GetTrackPlay().Audio;
             api.Audio.SetBroadcastAsync(
@@ -138,7 +137,8 @@ namespace VK_UI3.Interfaces
         public IVKGetAudio(long id)
         {
             this.api = new VK().getVKAPI();
-            this.id =  id.ToString();
+            this.id = id.ToString();
+
             Task.Run(() =>
             {
                 countTracks = getCount();
@@ -148,15 +148,15 @@ namespace VK_UI3.Interfaces
             name = getName();
             photoUri = getPhoto();
 
-          
-          
+
+
         }
 
-       
+
         public abstract Uri? getPhoto();
 
         public abstract string? getName();
-       
+
 
         public abstract long? getCount();
 
@@ -197,38 +197,38 @@ namespace VK_UI3.Interfaces
 
 
 
-        public ExtendedAudio getNextTrackForPlay() 
+        public ExtendedAudio getNextTrackForPlay()
         {
-        
+
             if (currentTrack >= countTracks - 1)
                 currentTrack = 0;
             else
             {
                 currentTrack++;
             }
-         
+
             return GetTrackPlay();
-         
+
         }
 
         public ExtendedAudio getPreviusTrackForPlay()
 
         {
-      
+
             if (currentTrack <= 0)
                 currentTrack = countTracks - 1;
             else
             {
                 currentTrack--;
             }
-         
+
             return GetTrackPlay();
 
         }
-       public bool itsAll = false;
+        public bool itsAll = false;
         public ExtendedAudio GetTrackPlay()
         {
-            if (!itsAll)
+            if (!itsAll && currentTrack == listAudio.Count() -1)
             {
                 Task.Run(() =>
                 {
@@ -236,8 +236,10 @@ namespace VK_UI3.Interfaces
                     this.GetTracks();
                 });
             }
+            if (currentTrack == null) currentTrack = 0;
             return GetTrackPlay((long)currentTrack);
         }
+
 
         public bool getLoadedTracks = false;
         public ExtendedAudio GetTrackPlay(long tracI)
@@ -250,19 +252,20 @@ namespace VK_UI3.Interfaces
             if (tracI > countTracks)
             {
                 return null;
-            } 
-                if (listAudio.Count < (tracI))
-                {
-                    GetTracks();
-                    return GetTrackPlay(tracI);
             }
-        
+
+            if (listAudio.Count < (tracI))
+            {
+                GetTracks();
+                return GetTrackPlay(tracI);
+            }
+
             return listAudio[(int)tracI];
         }
-    
+
         public abstract void GetTracks();
 
-      
+
 
         public void SaveToFile()
         {

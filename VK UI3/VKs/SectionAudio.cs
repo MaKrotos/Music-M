@@ -20,6 +20,11 @@ namespace VK_UI3.VKs
         {
         }
 
+        public SectionAudio(string sectionID, Uri photoLink = null, string name = null, List<Audio> audios = null, string next = null) : base(sectionID, photoLink, name, audios, next)
+        {
+
+        }
+
         public override long? getCount()
         {
             return null;
@@ -35,27 +40,33 @@ namespace VK_UI3.VKs
             return null;
         }
 
-        public override async void GetTracks()
+        public override void GetTracks()
         {
             if (getLoadedTracks) return;
             getLoadedTracks = true;
 
-            var audios = (await VK.vkService.GetSectionAsync(id, Next)).Audios;
-
-            if (audios.Count == 0)
+            Task.Run(async () =>
             {
-                countTracks = listAudioTrue.Count;
-                itsAll = true;
-            }
-            foreach (var item in audios)
-            {
-                ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
-                listAudioTrue.Add(extendedAudio);
+                var a = (await VK.vkService.GetSectionAsync(id, Next));
+                if (a.Block != null && a.Block.NextFrom != null)
+                    Next = a.Block.NextFrom;
+                var audios = a.Audios;
 
-                NotifyOnListUpdate();
-            }
-            
-            getLoadedTracks = false;
+                if (audios.Count == 0)
+                {
+                    countTracks = listAudioTrue.Count;
+                    itsAll = true;
+                }
+                foreach (var item in audios)
+                {
+                    ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
+                    listAudioTrue.Add(extendedAudio);
+
+                    NotifyOnListUpdate();
+                }
+
+                getLoadedTracks = false;
+            }).Wait();
         }
     }
 }

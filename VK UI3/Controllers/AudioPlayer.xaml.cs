@@ -89,7 +89,15 @@ namespace VK_UI3.Controllers
             get
             {
                 if (iVKGetAudio != null)
-                    if (iVKGetAudio.countTracks != 0) return MusicX.Core.Models.Audio.ConvertToMusicXAudio(iVKGetAudio.GetTrackPlay().Audio);
+                    if (iVKGetAudio.countTracks != 0)
+                    {
+
+                       
+                        var audios = iVKGetAudio.GetTrackPlay().Audio;
+       
+                        return MusicX.Core.Models.Audio.ConvertToMusicXAudio(audios);
+
+                    }
                 return _trackDataThis;
             }
             set
@@ -178,11 +186,11 @@ namespace VK_UI3.Controllers
 
 
             changeIconPlayBTN = new AnimationsChangeIcon(this.PlayBTN);
-            animateFontIcon = new AnimationsChangeFontIcon(this.repeatBTNIcon);
+            animateFontIcon = new AnimationsChangeFontIcon(this.repeatBTNIcon, this.DispatcherQueue);
             changeImage = new AnimationsChangeImage(this.ImageThumb, DispatcherQueue);
             changeText = new AnimationsChangeText(ArtistTextBlock, this.DispatcherQueue);
             changeText2 = new AnimationsChangeText(TitleTextBlock, this.DispatcherQueue);
-            statusAnimate = new AnimationsChangeFontIcon(StatusBTNIcon);
+            statusAnimate = new AnimationsChangeFontIcon(StatusBTNIcon, this.DispatcherQueue);
             setStatusIcon();
 
 
@@ -244,7 +252,7 @@ namespace VK_UI3.Controllers
         private void AudioPlayer_oniVKUpdate(object sender, EventArgs e)
         {
             //   pageRa.Height = actualHeight;
-            DisableAllChildren(this, true);
+        //    DisableAllChildren(this, true);
             setButtonPlayNext();
 
         }
@@ -256,7 +264,6 @@ namespace VK_UI3.Controllers
             {
                 DisableAllChildren(this);
                 //   pageRa.Height = 0;
-
             }
 
         }
@@ -566,7 +573,7 @@ namespace VK_UI3.Controllers
             mediaPlayer.Play();
 
 
-
+            NotifyoniVKUpdate();
         }
 
 
@@ -749,7 +756,7 @@ namespace VK_UI3.Controllers
 
         }
 
-        internal static void PlayList(IVKGetAudio userAudio)
+        internal static async void PlayList(IVKGetAudio userAudio)
         {
            
             iVKGetAudio = userAudio;

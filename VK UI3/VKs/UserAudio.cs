@@ -77,7 +77,7 @@ namespace VK_UI3.VKs
                 }
             }
 
-            if (countTracks == listAudio.Count()) itsAll = true;
+            if (countTracks == listAudio.Count()-1) itsAll = true;
 
             NotifyOnListUpdate();
             getLoadedTracks = false;

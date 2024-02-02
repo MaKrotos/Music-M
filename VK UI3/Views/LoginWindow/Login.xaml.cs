@@ -58,20 +58,13 @@ namespace VK_UI3.Views.LoginWindow
 
             });
              task.RunSynchronously();
-
-            
-
             Frame.Navigate(typeof(waitPage), this, new DrillInNavigationTransitionInfo());
 
         }
 
         private void loginInvike()
         {
-
-            
                 new VK(this).LoginAsync(LoginTextBox.Text);
-                
-         
         }
 
         public Task<string> InputTextDialogAsyncCapthca(Uri imageUrl)
@@ -219,8 +212,13 @@ namespace VK_UI3.Views.LoginWindow
         {
             if (e.Key == Windows.System.VirtualKey.Enter)
             {
-               
-                loginInvike();
+                Task task = new Task(() =>
+                {
+                    loginInvike();
+
+                });
+                task.RunSynchronously();
+                Frame.Navigate(typeof(waitPage), this, new DrillInNavigationTransitionInfo());
             }
         }
 

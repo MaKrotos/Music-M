@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="VK_UI3.Controls.BannerControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VK_UI3.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid
+        x:Name="Card"
+        Margin="0,10,0,10"
+        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+        CornerRadius="4"
+        Tapped="Card_Tapped">
+        <Grid>
+            <Rectangle
+                Height="200"
+                VerticalAlignment="Stretch"
+                RadiusX="5"
+                RadiusY="5">
+                <Rectangle.Fill>
+                    <ImageBrush x:Name="BannerCover" Stretch="UniformToFill" />
+                </Rectangle.Fill>
+            </Rectangle>
+
+            <Rectangle
+                Height="45"
+                VerticalAlignment="Bottom"
+                Fill="Black"
+                Opacity="0.4" />
+            <StackPanel
+                Margin="0,0,0,5"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Bottom">
+                <TextBlock
+                    x:Name="BannerTitle"
+                    FontFamily="{StaticResource VKSansDemiBold}"
+                    FontWeight="SemiBold" />
+                <TextBlock x:Name="BannerText" HorizontalAlignment="Center" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

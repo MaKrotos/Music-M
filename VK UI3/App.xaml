@@ -5,16 +5,19 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:VK_UI3">
     <Application.Resources>
-
-            <ResourceDictionary x:Key="Default">
-                <AcrylicBrush x:Key="CustomAcrylicInAppBrush" 
-            TintOpacity="0.1" Opacity="0.9" TintColor="#FF000000" FallbackColor="#FF008000" />
-    
+        <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
                 <!-- Other merged dictionaries here -->
             </ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->
+            <AcrylicBrush x:Key="CustomAcrylicInAppBrush" 
+                TintOpacity="0.1" Opacity="0.9" TintColor="#FF000000" FallbackColor="#FF000000" />
+            <FontFamily x:Key="SegoeFluentIcons">pack://application:,,,/;component/Fonts/#Segoe Fluent Icons</FontFamily>
+            <FontFamily x:Key="VKSansDemiBold">pack://application:,,,/;component/Fonts/VKSansDisplay-DemiBold.ttf#VK Sans Display DemiBold</FontFamily>
+            <FontFamily x:Key="VKSansMedium">pack://application:,,,/;component/Fonts/VKSansDisplay-Medium.ttf#VK Sans Display Medium</FontFamily>
+            <FontFamily x:Key="VKSansBold">pack://application:,,,/;component/Fonts/VKSansDisplay-Bold.ttf#VK Sans Display Bold</FontFamily>
+            <FontFamily x:Key="VKSansRegular">pack://application:,,,/;component/Fonts/VKSansDisplay-Regular.ttf#VK Sans Display Regular</FontFamily>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

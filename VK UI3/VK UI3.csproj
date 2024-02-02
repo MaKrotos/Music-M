@@ -20,11 +20,17 @@
 
 	<ItemGroup>
 	  <None Remove="Controllers\NavMenuController.xaml" />
+	  <None Remove="Controls\BannerControl.xaml" />
 	  <None Remove="Controls\BlockControl.xaml" />
+	  <None Remove="Controls\Blocks\ArtistBannerBlockControl.xaml" />
 	  <None Remove="Controls\DefaultControl.xaml" />
 	  <None Remove="Controls\ListTracks.xaml" />
 	  <None Remove="Controls\TitleBlockControl.xaml" />
 	  <None Remove="Controls\TrackControl.xaml" />
+	  <None Remove="Fonts\VKSansDisplay-Bold.ttf" />
+	  <None Remove="Fonts\VKSansDisplay-DemiBold.ttf" />
+	  <None Remove="Fonts\VKSansDisplay-Medium.ttf" />
+	  <None Remove="Fonts\VKSansDisplay-Regular.ttf" />
 	  <None Remove="Views\SectionView.xaml" />
 	</ItemGroup>
 
@@ -86,6 +92,12 @@
     <Page Update="Controls\TrackControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Controls\BannerControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Blocks\ArtistBannerBlockControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="Controls\ListPlaylists.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
@@ -111,5 +123,20 @@
 
   <ItemGroup>
     <Folder Include="VKs\SectionAudio\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Fonts\VKSansDisplay-Bold.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Fonts\VKSansDisplay-DemiBold.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Fonts\VKSansDisplay-Medium.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Fonts\VKSansDisplay-Regular.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 </Project>
