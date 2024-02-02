@@ -1,4 +1,4 @@
-using Microsoft.AppCenter.Crashes;
+п»їusing Microsoft.AppCenter.Crashes;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -57,7 +57,7 @@ namespace VK_UI3.Controls
 
                 if (track.OwnerId == AccountsDB.activeAccount.id)
                 {
-                    AddRemove.Text = "Удалить";
+                    AddRemove.Text = "РЈРґР°Р»РёС‚СЊ";
                     AddRemove.Icon = new SymbolIcon(Symbol.Remove);
                 }
 
@@ -106,27 +106,27 @@ namespace VK_UI3.Controls
 
         public void Title_PointerPressed(object sender, RoutedEventArgs e)
         {
-            // Ваш код здесь
+            // Р’Р°С€ РєРѕРґ Р·РґРµСЃСЊ
         }
 
         public void Title_PointerExited(object sender, RoutedEventArgs e)
         {
-            // Ваш код здесь
+            // Р’Р°С€ РєРѕРґ Р·РґРµСЃСЊ
         }
 
         public void Title_PointerEntered(object sender, RoutedEventArgs e)
         {
-            // Ваш код здесь
+            // Р’Р°С€ РєРѕРґ Р·РґРµСЃСЊ
         }
 
         public void RecommendedAudio_Click(object sender, RoutedEventArgs e)
         {
-            // Ваш код здесь
+            // Р’Р°С€ РєРѕРґ Р·РґРµСЃСЊ
         }
 
         public void PlayNext_Click(object sender, RoutedEventArgs e)
         {
-            // Ваш код здесь
+            // Р’Р°С€ РєРѕРґ Р·РґРµСЃСЊ
         }
 
         private void UserAudio_AudioPlayedChangeEvent(object sender, EventArgs e)
@@ -201,26 +201,26 @@ namespace VK_UI3.Controls
 
         public void Download_Click(object sender, RoutedEventArgs e)
         {
-            // Ваш код здесь
+            // Р’Р°С€ РєРѕРґ Р·РґРµСЃСЊ
         }
 
         public void AddToQueue_Click(object sender, RoutedEventArgs e)
         {
-            // Ваш код здесь
+            // Р’Р°С€ РєРѕРґ Р·РґРµСЃСЊ
         }
 
         public void AddToPlaylist_Click(object sender, RoutedEventArgs e)
         {
-            // Ваш код здесь
+            // Р’Р°С€ РєРѕРґ Р·РґРµСЃСЊ
         }
 
         public void AddRemove_Click(object sender, RoutedEventArgs e)
         {
-            // Ваш код здесь
+            // Р’Р°С€ РєРѕРґ Р·РґРµСЃСЊ
         }
         public void AddArtistIgnore_Click(object sender, RoutedEventArgs e)
         {
-            // Ваш код здесь
+            // Р’Р°С€ РєРѕРґ Р·РґРµСЃСЊ
         }
         AnimationsChangeIcon changeIconPlayBTN = null;
         bool entered = false;
@@ -263,3 +263,4 @@ namespace VK_UI3.Controls
         }
     }
 }
+

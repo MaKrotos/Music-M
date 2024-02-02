@@ -1,4 +1,4 @@
-namespace VK_UI3.DB
+﻿namespace VK_UI3.DB
 {
     using System;
     using System.IO;
@@ -299,3 +299,4 @@ namespace VK_UI3.DB
 
     }
 }
+

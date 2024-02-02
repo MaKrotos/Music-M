@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -37,3 +37,4 @@ namespace VK_UI3.Helpers
         public IVKGetAudio iVKGetAudio { get; set; }
     }
 }
+

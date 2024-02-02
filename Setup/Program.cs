@@ -1,4 +1,4 @@
-namespace Setup
+﻿namespace Setup
 {
     internal static class Program
     {

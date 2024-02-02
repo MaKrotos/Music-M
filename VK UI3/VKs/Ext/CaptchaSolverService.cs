@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using VK_UI3.Views.ModalsPages;
@@ -33,7 +33,8 @@ public class CaptchaSolverService : IAsyncCaptchaSolver
 
     public ValueTask SolveFailedAsync()
     {
-     // _snackbarService.Show("Ошибка!", "Вы ввели неправильную капчу");
+     // _snackbarService.Show("РћС€РёР±РєР°!", "Р’С‹ РІРІРµР»Рё РЅРµРїСЂР°РІРёР»СЊРЅСѓСЋ РєР°РїС‡Сѓ");
         return ValueTask.CompletedTask;
     }
 }
+

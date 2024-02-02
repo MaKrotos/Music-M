@@ -1,4 +1,4 @@
-
+﻿
 using Microsoft.UI.Xaml;
 using SQLite;
 using System;
@@ -20,28 +20,28 @@ namespace VK_UI3.DB
 
         public static SQLiteConnection getConnect()
         {
-            // Получаем имя пользователя и номер материнской платы
+            // РџРѕР»СѓС‡Р°РµРј РёРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ Рё РЅРѕРјРµСЂ РјР°С‚РµСЂРёРЅСЃРєРѕР№ РїР»Р°С‚С‹
             var userName = Environment.UserName;
            // var motherboardSerialNumber = GetMotherboardSerialNumber();
 
-            // Путь к папке AppData текущего пользователя
+            // РџСѓС‚СЊ Рє РїР°РїРєРµ AppData С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
             var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
-            // Путь к папке базы данных в папке AppData
+            // РџСѓС‚СЊ Рє РїР°РїРєРµ Р±Р°Р·С‹ РґР°РЅРЅС‹С… РІ РїР°РїРєРµ AppData
             var databaseFolderPath = Path.Combine(appDataPath, "VKMMKZ");
 
-            // Проверяем, существует ли папка, и если нет, создаем ее
+            // РџСЂРѕРІРµСЂСЏРµРј, СЃСѓС‰РµСЃС‚РІСѓРµС‚ Р»Рё РїР°РїРєР°, Рё РµСЃР»Рё РЅРµС‚, СЃРѕР·РґР°РµРј РµРµ
             if (!Directory.Exists(databaseFolderPath))
             {
                 Directory.CreateDirectory(databaseFolderPath);
             }
 
-            // Путь к файлу базы данных
+            // РџСѓС‚СЊ Рє С„Р°Р№Р»Сѓ Р±Р°Р·С‹ РґР°РЅРЅС‹С…
             var databasePath = Path.Combine(databaseFolderPath, "dbqkorozydatabase.db");
 
             if (_db == null)
             {
-                // Добавляем имя пользователя и номер материнской платы к паролю
+                // Р”РѕР±Р°РІР»СЏРµРј РёРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ Рё РЅРѕРјРµСЂ РјР°С‚РµСЂРёРЅСЃРєРѕР№ РїР»Р°С‚С‹ Рє РїР°СЂРѕР»СЋ
                 var key = "wtwtiojvnsldji352I*YUIBNK" + userName;
 
                 var options = new SQLiteConnectionString(databasePath, true, key: key);
@@ -55,7 +55,7 @@ namespace VK_UI3.DB
                 {
                     if (ex.Message.Contains("file is not a database"))
                     {
-                        // Если пароль не подходит, удаляем файл БД и создаем новый
+                        // Р•СЃР»Рё РїР°СЂРѕР»СЊ РЅРµ РїРѕРґС…РѕРґРёС‚, СѓРґР°Р»СЏРµРј С„Р°Р№Р» Р‘Р” Рё СЃРѕР·РґР°РµРј РЅРѕРІС‹Р№
                         File.Delete(databasePath);
                         _db = new SQLiteConnection(options);
                         _db.CreateTable<Accounts>();
@@ -114,3 +114,4 @@ namespace VK_UI3.DB
 
     }
 }
+

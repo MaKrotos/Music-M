@@ -1,4 +1,4 @@
-using Microsoft.AppCenter.Crashes;
+п»їusing Microsoft.AppCenter.Crashes;
 using Microsoft.UI.Content;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -204,18 +204,18 @@ namespace VK_UI3.Views
                 var toReplaceBlockIds = replaces.Replacements.ReplacementsModels.SelectMany(b => b.FromBlockIds)
                     .ToHashSet();
 
-                // Найти блоки, которые нужно заменить
+                // РќР°Р№С‚Рё Р±Р»РѕРєРё, РєРѕС‚РѕСЂС‹Рµ РЅСѓР¶РЅРѕ Р·Р°РјРµРЅРёС‚СЊ
                 var blocksToReplace = blocks.Where(block => toReplaceBlockIds.Contains(block.Id)).ToList();
 
                 this.DispatcherQueue.TryEnqueue(() =>
                 {
-                    // Удалить блоки
+                    // РЈРґР°Р»РёС‚СЊ Р±Р»РѕРєРё
                     foreach (var block in blocksToReplace)
                     {
                         blocks.Remove(block);
                     }
 
-                    // Добавить новые блоки
+                    // Р”РѕР±Р°РІРёС‚СЊ РЅРѕРІС‹Рµ Р±Р»РѕРєРё
                     foreach (var block in replaces.Replacements.ReplacementsModels.SelectMany(b => b.ToBlocks))
                     {
                         blocks.Add(block);
@@ -224,7 +224,7 @@ namespace VK_UI3.Views
             }
             catch (Exception ex)
             {
-                // Обработка исключений
+                // РћР±СЂР°Р±РѕС‚РєР° РёСЃРєР»СЋС‡РµРЅРёР№
             }
         }
 
@@ -258,3 +258,4 @@ namespace VK_UI3.Views
    
     }
 }
+

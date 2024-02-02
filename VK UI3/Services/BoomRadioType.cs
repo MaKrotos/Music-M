@@ -1,4 +1,4 @@
-namespace MusicX.Services.Player
+﻿namespace MusicX.Services.Player
 {
     public enum BoomRadioType
     {
@@ -7,3 +7,4 @@ namespace MusicX.Services.Player
         Tag
     }
 }
+

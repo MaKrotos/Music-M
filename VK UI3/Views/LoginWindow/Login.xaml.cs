@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -111,10 +111,10 @@ namespace VK_UI3.Views.LoginWindow
                     {
                         _currentDialog.XamlRoot = this.XamlRoot;
                         _currentDialog.Content = panel;
-                        _currentDialog.Title = "Введите капчу";
+                        _currentDialog.Title = "Р’РІРµРґРёС‚Рµ РєР°РїС‡Сѓ";
                         _currentDialog.IsSecondaryButtonEnabled = true;
-                        _currentDialog.PrimaryButtonText = "Подтвердить";
-                        _currentDialog.SecondaryButtonText = "Отмена";
+                        _currentDialog.PrimaryButtonText = "РџРѕРґС‚РІРµСЂРґРёС‚СЊ";
+                        _currentDialog.SecondaryButtonText = "РћС‚РјРµРЅР°";
 
                         _currentDialog.ShowAsync().Completed += (info, status) =>
                         {
@@ -144,13 +144,13 @@ namespace VK_UI3.Views.LoginWindow
 
             inputTextBox.AcceptsReturn = false;
             inputTextBox.Height = 32;
-            // Добавьте обработчик событий KeyDown
+            // Р”РѕР±Р°РІСЊС‚Рµ РѕР±СЂР°Р±РѕС‚С‡РёРє СЃРѕР±С‹С‚РёР№ KeyDown
             ContentDialog dialog = new ContentDialog();
             inputTextBox.KeyDown += (sender, e) =>
             {
                 if (e.Key == VirtualKey.Enter)
                 {
-                    // Выполните действие, которое вы хотите выполнить при нажатии Enter
+                    // Р’С‹РїРѕР»РЅРёС‚Рµ РґРµР№СЃС‚РІРёРµ, РєРѕС‚РѕСЂРѕРµ РІС‹ С…РѕС‚РёС‚Рµ РІС‹РїРѕР»РЅРёС‚СЊ РїСЂРё РЅР°Р¶Р°С‚РёРё Enter
                     result = inputTextBox.Text;
                     dialog.Hide();
                 }
@@ -162,8 +162,8 @@ namespace VK_UI3.Views.LoginWindow
             dialog.Content = inputTextBox;
             dialog.Title = descr;
             dialog.IsSecondaryButtonEnabled = true;
-            dialog.PrimaryButtonText = "Подтвердить";
-            dialog.SecondaryButtonText = "Отмена";
+            dialog.PrimaryButtonText = "РџРѕРґС‚РІРµСЂРґРёС‚СЊ";
+            dialog.SecondaryButtonText = "РћС‚РјРµРЅР°";
 
 
             if (await dialog.ShowAsync() == ContentDialogResult.Primary)
@@ -192,7 +192,7 @@ namespace VK_UI3.Views.LoginWindow
 
                     dialog.Title = Message;
 
-                    dialog.PrimaryButtonText = "Ок";
+                    dialog.PrimaryButtonText = "РћРє";
 
                     dialog.ShowAsync();
                 }
@@ -227,3 +227,4 @@ namespace VK_UI3.Views.LoginWindow
        
     }
 }
+

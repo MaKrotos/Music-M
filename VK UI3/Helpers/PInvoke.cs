@@ -1,4 +1,4 @@
-// ReSharper disable once CheckNamespace
+﻿// ReSharper disable once CheckNamespace
 
 using System.Text.Json.Serialization;
 
@@ -29,3 +29,4 @@ internal static partial class PInvoke
         public const string U2FSign = "navigator.id.getAssertion";
     }
 }
+

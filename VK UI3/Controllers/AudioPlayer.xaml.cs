@@ -1,4 +1,4 @@
-
+﻿
 
 //using CSCore.CoreAudioAPI;
 using Microsoft.UI.Xaml;
@@ -44,7 +44,7 @@ namespace VK_UI3.Controllers
 
         private static Windows.Media.Playback.MediaPlayer mediaPlayer = new MediaPlayer();
 
-        public static event EventHandler oniVKUpdate; // Событие OnDeviceAttached
+        public static event EventHandler oniVKUpdate; // РЎРѕР±С‹С‚РёРµ OnDeviceAttached
         public static void NotifyoniVKUpdate()
         {
 
@@ -201,20 +201,20 @@ namespace VK_UI3.Controllers
 
             TrackDataThisChanged += AudioPlayer_PropertyChanged;
 
-            // Привязка к событию MediaOpened
+            // РџСЂРёРІСЏР·РєР° Рє СЃРѕР±С‹С‚РёСЋ MediaOpened
             mediaPlayer.MediaOpened += MediaPlayer_MediaOpened;
 
-            // Привязка к событию MediaEnded
+            // РџСЂРёРІСЏР·РєР° Рє СЃРѕР±С‹С‚РёСЋ MediaEnded
             mediaPlayer.MediaEnded += MediaPlayer_MediaEnded;
 
-            // Привязка к событию MediaFailed
+            // РџСЂРёРІСЏР·РєР° Рє СЃРѕР±С‹С‚РёСЋ MediaFailed
             mediaPlayer.MediaFailed += MediaPlayer_MediaFailed;
 
-            // Привязка к событию CurrentStateChanged
+            // РџСЂРёРІСЏР·РєР° Рє СЃРѕР±С‹С‚РёСЋ CurrentStateChanged
             mediaPlayer.CurrentStateChanged += MediaPlayer_CurrentStateChanged;
             mediaPlayer.AutoPlay = true;
 
-            // Привязка к событию SourceChanged
+            // РџСЂРёРІСЏР·РєР° Рє СЃРѕР±С‹С‚РёСЋ SourceChanged
             mediaPlayer.SourceChanged += MediaPlayer_SourceChanged;
             mediaPlayer.PlaybackSession.PositionChanged += PlaybackSession_PositionChanged;
             mediaPlayer.PlaybackSession.BufferedRangesChanged += PlaybackSession_BufferedRangesChanged;
@@ -349,17 +349,17 @@ namespace VK_UI3.Controllers
 
         private void MediaPlayer_MediaOpened(Windows.Media.Playback.MediaPlayer sender, object args)
         {
-            // Код для выполнения при открытии медиафайла
+            // РљРѕРґ РґР»СЏ РІС‹РїРѕР»РЅРµРЅРёСЏ РїСЂРё РѕС‚РєСЂС‹С‚РёРё РјРµРґРёР°С„Р°Р№Р»Р°
             TrackDuration = (int) TrackDataThis.Duration;
         }
         private void MediaPlayer_MediaFailed(Windows.Media.Playback.MediaPlayer sender, Windows.Media.Playback.MediaPlayerFailedEventArgs args)
         {
-            // Код для выполнения при ошибке воспроизведения медиафайла
+            // РљРѕРґ РґР»СЏ РІС‹РїРѕР»РЅРµРЅРёСЏ РїСЂРё РѕС€РёР±РєРµ РІРѕСЃРїСЂРѕРёР·РІРµРґРµРЅРёСЏ РјРµРґРёР°С„Р°Р№Р»Р°
         }
         AnimationsChangeIcon changeIconPlayBTN = null;
         private void MediaPlayer_CurrentStateChanged(Windows.Media.Playback.MediaPlayer sender, object args)
         {
-            // Код для выполнения при изменении состояния медиаплеера
+            // РљРѕРґ РґР»СЏ РІС‹РїРѕР»РЅРµРЅРёСЏ РїСЂРё РёР·РјРµРЅРµРЅРёРё СЃРѕСЃС‚РѕСЏРЅРёСЏ РјРµРґРёР°РїР»РµРµСЂР°
             this.DispatcherQueue.TryEnqueue(async () =>
             {
                 switch (sender.CurrentState)
@@ -505,7 +505,7 @@ namespace VK_UI3.Controllers
 
         internal static void PlayNextTrack()
         {
-            // Проверяем, не является ли текущий трек последним в списке
+            // РџСЂРѕРІРµСЂСЏРµРј, РЅРµ СЏРІР»СЏРµС‚СЃСЏ Р»Рё С‚РµРєСѓС‰РёР№ С‚СЂРµРє РїРѕСЃР»РµРґРЅРёРј РІ СЃРїРёСЃРєРµ
 
             iVKGetAudio.getNextTrackForPlay();
             PlayTrack();
@@ -759,3 +759,4 @@ namespace VK_UI3.Controllers
       
     }
 }
+

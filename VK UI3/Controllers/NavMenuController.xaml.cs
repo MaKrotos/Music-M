@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -43,8 +43,9 @@ namespace VK_UI3.Controllers
 
         public NavMenuController()
         {
-          //  navSettings.MyMusicItem = "Моя музыка";
+          //  navSettings.MyMusicItem = "РњРѕСЏ РјСѓР·С‹РєР°";
          //   navSettings.Icon = new SymbolIcon(Symbol.Home);
         }
     }
 }
+

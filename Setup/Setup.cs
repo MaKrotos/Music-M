@@ -1,4 +1,4 @@
-
+Ôªø
 using SetupLib;
 
 namespace Setup
@@ -25,7 +25,7 @@ namespace Setup
             label10.Text = appUpdater.version;
             label9.Text = appUpdater.Name;
             label8.Text = appUpdater.Tit;
-            label7.Text = Math.Round((float)appUpdater.sizeFile / 1024 / 1024, 2).ToString() + " Ã·";
+            label7.Text = Math.Round((float)appUpdater.sizeFile / 1024 / 1024, 2).ToString() + " –ú–±";
             label10.Text = appUpdater.version;
             button1.Enabled = true;
 
@@ -33,7 +33,7 @@ namespace Setup
         private void AppUpdater_DownloadProgressChanged(object sender, AppUpdater.DownloadProgressChangedEventArgs e)
         {
             progressBar1.Value = (int)Math.Round(e.Percentage);
-            label6.Text = Math.Round((float)e.BytesDownloaded / 1024 / 1024, 2).ToString() + " Ã·";
+            label6.Text = Math.Round((float)e.BytesDownloaded / 1024 / 1024, 2).ToString() + " –ú–±";
         }
 
         private async void button1_Click(object sender, EventArgs e)
@@ -49,3 +49,4 @@ namespace Setup
        
     }
 }
+

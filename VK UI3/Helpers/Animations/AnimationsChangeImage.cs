@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Net.Http;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -128,7 +128,7 @@ namespace VK_UI3.Helpers.Animations
                 }
                 catch (Exception e)
                 {
-                    // Если произошла ошибка при загрузке или сохранении изображения, возвращаем null
+                    // Р•СЃР»Рё РїСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР° РїСЂРё Р·Р°РіСЂСѓР·РєРµ РёР»Рё СЃРѕС…СЂР°РЅРµРЅРёРё РёР·РѕР±СЂР°Р¶РµРЅРёСЏ, РІРѕР·РІСЂР°С‰Р°РµРј null
                     return null;
                 }
             }
@@ -150,3 +150,4 @@ namespace VK_UI3.Helpers.Animations
         }
     }
 }
+

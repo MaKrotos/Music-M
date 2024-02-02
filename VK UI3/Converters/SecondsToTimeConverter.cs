@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml.Data;
+﻿using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,7 +43,7 @@ namespace VK_UI3.Converters
                     }
                     catch (FormatException)
                     {
-                        // Обработка исключений, связанных с форматом
+                        // РћР±СЂР°Р±РѕС‚РєР° РёСЃРєР»СЋС‡РµРЅРёР№, СЃРІСЏР·Р°РЅРЅС‹С… СЃ С„РѕСЂРјР°С‚РѕРј
                     }
                 }
             }
@@ -52,3 +52,4 @@ namespace VK_UI3.Converters
 
     }
 }
+

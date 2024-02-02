@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
 using System;
 using System.Collections.Generic;
@@ -35,7 +35,7 @@ namespace VK_UI3.Helpers.Animations
 
             }
 
-            // Создаем анимацию прозрачности
+            // РЎРѕР·РґР°РµРј Р°РЅРёРјР°С†РёСЋ РїСЂРѕР·СЂР°С‡РЅРѕСЃС‚Рё
             var animation = new DoubleAnimation
             {
                 From = iconControl.Opacity,
@@ -43,18 +43,18 @@ namespace VK_UI3.Helpers.Animations
                 Duration = TimeSpan.FromMilliseconds(100),
             };
 
-            // Создаем объект Storyboard для управления анимацией
+            // РЎРѕР·РґР°РµРј РѕР±СЉРµРєС‚ Storyboard РґР»СЏ СѓРїСЂР°РІР»РµРЅРёСЏ Р°РЅРёРјР°С†РёРµР№
             storyboard = new Storyboard();
             Storyboard.SetTarget(animation, iconControl);
             Storyboard.SetTargetProperty(animation, "Opacity");
 
-            // Добавляем анимацию в Storyboard
+            // Р”РѕР±Р°РІР»СЏРµРј Р°РЅРёРјР°С†РёСЋ РІ Storyboard
             storyboard.Children.Add(animation);
 
-            // Обрабатываем событие завершения анимации
+            // РћР±СЂР°Р±Р°С‚С‹РІР°РµРј СЃРѕР±С‹С‚РёРµ Р·Р°РІРµСЂС€РµРЅРёСЏ Р°РЅРёРјР°С†РёРё
             storyboard.Completed += (s, e) =>
             {
-                // Меняем иконку после завершения анимации
+                // РњРµРЅСЏРµРј РёРєРѕРЅРєСѓ РїРѕСЃР»Рµ Р·Р°РІРµСЂС€РµРЅРёСЏ Р°РЅРёРјР°С†РёРё
                 iconControl.Symbol = newSymbol;
 
                 var animation = new DoubleAnimation
@@ -64,18 +64,19 @@ namespace VK_UI3.Helpers.Animations
                     Duration = TimeSpan.FromMilliseconds(50),
 
                 };
-                // Создаем объект Storyboard для управления анимацией
+                // РЎРѕР·РґР°РµРј РѕР±СЉРµРєС‚ Storyboard РґР»СЏ СѓРїСЂР°РІР»РµРЅРёСЏ Р°РЅРёРјР°С†РёРµР№
                 storyboard = new Storyboard();
                 Storyboard.SetTarget(animation, iconControl);
                 Storyboard.SetTargetProperty(animation, "Opacity");
-                // Добавляем анимацию в Storyboard
+                // Р”РѕР±Р°РІР»СЏРµРј Р°РЅРёРјР°С†РёСЋ РІ Storyboard
                 storyboard.Children.Add(animation);
                 storyboard.Begin();
             };
 
-            // Запускаем анимацию
+            // Р—Р°РїСѓСЃРєР°РµРј Р°РЅРёРјР°С†РёСЋ
             storyboard.Begin();
 
         }
     }
 }
+

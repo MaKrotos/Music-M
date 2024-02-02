@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using VkNet.Exception;
 using VkNet.Model;
@@ -8,11 +8,11 @@ namespace VkNet.AudioBypassService.Utils
 	public static class VkAuthErrors
 	{
 		/// <summary>
-		/// Выбрасывает ошибку, если есть в json.
+		/// Р’С‹Р±СЂР°СЃС‹РІР°РµС‚ РѕС€РёР±РєСѓ, РµСЃР»Рё РµСЃС‚СЊ РІ json.
 		/// </summary>
 		/// <param name="json"> JSON. </param>
 		/// <exception cref="VkApiException">
-		/// Неправильные данные JSON.
+		/// РќРµРїСЂР°РІРёР»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ JSON.
 		/// </exception>
 		public static void IfErrorThrowException(string json)
 		{
@@ -45,11 +45,11 @@ namespace VkNet.AudioBypassService.Utils
 		}
 		
 		/// <summary>
-		/// Выбрасывает ошибку, если есть в json.
+		/// Р’С‹Р±СЂР°СЃС‹РІР°РµС‚ РѕС€РёР±РєСѓ, РµСЃР»Рё РµСЃС‚СЊ РІ json.
 		/// </summary>
 		/// <param name="json"> JSON. </param>
 		/// <exception cref="VkApiException">
-		/// Неправильные данные JSON.
+		/// РќРµРїСЂР°РІРёР»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ JSON.
 		/// </exception>
 		public static void IfErrorThrowException(JObject json)
 		{

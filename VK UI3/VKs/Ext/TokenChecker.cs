@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using VkNet.Abstractions;
@@ -28,3 +28,4 @@ public class TokenChecker
         return true;
     }
 }
+

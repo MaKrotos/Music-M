@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -41,3 +41,4 @@ namespace VK_UI3.Views
         }
     }
 }
+

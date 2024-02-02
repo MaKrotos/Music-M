@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -79,11 +79,11 @@ namespace VK_UI3.VKs
                     {
                    
                         AuthBoomAsync();
-                        Console.WriteLine($"Произошла ошибка: {ex.Message}");
+                        Console.WriteLine($"РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР°: {ex.Message}");
                         retryCount++;
                     }
                 }
-                throw new Exception("Превышено максимальное количество попыток");
+                throw new Exception("РџСЂРµРІС‹С€РµРЅРѕ РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕРїС‹С‚РѕРє");
             }
 
             public async Task<T> CallWithRetryAsync<T>(Func<BoomService, Task<T>> func)
@@ -97,14 +97,14 @@ namespace VK_UI3.VKs
                     }
                     catch (Exception ex)
                     {
-                        // Выполните здесь определенное действие
-                        // Например, запись в лог
+                        // Р’С‹РїРѕР»РЅРёС‚Рµ Р·РґРµСЃСЊ РѕРїСЂРµРґРµР»РµРЅРЅРѕРµ РґРµР№СЃС‚РІРёРµ
+                        // РќР°РїСЂРёРјРµСЂ, Р·Р°РїРёСЃСЊ РІ Р»РѕРі
                         await AuthBoomAsync();
-                        Console.WriteLine($"Произошла ошибка: {ex.Message}");
+                        Console.WriteLine($"РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР°: {ex.Message}");
                         retryCount++;
                     }
                 }
-                throw new Exception("Превышено максимальное количество попыток");
+                throw new Exception("РџСЂРµРІС‹С€РµРЅРѕ РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕРїС‹С‚РѕРє");
             }
 
 
@@ -302,7 +302,7 @@ namespace VK_UI3.VKs
 
                 if (authenticatorVersion >= 4 && flowNames.All(b => b != AuthType.Password && b != AuthType.Otp))
                 {
-                    login.DialogMessageShow("К сожалению, ваша система не поддерживает вход с аккаунтом без пароля, установите пароль или обновите систему.");
+                    login.DialogMessageShow("Рљ СЃРѕР¶Р°Р»РµРЅРёСЋ, РІР°С€Р° СЃРёСЃС‚РµРјР° РЅРµ РїРѕРґРґРµСЂР¶РёРІР°РµС‚ РІС…РѕРґ СЃ Р°РєРєР°СѓРЅС‚РѕРј Р±РµР· РїР°СЂРѕР»СЏ, СѓСЃС‚Р°РЅРѕРІРёС‚Рµ РїР°СЂРѕР»СЊ РёР»Рё РѕР±РЅРѕРІРёС‚Рµ СЃРёСЃС‚РµРјСѓ.");
                     return;
                 }
 
@@ -368,14 +368,14 @@ namespace VK_UI3.VKs
 
                     //   OpenPage(AccountsWindowPage.EnterPassword);
 
-                    Profile = new EcosystemProfile("Незнакомец", string.Empty, llogin, false, false, "https://vk.com/images/camera_200.png");
+                    Profile = new EcosystemProfile("РќРµР·РЅР°РєРѕРјРµС†", string.Empty, llogin, false, false, "https://vk.com/images/camera_200.png");
 
                     Password passview = new Password();
 
 
 
                     passview.vk = this;
-                    passview.FirstName = Profile.FirstName ?? "Незнакомец";
+                    passview.FirstName = Profile.FirstName ?? "РќРµР·РЅР°РєРѕРјРµС†";
                     passview.Photo200 = Profile?.Photo200 ?? null;
                     passview.Phone = llogin ?? null;
 
@@ -434,7 +434,7 @@ namespace VK_UI3.VKs
                 hResult = PInvoke.WebAuthNCancelCurrentOperation(cancellationId);
                 if (!hResult.Succeeded)
                 {
-                    login.DialogMessageShow("Не удалось отменить текущий процесс входа, VK M не смог отменить текущий процесс входа! Закройте все диалоги входа с ключем и повторите попытку.");
+                    login.DialogMessageShow("РќРµ СѓРґР°Р»РѕСЃСЊ РѕС‚РјРµРЅРёС‚СЊ С‚РµРєСѓС‰РёР№ РїСЂРѕС†РµСЃСЃ РІС…РѕРґР°, VK M РЅРµ СЃРјРѕРі РѕС‚РјРµРЅРёС‚СЊ С‚РµРєСѓС‰РёР№ РїСЂРѕС†РµСЃСЃ РІС…РѕРґР°! Р—Р°РєСЂРѕР№С‚Рµ РІСЃРµ РґРёР°Р»РѕРіРё РІС…РѕРґР° СЃ РєР»СЋС‡РµРј Рё РїРѕРІС‚РѕСЂРёС‚Рµ РїРѕРїС‹С‚РєСѓ.");
                  //   _snackbarService.Show();
                     return;
                 }
@@ -520,7 +520,7 @@ namespace VK_UI3.VKs
 
 
                 passview.vk = this;
-                passview.FirstName = "Незнакомец";
+                passview.FirstName = "РќРµР·РЅР°РєРѕРјРµС†";
                 passview.Photo200 =  "null";
                 passview.Phone = llogin ?? null;
 
@@ -658,7 +658,7 @@ namespace VK_UI3.VKs
 
 
                         passview.vk = this;
-                        passview.FirstName = Profile.FirstName ?? "Незнакомец";
+                        passview.FirstName = Profile.FirstName ?? "РќРµР·РЅР°РєРѕРјРµС†";
                         passview.Photo200 = Profile?.Photo200 ?? null;
                         passview.Phone = llogin ?? null;    
 
@@ -677,7 +677,7 @@ namespace VK_UI3.VKs
                 return;
             }
 
-   //      _snackbarService.Show("Ошибка", $"Отправка кода с типом {_grantType} не реализована!");
+   //      _snackbarService.Show("РћС€РёР±РєР°", $"РћС‚РїСЂР°РІРєР° РєРѕРґР° СЃ С‚РёРїРѕРј {_grantType} РЅРµ СЂРµР°Р»РёР·РѕРІР°РЅР°!");
         }
 
         private unsafe bool TryBeginPasskey(string passkeyData, out byte[] authenticatorData, out byte[] signature,
@@ -789,7 +789,7 @@ namespace VK_UI3.VKs
         public async Task<string> GetAlbumCover(long? ownerId, long albumId)
         {
 
-            // Убедитесь, что api не является null
+            // РЈР±РµРґРёС‚РµСЃСЊ, С‡С‚Рѕ api РЅРµ СЏРІР»СЏРµС‚СЃСЏ null
             var services = new ServiceCollection();
             services.AddVkNetWithAuth();
             //    services.AddAudioBypass();
@@ -829,7 +829,7 @@ namespace VK_UI3.VKs
         public List<Audio> GetUserMusic()
         {
 
-            // Убедитесь, что результат Audio.Search не является null
+            // РЈР±РµРґРёС‚РµСЃСЊ, С‡С‚Рѕ СЂРµР·СѓР»СЊС‚Р°С‚ Audio.Search РЅРµ СЏРІР»СЏРµС‚СЃСЏ null
             VkCollection<Audio> audio;
             try
             {
@@ -851,4 +851,5 @@ namespace VK_UI3.VKs
     }
 
 }
+
 
