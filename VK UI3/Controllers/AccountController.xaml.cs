@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
@@ -65,10 +65,9 @@ namespace VK_UI3.Controllers
 
         private void Delete_Click(object sender, RoutedEventArgs e)
         {
-            // Р—РґРµСЃСЊ РґРѕР±Р°РІСЊС‚Рµ РєРѕРґ РґР»СЏ СѓРґР°Р»РµРЅРёСЏ СЌР»РµРјРµРЅС‚Р°
+            // Здесь добавьте код для удаления элемента
             DatabaseHandler.getConnect().Delete<Accounts>(this.accounts.id);
             MainView.updateAccounts();
         }
     }
 }
-

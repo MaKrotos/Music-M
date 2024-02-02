@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using System;
@@ -24,7 +24,7 @@ namespace VK_UI3.Views.LoginWindow
      
 
 
-        public string FirstName { get; set;  } = "РќРµР·РЅР°РєРѕРјРµС†";
+        public string FirstName { get; set;  } = "Незнакомец";
         public string Photo200 { get; set; } = "null";
         public string Phone { get; set; } = "***********";
        
@@ -54,7 +54,7 @@ namespace VK_UI3.Views.LoginWindow
         {
             base.OnNavigatedTo(e);
 
-            // РџР°СЂР°РјРµС‚СЂ РїРµСЂРµРґР°РµС‚СЃСЏ РєР°Рє РѕР±СЉРµРєС‚, РїРѕСЌС‚РѕРјСѓ РµРіРѕ РЅСѓР¶РЅРѕ РїСЂРёРІРµСЃС‚Рё Рє РЅСѓР¶РЅРѕРјСѓ С‚РёРїСѓ
+            // Параметр передается как объект, поэтому его нужно привести к нужному типу
             var viewModel = e.Parameter as Password;
 
             if (viewModel != null)
@@ -75,7 +75,7 @@ namespace VK_UI3.Views.LoginWindow
 
                 this.vk = viewModel.vk;
 
-                if (FirstName == "РќРµР·РЅР°РєРѕРјРµС†") NameT.Visibility = Visibility.Collapsed;
+                if (FirstName == "Незнакомец") NameT.Visibility = Visibility.Collapsed;
                 if (Photo200 == "null") imagesName.Visibility = Visibility.Collapsed;
                 if (Phone == "***********") phoneText.Visibility = Visibility.Collapsed;
             }
@@ -107,4 +107,3 @@ namespace VK_UI3.Views.LoginWindow
         }
     }
 }
-

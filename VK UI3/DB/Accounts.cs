@@ -1,4 +1,4 @@
-﻿using SQLite;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -15,7 +15,7 @@ namespace VK_UI3.DB
            // [AutoIncrement]
             public long id { get; set; }
             public bool Active { get; set; } = false;
-            public String Name { get; set; } = "Р”РѕР±Р°РІРёС‚СЊ";
+            public String Name { get; set; } = "Добавить";
             public String Token { get; set; } = null;
             public String UserPhoto { get; set; } = "null";
 
@@ -74,19 +74,19 @@ namespace VK_UI3.DB
         }
 
 
-        // РџРѕР»СѓС‡РёС‚СЊ РІСЃРµ Р°РєРєР°СѓРЅС‚С‹
+        // Получить все аккаунты
         public static List<Accounts> GetAllAccounts()
         {
             return DatabaseHandler.getConnect().Table<Accounts>().ToList();
         }
-        // РџРѕР»СѓС‡РёС‚СЊ Р°РєС‚РёРІРЅС‹Рµ Р°РєРєР°СѓРЅС‚С‹
+        // Получить активные аккаунты
         public static List<Accounts> GetAccByID(long ID)
         {
             return DatabaseHandler.getConnect().Table<Accounts>().Where(a => a.id == ID).ToList();
         }
 
 
-        // РџРѕР»СѓС‡РёС‚СЊ Р°РєС‚РёРІРЅС‹Рµ Р°РєРєР°СѓРЅС‚С‹
+        // Получить активные аккаунты
         public static List<Accounts> GetActiveAccounts()
         {
             var listActiv = DatabaseHandler.getConnect().Table<Accounts>().Where(a => a.Active == true).ToList();
@@ -114,7 +114,7 @@ namespace VK_UI3.DB
         }
 
 
-        // РџРѕР»СѓС‡РёС‚СЊ Р°РєРєР°СѓРЅС‚С‹ РїРѕ РёРјРµРЅРё
+        // Получить аккаунты по имени
 
         public static Accounts GetAccountsByID(long id)
         {
@@ -129,13 +129,13 @@ namespace VK_UI3.DB
             return DatabaseHandler.getConnect().Table<Accounts>().Where(a => a.Name == name).ToList();
         }
 
-        // РџРѕР»СѓС‡РёС‚СЊ Р°РєРєР°СѓРЅС‚С‹ РїРѕ С‚РѕРєРµРЅСѓ
+        // Получить аккаунты по токену
         public static List<Accounts> GetAccountsByToken(string token)
         {
             return DatabaseHandler.getConnect().Table<Accounts>().Where(a => a.Token == token).ToList();
         }
 
-        // РџРѕР»СѓС‡РёС‚СЊ РІСЃРµ Р°РєРєР°СѓРЅС‚С‹, СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅС‹Рµ РїРѕ sortID
+        // Получить все аккаунты, сортированные по sortID
         public static List<Accounts> GetAllAccountsSorted()
         {
             return DatabaseHandler.getConnect().Table<Accounts>().OrderBy(a => a.sortID).ToList();
@@ -145,7 +145,7 @@ namespace VK_UI3.DB
             return DatabaseHandler.getConnect().Table<Accounts>().OrderByDescending(a => a.sortID).ToList();
         }
 
-        // Р¤СѓРЅРєС†РёСЏ РґР»СЏ РїРµСЂРµСЃРѕСЂС‚РёСЂРѕРІРєРё Р°РєРєР°СѓРЅС‚РѕРІ
+        // Функция для пересортировки аккаунтов
         public static void ReshuffleAccounts(Accounts account, int newPosition)
         {
             var accounts = GetAllAccountsSorted();
@@ -163,4 +163,3 @@ namespace VK_UI3.DB
     }
 
 }
-

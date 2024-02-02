@@ -1,4 +1,4 @@
-п»їusing Microsoft.AppCenter.Crashes;
+using Microsoft.AppCenter.Crashes;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -54,12 +54,12 @@ namespace VK_UI3.Controls
         {
             try
             {
-                // РЈСЃС‚Р°РЅРѕРІРёС‚Рµ From РІ С‚РµРєСѓС‰СѓСЋ РІС‹СЃРѕС‚Сѓ gridCh
+                // Установите From в текущую высоту gridCh
 
 
-                // РЈСЃС‚Р°РЅРѕРІРёС‚Рµ To РІ С‚РµРєСѓС‰СѓСЋ РІС‹СЃРѕС‚Сѓ gridV
+                // Установите To в текущую высоту gridV
               
-                // РЈСЃС‚Р°РЅРѕРІРёС‚Рµ From РІ С‚РµРєСѓС‰СѓСЋ РІС‹СЃРѕС‚Сѓ gridCh
+                // Установите From в текущую высоту gridCh
                 //  ((DoubleAnimation)Storyboard1.Children[0]).From = gridCh.Height;
                 // Storyboard1.Begin();
                 // gridV.Height = 0;z3
@@ -161,4 +161,3 @@ namespace VK_UI3.Controls
 
     }
 }
-

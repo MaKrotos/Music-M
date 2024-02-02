@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -35,7 +35,7 @@ namespace VK_UI3.Views.ModalsPages
         {
             base.OnNavigatedTo(e);
 
-            // РџР°СЂР°РјРµС‚СЂ РїРµСЂРµРґР°РµС‚СЃСЏ РєР°Рє РѕР±СЉРµРєС‚, РїРѕСЌС‚РѕРјСѓ РµРіРѕ РЅСѓР¶РЅРѕ РїСЂРёРІРµСЃС‚Рё Рє РЅСѓР¶РЅРѕРјСѓ С‚РёРїСѓ
+            // Параметр передается как объект, поэтому его нужно привести к нужному типу
             var viewModel = e.Parameter as CaptchaEnter;
 
             if (viewModel != null)
@@ -53,4 +53,3 @@ namespace VK_UI3.Views.ModalsPages
         }
     }
 }
-

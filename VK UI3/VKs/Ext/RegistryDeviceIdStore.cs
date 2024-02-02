@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 using VK_UI3.DB;
@@ -55,4 +55,3 @@ public class RegistryDeviceIdStore : IDeviceIdStore
  
    
 }
-

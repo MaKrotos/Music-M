@@ -1,4 +1,4 @@
-﻿using Microsoft.AppCenter.Crashes;
+using Microsoft.AppCenter.Crashes;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -219,4 +219,3 @@ namespace VK_UI3.Controls
     }
 
 }
-

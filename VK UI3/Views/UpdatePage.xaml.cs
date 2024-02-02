@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -68,9 +68,8 @@ namespace VK_UI3.Views
         {
             // Update the ProgressBar and the TextBlock with the download progress
             downloadProgressBar.Value = e.Percentage;
-            downloadProgressText.Text = $"{Math.Round(e.BytesDownloaded / 1024.0 / 1024, 2)} РњР‘";
+            downloadProgressText.Text = $"{Math.Round(e.BytesDownloaded / 1024.0 / 1024, 2)} МБ";
 
         }
     }
 }
-

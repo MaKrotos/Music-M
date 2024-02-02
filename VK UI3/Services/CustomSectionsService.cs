@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -39,13 +39,13 @@ public class CustomSectionsService : ICustomSectionsService
     {
         /*yield return new()
         {
-            Title = "РљР°С‚Р°Р»РѕРіРё",
+            Title = "Каталоги",
             Id = "profiles",
             Url = "https://vk.com/profiles"
         };*/
         yield return new()
         {
-            Title = "РџРѕРёСЃРє",
+            Title = "Поиск",
             Id = "search"
         };
     }
@@ -105,7 +105,7 @@ public class CustomSectionsService : ICustomSectionsService
                             Layout = new()
                             {
                                 Name = "header_extended",
-                                Title = "РќРёС‡РµРіРѕ РЅРµ РЅР°Р№РґРµРЅРѕ"
+                                Title = "Ничего не найдено"
                             }
                         },
                     }
@@ -159,7 +159,7 @@ public class CustomSectionsService : ICustomSectionsService
                     Layout = new()
                     {
                         Name = "header",
-                        Title = "РўСЂРµРєРё РёР· РІР»РѕР¶РµРЅРёР№"
+                        Title = "Треки из вложений"
                     }
                 },
                 new()
@@ -226,7 +226,7 @@ public class CustomSectionsService : ICustomSectionsService
         }
         catch (Exception ex)
         {
-            _logger.Info($"РћС€РёР±РєР° РїРѕР»СѓС‡РµРЅРёСЏ СЃРїРёСЃРєР° СЂР°РґРёРѕСЃС‚Р°РЅС†РёР№: {ex}");
+            _logger.Info($"Ошибка получения списка радиостанций: {ex}");
             _logger.Error(ex);
         }
 
@@ -235,7 +235,7 @@ public class CustomSectionsService : ICustomSectionsService
             {
                 new()
                 {
-                    Title = "РџРѕРєР°Р·Р°С‚СЊ РІСЃРµ",
+                    Title = "Показать все",
                     SectionId = "attachments_full"
                 }
             }
@@ -243,7 +243,7 @@ public class CustomSectionsService : ICustomSectionsService
 
         return new()
         {
-            Title = "РџСЂРѕС„РёР»Рё",
+            Title = "Профили",
             Id = "profiles",
             Blocks = new()
             {
@@ -254,7 +254,7 @@ public class CustomSectionsService : ICustomSectionsService
                     Layout = new()
                     {
                         Name = "header_extended",
-                        Title = "Р’Р»РѕР¶РµРЅРёСЏ"
+                        Title = "Вложения"
                     },
                     Buttons = buttons
                 },
@@ -278,7 +278,7 @@ public class CustomSectionsService : ICustomSectionsService
                     Layout = new()
                     {
                         Name = "header_extended",
-                        Title = "Р Р°РґРёРѕСЃС‚Р°РЅС†РёРё РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№"
+                        Title = "Радиостанции пользователей"
                     }
                 },
 
@@ -309,9 +309,9 @@ public class CustomSectionsService : ICustomSectionsService
                     {
                         new Placeholder()
                         {
-                            Text = "Р­С‚РѕС‚ СЂР°Р·РґРµР» Р±СѓРґРµС‚ РїРѕРїРѕР»РЅСЏС‚СЃСЏ СЃРѕ РІСЂРµРјРµРЅРµРј :) РЎР»РµРґРёС‚Рµ Р·Р° РЅРѕРІРѕСЃС‚СЏРјРё!",
+                            Text = "Этот раздел будет пополнятся со временем :) Следите за новостями!",
                             Id = "jksdfksdkf",
-                            Title = "Р­С‚Рѕ РµС‰С‘ РЅРµ РІСЃРµ!",
+                            Title = "Это ещё не все!",
                             Icons = new List<Core.Models.Image>()
                             {
                                 new Core.Models.Image()
@@ -323,7 +323,7 @@ public class CustomSectionsService : ICustomSectionsService
                             {
                                 new Button()
                                 {
-                                    Title = "РўРµР»РµРіСЂР°Рј РєР°РЅР°Р»",
+                                    Title = "Телеграм канал",
                                     Action = new ActionButton()
                                     {
                                         Url = "https://t.me/MusicXPlayer",
@@ -413,4 +413,3 @@ public class CustomSectionsService : ICustomSectionsService
 public record MessagesGetAttachmentsResponse(MessagesGetAttachments[] Items, string? NextFrom);
 public record MessagesGetAttachments(MessagesGetAttachmentsAttachment Attachment);
 public record MessagesGetAttachmentsAttachment(Audio Audio);
-

@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml;
@@ -15,7 +15,7 @@ namespace VK_UI3.Helpers
 
 
 
-        // РћРїСЂРµРґРµР»РёС‚Рµ SecondValue РєР°Рє СЃРІРѕР№СЃС‚РІРѕ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё
+        // Определите SecondValue как свойство зависимости
         public static readonly DependencyProperty SecondValueProperty =
             DependencyProperty.Register("SecondValue", typeof(double), typeof(ExtendedSlider), new PropertyMetadata(0.0));
 
@@ -50,11 +50,11 @@ namespace VK_UI3.Helpers
         {
             this.Loaded += (s, e) =>
             {
-                // РќР°Р№РґРёС‚Рµ Thumb РІ С€Р°Р±Р»РѕРЅРµ СЃР»Р°Р№РґРµСЂР°
+                // Найдите Thumb в шаблоне слайдера
                 var oldThumb = FindChild<Microsoft.UI.Xaml.Controls.Primitives.Thumb>(this);
                 var newThumb = new Microsoft.UI.Xaml.Controls.Primitives.Thumb();
                 thumb = FindChild<Microsoft.UI.Xaml.Controls.Primitives.Thumb>(this);
-                // РљРѕРїРёСЂРѕРІР°С‚СЊ РІСЃРµ РґРѕСЃС‚СѓРїРЅС‹Рµ СЃРІРѕР№СЃС‚РІР°
+                // Копировать все доступные свойства
               
 
                 var toolTip = ToolTipService.GetToolTip(thumb) as ToolTip;
@@ -88,7 +88,7 @@ namespace VK_UI3.Helpers
 
         private void OnValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            // РћР±РЅРѕРІРёС‚Рµ SecondValue РїСЂРё РёР·РјРµРЅРµРЅРёРё Р·РЅР°С‡РµРЅРёСЏ СЃР»Р°Р№РґРµСЂР°
+            // Обновите SecondValue при изменении значения слайдера
 
         }
 
@@ -96,4 +96,3 @@ namespace VK_UI3.Helpers
 
 
 }
-

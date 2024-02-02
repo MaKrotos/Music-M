@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualBasic;
+using Microsoft.VisualBasic;
 using MusicX.Core.Models;
 using MusicX.Core.Services;
 using System;
@@ -42,16 +42,16 @@ namespace VK_UI3.Interfaces
                
                         } 
         }
-        public event EventHandler onListUpdate; // РЎРѕР±С‹С‚РёРµ OnDeviceAttached
+        public event EventHandler onListUpdate; // Событие OnDeviceAttached
         public long? countTracks { get; set; }
         public long? currentTrack { get; set; }
 
 
-        // Р”РѕР±Р°РІР»СЏРµРј РґРµР»РµРіР°С‚ Рё СЃРѕР±С‹С‚РёРµ
+        // Добавляем делегат и событие
         public delegate void ChangedPlayAudio(object sender, EventArgs e);
         public event ChangedPlayAudio AudioPlayedChangeEvent;
 
-        // РњРµС‚РѕРґ РґР»СЏ РІС‹Р·РѕРІР° СЃРѕР±С‹С‚РёСЏ
+        // Метод для вызова события
         public void ChangePlayAudio()
         {
             AudioPlayedChangeEvent?.Invoke(this, EventArgs.Empty);
@@ -307,4 +307,3 @@ namespace VK_UI3.Interfaces
     }
 
 }
-

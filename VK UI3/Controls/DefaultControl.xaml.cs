@@ -1,4 +1,4 @@
-п»їusing Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -36,8 +36,7 @@ namespace VK_UI3.Controls
 
             string key = (string.IsNullOrEmpty(block.Layout?.Name) ? block.DataType : $"{block.DataType}_{block.Layout.Name}");
             block_not.Text += " (" + key + ") ";
-            // РўРµРїРµСЂСЊ РІС‹ РјРѕР¶РµС‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РґР°РЅРЅС‹Рµ
+            // Теперь вы можете использовать данные
         } 
     }
 }
-

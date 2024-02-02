@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Text;
 
@@ -56,4 +56,3 @@ public static class StringExtensions
         return base64.TrimEnd('=').Replace("+", "-").Replace("/", "_");
     }
 }
-

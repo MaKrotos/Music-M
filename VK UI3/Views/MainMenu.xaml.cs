@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.UI.Xaml;
 using System.Collections.ObjectModel;
 using VK_UI3.VKs;
@@ -58,7 +58,7 @@ namespace VK_UI3
 
 
           //  Shuffle(Tracks);
-            // Р”РѕР±Р°РІСЊС‚Рµ РЅРѕРІС‹Р№ СЌР»РµРјРµРЅС‚ РІ Tracks Р·РґРµСЃСЊ
+            // Добавьте новый элемент в Tracks здесь
         }
 
         public void Shuffle<T>(ObservableCollection<T> collection)
@@ -75,4 +75,3 @@ namespace VK_UI3
 
     }
 }
-
