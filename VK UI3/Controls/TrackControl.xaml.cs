@@ -46,7 +46,7 @@ namespace VK_UI3.Controls
             if ((DataContext as ExtendedAudio) != null)
             {
 
-                var track = (Audio)(DataContext as ExtendedAudio).Audio;
+                var track = (DataContext as ExtendedAudio).audio;
                 if (track == null)
                     return;
                 dataTrack = (DataContext as ExtendedAudio);
@@ -72,7 +72,6 @@ namespace VK_UI3.Controls
                 if (track.Album != null && track.Album.Thumb != null)
                     changeImage.ChangeImageWithAnimation(
                         track.Album.Thumb.Photo270 ??
-                      
                         track.Album.Thumb.Photo300 ??
                         track.Album.Thumb.Photo600 ??
                         track.Album.Thumb.Photo34 ??
@@ -132,7 +131,7 @@ namespace VK_UI3.Controls
             }
         }
 
-        Audio audio = new();
+        VkNet.Model.Attachments.Audio audio = new();
         AnimationsChangeImage changeImage = null;
         private void TrackControl_Loaded(object sender, RoutedEventArgs e)
         {
@@ -206,13 +205,13 @@ namespace VK_UI3.Controls
         {
             try
             {
-                if (audio.MainArtists == null || (audio.MainArtists).Count == 0)
+                if (audio.MainArtists == null || audio.MainArtists.Count() == 0)
                 {
                     MainView.OpenSection(audio.Artist, SectionType.Search);
                 }
-                else 
+                else
                 {
-                    MainView.OpenSection(audio.MainArtists[0].Id, SectionType.Artist);
+                    MainView.OpenSection(audio.MainArtists.First().Id, SectionType.Artist);
                 }
             }
             catch (Exception ex)
@@ -257,11 +256,11 @@ namespace VK_UI3.Controls
 
             if (audio.OwnerId == AccountsDB.activeAccount.id)
             {
-                 vkService.AudioDeleteAsync(audio.Id, audio.OwnerId);
+                 vkService.AudioDeleteAsync((long)audio.Id, (long) audio.OwnerId);
             }
             else
             {
-                 vkService.AudioAddAsync(audio.Id, audio.OwnerId);
+                 vkService.AudioAddAsync((long) audio.Id, (long) audio.OwnerId);
                             
             }
         }

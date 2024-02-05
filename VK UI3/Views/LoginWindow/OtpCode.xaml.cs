@@ -74,6 +74,7 @@ namespace VK_UI3.Views.LoginWindow
                 if (loginWay == LoginWay.ReserveCode)
                     txt = "Используйте резервный код из сохранённого Вами списка.";
 
+                CodeBox.MaxLength = CodeLength;
            
 
                 passpey.Text = txt;

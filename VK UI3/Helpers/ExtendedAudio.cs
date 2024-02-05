@@ -1,13 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MusicX.Core.Models;
 using VK_UI3.Interfaces;
-using VK_UI3.VKs;
-using VkNet.Model;
-using VkNet.Model.Attachments;
+
 
 namespace VK_UI3.Helpers
 {
@@ -15,7 +8,12 @@ namespace VK_UI3.Helpers
     {
         public ExtendedAudio(Audio audio, IVKGetAudio iVKGetAudio)
         {
-            Audio = audio;
+            this.audio = audio;
+            this.iVKGetAudio = iVKGetAudio;
+        }
+        public ExtendedAudio(VkNet.Model.Attachments.Audio audio, IVKGetAudio iVKGetAudio)
+        {
+            this.audio = audio;
             this.iVKGetAudio = iVKGetAudio;
         }
 
@@ -28,7 +26,7 @@ namespace VK_UI3.Helpers
             }
         }
 
-        public Audio Audio { get; set; }
+        public VkNet.Model.Attachments.Audio audio { get; set; }
 
         // public int NumberList { get; set; }
 

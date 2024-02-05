@@ -6,7 +6,7 @@
     xmlns:local="using:VK_UI3"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:custom="using:VK_UI3.Controllers"
+    xmlns:custom="using:VK_UI3.Controls"
     mc:Ignorable="d"
     >
 
@@ -14,11 +14,11 @@
         <ListView Padding="0,16,0,16" AllowDrop="True"  CanReorderItems="false" x:Name="TrackListView" ItemsSource="{x:Bind userAudio.listAudio, Mode=OneWay}"   IsItemClickEnabled="False" SelectionMode="None">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <custom:TrackController
-                        
+                    <custom:TrackControl
                         FocusVisualPrimaryBrush="Transparent"
                         FocusVisualSecondaryThickness="0"
-                        TrackData="{Binding }"></custom:TrackController>
+                           Margin="0,0,0,4"
+                     ></custom:TrackControl>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

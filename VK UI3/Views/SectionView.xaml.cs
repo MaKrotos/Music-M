@@ -63,7 +63,8 @@ namespace VK_UI3.Views
         {
             None,
             Artist,
-            Search
+            Search,
+            MyListAudio
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -75,15 +76,20 @@ namespace VK_UI3.Views
            
          
             var section = e.Parameter as SectionView;
-
             if (section == null) return;
 
             this.section = section.section;
             this.sectionType = section.sectionType;
             this.SectionID = section.SectionID;
 
-            LoadAsync();
-
+            if (this.section != null && this.section.Blocks != null && this.section.Blocks.Count != 0)
+            {
+                loadBlocks(this.section.Blocks);
+            }
+            else
+            {
+                LoadAsync();
+            }
         }
 
         private async Task LoadArtistSection(string artistId)
@@ -121,12 +127,12 @@ namespace VK_UI3.Views
                     try
                     {
                         res.Catalog.Sections[0].Blocks[1].Suggestions = res.Suggestions;
-                         loadBlocks(res.Catalog.Sections[0].Blocks, null);
+                         loadBlocks(res.Catalog.Sections[0].Blocks);
                         nowOpenSearchSug = true;
                     }
                     catch (Exception ex)
                     {
-                         loadBlocks(res.Catalog.Sections[0].Blocks, null);
+                         loadBlocks(res.Catalog.Sections[0].Blocks);
                     }
 
                     return;
@@ -176,10 +182,10 @@ namespace VK_UI3.Views
             blocks.Clear();
             var sectin =  await VK.vkService.GetSectionAsync(sectionID);
             this.section = sectin.Section;
-            loadBlocks(section.Blocks, section.NextFrom);
+            loadBlocks(section.Blocks);
         }
 
-        private void loadBlocks(List<Block> block, string nextValue)
+        private void loadBlocks(List<Block> block)
         {
             foreach (var item in block)
             {

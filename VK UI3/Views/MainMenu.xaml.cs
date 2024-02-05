@@ -5,6 +5,7 @@ using VK_UI3.VKs;
 using System.ComponentModel;
 using Octokit;
 using VK_UI3.DB;
+using Microsoft.UI.Xaml.Navigation;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -16,7 +17,7 @@ namespace VK_UI3
     /// </summary>
     public sealed partial class MainMenu : Microsoft.UI.Xaml.Controls.Page, INotifyPropertyChanged
     {
-        UserAudio userAudio = null;
+        public UserAudio userAudio = null;
 
         public MainMenu()
         {
@@ -30,10 +31,9 @@ namespace VK_UI3
 
 
 
-            userAudio = new UserAudio(AccountsDB.activeAccount.id);
-            userAudio.onListUpdate += (sender, e) => updateList(sender, e);
-          
-        }
+                userAudio = new UserAudio(AccountsDB.activeAccount.id);
+                userAudio.onListUpdate += (sender, e) => updateList(sender, e);
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -48,7 +48,6 @@ namespace VK_UI3
 
         private void updateList(object sender, EventArgs e)
         {
-
             OnPropertyChanged(nameof(userAudio));
         }
 

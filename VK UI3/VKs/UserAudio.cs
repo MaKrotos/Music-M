@@ -54,8 +54,7 @@ namespace VK_UI3.VKs
             if (countTracks > listAudio.Count)
             {
                 VkCollection<Audio> audios;
-                try
-                {
+              
                     audios = api.Audio.GetAsync(new AudioGetParams
                     {
                         OwnerId = int.Parse(base.id),
@@ -69,12 +68,6 @@ namespace VK_UI3.VKs
                         listAudio.Add(extendedAudio);
 
                     }
-
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
             }
 
             if (countTracks == listAudio.Count()-1) itsAll = true;

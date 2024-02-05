@@ -75,13 +75,13 @@ namespace VK_UI3.Controllers
             {
                 if (TrackData == null)
                     return "null";
-                if (TrackData.Audio.Album == null)
+                if (TrackData.audio.Album == null)
                     return "null";
-                var a= TrackData.Audio.Album.Thumb.Photo600
-                     ?? TrackData.Audio.Album.Thumb.Photo300
-                     ?? TrackData.Audio.Album.Thumb.Photo270
-                     ?? TrackData.Audio.Album.Thumb.Photo68
-                     ?? TrackData.Audio.Album.Thumb.Photo34;
+                var a= TrackData.audio.Album.Thumb.Photo600
+                     ?? TrackData.audio.Album.Thumb.Photo300
+                     ?? TrackData.audio.Album.Thumb.Photo270
+                     ?? TrackData.audio.Album.Thumb.Photo68
+                     ?? TrackData.audio.Album.Thumb.Photo34;
                 if (a != null)
                     return a;
 

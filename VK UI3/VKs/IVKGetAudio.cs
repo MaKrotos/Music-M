@@ -74,7 +74,7 @@ namespace VK_UI3.Interfaces
             {
                 foreach (var audio in audios)
                 {
-                    ExtendedAudio extendedAudio = new ExtendedAudio((VkNet.Model.Attachments.Audio)audio, this);
+                    ExtendedAudio extendedAudio = new ExtendedAudio(audio, this);
                     listAudioTrue.Add(extendedAudio);
                 }
             }
@@ -118,7 +118,7 @@ namespace VK_UI3.Interfaces
 
         public void shareToVK()
         {
-            var a = GetTrackPlay().Audio;
+            var a = GetTrackPlay().audio;
             api.Audio.SetBroadcastAsync(
                a.OwnerId + "_" + a.Id
                 ); ;
@@ -147,9 +147,6 @@ namespace VK_UI3.Interfaces
             });
             name = getName();
             photoUri = getPhoto();
-
-
-
         }
 
 
@@ -225,17 +222,18 @@ namespace VK_UI3.Interfaces
             return GetTrackPlay();
 
         }
-        public bool itsAll = false;
+
+
+        bool _itsAll = false;
+
+        public bool itsAll { get {
+                if (_itsAll || countTracks == null) return true;
+                return false;
+            } set { _itsAll = value; } }
+
         public ExtendedAudio GetTrackPlay()
         {
-            if (!itsAll && currentTrack == listAudio.Count() -1)
-            {
-                Task.Run(() =>
-                {
-                    countTracks = getCount();
-                    this.GetTracks();
-                });
-            }
+          
             if (currentTrack == null) currentTrack = 0;
             return GetTrackPlay((long)currentTrack);
         }
@@ -244,9 +242,14 @@ namespace VK_UI3.Interfaces
         public bool getLoadedTracks = false;
         public ExtendedAudio GetTrackPlay(long tracI)
         {
-            while (currentTrack + 1 > listAudio.Count)
+            if (!itsAll && currentTrack == listAudio.Count() - 1)
             {
-                GetTracks();
+                Task.Run(() =>
+                {
+                    if (countTracks == null)
+                        countTracks = getCount();
+                    this.GetTracks();
+                });
             }
 
             if (tracI > countTracks)

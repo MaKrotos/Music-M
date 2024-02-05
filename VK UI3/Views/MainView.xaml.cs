@@ -41,9 +41,6 @@ namespace VK_UI3.Views
 
 
             // FramePlayer.RenderTransform = trans;
-
-
-            ContentFrame.Navigate(typeof(MainMenu), null, new DrillInNavigationTransitionInfo());
             frame = ContentFrame;
             createNavigation();
         }
@@ -418,7 +415,9 @@ namespace VK_UI3.Views
                 switch (invokedItem.Content.ToString().ToLower())
                 {
                     case "моя музыка":
-                        ContentFrame.Navigate(typeof(MainMenu), null, new DrillInNavigationTransitionInfo());
+
+                        OpenSection(SectionType.MyListAudio);
+                       // ContentFrame.Navigate(typeof(MainMenu), null, new DrillInNavigationTransitionInfo());
                         break;
 
                     case "параметры":

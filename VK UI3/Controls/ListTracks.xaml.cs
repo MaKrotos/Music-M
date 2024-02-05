@@ -54,15 +54,6 @@ namespace VK_UI3.Controls
         {
             try
             {
-                // Установите From в текущую высоту gridCh
-
-
-                // Установите To в текущую высоту gridV
-              
-                // Установите From в текущую высоту gridCh
-                //  ((DoubleAnimation)Storyboard1.Children[0]).From = gridCh.Height;
-                // Storyboard1.Begin();
-                // gridV.Height = 0;z3
 
            
 

@@ -76,11 +76,11 @@
 
         <StackPanel HorizontalAlignment="Stretch" Padding="8" Grid.Column="1" VerticalAlignment="Center">
 
-            <TextBlock PointerExited="TextBlock_PointerExited" PointerEntered="TextBlock_PointerEntered" Text="{x:Bind TrackData.Audio.Artist}" FontWeight="Bold" VerticalAlignment="Bottom" FontSize="16"/>
+            <TextBlock PointerExited="TextBlock_PointerExited" PointerEntered="TextBlock_PointerEntered" Text="{x:Bind TrackData.audio.Artist}" FontWeight="Bold" VerticalAlignment="Bottom" FontSize="16"/>
 
-            <TextBlock  PointerEntered="TextBlock_PointerEntered" PointerExited="TextBlock_PointerExited" d:Text="Автор" Text="{x:Bind TrackData.Audio.Title}" VerticalAlignment="Top"  FontStyle="Italic" Opacity="0.7"/>
+            <TextBlock  PointerEntered="TextBlock_PointerEntered" PointerExited="TextBlock_PointerExited" d:Text="Автор" Text="{x:Bind TrackData.audio.Title}" VerticalAlignment="Top"  FontStyle="Italic" Opacity="0.7"/>
             
-            <TextBlock d:Text="Продолжительность"  Text="{x:Bind TrackData.Audio.Duration, Mode=OneTime, Converter={StaticResource SecondsToTimeConverter}}" HorizontalAlignment="Right"/>
+            <TextBlock d:Text="Продолжительность"  Text="{x:Bind TrackData.audio.Duration, Mode=OneTime, Converter={StaticResource SecondsToTimeConverter}}" HorizontalAlignment="Right"/>
         </StackPanel>
     </Grid>
     <VisualStateManager.VisualStateGroups>

@@ -84,7 +84,7 @@ namespace VK_UI3.Controllers
 
 
 
-        public static MusicX.Core.Models.Audio _TrackDataThis
+        public static VkNet.Model.Attachments.Audio _TrackDataThis
         {
             get
             {
@@ -92,10 +92,10 @@ namespace VK_UI3.Controllers
                     if (iVKGetAudio.countTracks != 0)
                     {
 
-                       
-                        var audios = iVKGetAudio.GetTrackPlay().Audio;
-       
-                        return MusicX.Core.Models.Audio.ConvertToMusicXAudio(audios);
+
+
+
+                        return iVKGetAudio.GetTrackPlay().audio;
 
                     }
                 return _trackDataThis;
@@ -110,8 +110,8 @@ namespace VK_UI3.Controllers
             }
         }
 
-        private static MusicX.Core.Models.Audio _trackDataThis;
-        public MusicX.Core.Models.Audio TrackDataThis
+        private static VkNet.Model.Attachments.Audio _trackDataThis;
+        public VkNet.Model.Attachments.Audio TrackDataThis
         {
             get { return _TrackDataThis; }
         }
@@ -252,7 +252,7 @@ namespace VK_UI3.Controllers
         private void AudioPlayer_oniVKUpdate(object sender, EventArgs e)
         {
             //   pageRa.Height = actualHeight;
-        //    DisableAllChildren(this, true);
+            DisableAllChildren(this, true);
             setButtonPlayNext();
 
         }
@@ -268,18 +268,25 @@ namespace VK_UI3.Controllers
 
         }
 
+
+        bool enablinUI = false;
         void DisableAllChildren(DependencyObject parent, bool enable = false)
         {
-            var count = VisualTreeHelper.GetChildrenCount(parent);
-            for (int i = 0; i < count; i++)
+            if (enable == enablinUI) return;
+            enablinUI = enable;
+            this.DispatcherQueue.TryEnqueue(async () =>
             {
-                var child = VisualTreeHelper.GetChild(parent, i);
-                if (child is Control control)
+                var count = VisualTreeHelper.GetChildrenCount(parent);
+                for (int i = 0; i < count; i++)
                 {
-                    control.IsEnabled = enable;
+                    var child = VisualTreeHelper.GetChild(parent, i);
+                    if (child is Control control)
+                    {
+                        control.IsEnabled = enable;
+                    }
+                    DisableAllChildren(child, enable);
                 }
-                DisableAllChildren(child, enable);
-            }
+            });
         }
 
 
@@ -486,15 +493,15 @@ namespace VK_UI3.Controllers
 
             switch (mediaPlayer.CurrentState)
             {
-                case (MediaPlayerState)Windows.Media.Playback.MediaPlaybackState.Playing:
+                case (MediaPlayerState)MediaPlaybackState.Playing:
 
                     mediaPlayer.Pause();
                     break;
-                case (MediaPlayerState)Windows.Media.Playback.MediaPlaybackState.Paused:
+                case (MediaPlayerState)MediaPlaybackState.Paused:
                     mediaPlayer.Play();
 
                     break;
-                case (MediaPlayerState)Windows.Media.Playback.MediaPlaybackState.Buffering:
+                case (MediaPlayerState)MediaPlaybackState.Buffering:
 
                     break;
 
