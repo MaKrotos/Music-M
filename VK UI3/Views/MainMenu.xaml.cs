@@ -15,25 +15,29 @@ namespace VK_UI3
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainMenu : Microsoft.UI.Xaml.Controls.Page, INotifyPropertyChanged
+    public sealed partial class MainMenu : Microsoft.UI.Xaml.Controls.Page
     {
         public UserAudio userAudio = null;
 
         public MainMenu()
         {
             this.InitializeComponent();
-            Loaded += loaded;
+          
         }
 
-        private void loaded(object sender, RoutedEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
 
+            userAudio = e.Parameter as UserAudio;
+            if (userAudio == null)
+            {
+                userAudio = new UserAudio(AccountsDB.activeAccount.id, this.DispatcherQueue);
+            }
 
-
-
-                userAudio = new UserAudio(AccountsDB.activeAccount.id);
-                userAudio.onListUpdate += (sender, e) => updateList(sender, e);
-
+            //userAudio.onListUpdate += (sender, e) => updateList(sender, e);
+           // OnPropertyChanged(nameof(userAudio));
+            base.OnNavigatedTo(e);
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -42,13 +46,13 @@ namespace VK_UI3
             this.DispatcherQueue.TryEnqueue(async () =>
             {
                 //   this.ImgUri = uri;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             });
         }
 
         private void updateList(object sender, EventArgs e)
         {
-            OnPropertyChanged(nameof(userAudio));
+         //   OnPropertyChanged(nameof(userAudio.listAudio));
         }
 
         private void Timer_Tick(object sender, object e)
@@ -60,17 +64,7 @@ namespace VK_UI3
             // Добавьте новый элемент в Tracks здесь
         }
 
-        public void Shuffle<T>(ObservableCollection<T> collection)
-        {
-            var random = new Random();
-            for (int i = collection.Count - 1; i > 0; i--)
-            {
-                int j = random.Next(i + 1);
-                T temp = collection[i];
-                collection[i] = collection[j];
-                collection[j] = temp;
-            }
-        }
+
 
     }
 }

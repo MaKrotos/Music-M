@@ -32,6 +32,7 @@
 	  <None Remove="Fonts\VKSansDisplay-Medium.ttf" />
 	  <None Remove="Fonts\VKSansDisplay-Regular.ttf" />
 	  <None Remove="Views\SectionView.xaml" />
+	  <None Remove="Views\WaitView.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -104,6 +105,9 @@
     <None Update="Controls\PlaylistControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
+    <Page Update="Views\WaitView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Controls\TrackControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

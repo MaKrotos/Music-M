@@ -294,7 +294,9 @@ namespace VK_UI3.Controls
         {
 
             entered = false;
-            if ((DataContext as ExtendedAudio).PlayThis) return;
+            var a = DataContext as ExtendedAudio;
+            if (a == null) return;
+            if (a.PlayThis) return;
             FadeInAnimationGridPlayIcon.Pause();
             FadeOutAnimationGridPlayIcon.Begin();
 

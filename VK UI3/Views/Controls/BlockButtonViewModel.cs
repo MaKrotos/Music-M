@@ -123,7 +123,7 @@ namespace VK_UI3.Views.Controls
 
                             Task task = new Task(async() =>
                             {
-                                AudioPlayer.PlayList(new SectionAudio(Action.BlockId));
+                                AudioPlayer.PlayList(new SectionAudio(Action.BlockId, this.DispatcherQueue));
                             });
                             task.Start();
 

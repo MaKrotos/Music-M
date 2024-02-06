@@ -42,8 +42,28 @@ namespace VK_UI3.Views
 
             // FramePlayer.RenderTransform = trans;
             frame = ContentFrame;
+            //OpenMyPage(SectionType.MyListAudio);
+            ContentFrame.Navigated += ContentFrame_Navigated;
+            NavWiv.BackRequested += NavWiv_BackRequested;
             createNavigation();
         }
+
+        private void NavWiv_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
+        {
+          
+                if (ContentFrame.CanGoBack)
+                {
+                    ContentFrame.GoBack();
+                }
+            
+
+        }
+
+        private void ContentFrame_Navigated(object sender, NavigationEventArgs e)
+        {
+            NavWiv.IsBackEnabled = ContentFrame.CanGoBack;
+        }
+
         protected void OnPropertyChanged(string propertyName)
         {
             this.DispatcherQueue.TryEnqueue(async () =>
@@ -225,7 +245,7 @@ namespace VK_UI3.Views
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
+              //OpenMyPage(SectionType.MyListAudio);
             // Проверьте, является ли переданный параметр типом NavigationInfo
             if (e.Parameter is NavigationInfo navigationInfo)
             {
@@ -290,8 +310,15 @@ namespace VK_UI3.Views
 
                 AccountsDB.ActivateAccount(selectedAccount.id);
                 activeAccount = selectedAccount;
-                var a = ContentFrame.Content.GetType();
-                ContentFrame.Navigate(a, this, new DrillInNavigationTransitionInfo());
+                if (ContentFrame.Content != null)
+                {
+                    var a = ContentFrame.Content.GetType();
+                    ContentFrame.Navigate(a, this, new DrillInNavigationTransitionInfo());
+                }
+                else
+                {
+                    OpenMyPage(SectionType.MyListAudio);
+                }
 
             }
 
@@ -416,8 +443,9 @@ namespace VK_UI3.Views
                 {
                     case "моя музыка":
 
-                        OpenSection(SectionType.MyListAudio);
-                       // ContentFrame.Navigate(typeof(MainMenu), null, new DrillInNavigationTransitionInfo());
+                        OpenMyPage(SectionType.MyListAudio);
+                  
+                      //  ContentFrame.Navigate(typeof(MainMenu), null, new DrillInNavigationTransitionInfo());
                         break;
 
                     case "параметры":
@@ -442,13 +470,23 @@ namespace VK_UI3.Views
 
 
             }
+          //  NavWiv.IsBackEnabled = ContentFrame.CanGoBack;
         }
+
+        private void OpenMyPage(SectionType sectionType)
+        {
+            var sectionView = new WaitView();
+            sectionView.sectionType = sectionType;
+            frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
+        }
+
         public static void OpenSection(string sectionID, SectionType sectionType = SectionType.None)
         {
-            var sectionView = new SectionView();
+            var sectionView = new WaitView();
             sectionView.SectionID = sectionID;
             sectionView.sectionType = sectionType;
-            frame.Navigate(typeof(SectionView), sectionView, new DrillInNavigationTransitionInfo());
+            
+            frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
         }
        
     }

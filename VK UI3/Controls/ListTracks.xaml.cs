@@ -36,38 +36,28 @@ namespace VK_UI3.Controls
             InitializeComponent();
 
             this.Unloaded += ListTracks_Unloaded;
-            this.Loaded += ListTracks_Loaded;
-
+          //  this.Loaded += ListTracks_Loaded;
+            this.DataContextChanged += ListTracks_DataContextChanged;
 
          
     
 
         }
 
-     
-          
-
-
-        private SectionAudio sectionAudio;
-
-        private async void ListTracks_Loaded(object sender, RoutedEventArgs e)
+        private void ListTracks_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             try
             {
-
-           
-
-
                 if (DataContext is not Block block)
                     return;
-             
-                sectionAudio = new SectionAudio(block);
+
+                sectionAudio = new SectionAudio(block, this.DispatcherQueue);
                 sectionAudio.countTracks = block.Audios.Count;
                 OnPropertyChanged(nameof(sectionAudio));
 
                 sectionAudio.onListUpdate += SectionAudio_onListUpdate;
-              //  double itemWidth = Math.Floor(gridV.Width / 300);
-              //  WSetter.Value = gridV.ActualWidth / itemWidth - 5;
+                //  double itemWidth = Math.Floor(gridV.Width / 300);
+                //  WSetter.Value = gridV.ActualWidth / itemWidth - 5;
                 //  var a = await VK.vkService.GetSectionAsync(((Block)DataContext).Id, ((Block)DataContext).NextFrom);
             }
             catch (Exception ex)
@@ -84,6 +74,10 @@ namespace VK_UI3.Controls
 
             }
         }
+
+        private SectionAudio sectionAudio;
+
+     
         protected void OnPropertyChanged(string propertyName)
         {
             this.DispatcherQueue.TryEnqueue(async () =>

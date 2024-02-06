@@ -1,4 +1,5 @@
-﻿using MusicX.Core.Models;
+﻿using Microsoft.UI.Dispatching;
+using MusicX.Core.Models;
 using MusicX.Core.Services;
 using System;
 using System.Collections.Generic;
@@ -16,11 +17,11 @@ namespace VK_UI3.VKs
 
         string SectionID;
 
-        public SectionAudio(Block block) : base(block)
+        public SectionAudio(Block block, DispatcherQueue dispatcherQueue) : base(block, dispatcherQueue)
         {
         }
 
-        public SectionAudio(string sectionID, Uri photoLink = null, string name = null, List<Audio> audios = null, string next = null) : base(sectionID, photoLink, name, audios, next)
+        public SectionAudio(string sectionID, DispatcherQueue dispatcherQueue, Uri photoLink = null, string name = null, List<Audio> audios = null, string next = null) : base(sectionID, dispatcherQueue, photoLink, name, audios, next)
         {
 
         }
@@ -54,14 +55,16 @@ namespace VK_UI3.VKs
 
                 if (audios.Count == 0)
                 {
-                    countTracks = listAudioTrue.Count;
+                    countTracks = listAudio.Count;
                     itsAll = true;
                 }
                 foreach (var item in audios)
                 {
                     ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
-                    listAudioTrue.Add(extendedAudio);
-
+                    dispatcherQueue.TryEnqueue(() =>
+                    {
+                        listAudio.Add(extendedAudio);
+                    });
                     NotifyOnListUpdate();
                 }
 

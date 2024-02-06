@@ -13,7 +13,7 @@ namespace VK_UI3.VKs
 {
     public class UserAudio : IVKGetAudio
     {
-        public  UserAudio(long id) : base(id)
+        public UserAudio(long id, DispatcherQueue dispatcherQueue) : base(id, dispatcherQueue)
         {
             base.id = id.ToString();
             NotifyOnListUpdate();
@@ -21,16 +21,26 @@ namespace VK_UI3.VKs
 
         public override long? getCount()
         {
-           return api.Audio.GetCountAsync(long.Parse(base.id)).Result;
+            return api.Audio.GetCountAsync(long.Parse(base.id)).Result;
         }
         User user;
 
         public override string getName()
         {
-            List<long> ids = new List<long> { long.Parse(base.id) };
-            user = api.Users.GetAsync(ids).Result[0];
-            return user.FirstName + " " + user.LastName;
+            try
+            {
+                List<long> ids = new List<long> { long.Parse(base.id) };
+                user = api.Users.GetAsync(ids).Result[0];
+                return user.FirstName + " " + user.LastName;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
+            return null;
         }
+
 
         public override Uri getPhoto()
         {
@@ -46,37 +56,40 @@ namespace VK_UI3.VKs
         public override void GetTracks()
         {
             if (getLoadedTracks) return;
-                getLoadedTracks = true;
-        
+            getLoadedTracks = true;
+
             int offset = listAudio.Count;
             int count = 100;
 
             if (countTracks > listAudio.Count)
             {
                 VkCollection<Audio> audios;
-              
-                    audios = api.Audio.GetAsync(new AudioGetParams
-                    {
-                        OwnerId = int.Parse(base.id),
-                        Offset = offset,
-                        Count = count
-                    }).Result;
 
-                    foreach (var item in audios)
-                    {
-                        ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
-                        listAudio.Add(extendedAudio);
+                audios = api.Audio.GetAsync(new AudioGetParams
+                {
+                    OwnerId = int.Parse(base.id),
+                    Offset = offset,
+                    Count = count
+                }).Result;
 
-                    }
+                foreach (var item in audios)
+                {
+                    ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
+
+                    dispatcherQueue.TryEnqueue(() =>
+                    {
+                       
+                            listAudio.Add(extendedAudio);
+                    
+                    });
+                }
+
+                if (countTracks == listAudio.Count() - 1) itsAll = true;
+
+                NotifyOnListUpdate();
+                getLoadedTracks = false;
             }
-
-            if (countTracks == listAudio.Count()-1) itsAll = true;
-
-            NotifyOnListUpdate();
-            getLoadedTracks = false;
         }
-      
-
 
     }
 }

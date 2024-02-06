@@ -75,12 +75,12 @@ namespace VK_UI3.Views
             
            
          
-            var section = e.Parameter as SectionView;
+            var section = e.Parameter as Section;
             if (section == null) return;
 
-            this.section = section.section;
-            this.sectionType = section.sectionType;
-            this.SectionID = section.SectionID;
+            this.section = section;
+         //   this.sectionType = section;
+            this.SectionID = section.Id;
 
             if (this.section != null && this.section.Blocks != null && this.section.Blocks.Count != 0)
             {

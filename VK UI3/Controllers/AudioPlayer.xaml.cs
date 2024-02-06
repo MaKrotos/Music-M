@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using VK_UI3.DB;
 using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
@@ -307,7 +308,7 @@ namespace VK_UI3.Controllers
             var a = (int)Math.Round(sender.NaturalDuration.TotalSeconds);
             var b = TrackDataThis.Duration;
 
-            if (Math.Abs(a - b) > 1)
+            if (Math.Abs(a - b) > 3)
             {
                 PlayTrack();
             }
@@ -534,7 +535,7 @@ namespace VK_UI3.Controllers
 
         }
 
-        private async static void PlayTrack(long? v = null)
+        private async static Task PlayTrack(long? v = null)
         {
 
 

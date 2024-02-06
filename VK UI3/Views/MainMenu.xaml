@@ -11,7 +11,8 @@
     >
 
     <Grid>
-        <ListView Padding="0,16,0,16" AllowDrop="True"  CanReorderItems="false" x:Name="TrackListView" ItemsSource="{x:Bind userAudio.listAudio, Mode=OneWay}"   IsItemClickEnabled="False" SelectionMode="None">
+        <ListView Padding="0,16,0,16" AllowDrop="True"  CanReorderItems="false" x:Name="TrackListView" ItemsSource="{x:Bind userAudio.listAudio, Mode=OneWay}"   IsItemClickEnabled="False" SelectionMode="None"   IncrementalLoadingTrigger="Edge"
+    IncrementalLoadingThreshold="2">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <custom:TrackControl
