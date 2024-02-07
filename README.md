@@ -1,7 +1,6 @@
 [Установщик здесь!](https://github.com/MaKrotos/VKUI3/releases/tag/0.1.4.9)
 
-
-![image](https://github.com/MaKrotos/VKUI3/assets/43302537/cac3b41c-d6b3-4b8b-85d5-cd78d8bf9757)
+![image](https://github.com/MaKrotos/VKUI3/assets/43302537/8e8a8000-1075-4ef0-a5ec-eb9ca1622209)
 
 
 
