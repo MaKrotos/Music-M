@@ -133,7 +133,7 @@ namespace VK_UI3.Controls
                 SecondsToTimeConverter converter = new SecondsToTimeConverter();
 
                 // Преобразование секунд в строку времени
-                object timeString = converter.Convert(3600, null, null, null);
+                object timeString = converter.Convert(track.Duration, null, null, null);
                 Console.WriteLine(timeString);  // Выводит "60:00"
                 Time.Text = (string) timeString;
             }

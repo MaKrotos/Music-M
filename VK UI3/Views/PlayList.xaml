@@ -6,7 +6,7 @@
     xmlns:local="using:VK_UI3"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:custom="using:VK_UI3.Controllers"
+    xmlns:custom="using:VK_UI3.Controls"
     mc:Ignorable="d"
     >
     <Grid>
@@ -19,7 +19,7 @@
         <ListView Grid.Row="0" AllowDrop="True"  CanReorderItems="True" x:Name="TrackListView" ItemsSource="{x:Bind Tracks.listAudio, Mode=OneWay}"  IsItemClickEnabled="False" SelectionMode="None">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <custom:TrackController TrackData="{Binding }"></custom:TrackController>
+                    <custom:TrackControl></custom:TrackControl>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
