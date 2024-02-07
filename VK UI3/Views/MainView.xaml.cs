@@ -42,6 +42,7 @@ namespace VK_UI3.Views
 
             // FramePlayer.RenderTransform = trans;
             frame = ContentFrame;
+
             //OpenMyPage(SectionType.MyListAudio);
             ContentFrame.Navigated += ContentFrame_Navigated;
             NavWiv.BackRequested += NavWiv_BackRequested;
@@ -50,13 +51,10 @@ namespace VK_UI3.Views
 
         private void NavWiv_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
         {
-          
                 if (ContentFrame.CanGoBack)
                 {
                     ContentFrame.GoBack();
                 }
-            
-
         }
 
         private void ContentFrame_Navigated(object sender, NavigationEventArgs e)
@@ -439,30 +437,33 @@ namespace VK_UI3.Views
 
             if (invokedItem != null && invokedItem.Content != null)
             {
-                ContentFrame.BackStack.Clear();
+            
                 switch (invokedItem.Content.ToString().ToLower())
                 {
                     case "моя музыка":
 
                         OpenMyPage(SectionType.MyListAudio);
-                  
-                      //  ContentFrame.Navigate(typeof(MainMenu), null, new DrillInNavigationTransitionInfo());
+              
+                        //  ContentFrame.Navigate(typeof(MainMenu), null, new DrillInNavigationTransitionInfo());
                         break;
 
                     case "параметры":
-
+               
                         break;
 
                     default:
                         var Item = sender.SelectedItem as NavMenuController;
                         OpenSection(Item.navSettings.section.Id);
-                    
+                  
 
 
                         // RemoveNavItems();
                         break;
                         // и так далее...
+                        ContentFrame.BackStack.Clear();
+                        NavWiv.IsBackEnabled = false;
                 }
+              
             }
             else
             {

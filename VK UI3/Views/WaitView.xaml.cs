@@ -32,6 +32,7 @@ namespace VK_UI3.Views
         public WaitView()
         {
             this.InitializeComponent();
+    
         }
 
         public SectionType sectionType;
@@ -41,9 +42,8 @@ namespace VK_UI3.Views
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (e.NavigationMode == NavigationMode.Back) return;
 
-                frameSection.Navigate(typeof(waitPage), null, new DrillInNavigationTransitionInfo());
+            frameSection.Navigate(typeof(waitPage), null, new DrillInNavigationTransitionInfo());
 
 
 
@@ -113,7 +113,6 @@ namespace VK_UI3.Views
                // nowOpenSearchSug = false;
                 
                 loadSection(res.Catalog.DefaultSection);
-
             }
             catch (Exception ex)
             {
@@ -153,12 +152,18 @@ namespace VK_UI3.Views
         private async Task LoadMyAudioList()
         {
             var userAudio = new UserAudio(AccountsDB.activeAccount.id, this.DispatcherQueue);
-            userAudio.onListUpdate += (sender, e) => {
+            EventHandler handler = null;
+
+            handler = (sender, e) => {
                 this.DispatcherQueue.TryEnqueue(async () =>
                 {
                     frameSection.Navigate(typeof(MainMenu), userAudio, new DrillInNavigationTransitionInfo());
+                    // Отсоединить обработчик событий после выполнения Navigate
+                    userAudio.onListUpdate -= handler;
                 });
             };
+
+            userAudio.onListUpdate += handler;
         }
 
         private async Task loadSection(string sectionID, bool showTitle = false)

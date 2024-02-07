@@ -6,6 +6,10 @@ using System.ComponentModel;
 using Octokit;
 using VK_UI3.DB;
 using Microsoft.UI.Xaml.Navigation;
+using VK_UI3.Helpers;
+using System.Linq;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -18,11 +22,44 @@ namespace VK_UI3
     public sealed partial class MainMenu : Microsoft.UI.Xaml.Controls.Page
     {
         public UserAudio userAudio = null;
+     //   ObservableCollection<ExtendedAudio> extendedAudios = new ObservableCollection<ExtendedAudio>();
 
         public MainMenu()
         {
             this.InitializeComponent();
+
+
+            this.Loaded += MainMenu_Loaded;
+
+        }
+
+        ScrollViewer scrollViewer;
+        private void MainMenu_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Находим ScrollViewer внутри ListView
+             scrollViewer = FindScrollViewer(TrackListView);
+            if (scrollViewer != null)
+            {
+                // Подписываемся на событие изменения прокрутки
+                scrollViewer.ViewChanged += ScrollViewer_ViewChanged;
+            }
+        }
+
+        private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
           
+                // Проверяем, достигнут ли конец
+                var isAtBottom = scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight-50;
+                if (isAtBottom)
+                {
+                
+                    if (userAudio.itsAll) return;
+                    userAudio.GetTracks();
+                    LoadingIndicator.IsActive = false;
+                    if (userAudio.itsAll)
+                        LoadingIndicator.Visibility = Visibility.Collapsed;
+            }
+           
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -34,25 +71,39 @@ namespace VK_UI3
                 userAudio = new UserAudio(AccountsDB.activeAccount.id, this.DispatcherQueue);
             }
 
-            //userAudio.onListUpdate += (sender, e) => updateList(sender, e);
-           // OnPropertyChanged(nameof(userAudio));
+
+            userAudio.listAudio.CollectionChanged += ListAudio_CollectionChanged;
+
             base.OnNavigatedTo(e);
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged(string propertyName)
+        private void ListAudio_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            this.DispatcherQueue.TryEnqueue(async () =>
-            {
-                //   this.ImgUri = uri;
-            //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            });
+            LoadingIndicator.IsActive = false;
+            if (userAudio.itsAll)
+                LoadingIndicator.Visibility = Visibility.Collapsed;
+
         }
 
-        private void updateList(object sender, EventArgs e)
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+       
+      
+
+        // Метод для поиска ScrollViewer внутри элемента
+        private ScrollViewer FindScrollViewer(DependencyObject d)
         {
-         //   OnPropertyChanged(nameof(userAudio.listAudio));
+            if (d is ScrollViewer)
+                return d as ScrollViewer;
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(d); i++)
+            {
+                var sw = FindScrollViewer(VisualTreeHelper.GetChild(d, i));
+                if (sw != null) return sw;
+            }
+
+            return null;
         }
 
         private void Timer_Tick(object sender, object e)

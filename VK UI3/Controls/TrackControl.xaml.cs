@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VK_UI3.Controllers;
+using VK_UI3.Converters;
 using VK_UI3.DB;
 using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
@@ -128,6 +129,13 @@ namespace VK_UI3.Controls
 
 
                 }
+                // Создание экземпляра конвертера
+                SecondsToTimeConverter converter = new SecondsToTimeConverter();
+
+                // Преобразование секунд в строку времени
+                object timeString = converter.Convert(3600, null, null, null);
+                Console.WriteLine(timeString);  // Выводит "60:00"
+                Time.Text = (string) timeString;
             }
         }
 

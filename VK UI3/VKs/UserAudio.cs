@@ -2,6 +2,8 @@ using Microsoft.UI.Dispatching;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using VK_UI3.Helpers;
 using VK_UI3.Interfaces;
 using VkNet.Model;
@@ -13,10 +15,9 @@ namespace VK_UI3.VKs
 {
     public class UserAudio : IVKGetAudio
     {
-        public UserAudio(long id, DispatcherQueue dispatcherQueue) : base(id, dispatcherQueue)
+        public UserAudio(long id, DispatcherQueue dispatcher) : base(id, dispatcher)
         {
             base.id = id.ToString();
-            NotifyOnListUpdate();
         }
 
         public override long? getCount()
@@ -58,37 +59,45 @@ namespace VK_UI3.VKs
             if (getLoadedTracks) return;
             getLoadedTracks = true;
 
-            int offset = listAudio.Count;
-            int count = 100;
-
-            if (countTracks > listAudio.Count)
+            Task.Run(async () =>
             {
-                VkCollection<Audio> audios;
+                int offset = listAudio.Count;
+                int count = 100;
 
-                audios = api.Audio.GetAsync(new AudioGetParams
+                if (countTracks > listAudio.Count)
                 {
-                    OwnerId = int.Parse(base.id),
-                    Offset = offset,
-                    Count = count
-                }).Result;
+                    VkCollection<Audio> audios;
 
-                foreach (var item in audios)
-                {
-                    ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
-
-                    dispatcherQueue.TryEnqueue(() =>
+                    audios = api.Audio.GetAsync(new AudioGetParams
                     {
-                       
+                        OwnerId = int.Parse(base.id),
+                        Offset = offset,
+                        Count = count
+                    }).Result;
+
+
+                    foreach (var item in audios)
+                    {
+                        ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
+                        ManualResetEvent resetEvent = new ManualResetEvent(false);
+
+                        this.DispatcherQueue.TryEnqueue(() =>
+                        {
                             listAudio.Add(extendedAudio);
-                    
-                    });
+                            resetEvent.Set();
+                        });
+
+                        resetEvent.WaitOne();
+                    }
+
+
+                    if (countTracks == listAudio.Count()) itsAll = true;
+
+                  
+                    getLoadedTracks = false;
                 }
-
-                if (countTracks == listAudio.Count() - 1) itsAll = true;
-
                 NotifyOnListUpdate();
-                getLoadedTracks = false;
-            }
+            });
         }
 
     }

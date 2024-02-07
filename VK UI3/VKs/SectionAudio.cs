@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.Helpers;
 using VK_UI3.Interfaces;
@@ -17,11 +18,11 @@ namespace VK_UI3.VKs
 
         string SectionID;
 
-        public SectionAudio(Block block, DispatcherQueue dispatcherQueue) : base(block, dispatcherQueue)
+        public SectionAudio(Block block, DispatcherQueue dispatcher) : base(block, dispatcher)
         {
         }
 
-        public SectionAudio(string sectionID, DispatcherQueue dispatcherQueue, Uri photoLink = null, string name = null, List<Audio> audios = null, string next = null) : base(sectionID, dispatcherQueue, photoLink, name, audios, next)
+        public SectionAudio(string sectionID, DispatcherQueue dispatcher, Uri photoLink = null, string name = null, List<Audio> audios = null, string next = null) : base(sectionID, dispatcher, photoLink, name, audios, next)
         {
 
         }
@@ -49,8 +50,16 @@ namespace VK_UI3.VKs
             Task.Run(async () =>
             {
                 var a = (await VK.vkService.GetSectionAsync(id, Next));
-                if (a.Block != null && a.Block.NextFrom != null)
-                    Next = a.Block.NextFrom;
+                if (a.Section != null)
+                {
+                    if (a.Section.NextFrom == null)
+                    {
+                        itsAll = true;
+
+                    }
+                    Next = a.Section.NextFrom;
+                }
+                
                 var audios = a.Audios;
 
                 if (audios.Count == 0)
@@ -61,10 +70,15 @@ namespace VK_UI3.VKs
                 foreach (var item in audios)
                 {
                     ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
-                    dispatcherQueue.TryEnqueue(() =>
+
+                    ManualResetEvent resetEvent = new ManualResetEvent(false);
+                    this.DispatcherQueue.TryEnqueue(() =>
                     {
                         listAudio.Add(extendedAudio);
+                        resetEvent.Set();
                     });
+
+                    resetEvent.WaitOne();
                     NotifyOnListUpdate();
                 }
 

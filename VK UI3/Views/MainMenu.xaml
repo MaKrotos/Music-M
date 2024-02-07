@@ -10,18 +10,24 @@
     mc:Ignorable="d"
     >
 
-    <Grid>
-        <ListView Padding="0,16,0,16" AllowDrop="True"  CanReorderItems="false" x:Name="TrackListView" ItemsSource="{x:Bind userAudio.listAudio, Mode=OneWay}"   IsItemClickEnabled="False" SelectionMode="None"   IncrementalLoadingTrigger="Edge"
-    IncrementalLoadingThreshold="2">
-            <ListView.ItemTemplate>
+
+    <ListView Padding="0,16,0,16"  CanReorderItems="false" x:Name="TrackListView" ItemsSource="{x:Bind userAudio.listAudio, Mode=OneWay}"   IsItemClickEnabled="False" SelectionMode="None">
+               
+            
+
+                <ListView.ItemTemplate>
                 <DataTemplate>
                     <custom:TrackControl
-                        FocusVisualPrimaryBrush="Transparent"
-                        FocusVisualSecondaryThickness="0"
-                           Margin="0,0,0,4"
-                     ></custom:TrackControl>
+                    FocusVisualPrimaryBrush="Transparent"
+                    FocusVisualSecondaryThickness="0"
+                       Margin="0,0,0,8"
+                 ></custom:TrackControl>
                 </DataTemplate>
             </ListView.ItemTemplate>
+            <ListView.Footer>
+                <ProgressRing x:Name="LoadingIndicator" IsActive="False" />
+            </ListView.Footer>
         </ListView>
-    </Grid>
+
+
 </Page>

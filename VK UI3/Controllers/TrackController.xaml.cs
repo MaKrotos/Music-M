@@ -100,6 +100,7 @@ namespace VK_UI3.Controllers
                 Bindings.Update();
                 LoadImage();
 
+                TrackData = DataContext as ExtendedAudio;
                 changeIconPlayBTN = new AnimationsChangeIcon(PlayBTN);
                 if (TrackData != null)
                 {

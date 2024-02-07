@@ -54,9 +54,9 @@ namespace VK_UI3
 
                 GoLogin();
            }else
-              ContentFrame.Navigate(typeof(MainView), navigationInfo, new DrillInNavigationTransitionInfo());
-            
-            
+                ContentFrame.Navigate(typeof(MainView), navigationInfo, new DrillInNavigationTransitionInfo());
+       
+
             dispatcherQueue = this.DispatcherQueue;
 
              SubClassing();
