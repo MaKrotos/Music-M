@@ -439,6 +439,7 @@ namespace VK_UI3.Views
 
             if (invokedItem != null && invokedItem.Content != null)
             {
+                ContentFrame.BackStack.Clear();
                 switch (invokedItem.Content.ToString().ToLower())
                 {
                     case "моя музыка":
