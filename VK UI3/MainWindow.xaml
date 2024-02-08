@@ -19,8 +19,10 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Border Padding="0,0,0,0"  x:Name="AppTitleBar" Grid.Row="1" VerticalAlignment="Top">
-            <Grid>
+       
+
+            <Grid Height="34" Padding="0,0,0,0"  x:Name="AppTitleBar" Grid.Row="1" VerticalAlignment="Top">
+
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" ></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -33,7 +35,6 @@
                 <TextBlock Grid.Column="1" Text="VK M" x:Name="AppTitle"  VerticalAlignment="Top" Margin="8" />
             </Grid>
 
-        </Border>
 
         <Frame Grid.Row="1" x:Name="ContentFrame">
             <Frame.ContentTransitions>
