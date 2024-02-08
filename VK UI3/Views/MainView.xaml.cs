@@ -443,29 +443,25 @@ namespace VK_UI3.Views
                     case "моя музыка":
 
                         OpenMyPage(SectionType.MyListAudio);
-
+              
                         //  ContentFrame.Navigate(typeof(MainMenu), null, new DrillInNavigationTransitionInfo());
-                        ContentFrame.BackStack.Clear();
-                        NavWiv.IsBackEnabled = false;
                         break;
 
                     case "параметры":
-
-                        ContentFrame.BackStack.Clear();
-                        NavWiv.IsBackEnabled = false;
+               
                         break;
 
                     default:
                         var Item = sender.SelectedItem as NavMenuController;
                         OpenSection(Item.navSettings.section.Id);
+                  
 
 
-                        ContentFrame.BackStack.Clear();
-                        NavWiv.IsBackEnabled = false;
                         // RemoveNavItems();
                         break;
                         // и так далее...
-                      
+                        ContentFrame.BackStack.Clear();
+                        NavWiv.IsBackEnabled = false;
                 }
               
             }
@@ -476,7 +472,6 @@ namespace VK_UI3.Views
 
 
             }
-           
           //  NavWiv.IsBackEnabled = ContentFrame.CanGoBack;
         }
 

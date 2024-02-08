@@ -6,19 +6,24 @@ using Microsoft.UI.Xaml.Media.Animation;
 using Octokit;
 using SetupLib;
 using System;
+using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using VK_UI3.DB;
 using VK_UI3.Views;
 using VK_UI3.Views.LoginWindow;
+
+using VK_UI3.VKs;
 using Windows.ApplicationModel;
 using Windows.Win32;
 using Windows.Win32.UI.WindowsAndMessaging;
 using Windows.Win32.Foundation;
+
+using Windows.Win32;
 using System.IO;
-using Microsoft.UI.Windowing;
-using Microsoft.UI;
-using Application = Microsoft.UI.Xaml.Application;
+using NAudio.Utils;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using VkNet.Enums;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -39,20 +44,11 @@ namespace VK_UI3
             this.ExtendsContentIntoTitleBar = true;
             this.SetTitleBar(AppTitleBar);
 
-            AppWindow m_AppWindow = this.AppWindow;
-            AppWindowTitleBar m_TitleBar = m_AppWindow.TitleBar;
-
-
+   
        
-        
-            m_TitleBar.ButtonForegroundColor = (Application.Current.RequestedTheme == ApplicationTheme.Dark) 
-                ? Colors.White : Colors.Black;
 
 
-
-
-
-              var navigationInfo = new NavigationInfo { SourcePageType = this };
+            var navigationInfo = new NavigationInfo { SourcePageType = this };
 
              if (AccountsDB.GetAllAccounts().Count == 0) {
 

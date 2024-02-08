@@ -6,8 +6,6 @@ using MusicX.Core.Models;
 using System;
 using VK_UI3.Views;
 using VK_UI3.Views.Controls;
-using static VK_UI3.Views.Controls.BlockButtonView;
-
 using Button = Microsoft.UI.Xaml.Controls.Button;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -43,31 +41,23 @@ namespace VK_UI3.Controls.Blocks
                 var text = new TextBlock();
 
 
-                var button = new BlockButtonView()
+                var button = new BlockButtonViewModel()
                 {
                     Margin = new Thickness(0, 10, 15, 10),
-                    DataContext = new BlockBTN(action, block.Artists[0], block),
-                    Height = 45,
-                    blockBTN = new BlockBTN(action, block.Artists[0], block)
+                    Content = text,
+                    DataContext = new BlockButtonViewModel(action, block.Artists[0], block),
+                    Height = 45
                 };
-         
 
-                if (button.DataContext is BlockBTN viewModel)
+                if (button.DataContext is BlockButtonViewModel viewModel)
                 {
-                    button.Command = button.InvokeCommand;
+                    button.Command = viewModel.InvokeCommand;
+                    text.Text = viewModel.Text;
                 }
 
-                ActionsGrid.ColumnDefinitions.Add(new());
-                button.MinWidth = 170;
+                ActionsGrid.ColumnDefinitions.Add(new() { MinWidth = 170 });
                 button.SetValue(Grid.ColumnProperty, i);
                 ActionsGrid.Children.Add(button);
-
-                button.Refresh();
-
-
-
-
-
             }
         }
 

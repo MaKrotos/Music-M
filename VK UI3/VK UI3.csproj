@@ -31,7 +31,6 @@
 	  <None Remove="Fonts\VKSansDisplay-DemiBold.ttf" />
 	  <None Remove="Fonts\VKSansDisplay-Medium.ttf" />
 	  <None Remove="Fonts\VKSansDisplay-Regular.ttf" />
-	  <None Remove="Views\Controls\BlockButtonView.xaml" />
 	  <None Remove="Views\SectionView.xaml" />
 	  <None Remove="Views\WaitView.xaml" />
 	</ItemGroup>
@@ -106,9 +105,6 @@
     <None Update="Controls\PlaylistControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
-    <Page Update="Views\Controls\BlockButtonView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Update="Views\WaitView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

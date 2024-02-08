@@ -55,6 +55,7 @@
                     <NavigationViewItemHeader Content="Аккаунты"/>
                     <NavigationViewItemSeparator/>
                     <NavigationViewItem   Padding="-10,0,-20,0" SelectsOnInvoked="False" >
+
                         <Grid Translation="0,0,24" Margin="-1,10,10,10" Padding="0,-5,-10,-5" >
                             <ListView SelectedIndex="{x:Bind getSelectedNumber, Mode=OneTime}"  ItemsSource="{x:Bind AccList, Mode=TwoWay}"  SelectionChanged="ListView_SelectionChanged" x:Name="AccountsList">
                                 <ListView.ItemTemplate>
