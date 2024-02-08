@@ -13,3 +13,4 @@
         <TextBlock x:Name="text" Text="" VerticalAlignment="Center" Margin="8,0,0,0" />
     </StackPanel>
 </Button>
+v

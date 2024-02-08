@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using MusicX.Core.Models;
 using System;
+using VK_UI3.Helpers.Animations;
 using VK_UI3.Views;
 using VK_UI3.Views.Controls;
 using static VK_UI3.Views.Controls.BlockButtonView;
@@ -23,15 +24,19 @@ namespace VK_UI3.Controls.Blocks
     
             InitializeComponent();
 
-      
+
+            animationsChangeImage = new AnimationsChangeImage(ArtistBannerImage, this.DispatcherQueue);
         }
+        AnimationsChangeImage animationsChangeImage = null;
 
         private void ArtistBannerBlockControl_Loaded(object sender, RoutedEventArgs e)
         {
             if (DataContext is not Block block || block.Actions is null)
                 return;
 
-            ArtistBannerImage.ImageSource = new BitmapImage(new Uri(block.Artists[0].Photo[2].Url));
+
+           animationsChangeImage.ChangeImageWithAnimation(block.Artists[0].Photo[2].Url);
+
             ArtistText.Text = block.Artists[0].Name;
 
             var sectionView = FindParent<SectionView>(this);

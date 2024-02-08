@@ -10,21 +10,23 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:local1="using:VK_UI3.Converters"
         xmlns:local2="using:VK_UI3.Helpers.Animations"
-      Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}"
+   Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}"
     mc:Ignorable="d"
   >
+
     <Page.Resources>
+        <ThemeShadow x:Name="SharedShadow" />
         <local1:SecondsToTimeConverter x:Key="SecondsToTimeConverter"/>
     </Page.Resources>
 
        
-        <Grid  Padding="8,0,8,0">
+        <Grid  Padding="0,0,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Margin="8,8,8,0">
+        <Grid Grid.Row="0" Margin="8,4,8,-4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -50,7 +52,7 @@
         </Grid>
             
         
-        <Grid Margin="8" Grid.Row="1" >
+        <Grid Margin="4" Grid.Row="1" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -65,11 +67,13 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition  Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Grid CornerRadius="8" Margin="0,0,8,0" Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}" Grid.Column="0">
+                <Grid
+                    
+                    Translation="0,0,24"
+                    CornerRadius="8" Margin="0,0,8,0" Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}" Grid.Column="0">
                     <FontIcon Glyph="&#xEC4F;" />
                     <Image x:Name="ImageThumb"
-                         Width="75" Height="75"></Image>
-                 
+                         Width="60" Height="60"></Image>
                 </Grid>
                
                 <Grid Grid.Column="1">

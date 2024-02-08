@@ -3,7 +3,6 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
-using Octokit;
 using SetupLib;
 using System;
 using System.Runtime.InteropServices;
@@ -18,7 +17,7 @@ using Windows.Win32.Foundation;
 using System.IO;
 using Microsoft.UI.Windowing;
 using Microsoft.UI;
-using Application = Microsoft.UI.Xaml.Application;
+
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -48,11 +47,11 @@ namespace VK_UI3
             m_TitleBar.ButtonForegroundColor = (Application.Current.RequestedTheme == ApplicationTheme.Dark) 
                 ? Colors.White : Colors.Black;
 
+ 
 
 
 
-
-              var navigationInfo = new NavigationInfo { SourcePageType = this };
+            var navigationInfo = new NavigationInfo { SourcePageType = this };
 
              if (AccountsDB.GetAllAccounts().Count == 0) {
 
