@@ -18,6 +18,7 @@ using VK_UI3.Services;
 using VK_UI3.Views;
 using VK_UI3.VKs;
 using VkNet.Model;
+using Windows.ApplicationModel.DataTransfer;
 using static VK_UI3.Views.SectionView;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -119,7 +120,7 @@ namespace VK_UI3.Controls
                                 }
                                 catch (Exception ex)
                                 {
-
+                                    AppCenterHelper.SendCrash(ex);
                                 }
 
                             };
@@ -179,7 +180,9 @@ namespace VK_UI3.Controls
                 ChangeSymbolIcon(symbol);
                 HandleAnimation(dataTrack.PlayThis);
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { 
+                AppCenterHelper.SendCrash(ex); 
+            }
         }
 
 
@@ -225,14 +228,8 @@ namespace VK_UI3.Controls
             catch (Exception ex)
             {
 
-                var properties = new Dictionary<string, string>
-                {
-#if DEBUG
-                    { "IsDebug", "True" },
-#endif
-                    {"Version", StaticService.Version }
-                };
-                Crashes.TrackError(ex, properties);
+
+                AppCenterHelper.SendCrash(ex);
             }
         }
 
@@ -251,6 +248,15 @@ namespace VK_UI3.Controls
             // Ваш код здесь
         }
 
+        public void CopyLink(object sender, RoutedEventArgs e) { 
+            var dataPackage = new DataPackage();
+            string audioLink = $"https://vk.com/audio{audio.OwnerId}_{audio.Id}";
+            dataPackage.SetText(audioLink);
+            Clipboard.SetContent(dataPackage); 
+        }
+
+
+
         public void AddToPlaylist_Click(object sender, RoutedEventArgs e)
         {
             // Ваш код здесь
@@ -258,7 +264,6 @@ namespace VK_UI3.Controls
 
         public void AddRemove_Click(object sender, RoutedEventArgs e)
         {
-            // Ваш код здесь
 
             var vkService = VK.vkService;
 

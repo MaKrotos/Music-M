@@ -226,8 +226,8 @@ public class CustomSectionsService : ICustomSectionsService
         }
         catch (Exception ex)
         {
-            _logger.Info($"Ошибка получения списка радиостанций: {ex}");
-            _logger.Error(ex);
+            AppCenterHelper.SendCrash(ex);
+           
         }
 
         var buttons = convs.Count > 10

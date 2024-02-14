@@ -105,58 +105,39 @@ namespace VK_UI3.Views
             {
                 Symbol icon;
 
-                if (section.Title.ToLower() == "главная")
+                switch (section.Title.ToLower())
                 {
-                    icon = Symbol.Home;
+                    case "главная":
+                        icon = Symbol.Home;
+                        break;
+                    case "моя музыка":
+                        icon = Symbol.Audio;
+                        section.Title = "Музыка";
+                        break;
+                    case "обзор":
+                        icon = Symbol.PreviewLink;
+                        break;
+                    case "подкасты":
+                        icon = Symbol.Microphone;
+                        break;
+                    case "подписки":
+                        icon = Symbol.Favorite;
+                        break;
+                    case "каталоги":
+                        icon = Symbol.Library;
+                        break;
+                    case "поиск":
+                        icon = Symbol.Find;
+                        break;
+                    default:
+                        var number = rand.Next(0, icons.Count);
+                        icon = icons[number];
+                        icons.RemoveAt(number);
+                        break;
                 }
-                else if (section.Title.ToLower() == "моя музыка")
-                {
-                    icon = Symbol.Audio;
-                }
-                else if (section.Title.ToLower() == "обзор")
-                {
-                    icon = Symbol.PreviewLink;
-                }
-                else if (section.Title.ToLower() == "подкасты")
-                {
-                    icon = Symbol.Microphone;
-                }
-                else if (section.Title.ToLower() == "подписки")
-                {
-                    icon = Symbol.Favorite;
-                }
-                else if (section.Title.ToLower() == "каталоги")
-                {
-                    icon = Symbol.Library;
-                }
-                else if (section.Title.ToLower() == "поиск")
-                {
-                    icon = Symbol.Find;
-                }
-
-                else if (section.Title.ToLower().StartsWith("книги"))
-                {
-                    continue;
-                }
-                else
-                {
-                    var number = rand.Next(0, icons.Count);
-                    icon = icons[number];
-                    icons.RemoveAt(number);
-                }
-
-
-
-                if (section.Title.ToLower() == "моя музыка") section.Title = "Музыка";
 
                 var navSet = new NavSettings() { Icon = icon, MyMusicItem = section.Title, section = section };
                 navSettings.Add(navSet);
-
-                //  var viewModel = ActivatorUtilities.CreateInstance<SectionViewModel>(StaticService.Container);
-                //  viewModel.SectionId = section.Id;
-
-                //  var navigationItem = new NavigationBarItem() { Tag = section.Id, PageDataContext = viewModel, Icon = icon, Content = section.Title, PageType = typeof(SectionView) };
-                //  navigationBar.Items.Add(navigationItem);
 
 
 
@@ -174,12 +155,12 @@ namespace VK_UI3.Views
                         navSettings = setting,
                         Content = setting.MyMusicItem,
                         Icon = new SymbolIcon(setting.Icon)
-
                     };
                     NavWiv.MenuItems.Insert(index, navViewItem);
                     index++;
                 });
             }
+
 
 
         }

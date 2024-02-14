@@ -15,6 +15,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using VK_UI3.DB;
+using VK_UI3.Helpers;
 using VK_UI3.Services;
 using VK_UI3.Views.LoginWindow;
 using VK_UI3.VKs;
@@ -70,14 +71,7 @@ namespace VK_UI3.Views
             }
             catch (Exception ex)
             {
-                var properties = new Dictionary<string, string>
-                {
-#if DEBUG
-                    { "IsDebug", "True" },
-#endif
-                    {"Version", StaticService.Version }
-                };
-                Crashes.TrackError(ex, properties);
+                AppCenterHelper.SendCrash(ex);
 
             }
         }
@@ -103,7 +97,8 @@ namespace VK_UI3.Views
                     }
                     catch (Exception ex)
                     {
-                       // frameSection.Navigate(typeof(SectionView), section, new DrillInNavigationTransitionInfo());
+                        AppCenterHelper.SendCrash(ex);
+                        // frameSection.Navigate(typeof(SectionView), section, new DrillInNavigationTransitionInfo());
                         // loadBlocks(res.Catalog.Sections[0].Blocks);
                     }
                     frameSection.Navigate(typeof(SectionView), res.Catalog.Sections[0], new DrillInNavigationTransitionInfo());
@@ -116,14 +111,7 @@ namespace VK_UI3.Views
             }
             catch (Exception ex)
             {
-                var properties = new Dictionary<string, string>
-                {
-#if DEBUG
-                    { "IsDebug", "True" },
-#endif
-                    {"Version", StaticService.Version }
-                };
-                Crashes.TrackError(ex, properties);
+                AppCenterHelper.SendCrash(ex);
 
 
             }

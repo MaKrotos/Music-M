@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using VK_UI3.Helpers;
 using VK_UI3.Services;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -61,7 +62,7 @@ namespace VK_UI3.Controls
             }
             catch (Exception ex)
             {
-            
+                AppCenterHelper.SendCrash(ex);
             }
         }
 
@@ -85,7 +86,7 @@ namespace VK_UI3.Controls
             catch (Exception ex)
             {
 
-               
+                AppCenterHelper.SendCrash(ex);
 
             }
 

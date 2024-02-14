@@ -12,9 +12,9 @@
         Margin="10"
         CornerRadius="4"
         x:Name="ArtistBanner">
-      
-         
-                <Image Height="450" x:Name="ArtistBannerImage" Stretch="UniformToFill">
+
+
+        <Image Height="450" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="ArtistBannerImage" Stretch="UniformToFill">
     
                 </Image>
            

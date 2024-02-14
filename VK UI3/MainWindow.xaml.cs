@@ -17,6 +17,7 @@ using Windows.Win32.Foundation;
 using System.IO;
 using Microsoft.UI.Windowing;
 using Microsoft.UI;
+using Windows.UI.ViewManagement;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -46,8 +47,11 @@ namespace VK_UI3
         
             m_TitleBar.ButtonForegroundColor = (Application.Current.RequestedTheme == ApplicationTheme.Dark) 
                 ? Colors.White : Colors.Black;
+            UISettings uI = new();
+            uI.ColorValuesChanged += UI_ColorValuesChanged; ;
 
- 
+
+
 
 
 
@@ -77,14 +81,18 @@ namespace VK_UI3
             checkUpdate();
         }
 
+        private void UI_ColorValuesChanged(UISettings sender, object args)
+        {
+            DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.High,
+           () =>
+           {
+               AppWindow m_AppWindow = this.AppWindow;
+               AppWindowTitleBar m_TitleBar = m_AppWindow.TitleBar;
 
-
-
-
-
-
-
-
+               m_TitleBar.ButtonForegroundColor = (Application.Current.RequestedTheme == ApplicationTheme.Dark)
+                   ? Colors.White : Colors.Black;
+           });
+        }
 
         public static DispatcherQueue dispatcherQueue { get; private set; }
 

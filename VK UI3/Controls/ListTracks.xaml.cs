@@ -15,6 +15,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
 using VK_UI3.Services;
 using VK_UI3.VKs;
@@ -62,15 +63,8 @@ namespace VK_UI3.Controls
             }
             catch (Exception ex)
             {
-                var properties = new Dictionary<string, string>
-                {
-#if DEBUG
-                    { "IsDebug", "True" },
-#endif
-                    {"Version", StaticService.Version }
-                };
-                Crashes.TrackError(ex, properties);
-
+                AppCenterHelper.SendCrash(ex);
+     
 
             }
         }

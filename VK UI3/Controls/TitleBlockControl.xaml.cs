@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using VK_UI3.Helpers;
 using VK_UI3.Services;
 using VK_UI3.Views;
 using Windows.Foundation;
@@ -155,17 +156,9 @@ namespace VK_UI3.Controls
             }
             catch (Exception ex)
             {
+                AppCenterHelper.SendCrash(ex);
 
-                var properties = new Dictionary<string, string>
-            {
-#if DEBUG
-                { "IsDebug", "True" },
-#endif
-                {"Version", StaticService.Version }
-            };
-                Crashes.TrackError(ex, properties);
 
-               
             }
 
 
@@ -200,17 +193,9 @@ namespace VK_UI3.Controls
             }
             catch (Exception ex)
             {
+                AppCenterHelper.SendCrash(ex);
 
-                var properties = new Dictionary<string, string>
-            {
-#if DEBUG
-                { "IsDebug", "True" },
-#endif
-                {"Version", StaticService.Version }
-            };
-                Crashes.TrackError(ex, properties);
 
-            
             }
 
 

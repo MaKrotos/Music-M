@@ -26,6 +26,7 @@
             <MenuFlyoutItem Text="Скачать" Click="Download_Click" Icon="Download" />
             <MenuFlyoutItem Text="Возпроизвести следующим" Click="PlayNext_Click" Icon="Play" />
             <MenuFlyoutItem Text="Добавить в очередь" Click="AddToQueue_Click" Icon="Add" />
+            <MenuFlyoutItem Text="Скопировать ссылку" Click="CopyLink" Icon="Link" />
         </MenuFlyout>
     </UserControl.ContextFlyout>
 

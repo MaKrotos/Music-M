@@ -9,6 +9,8 @@ using Windows.Win32;
 using WinUI3.Common;
 using Button = MusicX.Core.Models.Button;
 using VK_UI3.Controllers;
+using VK_UI3.Helpers;
+using VK_UI3.Helpers.Animations;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -21,8 +23,12 @@ namespace VK_UI3.Views.Controls
         {
             this.InitializeComponent();
             InvokeCommand = new RelayCommand(Invoke);
+            changeIcon = new AnimationsChangeIcon(symbolIcon);
+            changeText = new AnimationsChangeText(text, this.DispatcherQueue);
         }
 
+        AnimationsChangeIcon changeIcon;
+        AnimationsChangeText changeText;
        
 
         public Button Action
@@ -60,39 +66,39 @@ namespace VK_UI3.Views.Controls
             switch (Action.Action.Type)
             {
                 case "toggle_artist_subscription" when blockBTN.Artist is not null && blockBTN.ParentBlock is not null:
-                    text.Text = blockBTN.Artist.IsFollowed ? "Отписаться" : "Подписаться";
-                    symbolIcon.Symbol = blockBTN.Artist.IsFollowed ? Symbol.UnFavorite : Symbol.Favorite;
+                    changeText.ChangeTextWithAnimation(blockBTN.Artist.IsFollowed ? "Отписаться" : "Подписаться");
+                    changeIcon.ChangeSymbolIconWithAnimation(blockBTN.Artist.IsFollowed ? Symbol.UnFavorite : Symbol.Favorite);
                     break;
                 case "play_shuffled_audios_from_block":
-                    text.Text = "Перемешать все";
-                    symbolIcon.Symbol = Symbol.Play;
+                    changeText.ChangeTextWithAnimation("Перемешать все");
+                    changeIcon.ChangeSymbolIconWithAnimation(Symbol.Play);
                     break;
                 case "create_playlist":
-                    text.Text = "Создать плейлист";
-                    symbolIcon.Symbol = Symbol.Add;
+                    changeText.ChangeTextWithAnimation("Создать плейлист");
+                    changeIcon.ChangeSymbolIconWithAnimation(Symbol.Add);
                     break;
                 case "play_audios_from_block":
-                    text.Text = "Слушать всё";
-                    symbolIcon.Symbol = Symbol.Play;
+                    changeText.ChangeTextWithAnimation("Слушать всё");
+                    changeIcon.ChangeSymbolIconWithAnimation(Symbol.Play);
                     break;
                 case "open_section":
-                    text.Text = Action.Title ?? "Открыть";
-                    symbolIcon.Symbol = Symbol.OpenFile;
+                    changeText.ChangeTextWithAnimation(Action.Title ?? "Открыть");
+                    changeIcon.ChangeSymbolIconWithAnimation(Symbol.OpenFile);
                     break;
                 case "music_follow_owner":
-                    text.Text = Action.IsFollowing ? "Вы подписаны на музыку" : "Подписаться на музыку";
-                    symbolIcon.Symbol = Action.IsFollowing ? Symbol.SolidStar : Symbol.Add;
+                    changeText.ChangeTextWithAnimation(Action.IsFollowing ? "Вы подписаны на музыку" : "Подписаться на музыку");
+                    changeIcon.ChangeSymbolIconWithAnimation(Action.IsFollowing ? Symbol.SolidStar : Symbol.Add);
                     break;
                 case "open_url":
-                    text.Text = Action.Title;
+                    changeText.ChangeTextWithAnimation(Action.Title);
                     break;
                 default:
-                    symbolIcon.Symbol = Symbol.Accept;
-                    text.Text = "content";
+                    changeIcon.ChangeSymbolIconWithAnimation(Symbol.Accept);
+                    changeText.ChangeTextWithAnimation("content");
                     break;
             }
 
-
+        
         }
         private async void Invoke()
         {
@@ -178,6 +184,7 @@ namespace VK_UI3.Views.Controls
             }
             catch (Exception e)
             {
+                AppCenterHelper.SendCrash(e);
                 // StaticService.Container.GetRequiredService<Logger>().Error(e, "Failed to invoke action {Type}", Action.Action.Type);
             }
         }
