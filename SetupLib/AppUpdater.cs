@@ -12,7 +12,7 @@ namespace SetupLib
 
         public AppUpdater(string currentVersion)
         {
-            client = new Octokit.GitHubClient(new Octokit.ProductHeaderValue("VKUI3"));
+            client = new Octokit.GitHubClient(new Octokit.ProductHeaderValue("Music-M"));
             this.currentVersion = currentVersion;
         }
 
@@ -38,7 +38,7 @@ namespace SetupLib
 
         public async Task<bool> CheckForUpdates()
         {
-            var releases = await client.Repository.Release.GetAll("MaKrotos", "VKUI3");
+            var releases = await client.Repository.Release.GetAll("MaKrotos", "Music-M");
 
             foreach (var release in releases)
             {

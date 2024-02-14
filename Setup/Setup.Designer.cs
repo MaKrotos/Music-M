@@ -58,9 +58,9 @@
             // button1
             // 
             button1.Enabled = false;
-            button1.Location = new Point(18, 429);
+            button1.Location = new Point(12, 429);
             button1.Name = "button1";
-            button1.Size = new Size(374, 88);
+            button1.Size = new Size(380, 88);
             button1.TabIndex = 3;
             button1.Text = "Установить";
             button1.UseVisualStyleBackColor = true;
@@ -71,9 +71,10 @@
             label2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label2.AutoSize = true;
             label2.FlatStyle = FlatStyle.Flat;
-            label2.Location = new Point(18, 75);
+            label2.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            label2.Location = new Point(18, 83);
             label2.Name = "label2";
-            label2.Size = new Size(114, 15);
+            label2.Size = new Size(121, 15);
             label2.TabIndex = 6;
             label2.Text = "Актуальная версия:";
             // 
@@ -82,9 +83,10 @@
             label3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label3.AutoSize = true;
             label3.FlatStyle = FlatStyle.System;
-            label3.Location = new Point(18, 90);
+            label3.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            label3.Location = new Point(18, 98);
             label3.Name = "label3";
-            label3.Size = new Size(111, 15);
+            label3.Size = new Size(118, 15);
             label3.TabIndex = 7;
             label3.Text = "Название выпуска:";
             // 
@@ -93,9 +95,10 @@
             label4.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label4.AutoSize = true;
             label4.FlatStyle = FlatStyle.System;
-            label4.Location = new Point(18, 141);
+            label4.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            label4.Location = new Point(18, 149);
             label4.Name = "label4";
-            label4.Size = new Size(72, 15);
+            label4.Size = new Size(74, 15);
             label4.TabIndex = 8;
             label4.Text = "Что нового:";
             // 
@@ -104,20 +107,21 @@
             label5.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label5.AutoSize = true;
             label5.FlatStyle = FlatStyle.System;
+            label5.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             label5.Location = new Point(18, 354);
             label5.Name = "label5";
-            label5.Size = new Size(88, 15);
+            label5.Size = new Size(91, 15);
             label5.TabIndex = 9;
             label5.Text = "Размер файла:";
             // 
             // label1
             // 
             label1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            label1.Location = new Point(18, 9);
+            label1.Location = new Point(18, 16);
             label1.Name = "label1";
-            label1.Size = new Size(374, 52);
+            label1.Size = new Size(374, 67);
             label1.TabIndex = 5;
-            label1.Text = "Это приложение установит VK M. В случае, если Windows спрашивает через что открыть файл MSIX - необходимо установить App Installer.";
+            label1.Text = resources.GetString("label1.Text");
             // 
             // label6
             // 
@@ -135,7 +139,7 @@
             label7.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label7.AutoSize = true;
             label7.FlatStyle = FlatStyle.System;
-            label7.Location = new Point(103, 354);
+            label7.Location = new Point(109, 354);
             label7.Name = "label7";
             label7.Size = new Size(34, 15);
             label7.TabIndex = 11;
@@ -146,7 +150,7 @@
             label8.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label8.AutoEllipsis = true;
             label8.FlatStyle = FlatStyle.System;
-            label8.Location = new Point(18, 168);
+            label8.Location = new Point(18, 164);
             label8.MaximumSize = new Size(374, 176);
             label8.Name = "label8";
             label8.Size = new Size(374, 176);
@@ -156,7 +160,7 @@
             // 
             label9.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label9.FlatStyle = FlatStyle.System;
-            label9.Location = new Point(18, 105);
+            label9.Location = new Point(18, 113);
             label9.Name = "label9";
             label9.Size = new Size(374, 36);
             label9.TabIndex = 13;
@@ -166,7 +170,7 @@
             label10.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label10.AutoSize = true;
             label10.FlatStyle = FlatStyle.Flat;
-            label10.Location = new Point(135, 75);
+            label10.Location = new Point(128, 83);
             label10.Name = "label10";
             label10.Size = new Size(40, 15);
             label10.TabIndex = 14;
