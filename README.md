@@ -1,6 +1,6 @@
 [Скачать установщик](https://github.com/MaKrotos/Music-M/releases/download/0.1.4.9/Setup.exe)
 
-![image](https://github.com/MaKrotos/VKUI3/assets/43302537/9a0d09d0-59bc-423b-b065-39d21b9e0c09)
+![image](https://github.com/MaKrotos/Music-M/assets/43302537/3247ee7a-a9f7-4232-9978-3c7a31a66180)
 
 
 
