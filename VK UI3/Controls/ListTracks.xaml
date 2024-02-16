@@ -8,7 +8,7 @@
     xmlns:custom="using:VK_UI3.Controls"
     Margin="10"
     mc:Ignorable="d"
-    Loaded="UserControl_Loaded">
+    >
     <UserControl.Resources>
      
     </UserControl.Resources>
@@ -17,7 +17,7 @@
     </UserControl.Shadow>
 
     <Grid Height="Auto" x:Name="gridCh">
-        <GridView ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.HorizontalScrollMode="Enabled" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Visible" SizeChanged="gridV_SizeChanged" x:Name="gridV"  SelectionMode="None" ItemsSource="{x:Bind sectionAudio.listAudio, Mode=OneWay}">
+        <GridView ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.HorizontalScrollMode="Enabled" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Visible"   x:Name="gridV"  SelectionMode="None" ItemsSource="{x:Bind sectionAudio.listAudio, Mode=OneWay}">
             
             
             <GridView.ItemContainerStyle>

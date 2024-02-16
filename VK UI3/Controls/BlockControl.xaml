@@ -37,6 +37,11 @@
         <DataTemplate x:Key="default">
             <controls:DefaultControl />
         </DataTemplate>
+
+        <DataTemplate x:Key="music_playlists_recomms_slider" >
+            <blocks:RecommsPlaylistBlock />
+        </DataTemplate>
+
     </UserControl.Resources>
 
 

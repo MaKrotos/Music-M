@@ -313,7 +313,6 @@ namespace VK_UI3.Controls
             FadeInAnimationGridPlayIcon.Pause();
             FadeOutAnimationGridPlayIcon.Begin();
 
-            //FadeOutAnimation.Begin();
         }
 
         private void UCcontrol_PointerPressed(object sender, PointerRoutedEventArgs e)

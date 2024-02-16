@@ -20,11 +20,14 @@
 
 	<ItemGroup>
 	  <None Remove="Controllers\NavMenuController.xaml" />
+	  <None Remove="Controllers\PlayListPage.xaml" />
 	  <None Remove="Controls\BannerControl.xaml" />
 	  <None Remove="Controls\BlockControl.xaml" />
 	  <None Remove="Controls\Blocks\ArtistBannerBlockControl.xaml" />
+	  <None Remove="Controls\Blocks\RecommsPlaylistBlock.xaml" />
 	  <None Remove="Controls\DefaultControl.xaml" />
 	  <None Remove="Controls\ListTracks.xaml" />
+	  <None Remove="Controls\RecommsPlaylist.xaml" />
 	  <None Remove="Controls\TitleBlockControl.xaml" />
 	  <None Remove="Controls\TrackControl.xaml" />
 	  <None Remove="Fonts\VKSansDisplay-Bold.ttf" />
@@ -100,12 +103,21 @@
     <Page Update="Controls\Blocks\ArtistBannerBlockControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Controls\Blocks\RecommsPlaylistBlock.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controllers\PlayListPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="Controls\ListPlaylists.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
     <None Update="Controls\PlaylistControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
+    <Page Update="Controls\RecommsPlaylist.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\Controls\BlockButtonView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

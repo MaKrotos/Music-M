@@ -36,7 +36,7 @@ namespace VK_UI3.Controls
         {
             InitializeComponent();
 
-            this.Unloaded += ListTracks_Unloaded;
+        
           //  this.Loaded += ListTracks_Loaded;
             this.DataContextChanged += ListTracks_DataContextChanged;
 
@@ -57,9 +57,6 @@ namespace VK_UI3.Controls
                 OnPropertyChanged(nameof(sectionAudio));
 
                 sectionAudio.onListUpdate += SectionAudio_onListUpdate;
-                //  double itemWidth = Math.Floor(gridV.Width / 300);
-                //  WSetter.Value = gridV.ActualWidth / itemWidth - 5;
-                //  var a = await VK.vkService.GetSectionAsync(((Block)DataContext).Id, ((Block)DataContext).NextFrom);
             }
             catch (Exception ex)
             {
@@ -87,10 +84,7 @@ namespace VK_UI3.Controls
             OnPropertyChanged(nameof(sectionAudio));
         }
 
-        private void ListTracks_Unloaded(object sender, RoutedEventArgs e)
-        {
-         //   this.StackPanelTracks.Children.Clear();
-        }
+        
 
         public static readonly DependencyProperty TracksProperty =
          DependencyProperty.Register("Tracks", typeof(List<Audio>), typeof(ListTracks), new PropertyMetadata(new List<Audio>()));
@@ -107,36 +101,9 @@ namespace VK_UI3.Controls
         }
         ObservableCollection<Audio> _tracks = new ObservableCollection<Audio>();
 
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
-        {
-
-   
-        }
 
         int itCounts = 0;
-        private void gridV_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            try
-            {
-               // itCounts = (int)Math.Floor(e.NewSize.Width / 300);
-              
-
-                if (e.NewSize.Width != e.PreviousSize.Width)
-                {
-                 //   WSetter.Value = e.NewSize.Width / itCounts - 5;
-                }
-                else
-                {
-                   
-                }
-            }
-            catch {
-            }
-
-
-
-            
-        }
+       
 
     }
 }

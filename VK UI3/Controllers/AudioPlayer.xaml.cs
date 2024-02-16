@@ -48,13 +48,10 @@ namespace VK_UI3.Controllers
         public static event EventHandler oniVKUpdate; // Событие OnDeviceAttached
         public static void NotifyoniVKUpdate()
         {
-
             oniVKUpdate?.Invoke(null, EventArgs.Empty);
-
-
         }
 
-        public MediaPlayer MediaPlayer
+        public MediaPlayer MediaPlayerЧ
         {
             get { return mediaPlayer; }
             set { mediaPlayer = value; }

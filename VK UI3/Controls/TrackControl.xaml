@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<UserControl x:Name="UCcontrol" PointerEntered="UCcontrol_PointerEntered"
-             
+<UserControl x:Name="UCcontrol" 
+             PointerEntered="UCcontrol_PointerEntered"
              PointerExited="UCcontrol_PointerExited"
              PointerPressed="UCcontrol_PointerPressed"
     x:Class="VK_UI3.Controls.TrackControl"
