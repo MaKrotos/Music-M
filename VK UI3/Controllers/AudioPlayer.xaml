@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Page CornerRadius="250" 
+<Page 
     IsEnabled="True"
-      x:Name="pageRa"
+     x:Name="pageRa"
     x:Class="VK_UI3.Controllers.AudioPlayer"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -10,10 +10,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:local1="using:VK_UI3.Converters"
         xmlns:local2="using:VK_UI3.Helpers.Animations"
-   Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}"
+  
     mc:Ignorable="d"
   >
-
+  
     <Page.Resources>
         <ThemeShadow x:Name="SharedShadow" />
         <local1:SecondsToTimeConverter x:Key="SecondsToTimeConverter"/>
@@ -68,8 +68,8 @@
                     <ColumnDefinition  Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Grid
-                    
                     Translation="0,0,24"
+                    
                     CornerRadius="8" Margin="0,0,8,0" Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}" Grid.Column="0">
                     <FontIcon Glyph="&#xEC4F;" />
                     <Image x:Name="ImageThumb"
@@ -96,7 +96,7 @@
                 </Grid.ColumnDefinitions>
                 <Button
                     
-              FocusVisualPrimaryBrush="Transparent"
+                FocusVisualPrimaryBrush="Transparent"
                 FocusVisualSecondaryThickness="0"
                     Margin="8,0,0,0" x:Name="PreviousBTN" Tapped="PreviousBTN_Tapped" Width="45" Height="45" Grid.Column="0">
                     <SymbolIcon Symbol="Previous"/>

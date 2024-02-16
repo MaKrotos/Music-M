@@ -34,8 +34,15 @@ namespace VK_UI3.Helpers.Animations
             this.imageBrushControl = imageBrushControl;
             this.dispatcherQueue = dispatcherQueue;
         }
+        public void ChangeImageWithAnimation(Uri newImageSourceUrl)
+        {
+            if (newImageSourceUrl == null) 
+                ChangeImageWithAnimation((string)null);
+            else
+                ChangeImageWithAnimation(newImageSourceUrl.ToString());
+        }
 
-        public void ChangeImageWithAnimation(string newImageSourceUrl)
+        public void ChangeImageWithAnimation(string? newImageSourceUrl)
         {
             if (imageSourceNow != null && imageSourceNow == newImageSourceUrl)
                 return;

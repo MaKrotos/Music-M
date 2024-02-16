@@ -91,13 +91,26 @@ namespace VK_UI3.Views
             catalogs.Catalog.Sections.AddRange(await sectionsService.GetSectionsAsync().ToArrayAsync());
 
             var icons = new List<Symbol>
-                {
-                   Symbol.MusicInfo,
-                   Symbol.More,
-                   Symbol.Pictures,
-                   Symbol.Map,
+{
+    Symbol.MusicInfo,
+    Symbol.Audio,
+    Symbol.Play,
+    Symbol.Pause,
+    Symbol.Stop,
+    Symbol.Forward,
+    Symbol.Back,
+    Symbol.Previous,
+    Symbol.Next,
+    Symbol.Volume,
+    Symbol.Mute,
+    Symbol.More,
+    Symbol.Pictures,
+    Symbol.Map,
+    Symbol.CalendarDay,
+    Symbol.Bookmarks,
+};
 
-                };
+
 
             var rand = new Random();
 
@@ -129,11 +142,15 @@ namespace VK_UI3.Views
                     case "поиск":
                         icon = Symbol.Find;
                         break;
-                    default:
-                        var number = rand.Next(0, icons.Count);
-                        icon = icons[number];
-                        icons.RemoveAt(number);
+                    case "книги и шоу":
+                        icon = Symbol.Bookmarks;
                         break;
+                    default:
+                       
+                        icon = icons[0];
+                        icons.RemoveAt(0);
+                        break;
+
                 }
 
                 var navSet = new NavSettings() { Icon = icon, MyMusicItem = section.Title, section = section };

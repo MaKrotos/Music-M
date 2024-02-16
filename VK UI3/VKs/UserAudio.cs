@@ -2,13 +2,16 @@ using Microsoft.UI.Dispatching;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.Helpers;
 using VK_UI3.Interfaces;
+using VkNet.Enums.Filters;
 using VkNet.Model;
 using VkNet.Model.Attachments;
 using VkNet.Model.RequestParams;
+using VkNet.Model.RequestParams.Leads;
 using VkNet.Utils;
 
 namespace VK_UI3.VKs
@@ -24,14 +27,25 @@ namespace VK_UI3.VKs
         {
             return api.Audio.GetCountAsync(long.Parse(base.id)).Result;
         }
-        User user;
 
+        User user;
         public override string getName()
         {
             try
             {
                 List<long> ids = new List<long> { long.Parse(base.id) };
                 user = api.Users.GetAsync(ids).Result[0];
+
+                var request = new VkParameters
+                {
+                    {"user_ids", string.Join(",", ids)},
+                    {"fields", string.Join(",", "photo_max_orig")}
+                };
+
+                var response = api.Call("users.get", request);
+                user = User.FromJson(response[0]);
+
+
                 return user.FirstName + " " + user.LastName;
             }
             catch (Exception ex)

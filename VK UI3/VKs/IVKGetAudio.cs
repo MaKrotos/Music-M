@@ -35,7 +35,7 @@ namespace VK_UI3.Interfaces
          
  
 
-        Uri photoUri;
+       public  Uri photoUri;
 
         public string name;
 
@@ -57,6 +57,9 @@ namespace VK_UI3.Interfaces
 
       
         public event EventHandler onListUpdate; // Событие OnDeviceAttached
+        public event EventHandler onCountUpDated;
+        public event EventHandler onNameUpdated;
+        public event EventHandler onPhotoUpdated;
         public long? countTracks { get; set; }
 
 
@@ -112,9 +115,6 @@ namespace VK_UI3.Interfaces
             }
             else
             {
-                name = getName();
-                photoUri = getPhoto();
-                countTracks = getCount();
                 this.GetTracks();
             }
         }
@@ -127,12 +127,21 @@ namespace VK_UI3.Interfaces
             Task.Run(() =>
             {
                 name = getName();
+                onNameUpdated?.Invoke(this, EventArgs.Empty);
                 photoUri = getPhoto();
+                onPhotoUpdated?.Invoke(this, EventArgs.Empty);
+            });
+       
+            Task.Run(() =>
+            {
                 countTracks = getCount();
-                this.GetTracks();
+                onCountUpDated?.Invoke(this, EventArgs.Empty);
+                 this.GetTracks();
             });
 
         }
+
+
 
 
         public IVKGetAudio(Block block, DispatcherQueue dispatcher)

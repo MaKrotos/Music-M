@@ -145,7 +145,7 @@ namespace VK_UI3.Views
             handler = (sender, e) => {
                 this.DispatcherQueue.TryEnqueue(async () =>
                 {
-                    frameSection.Navigate(typeof(MainMenu), userAudio, new DrillInNavigationTransitionInfo());
+                    frameSection.Navigate(typeof(PlayListPage), userAudio, new DrillInNavigationTransitionInfo());
                     // Отсоединить обработчик событий после выполнения Navigate
                     userAudio.onListUpdate -= handler;
                 });

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <UserControl CornerRadius="8"
+             
              PointerEntered="UserControl_PointerEntered"
              PointerExited="UserControl_PointerExited"
              PointerPressed="UserControl_PointerPressed"
@@ -17,7 +18,7 @@
         <ThemeShadow />
     </UserControl.Shadow>
 
-    <Grid CornerRadius="8">
+    <Grid   Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" CornerRadius="8">
         <Grid.Resources>
             <!-- Анимация прозрачности от 0 до 1 -->
             <Storyboard x:Name="FadeInAnimationGridPlayIcon">
