@@ -6,7 +6,6 @@ using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.Helpers;
-using VK_UI3.Interfaces;
 using VkNet.Enums.Filters;
 using VkNet.Model;
 using VkNet.Model.Attachments;
@@ -14,7 +13,7 @@ using VkNet.Model.RequestParams;
 using VkNet.Model.RequestParams.Leads;
 using VkNet.Utils;
 
-namespace VK_UI3.VKs
+namespace VK_UI3.VKs.IVK
 {
     public class UserAudio : IVKGetAudio
     {
@@ -25,7 +24,7 @@ namespace VK_UI3.VKs
 
         public override long? getCount()
         {
-            return api.Audio.GetCountAsync(long.Parse(base.id)).Result;
+            return api.Audio.GetCountAsync(long.Parse(id)).Result;
         }
 
         User user;
@@ -33,7 +32,7 @@ namespace VK_UI3.VKs
         {
             try
             {
-                List<long> ids = new List<long> { long.Parse(base.id) };
+                List<long> ids = new List<long> { long.Parse(id) };
                 user = api.Users.GetAsync(ids).Result[0];
 
                 var request = new VkParameters
@@ -84,7 +83,7 @@ namespace VK_UI3.VKs
 
                     audios = api.Audio.GetAsync(new AudioGetParams
                     {
-                        OwnerId = int.Parse(base.id),
+                        OwnerId = int.Parse(id),
                         Offset = offset,
                         Count = count
                     }).Result;
@@ -95,7 +94,7 @@ namespace VK_UI3.VKs
                         ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
                         ManualResetEvent resetEvent = new ManualResetEvent(false);
 
-                        this.DispatcherQueue.TryEnqueue(() =>
+                        DispatcherQueue.TryEnqueue(() =>
                         {
                             listAudio.Add(extendedAudio);
                             resetEvent.Set();
@@ -107,7 +106,7 @@ namespace VK_UI3.VKs
 
                     if (countTracks == listAudio.Count()) itsAll = true;
 
-                  
+
                     getLoadedTracks = false;
                 }
                 NotifyOnListUpdate();

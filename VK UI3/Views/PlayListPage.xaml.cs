@@ -12,15 +12,15 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using VK_UI3.DB;
 using VK_UI3.Helpers.Animations;
-using VK_UI3.Interfaces;
 using VK_UI3.VKs;
+using VK_UI3.VKs.IVK;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
 
 namespace VK_UI3.Views
 {
-  
+
     public sealed partial class PlayListPage : Page
     {
         public PlayListPage()
@@ -33,7 +33,7 @@ namespace VK_UI3.Views
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
 
-            vkGetAudio = e.Parameter as UserAudio;
+            vkGetAudio = e.Parameter as IVKGetAudio;
             if (vkGetAudio == null)
             {
                 vkGetAudio = new UserAudio(AccountsDB.activeAccount.id, this.DispatcherQueue);

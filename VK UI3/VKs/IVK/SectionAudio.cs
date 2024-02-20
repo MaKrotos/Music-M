@@ -8,9 +8,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.Helpers;
-using VK_UI3.Interfaces;
 
-namespace VK_UI3.VKs
+namespace VK_UI3.VKs.IVK
 {
     class SectionAudio : IVKGetAudio
     {
@@ -49,7 +48,7 @@ namespace VK_UI3.VKs
 
             Task.Run(async () =>
             {
-                var a = (await VK.vkService.GetSectionAsync(id, Next));
+                var a = await VK.vkService.GetSectionAsync(id, Next);
                 if (a.Section != null)
                 {
                     if (a.Section.NextFrom == null)
@@ -59,7 +58,7 @@ namespace VK_UI3.VKs
                     }
                     Next = a.Section.NextFrom;
                 }
-                
+
                 var audios = a.Audios;
 
                 if (audios.Count == 0)
@@ -72,7 +71,7 @@ namespace VK_UI3.VKs
                     ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
 
                     ManualResetEvent resetEvent = new ManualResetEvent(false);
-                    this.DispatcherQueue.TryEnqueue(() =>
+                    DispatcherQueue.TryEnqueue(() =>
                     {
                         listAudio.Add(extendedAudio);
                         resetEvent.Set();

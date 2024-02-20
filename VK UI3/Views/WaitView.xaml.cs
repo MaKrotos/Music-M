@@ -1,26 +1,14 @@
-using Microsoft.AppCenter.Crashes;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using MusicX.Core.Models;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using VK_UI3.DB;
 using VK_UI3.Helpers;
-using VK_UI3.Services;
 using VK_UI3.Views.LoginWindow;
 using VK_UI3.VKs;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using VK_UI3.VKs.IVK;
 using static VK_UI3.Views.SectionView;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -41,6 +29,8 @@ namespace VK_UI3.Views
         public Section section;
 
 
+        public Playlist Playlist { get; internal set; }
+
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
 
@@ -55,6 +45,7 @@ namespace VK_UI3.Views
             this.section = waitView.section;
             this.sectionType = waitView.sectionType;
             this.SectionID = waitView.SectionID;
+            this.Playlist = waitView.Playlist;
 
             LoadAsync();
 
@@ -127,14 +118,32 @@ namespace VK_UI3.Views
                     SectionType.None => loadSection(this.SectionID),
                     SectionType.Artist => LoadArtistSection(this.SectionID),
                     SectionType.Search => LoadSearchSection(this.SectionID),
+                    SectionType.PlayList => LoadPlayList(this.Playlist),
                     SectionType.MyListAudio => LoadMyAudioList(),
                     _ => throw new ArgumentOutOfRangeException()
-                }); ;
+                }); ; ;
             }
             finally
             {
                 //  ContentState = ContentState.Loaded;
             }
+        }
+
+        private async Task LoadPlayList(Playlist playlist)
+        {
+            PlayListVK playListVK = new(playlist, this.DispatcherQueue);
+
+            EventHandler handler = null;
+            handler = (sender, e) => {
+                this.DispatcherQueue.TryEnqueue(async () =>
+                {
+                    frameSection.Navigate(typeof(PlayListPage), playListVK, new DrillInNavigationTransitionInfo());
+                    // Отсоединить обработчик событий после выполнения Navigate
+                    playListVK.onListUpdate -= handler;
+                });
+            };
+
+            playListVK.onListUpdate += handler;
         }
 
         private async Task LoadMyAudioList()

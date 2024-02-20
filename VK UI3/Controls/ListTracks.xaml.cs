@@ -18,7 +18,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
 using VK_UI3.Services;
-using VK_UI3.VKs;
+using VK_UI3.VKs.IVK;
 using Windows.ApplicationModel.Email;
 using Windows.Foundation;
 using Windows.Foundation.Collections;

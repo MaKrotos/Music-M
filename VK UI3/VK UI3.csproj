@@ -142,10 +142,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="VKs\SectionAudio\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Resource Include="Fonts\VKSansDisplay-Bold.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

@@ -14,7 +14,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using VK_UI3.Helpers;
 using VK_UI3.Controllers;
-using VK_UI3.Interfaces;
+using VK_UI3.VKs.IVK;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.

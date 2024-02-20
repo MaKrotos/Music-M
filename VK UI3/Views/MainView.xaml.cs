@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms.VisualStyles;
 using VK_UI3.Controllers;
 using VK_UI3.DB;
+
 using VK_UI3.Services;
 using VK_UI3.Views.LoginWindow;
 using VK_UI3.VKs;
@@ -155,10 +156,6 @@ namespace VK_UI3.Views
 
                 var navSet = new NavSettings() { Icon = icon, MyMusicItem = section.Title, section = section };
                 navSettings.Add(navSet);
-
-
-
-
             }
 
 
@@ -478,10 +475,18 @@ namespace VK_UI3.Views
           //  NavWiv.IsBackEnabled = ContentFrame.CanGoBack;
         }
 
-        private void OpenMyPage(SectionType sectionType)
+        public static void OpenMyPage(SectionType sectionType)
         {
             var sectionView = new WaitView();
             sectionView.sectionType = sectionType;
+            frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
+        }
+
+        public static void OpenPlayList(Playlist playlist)
+        {
+            var sectionView = new WaitView();
+            sectionView.sectionType = SectionType.PlayList;
+            sectionView.Playlist = playlist;
             frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
         }
 

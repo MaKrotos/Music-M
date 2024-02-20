@@ -1,7 +1,6 @@
 using System;
 using Microsoft.UI.Xaml;
 using System.Collections.ObjectModel;
-using VK_UI3.VKs;
 using System.ComponentModel;
 using Octokit;
 using VK_UI3.DB;
@@ -10,6 +9,7 @@ using VK_UI3.Helpers;
 using System.Linq;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using VK_UI3.VKs.IVK;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -47,8 +47,6 @@ namespace VK_UI3
 
         private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
-          
-                // Проверяем, достигнут ли конец
                 var isAtBottom = scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight-50;
                 if (isAtBottom)
                 {
@@ -58,8 +56,7 @@ namespace VK_UI3
                     LoadingIndicator.IsActive = false;
                     if (userAudio.itsAll)
                         LoadingIndicator.Visibility = Visibility.Collapsed;
-            }
-           
+                }
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

@@ -1,6 +1,6 @@
 using MusicX.Core.Models;
 using System.ComponentModel;
-using VK_UI3.Interfaces;
+using VK_UI3.VKs.IVK;
 
 
 namespace VK_UI3.Helpers

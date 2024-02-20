@@ -1,24 +1,9 @@
-using Microsoft.AppCenter.Analytics;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
 using MusicX.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using VK_UI3.Helpers.Animations;
-using VK_UI3.Services;
 using VK_UI3.Views;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using static VK_UI3.Views.SectionView;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -46,8 +31,8 @@ namespace VK_UI3.Controls
         }
         AnimationsChangeIcon animationsChangeIcon;
         AnimationsChangeImage animationsChangeImage;
-     
 
+        MusicX.Core.Models.Playlist _PlayList { get; set; }
         private void RecommsPlaylist_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             if (DataContext == null) return;
@@ -58,6 +43,7 @@ namespace VK_UI3.Controls
             animationsChangeImage.ChangeImageWithAnimation((DataContext as Playlist).Cover);
             Subtitle.Text = (DataContext as Playlist).Subtitle;
             Title.Text = (DataContext as Playlist).Title;
+            _PlayList = (DataContext as Playlist);
         }
         bool entered;
         private void UserControl_PointerEntered(object sender, PointerRoutedEventArgs e)
@@ -89,6 +75,7 @@ namespace VK_UI3.Controls
 
         private void UserControl_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
+            MainView.OpenPlayList(_PlayList);
 
           //  MainView.OpenSection(artist.Id, SectionType.Artist);
 

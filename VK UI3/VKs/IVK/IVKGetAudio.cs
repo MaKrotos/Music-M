@@ -25,17 +25,17 @@ using static VK_UI3.VKs.VK;
 
 
 
-namespace VK_UI3.Interfaces
+namespace VK_UI3.VKs.IVK
 {
     public abstract class IVKGetAudio
     {
         public IVkApi api;
         public string id;
         bool shuffle = false;
-         
- 
 
-       public  Uri photoUri;
+
+
+        public Uri photoUri;
 
         public string name;
 
@@ -55,11 +55,20 @@ namespace VK_UI3.Interfaces
 
         public DispatcherQueue DispatcherQueue;
 
-      
-        public event EventHandler onListUpdate; // Событие OnDeviceAttached
+
+        public event EventHandler onListUpdate;
+
         public event EventHandler onCountUpDated;
+
+        public void countUpdated() { onCountUpDated?.Invoke(this, EventArgs.Empty); }
+
         public event EventHandler onNameUpdated;
+
+        public void NameUpdated() { onNameUpdated?.Invoke(this, EventArgs.Empty); }
+
         public event EventHandler onPhotoUpdated;
+        public void PhotoUpdated() { onPhotoUpdated?.Invoke(this, EventArgs.Empty); }
+
         public long? countTracks { get; set; }
 
 
@@ -68,19 +77,21 @@ namespace VK_UI3.Interfaces
         public long? currentTrack
         {
             get { return _currentTrack; }
-            set {
+            set
+            {
 
-                if (!itsAll && value == listAudio.Count()-1 && _currentTrack != value)
+                if (!itsAll && value == listAudio.Count() - 1 && _currentTrack != value)
                 {
                     Task.Run(() =>
                     {
                         if (countTracks == null)
                             countTracks = getCount();
-                        this.GetTracks();
+                        GetTracks();
                     });
                 }
 
-                _currentTrack = value; }
+                _currentTrack = value;
+            }
         }
 
 
@@ -94,17 +105,24 @@ namespace VK_UI3.Interfaces
         {
             AudioPlayedChangeEvent?.Invoke(this, EventArgs.Empty);
         }
-        public string? Next;
+        public string Next;
 
-        public IVKGetAudio(string sectionID, DispatcherQueue dispatcher,  Uri photoLink = null, string name = null, List<MusicX.Core.Models.Audio> audios = null, string next = null)
+
+        public IVKGetAudio(DispatcherQueue dispatcher)
         {
-            this.api = new VK().getVKAPI();
-            this.id = sectionID;
-            this.photoUri = photoLink ?? getPhoto();
+
+            DispatcherQueue = dispatcher;
+        }
+
+        public IVKGetAudio(string sectionID, DispatcherQueue dispatcher, Uri photoLink = null, string name = null, List<MusicX.Core.Models.Audio> audios = null, string next = null)
+        {
+            api = new VK().getVKAPI();
+            id = sectionID;
+            photoUri = photoLink ?? getPhoto();
             this.name = name ?? getName();
-            this.Next = next;
-            this.DispatcherQueue = dispatcher;
-   
+            Next = next;
+            DispatcherQueue = dispatcher;
+
             if (audios != null)
             {
                 foreach (var audio in audios)
@@ -115,15 +133,15 @@ namespace VK_UI3.Interfaces
             }
             else
             {
-                this.GetTracks();
+                GetTracks();
             }
         }
         public IVKGetAudio(long id, DispatcherQueue dispatcher)
         {
-            this.api = new VK().getVKAPI();
+            api = new VK().getVKAPI();
             this.id = id.ToString();
 
-            this.DispatcherQueue = dispatcher;
+            DispatcherQueue = dispatcher;
             Task.Run(() =>
             {
                 name = getName();
@@ -131,12 +149,12 @@ namespace VK_UI3.Interfaces
                 photoUri = getPhoto();
                 onPhotoUpdated?.Invoke(this, EventArgs.Empty);
             });
-       
+
             Task.Run(() =>
             {
                 countTracks = getCount();
                 onCountUpDated?.Invoke(this, EventArgs.Empty);
-                 this.GetTracks();
+                GetTracks();
             });
 
         }
@@ -146,14 +164,14 @@ namespace VK_UI3.Interfaces
 
         public IVKGetAudio(Block block, DispatcherQueue dispatcher)
         {
-            this.api = new VK().getVKAPI();
-            this.id = block.Id;
-            this.DispatcherQueue = dispatcher;
-            this.photoUri = null;
-            this.name = null;
+            api = new VK().getVKAPI();
+            id = block.Id;
+            DispatcherQueue = dispatcher;
+            photoUri = null;
+            name = null;
             if (block.NextFrom == null) itsAll = true;
-            this.Next = block.NextFrom;
-         
+            Next = block.NextFrom;
+
 
             if (block.Audios != null)
             {
@@ -168,7 +186,7 @@ namespace VK_UI3.Interfaces
             {
 
                 countTracks = getCount();
-                this.GetTracks();
+                GetTracks();
 
             }
         }
@@ -190,12 +208,12 @@ namespace VK_UI3.Interfaces
             }
             onListUpdate?.Invoke(this, EventArgs.Empty);
         }
-  
-       
 
-        public abstract Uri? getPhoto();
 
-        public abstract string? getName();
+
+        public abstract Uri getPhoto();
+
+        public abstract string getName();
 
 
         public abstract long? getCount();
@@ -208,9 +226,9 @@ namespace VK_UI3.Interfaces
         {
             if (!shuffle)
             {
-               // shuffle = true;
-              //  ShuffleList();
-              //  NotifyOnListUpdate();
+                // shuffle = true;
+                //  ShuffleList();
+                //  NotifyOnListUpdate();
             }
         }
 
@@ -271,23 +289,28 @@ namespace VK_UI3.Interfaces
 
         bool _itsAll = false;
 
-        public bool itsAll { get {
-                if (_itsAll) 
+        public bool itsAll
+        {
+            get
+            {
+                if (_itsAll)
                     return true;
                 return false;
-            } set { _itsAll = value; } }
+            }
+            set { _itsAll = value; }
+        }
 
         public bool HasMoreItems => throw new NotImplementedException();
 
         public ExtendedAudio GetTrackPlay()
         {
-            if (currentTrack == null) 
+            if (currentTrack == null)
                 currentTrack = 0;
             return GetTrackPlay((long)currentTrack);
         }
 
 
- 
+
 
 
         public bool getLoadedTracks = false;
