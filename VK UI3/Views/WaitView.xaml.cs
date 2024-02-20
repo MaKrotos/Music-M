@@ -9,6 +9,7 @@ using VK_UI3.Helpers;
 using VK_UI3.Views.LoginWindow;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
+using Windows.Media.Playlists;
 using static VK_UI3.Views.SectionView;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -21,15 +22,21 @@ namespace VK_UI3.Views
         public WaitView()
         {
             this.InitializeComponent();
-    
+
+            this.Loaded += WaitView_Loaded; ;
+        }
+
+        private void WaitView_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            LoadAsync();
         }
 
         public SectionType sectionType;
         public string SectionID;
         public Section section;
+        internal IVKGetAudio iVKGetAudio;
 
-
-        public Playlist Playlist { get; internal set; }
+        public MusicX.Core.Models.Playlist Playlist { get; internal set; }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -46,9 +53,9 @@ namespace VK_UI3.Views
             this.sectionType = waitView.sectionType;
             this.SectionID = waitView.SectionID;
             this.Playlist = waitView.Playlist;
+            this.iVKGetAudio = waitView.iVKGetAudio;
 
-            LoadAsync();
-
+          
         }
 
 
@@ -118,7 +125,7 @@ namespace VK_UI3.Views
                     SectionType.None => loadSection(this.SectionID),
                     SectionType.Artist => LoadArtistSection(this.SectionID),
                     SectionType.Search => LoadSearchSection(this.SectionID),
-                    SectionType.PlayList => LoadPlayList(this.Playlist),
+                    SectionType.PlayList => LoadPlayList(),
                     SectionType.MyListAudio => LoadMyAudioList(),
                     _ => throw new ArgumentOutOfRangeException()
                 }); ; ;
@@ -129,21 +136,33 @@ namespace VK_UI3.Views
             }
         }
 
-        private async Task LoadPlayList(Playlist playlist)
+        private async Task LoadPlayList()
         {
-            PlayListVK playListVK = new(playlist, this.DispatcherQueue);
+           if (iVKGetAudio == null)
+                iVKGetAudio = new PlayListVK (this.Playlist, this.DispatcherQueue);
 
-            EventHandler handler = null;
-            handler = (sender, e) => {
+            if (iVKGetAudio.listAudio.Count != 0) {
                 this.DispatcherQueue.TryEnqueue(async () =>
                 {
-                    frameSection.Navigate(typeof(PlayListPage), playListVK, new DrillInNavigationTransitionInfo());
-                    // Отсоединить обработчик событий после выполнения Navigate
-                    playListVK.onListUpdate -= handler;
+                    frameSection.Navigate(typeof(PlayListPage), iVKGetAudio, new DrillInNavigationTransitionInfo());
                 });
-            };
+                }
+            else
+            {
+                EventHandler handler = null;
+                handler = (sender, e) =>
+                {
+                    this.DispatcherQueue.TryEnqueue(async () =>
+                    {
+                        frameSection.Navigate(typeof(PlayListPage), iVKGetAudio, new DrillInNavigationTransitionInfo());
+                        // Отсоединить обработчик событий после выполнения Navigate
+                        iVKGetAudio.onListUpdate -= handler;
+                    });
+                };
+                iVKGetAudio.onListUpdate += handler;
 
-            playListVK.onListUpdate += handler;
+            }
+
         }
 
         private async Task LoadMyAudioList()

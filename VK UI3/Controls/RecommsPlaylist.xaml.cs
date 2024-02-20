@@ -2,8 +2,13 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using MusicX.Core.Models;
+using System;
+using VK_UI3.Controllers;
 using VK_UI3.Helpers.Animations;
 using VK_UI3.Views;
+using VK_UI3.VKs.IVK;
+using Windows.Media.Playlists;
+using Playlist = MusicX.Core.Models.Playlist;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -16,7 +21,7 @@ namespace VK_UI3.Controls
         {
             this.InitializeComponent();
 
-            animationsChangeIcon = new AnimationsChangeIcon(PlayPauseIcon);
+            AnimationsChangeFontIcon = new AnimationsChangeFontIcon(PlayPause, this.DispatcherQueue);
             animationsChangeImage = new AnimationsChangeImage(Cover, this.DispatcherQueue);
 
             DataContextChanged += RecommsPlaylist_DataContextChanged;
@@ -29,7 +34,7 @@ namespace VK_UI3.Controls
         {
            
         }
-        AnimationsChangeIcon animationsChangeIcon;
+        AnimationsChangeFontIcon AnimationsChangeFontIcon;
         AnimationsChangeImage animationsChangeImage;
 
         MusicX.Core.Models.Playlist _PlayList { get; set; }
@@ -39,7 +44,7 @@ namespace VK_UI3.Controls
             var Data = DataContext;
 
 
-            animationsChangeIcon.ChangeSymbolIconWithAnimation(Symbol.Play);
+            AnimationsChangeFontIcon.ChangeFontIconWithAnimation("\uF5B0");
             animationsChangeImage.ChangeImageWithAnimation((DataContext as Playlist).Cover);
             Subtitle.Text = (DataContext as Playlist).Subtitle;
             Title.Text = (DataContext as Playlist).Title;
@@ -75,13 +80,45 @@ namespace VK_UI3.Controls
 
         private void UserControl_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            MainView.OpenPlayList(_PlayList);
+            if (e.GetCurrentPoint(sender as UIElement).Properties.IsLeftButtonPressed)
+            {
+                if (iVKGetAudio == null)
+                MainView.OpenPlayList(_PlayList);
+                else
+                {
+                    MainView.OpenPlayList(iVKGetAudio);
+                }
+            }
+        }
 
-          //  MainView.OpenSection(artist.Id, SectionType.Artist);
 
-          //  var notificationService = StaticService.Container.GetRequiredService<NavigationService>();
+        IVKGetAudio iVKGetAudio = null;
 
-          //  notificationService.OpenExternalPage(new PlaylistView(Playlist));
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            AnimationsChangeFontIcon.ChangeFontIconWithAnimation("\uE916");
+            iVKGetAudio = new PlayListVK(_PlayList, this.DispatcherQueue);
+
+
+
+            EventHandler handler = null;
+            handler = (sender, e) => {
+                this.DispatcherQueue.TryEnqueue(async () =>
+                {
+                    if (iVKGetAudio.listAudio.Count == 0)
+                    {
+                        AnimationsChangeFontIcon.ChangeFontIconWithAnimation("\uF5B0");
+                        return;
+                    }
+
+                    iVKGetAudio.currentTrack = 0;
+                    AudioPlayer.PlayList(iVKGetAudio);
+                    AnimationsChangeFontIcon.ChangeFontIconWithAnimation("\uE769");
+                    // Отсоединить обработчик событий после выполнения Navigate
+                    iVKGetAudio.onListUpdate -= handler;
+                });
+            };
+            iVKGetAudio.onListUpdate += handler;
         }
     }
 }

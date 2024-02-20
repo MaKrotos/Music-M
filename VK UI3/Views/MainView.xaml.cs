@@ -20,6 +20,7 @@ using VK_UI3.DB;
 using VK_UI3.Services;
 using VK_UI3.Views.LoginWindow;
 using VK_UI3.VKs;
+using VK_UI3.VKs.IVK;
 using Windows.Foundation;
 using static VK_UI3.DB.AccountsDB;
 using static VK_UI3.Views.SectionView;
@@ -487,6 +488,14 @@ namespace VK_UI3.Views
             var sectionView = new WaitView();
             sectionView.sectionType = SectionType.PlayList;
             sectionView.Playlist = playlist;
+            frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
+        }
+
+        public static void OpenPlayList(IVKGetAudio iVKGetAudio)
+        {
+            var sectionView = new WaitView();
+            sectionView.sectionType = SectionType.PlayList;
+            sectionView.iVKGetAudio = iVKGetAudio;
             frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
         }
 
