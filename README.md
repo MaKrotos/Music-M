@@ -1,4 +1,4 @@
-[Скачать установщик](https://github.com/MaKrotos/Music-M/releases/download/0.1.4.9/Setup.exe)
+[Скачать установщик](https://github.com/MaKrotos/Music-M/releases/download/0.1.5.0/Setup.exe)
 
 ![image](https://github.com/MaKrotos/Music-M/assets/43302537/3247ee7a-a9f7-4232-9978-3c7a31a66180)
 
