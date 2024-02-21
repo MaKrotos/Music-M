@@ -62,29 +62,46 @@ namespace VK_UI3.Views
             if (vkGetAudio.itsAll)
                 LoadingIndicator.Visibility = Visibility.Collapsed;
         }
+        private ScrollViewer FindScrollViewer(DependencyObject d)
+        {
+            if (d is ScrollViewer)
+                return d as ScrollViewer;
 
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(d); i++)
+            {
+                var sw = FindScrollViewer(VisualTreeHelper.GetChild(d, i));
+                if (sw != null) return sw;
+            }
+
+            return null;
+        }
+        ScrollViewer scrollViewer;
         private void PlayListPage_Loaded(object sender, RoutedEventArgs e)
         {
             // Находим ScrollViewer внутри ListView
-            
-            if (ScrollviewVer != null)
+
+            scrollViewer = FindScrollViewer(TrackListView);
+            if (scrollViewer != null)
             {
                 // Подписываемся на событие изменения прокрутки
-                ScrollviewVer.ViewChanged += ScrollviewVer_ViewChanged; ;
+                scrollViewer.ViewChanged += ScrollViewer_ViewChanged; ;
             }
         }
 
-        private void ScrollviewVer_ViewChanged(ScrollView sender, object args)
+        private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
-            if (sender.VerticalOffset == sender.ExtentHeight - sender.ViewportHeight)
+            
+            var isAtBottom = scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight - 50;
             {
-                if (vkGetAudio.itsAll) {
+                if (vkGetAudio.itsAll)
+                {
 
                     LoadingIndicator.Visibility = Visibility.Collapsed;
-                    return; }
+                    return;
+                }
                 LoadingIndicator.Visibility = Visibility.Visible;
                 vkGetAudio.GetTracks();
-                LoadingIndicator.IsActive = true;     
+                LoadingIndicator.IsActive = true;
             }
         }
 

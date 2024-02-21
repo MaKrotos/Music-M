@@ -15,45 +15,45 @@
     <Page.Resources>
         <ThemeShadow x:Name="SharedShadow" />
     </Page.Resources>
+    <ListView Padding="0,16,0,16"  CanReorderItems="false" x:Name="TrackListView" ItemsSource="{x:Bind vkGetAudio.listAudio, Mode=OneWay}"   IsItemClickEnabled="False" SelectionMode="None">
 
-    <ScrollView  x:Name="ScrollviewVer">
-        <StackPanel>
-            <Grid Margin="15">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                
+                <ListView.Header>
+                    <Grid Margin="15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                    <!-- Квадратный элемент в первом столбце -->
-                <Grid  Width="250" Height="250"
+
+                        <!-- Квадратный элемент в первом столбце -->
+                        <Grid  Width="250" Height="250"
     Translation="0,0,24"
     
     CornerRadius="8" Margin="0,0,8,0" Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}" Grid.Column="0">
-                    <FontIcon Glyph="&#xE90B;" />
-                    <Image x:Name="ImageThumb" Stretch="UniformToFill"
+                            <FontIcon Glyph="&#xE90B;" />
+                            <Image x:Name="ImageThumb" Stretch="UniformToFill"
          Width="250" Height="250"></Image>
-                </Grid>
+                        </Grid>
 
-                <!-- Элемент, заполняющий оставшееся пространство во втором столбце -->
-                <StackPanel Grid.Column="1" Margin="20,0,0,0">
-    <ScrollViewer Margin="0,30,20,0"
+                        <!-- Элемент, заполняющий оставшееся пространство во втором столбце -->
+                        <StackPanel Grid.Column="1" Margin="20,0,0,0">
+                            <ScrollViewer Margin="0,30,20,0"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Center" 
             
                   HorizontalScrollBarVisibility="Hidden"
                   VerticalScrollBarVisibility="Hidden"
                   MaxWidth="550">
-        <TextBlock x:Name="textBlock"
+                                <TextBlock x:Name="textBlock"
                    MaxWidth="{Binding ElementName=CardPlaylist, Path=ActualWidth}"
                    FontFamily="{StaticResource VKSansBold}"
                    FontSize="40"
                    FontWeight="ExtraBlack"
                    
                    Text="{Binding Title}" />
-    </ScrollViewer>
+                            </ScrollViewer>
 
-    <TextBlock 
+                            <TextBlock 
         x:Name="textBlock1"
         Margin="0,10,0,0"
         FontFamily="{StaticResource VKSansRegular}"
@@ -62,130 +62,129 @@
         Opacity="0.8"
         Text="{Binding ArtistText}"
         TextTrimming="CharacterEllipsis" />
-                    <StackPanel Grid.Column="1"
+                            <StackPanel Grid.Column="1"
         x:Name="AddInfo"
         Margin="0,10,0,0"
         Opacity="0.5"
         Orientation="Horizontal"
         Visibility="{Binding Path=VisibileAddInfo}">
 
-        <TextBlock
+                                <TextBlock
             x:Name="Genres"
             FontFamily="{StaticResource VKSansRegular}"
             
             Text="{Binding Genres}" />
-        <TextBlock
+                                <TextBlock
             x:Name="Dot2"
             Margin="3,0,0,0"
             
             Text="•" />
-        <TextBlock
+                                <TextBlock
             x:Name="Year"
             Margin="3,0,0,0"
             FontFamily="{StaticResource VKSansRegular}"
             
             Text="{Binding Year}" />
-        <TextBlock
+                                <TextBlock
             x:Name="Dot3"
             Margin="3,0,0,0"
             
             Text="•" />
-        <TextBlock
+                                <TextBlock
             x:Name="Plays"
             Margin="3,0,0,0"
             FontFamily="{StaticResource VKSansRegular}"
             
             Text="{Binding Plays}" />
-        <TextBlock
+                                <TextBlock
             x:Name="PlaysText"
             Margin="3,0,0,0"
             
             Text="прослушиваний" />
-    </StackPanel>
+                            </StackPanel>
 
-    <StackPanel
+                            <StackPanel
         x:Name="stackPanel"
         Margin="0,50,0,0"
         Orientation="Horizontal"
         RenderTransformOrigin="0.5,0.5">
-        <StackPanel.RenderTransform>
-            <TransformGroup>
-                <ScaleTransform />
-                <SkewTransform />
-                <RotateTransform />
-                <TranslateTransform />
-            </TransformGroup>
-        </StackPanel.RenderTransform>
-                        <Button
+                                <StackPanel.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform />
+                                        <SkewTransform />
+                                        <RotateTransform />
+                                        <TranslateTransform />
+                                    </TransformGroup>
+                                </StackPanel.RenderTransform>
+                                <Button
     x:Name="AddPlaylist"
     MinWidth="200"
    
     Click="AddPlaylist_Click">
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal">
-                                    <SymbolIcon Symbol="Add"/>
-                                    <TextBlock Text="Добавить к себе" Margin="10,0,0,0"/>
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
-                        <Button
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <SymbolIcon Symbol="Add"/>
+                                            <TextBlock Text="Добавить к себе" Margin="10,0,0,0"/>
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+                                <Button
     x:Name="PlayPlaylist"
     MinWidth="150"
     Margin="10,0,0,0"
 
     Click="PlayPlaylist_Click">
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal">
-                                    <SymbolIcon Symbol="Play"/>
-                                    <TextBlock Text="Воспроизвести" Margin="10,0,0,0"/>
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <SymbolIcon Symbol="Play"/>
+                                            <TextBlock Text="Воспроизвести" Margin="10,0,0,0"/>
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
 
-                        <Button
+                                <Button
     x:Name="EditPlaylist"
     MinWidth="150"
     Margin="10,0,0,0"
 
     Click="EditPlaylist_Click">
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal">
-                                    <SymbolIcon Symbol="Edit"/>
-                                    <TextBlock Text="Редактировать" Margin="10,0,0,0"/>
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <SymbolIcon Symbol="Edit"/>
+                                            <TextBlock Text="Редактировать" Margin="10,0,0,0"/>
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
 
-                        <Button
+                                <Button
     x:Name="DownloadPlaylist"
     MinWidth="120"
     Margin="10,0,0,0"
 
     Click="DownloadPlaylist_Click">
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal">
-                                    <SymbolIcon Symbol="Download"/>
-                                    <TextBlock Text="Скачать" Margin="10,0,0,0"/>
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <SymbolIcon Symbol="Download"/>
+                                            <TextBlock Text="Скачать" Margin="10,0,0,0"/>
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
 
 
 
-                    </StackPanel>
-    
-    <TextBlock x:Name="__"
+                            </StackPanel>
+
+                            <TextBlock x:Name="__"
                Margin="0,10,0,0" 
                
                Opacity="0.6"
                MaxWidth="550"
                TextWrapping="Wrap"
              />
-</StackPanel>
-            </Grid>
+                        </StackPanel>
+                    </Grid>
+                </ListView.Header>
 
-
-            <ListView Padding="0,16,0,16"  CanReorderItems="false" x:Name="TrackListView" ItemsSource="{x:Bind vkGetAudio.listAudio, Mode=OneWay}"   IsItemClickEnabled="False" SelectionMode="None">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <custom:TrackControl
@@ -199,8 +198,5 @@
                     <ProgressRing x:Name="LoadingIndicator" IsActive="False" />
                 </ListView.Footer>
             </ListView>
-
-
-        </StackPanel>
-    </ScrollView>
+  
 </Page>
