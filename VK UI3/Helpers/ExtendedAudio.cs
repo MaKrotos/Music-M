@@ -31,7 +31,18 @@ namespace VK_UI3.Helpers
 
         // public int NumberList { get; set; }
 
-        public long? NumberInList = null;
+        public long? _numberInList;
+        
+
+        public long? NumberInList { get {
+                if (_numberInList == null)
+                {
+                    iVKGetAudio.updateNumbers();
+                }
+                return _numberInList;
+            
+            } set { _numberInList = value;  }
+        }
 
         public IVKGetAudio iVKGetAudio { get; set; }
 

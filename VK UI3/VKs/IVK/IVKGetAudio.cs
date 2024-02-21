@@ -202,13 +202,15 @@ namespace VK_UI3.VKs.IVK
 
         public void NotifyOnListUpdate()
         {
+         
+            onListUpdate?.Invoke(this, EventArgs.Empty);
+        }
+        public void updateNumbers() {
             for (int i = 0; i < listAudio.Count; i++)
             {
                 listAudio[i].NumberInList = i;
             }
-            onListUpdate?.Invoke(this, EventArgs.Empty);
         }
-
 
 
         public abstract Uri getPhoto();
