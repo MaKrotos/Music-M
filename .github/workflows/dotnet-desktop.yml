@@ -175,7 +175,7 @@ jobs:
       id: get_version
       run: |
         $doc = New-Object xml
-        $doc.Load((Convert-Path "D:\a\${{ github.repository }}\${{ github.repository }}\VK UI3 (Package)\Package.appxmanifest"))
+        $doc.Load((Convert-Path "D:\a\${{ github.repository }}\VK UI3 (Package)\Package.appxmanifest"))
         $nsManager = New-Object System.Xml.XmlNamespaceManager($doc.NameTable)
         $nsManager.AddNamespace('default', 'http://schemas.microsoft.com/appx/manifest/foundation/windows10')
         $version = $doc.SelectSingleNode('//default:Identity', $nsManager).Version
