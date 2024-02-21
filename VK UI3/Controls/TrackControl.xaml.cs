@@ -137,6 +137,18 @@ namespace VK_UI3.Controls
                 object timeString = converter.Convert(track.Duration, null, null, null);
                 Console.WriteLine(timeString);  // Выводит "60:00"
                 Time.Text = (string) timeString;
+
+
+                try
+                {
+                    Symbol symbol = dataTrack.PlayThis ? Symbol.Pause : Symbol.Play;
+                    ChangeSymbolIcon(symbol);
+                    HandleAnimation(dataTrack.PlayThis);
+                }
+                catch (Exception ex)
+                {
+                    AppCenterHelper.SendCrash(ex);
+                }
             }
         }
 
@@ -297,22 +309,18 @@ namespace VK_UI3.Controls
             {
                 PlayBTN.Symbol = symbol;
             }
-
-
             FadeOutAnimationGridPlayIcon.Pause();
             FadeInAnimationGridPlayIcon.Begin();
         }
 
         private void UCcontrol_PointerExited(object sender, PointerRoutedEventArgs e)
         {
-
             entered = false;
             var a = DataContext as ExtendedAudio;
             if (a == null) return;
             if (a.PlayThis) return;
             FadeInAnimationGridPlayIcon.Pause();
             FadeOutAnimationGridPlayIcon.Begin();
-
         }
 
         private void UCcontrol_PointerPressed(object sender, PointerRoutedEventArgs e)

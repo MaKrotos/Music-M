@@ -23,13 +23,15 @@ namespace VK_UI3.Views
         {
             this.InitializeComponent();
 
-            this.Loaded += WaitView_Loaded; ;
+   
+            this.Loading += WaitView_Loading;
         }
 
-        private void WaitView_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        private void WaitView_Loading(Microsoft.UI.Xaml.FrameworkElement sender, object args)
         {
             LoadAsync();
         }
+
 
         public SectionType sectionType;
         public string SectionID;

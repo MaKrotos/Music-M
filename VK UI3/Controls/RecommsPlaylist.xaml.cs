@@ -83,7 +83,7 @@ namespace VK_UI3.Controls
             if (e.GetCurrentPoint(sender as UIElement).Properties.IsLeftButtonPressed)
             {
                 if (iVKGetAudio == null)
-                MainView.OpenPlayList(_PlayList);
+                    MainView.OpenPlayList(_PlayList);
                 else
                 {
                     MainView.OpenPlayList(iVKGetAudio);
