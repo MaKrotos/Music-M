@@ -176,7 +176,7 @@ jobs:
       run: |
         $repoName = "${{ github.repository }}".Split('/')[1]
         $doc = New-Object xml
-        $doc.Load((Convert-Path "D:\a\$repoName\$repoName\VK UI3\obj\x86\Release\net6.0-windows10.0.17763.0\Package.appxmanifest"))
+        $doc.Load((Convert-Path "D:\a\$repoName\$repoName\VK UI3 (Package)\Package.appxmanifest'))
         $nsManager = New-Object System.Xml.XmlNamespaceManager($doc.NameTable)
         $nsManager.AddNamespace('default', 'http://schemas.microsoft.com/appx/manifest/foundation/windows10')
         $version = $doc.SelectSingleNode('//default:Identity', $nsManager).Version
