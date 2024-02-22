@@ -45,13 +45,13 @@ namespace VK_UI3.Controls
         bool addedHandler = false;
         private void TrackControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
-            if ((DataContext as ExtendedAudio) != null)
+            if ((args.NewValue as ExtendedAudio) != null)
             {
 
-                var track = (DataContext as ExtendedAudio).audio;
+                var track = (args.NewValue as ExtendedAudio).audio;
                 if (track == null)
                     return;
-                dataTrack = (DataContext as ExtendedAudio);
+                dataTrack = (args.NewValue as ExtendedAudio);
 
 
                 if (!addedHandler)
@@ -72,13 +72,29 @@ namespace VK_UI3.Controls
                 audio = track;
 
                 if (track.Album != null && track.Album.Thumb != null)
-                    changeImage.ChangeImageWithAnimation(
-                        track.Album.Thumb.Photo270 ??
-                        track.Album.Thumb.Photo300 ??
-                        track.Album.Thumb.Photo600 ??
-                        track.Album.Thumb.Photo34 ??
-                        "null"
-                    );
+                {
+
+                    string photoUri = track.Album.Thumb.Photo270 ??
+                       track.Album.Thumb.Photo300 ??
+                       track.Album.Thumb.Photo600 ??
+                       track.Album.Thumb.Photo34 ??
+                       null;
+                    if (photoUri == null)
+                    {
+                        ImageThumb.Opacity = 1;
+
+                    }
+                    else
+                    {
+
+                        changeImage.ChangeImageWithAnimation(
+                     photoUri
+                         );
+                    }
+                }
+
+              
+              
 
 
                 if ((track.MainArtists == null) || (!track.MainArtists.Any()))
