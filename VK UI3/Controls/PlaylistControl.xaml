@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl CornerRadius="8"
+             
+             PointerEntered="UserControl_PointerEntered"
+             PointerExited="UserControl_PointerExited"
+             PointerPressed="UserControl_PointerPressed"
+    x:Class="VK_UI3.Controls.PlaylistControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VK_UI3.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Width="200"
+  
+    Height="250"
+    mc:Ignorable="d">
+
+    <UserControl.ContextFlyout>
+        <MenuFlyout x:Name="flyOutm">
+            <MenuFlyoutItem x:Name="AddRemove" Text="Добавить к себе" Click="AddRemove_Click" Icon="Add" />
+
+        </MenuFlyout>
+    </UserControl.ContextFlyout>
+
+
+    <UserControl.Shadow>
+        <ThemeShadow />
+    </UserControl.Shadow>
+    <StackPanel Padding="10"
+            Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+        >
+        
+        <Grid Width="180" Height="180"  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" CornerRadius="8">
+            <Grid.Resources>
+                <!-- Анимация прозрачности от 0 до 1 -->
+                <Storyboard x:Name="FadeInAnimationGridPlayIcon">
+                    <DoubleAnimation Storyboard.TargetName="btnGrid"
+Storyboard.TargetProperty="Opacity"
+To="1" Duration="0:0:0.25"/>
+                </Storyboard>
+                <!-- Анимация прозрачности от 1 до 0 -->
+                <Storyboard x:Name="FadeOutAnimationGridPlayIcon">
+                    <DoubleAnimation Storyboard.TargetName="btnGrid"
+Storyboard.TargetProperty="Opacity"
+To="0" Duration="0:0:0.25"/>
+                </Storyboard>
+            </Grid.Resources>
+
+
+            <Image x:Name="Cover" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill" />
+
+
+            <Grid Padding="10">
+
+
+                <SymbolIcon Symbol="List" VerticalAlignment="Bottom" HorizontalAlignment="Left"
+                           Width="24" Height="24"
+                           />
+                <Grid Opacity="0" x:Name="btnGrid" Width="50" CornerRadius="100" Height="50" Background="{ThemeResource SystemControlBackgroundAltMediumHighBrush}"  VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                    <Button Click="Button_Click"  Translation="0,0,24" Opacity="1" Width="50" CornerRadius="50" Height="50"  HorizontalAlignment="Center" VerticalAlignment="Center" >
+                        <FontIcon x:Name="PlayPause"  Glyph="&#xF5B0;"
+                  
+              
+                   
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   />
+                    </Button>
+                </Grid>
+            </Grid>
+
+
+
+
+        </Grid>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+            <TextBlock x:Name="Title" TextWrapping="Wrap"
+                           FontSize="14"
+                    
+                           FontFamily="{StaticResource VKSansMedium}"
+                           Margin="0,8,0,4"/>
+            <TextBlock x:Name="Subtitle" TextWrapping="Wrap"
+                           Opacity="0.6"
+                           FontSize="12"
+                     
+                           FontFamily="{StaticResource VKSansRegular}" />
+        </StackPanel>
+    </StackPanel>
+</UserControl>

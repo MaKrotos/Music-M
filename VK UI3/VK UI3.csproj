@@ -24,9 +24,11 @@
 	  <None Remove="Controls\BannerControl.xaml" />
 	  <None Remove="Controls\BlockControl.xaml" />
 	  <None Remove="Controls\Blocks\ArtistBannerBlockControl.xaml" />
+	  <None Remove="Controls\Blocks\ListPlaylists.xaml" />
 	  <None Remove="Controls\Blocks\RecommsPlaylistBlock.xaml" />
 	  <None Remove="Controls\DefaultControl.xaml" />
 	  <None Remove="Controls\ListTracks.xaml" />
+	  <None Remove="Controls\PlaylistControl.xaml" />
 	  <None Remove="Controls\RecommsPlaylist.xaml" />
 	  <None Remove="Controls\TitleBlockControl.xaml" />
 	  <None Remove="Controls\TrackControl.xaml" />
@@ -41,7 +43,6 @@
 
 	<ItemGroup>
 	  <Page Remove="Controls\ListPlaylists.xaml" />
-	  <Page Remove="Controls\PlaylistControl.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -82,6 +83,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Controls\Blocks\ListPlaylists.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Controls\DefaultControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -112,9 +117,9 @@
     <None Update="Controls\ListPlaylists.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
-    <None Update="Controls\PlaylistControl.xaml">
+    <Page Update="Controls\PlaylistControl.xaml">
       <Generator>MSBuild:Compile</Generator>
-    </None>
+    </Page>
     <Page Update="Controls\RecommsPlaylist.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

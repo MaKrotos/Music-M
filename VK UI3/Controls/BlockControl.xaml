@@ -29,6 +29,13 @@
         <DataTemplate x:Key="music_audios_music_chart_triple_stacked_slider" >
             <controls:ListTracks Tracks="{Binding Audios}"  />
         </DataTemplate>
+        <DataTemplate x:Key="music_audios_list" >
+            <controls:ListTracks Tracks="{Binding Audios}"  />
+        </DataTemplate>
+        <DataTemplate x:Key="music_audios_music_chart_list" >
+            <controls:ListTracks Tracks="{Binding Audios}"  />
+        </DataTemplate>
+
 
         <DataTemplate x:Key="artist">
             <blocks:ArtistBannerBlockControl />
@@ -41,6 +48,17 @@
         <DataTemplate x:Key="music_playlists_recomms_slider" >
             <blocks:RecommsPlaylistBlock />
         </DataTemplate>
+
+        <DataTemplate x:Key="music_playlists_music_chart_large_slider" >
+            <blocks:ListPlaylists/>
+        </DataTemplate>
+        <DataTemplate x:Key="music_playlists" >
+            <blocks:ListPlaylists/>
+        </DataTemplate>
+        <DataTemplate x:Key="music_playlists_list">
+            <blocks:ListPlaylists/>
+        </DataTemplate>
+       
 
     </UserControl.Resources>
 
