@@ -19,6 +19,7 @@ using VK_UI3.Views;
 using VK_UI3.VKs;
 using VkNet.Model;
 using Windows.ApplicationModel.DataTransfer;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 using static VK_UI3.Views.SectionView;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -37,10 +38,17 @@ namespace VK_UI3.Controls
 
             this.DataContextChanged += TrackControl_DataContextChanged;
             Loaded += TrackControl_Loaded;
+            this.Loading += TrackControl_Loading;
             if (changeImage == null)
                 changeImage = new AnimationsChangeImage(ImageThumb, DispatcherQueue);
                 changeIconPlayBTN = new AnimationsChangeIcon(PlayBTN);
         }
+
+        private void TrackControl_Loading(FrameworkElement sender, object args)
+        {
+        
+        }
+
         ExtendedAudio dataTrack = null;
         bool addedHandler = false;
 
@@ -48,8 +56,6 @@ namespace VK_UI3.Controls
 
         private void TrackControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
-       
-
             if ((DataContext as ExtendedAudio) != null)
             {
 
@@ -77,15 +83,15 @@ namespace VK_UI3.Controls
                 Artists.Text = track.Artist;
                 audio = track;
 
-             
+
                 if (track.Album != null && track.Album.Thumb != null)
                 {
 
-                       photouri = track.Album.Thumb.Photo270 ??
-                       track.Album.Thumb.Photo300 ??
-                       track.Album.Thumb.Photo600 ??
-                       track.Album.Thumb.Photo34 ??
-                       null;
+                    photouri = track.Album.Thumb.Photo270 ??
+                    track.Album.Thumb.Photo300 ??
+                    track.Album.Thumb.Photo600 ??
+                    track.Album.Thumb.Photo34 ??
+                    null;
                     if (photouri == null || photouri == "")
                     {
                         ImageThumb.Opacity = 1;
@@ -99,8 +105,8 @@ namespace VK_UI3.Controls
                     }
                 }
 
-              
-              
+
+
 
 
                 if ((track.MainArtists == null) || (!track.MainArtists.Any()))
@@ -158,7 +164,7 @@ namespace VK_UI3.Controls
                 // Преобразование секунд в строку времени
                 object timeString = converter.Convert(track.Duration, null, null, null);
                 Console.WriteLine(timeString);  // Выводит "60:00"
-                Time.Text = (string) timeString;
+                Time.Text = (string)timeString;
 
 
                 try

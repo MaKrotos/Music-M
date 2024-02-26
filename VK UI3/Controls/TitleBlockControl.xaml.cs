@@ -29,10 +29,12 @@ namespace VK_UI3.Controls
         {
             InitializeComponent();
             this.DataContextChanged += TitleBlockControl_DataContextChanged;
+            this.Loading += TitleBlockControl_Loading;
         }
 
-        private void TitleBlockControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        private void TitleBlockControl_Loading(FrameworkElement sender, object args)
         {
+            // throw new NotImplementedException();
             if (DataContext is not Block block)
                 return;
 
@@ -129,6 +131,11 @@ namespace VK_UI3.Controls
 
                 return;
             }
+        }
+
+        private void TitleBlockControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            
         }
 
        

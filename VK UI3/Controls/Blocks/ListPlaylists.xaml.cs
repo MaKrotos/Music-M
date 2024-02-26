@@ -29,10 +29,10 @@ namespace VK_UI3.Controls.Blocks
             this.InitializeComponent();
 
             DataContextChanged += RecommsPlaylistBlock_DataContextChanged;
+            this.Loading += ListPlaylists_Loading;
         }
-        ObservableCollection<Playlist> playlists = new();
 
-        private void RecommsPlaylistBlock_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        private void ListPlaylists_Loading(FrameworkElement sender, object args)
         {
             try
             {
@@ -53,6 +53,13 @@ namespace VK_UI3.Controls.Blocks
 
 
             }
+        }
+
+        ObservableCollection<Playlist> playlists = new();
+
+        private void RecommsPlaylistBlock_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            
         }
     }
 }

@@ -17,7 +17,7 @@
     </UserControl.Shadow>
 
     <Grid Height="Auto" x:Name="gridCh">
-        <GridView ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.HorizontalScrollMode="Enabled" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Visible" x:Name="gridV"  SelectionMode="None" ItemsSource="{x:Bind playlists, Mode=OneWay}">
+        <GridView   CornerRadius="5" ScrollViewer.IsScrollInertiaEnabled="False" ScrollViewer.HorizontalScrollMode="Enabled"  ScrollViewer.HorizontalScrollBarVisibility="Visible" x:Name="gridV"  SelectionMode="None" ItemsSource="{x:Bind playlists, Mode=OneWay}">
             <GridView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <ItemsWrapGrid Orientation="Vertical" MaximumRowsOrColumns="1" />

@@ -26,9 +26,12 @@ namespace VK_UI3.Controls.Blocks
 
             this.DataContextChanged += ArtistBannerBlockControl_DataContextChanged;
             animationsChangeImage = new AnimationsChangeImage(ArtistBannerImage, this.DispatcherQueue);
+
+
+            this.Loading += ArtistBannerBlockControl_Loading;
         }
 
-        private void ArtistBannerBlockControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        private void ArtistBannerBlockControl_Loading(FrameworkElement sender, object args)
         {
             if (DataContext is not Block block || block.Actions is null)
                 return;
@@ -73,6 +76,11 @@ namespace VK_UI3.Controls.Blocks
 
 
             }
+        }
+
+        private void ArtistBannerBlockControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            
         }
 
         AnimationsChangeImage animationsChangeImage = null;

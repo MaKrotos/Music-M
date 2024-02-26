@@ -17,7 +17,12 @@
         <local:BlockTemplateSelector x:Key="SectionTemplateSelector"/>
     </Page.Resources>
 
-    <Grid>
-        <ListView Padding="-15,0,-15,0" Margin="0" x:Name="ListBlocks" SelectionMode="None" ItemTemplateSelector="{StaticResource SectionTemplateSelector}" ItemsSource="{x:Bind blocks, Mode=OneWay}"/>
-    </Grid>
+    <ScrollView x:Name="scrollVIew" ViewChanged="scrollVIew_ViewChanged">
+        <ListView  x:Name="ListBlocks" SelectionMode="None" ItemTemplateSelector="{StaticResource SectionTemplateSelector}" ItemsSource="{x:Bind blocks, Mode=OneWay}">
+            <ListView.Footer>
+                <ProgressRing Width="50" Height="50" Margin="20" x:Name="LoadingIndicator" IsActive="True" />
+            </ListView.Footer>
+        </ListView>
+
+    </ScrollView>
 </Page>
