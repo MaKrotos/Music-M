@@ -202,7 +202,6 @@ namespace VK_UI3.VKs.IVK
 
         public void NotifyOnListUpdate()
         {
-         
             onListUpdate?.Invoke(this, EventArgs.Empty);
         }
         public void updateNumbers() {

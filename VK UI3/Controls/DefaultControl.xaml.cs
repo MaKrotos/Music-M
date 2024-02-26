@@ -25,9 +25,10 @@ namespace VK_UI3.Controls
         {
 
             this.InitializeComponent();
-            this.Loaded += DefaultControl_Loaded;
+            this.DataContextChanged += DefaultControl_DataContextChanged;
         }
-        private void DefaultControl_Loaded(object sender, RoutedEventArgs e)
+
+        private void DefaultControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             var data = this.DataContext;
 
@@ -37,7 +38,7 @@ namespace VK_UI3.Controls
             string key = (string.IsNullOrEmpty(block.Layout?.Name) ? block.DataType : $"{block.DataType}_{block.Layout.Name}");
             block_not.Text += " (" + key + ") ";
             // Теперь вы можете использовать данные
-        } 
+        }
     }
 }
 

@@ -45,10 +45,18 @@ namespace VK_UI3.Views
 
 
             vkGetAudio.onPhotoUpdated += VkGetAudio_onPhotoUpdated;
-            vkGetAudio.listAudio.CollectionChanged += ListAudio_CollectionChanged; ;
+            vkGetAudio.onListUpdate += VkGetAudio_onListUpdate; ; ;
 
             base.OnNavigatedTo(e);
         }
+
+        private void VkGetAudio_onListUpdate(object sender, EventArgs e)
+        {
+            blockLoad = false;
+            if (vkGetAudio.itsAll)
+                LoadingIndicator.Visibility = Visibility.Collapsed;
+        }
+
         AnimationsChangeImage animationsChangeImage;
 
         private void VkGetAudio_onPhotoUpdated(object sender, EventArgs e)
@@ -56,12 +64,7 @@ namespace VK_UI3.Views
             animationsChangeImage.ChangeImageWithAnimation(vkGetAudio.photoUri);
         }
 
-        private void ListAudio_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            LoadingIndicator.IsActive = false;
-            if (vkGetAudio.itsAll)
-                LoadingIndicator.Visibility = Visibility.Collapsed;
-        }
+      
         private ScrollViewer FindScrollViewer(DependencyObject d)
         {
             if (d is ScrollViewer)
@@ -88,17 +91,21 @@ namespace VK_UI3.Views
             }
         }
 
+        bool blockLoad = false;
         private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
             
-            var isAtBottom = scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight - 50;
+            var isAtBottom = scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight;
+            if (isAtBottom)
             {
+               
                 if (vkGetAudio.itsAll)
                 {
-
                     LoadingIndicator.Visibility = Visibility.Collapsed;
                     return;
                 }
+                if (blockLoad) return;
+                blockLoad = true;
                 LoadingIndicator.Visibility = Visibility.Visible;
                 vkGetAudio.GetTracks();
                 LoadingIndicator.IsActive = true;

@@ -28,17 +28,15 @@ namespace VK_UI3.Controls
         public TitleBlockControl()
         {
             InitializeComponent();
-            this.Loaded += TitleBlockControl_Loaded;
-            
+            this.DataContextChanged += TitleBlockControl_DataContextChanged;
         }
 
-   
-        private void TitleBlockControl_Loaded(object sender, RoutedEventArgs e)
-    {
+        private void TitleBlockControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
             if (DataContext is not Block block)
                 return;
 
-           
+
             Buttons.SelectionChanged += ButtonsComboBox_SelectionChanged;
 
             if (block.Layout.Name == "header_compact")
@@ -66,7 +64,7 @@ namespace VK_UI3.Controls
                 if (block.Buttons[0].Options.Count > 0)
                 {
                     ButtonsGrid.Visibility = Visibility.Visible;
-                  //  TitleButtons.Text = block.Buttons[0].Title;
+                    //  TitleButtons.Text = block.Buttons[0].Title;
                     Buttons.Visibility = Visibility.Visible;
                     MoreButton.Visibility = Visibility.Collapsed;
 
@@ -100,7 +98,7 @@ namespace VK_UI3.Controls
                     if (block.Actions[0].Options.Count > 0) //android
                     {
                         ButtonsGrid.Visibility = Visibility.Visible;
-                       // TitleButtons.Text = block.Actions[0].Title;
+                        // TitleButtons.Text = block.Actions[0].Title;
                         Buttons.Visibility = Visibility.Visible;
                         MoreButton.Visibility = Visibility.Collapsed;
 
@@ -112,7 +110,7 @@ namespace VK_UI3.Controls
                                 Buttons.SelectedIndex = Buttons.Items.Count - 1;
                         }
 
-                       
+
                         isProgrammingChange = false;
                         return;
                     }
@@ -121,17 +119,19 @@ namespace VK_UI3.Controls
                         MoreButton.Visibility = Visibility.Visible;
 
                         MoreButton.Content = block.Actions[0].Title;
-                     
+
 
                         return;
 
                     }
-                   
+
                 }
 
                 return;
             }
         }
+
+       
 
         private async void MoreButton_Click(object sender, RoutedEventArgs e)
         {

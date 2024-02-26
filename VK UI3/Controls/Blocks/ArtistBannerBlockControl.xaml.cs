@@ -20,22 +20,21 @@ namespace VK_UI3.Controls.Blocks
     {
         public ArtistBannerBlockControl()
         {
-            this.Loaded += ArtistBannerBlockControl_Loaded;
+     
     
             InitializeComponent();
 
-
+            this.DataContextChanged += ArtistBannerBlockControl_DataContextChanged;
             animationsChangeImage = new AnimationsChangeImage(ArtistBannerImage, this.DispatcherQueue);
         }
-        AnimationsChangeImage animationsChangeImage = null;
 
-        private void ArtistBannerBlockControl_Loaded(object sender, RoutedEventArgs e)
+        private void ArtistBannerBlockControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             if (DataContext is not Block block || block.Actions is null)
                 return;
 
 
-           animationsChangeImage.ChangeImageWithAnimation(block.Artists[0].Photo[2].Url);
+            animationsChangeImage.ChangeImageWithAnimation(block.Artists[0].Photo[2].Url);
 
             ArtistText.Text = block.Artists[0].Name;
 
@@ -55,7 +54,7 @@ namespace VK_UI3.Controls.Blocks
                     Height = 45,
                     blockBTN = new BlockBTN(action, block.Artists[0], block)
                 };
-         
+
 
                 if (button.DataContext is BlockBTN viewModel)
                 {
@@ -76,6 +75,9 @@ namespace VK_UI3.Controls.Blocks
             }
         }
 
+        AnimationsChangeImage animationsChangeImage = null;
+
+      
         public static T? FindParent<T>(DependencyObject? startNode) where T : DependencyObject
         {
             DependencyObject? parent = VisualTreeHelper.GetParent(startNode);

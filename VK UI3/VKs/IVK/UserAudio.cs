@@ -75,12 +75,13 @@ namespace VK_UI3.VKs.IVK
             Task.Run(async () =>
             {
                 int offset = listAudio.Count;
-                int count = 100;
+                int count = 25;
 
                 if (countTracks > listAudio.Count)
                 {
                     VkCollection<Audio> audios;
 
+                    
                     audios = api.Audio.GetAsync(new AudioGetParams
                     {
                         OwnerId = int.Parse(id),
@@ -89,20 +90,21 @@ namespace VK_UI3.VKs.IVK
                     }).Result;
 
 
+                    ManualResetEvent resetEvent = new ManualResetEvent(false);
+
                     foreach (var item in audios)
                     {
                         ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
-                        ManualResetEvent resetEvent = new ManualResetEvent(false);
 
                         DispatcherQueue.TryEnqueue(() =>
                         {
                             listAudio.Add(extendedAudio);
-                            resetEvent.Set();
+                            resetEvent.Set(); // —игнализирует о завершении задачи
                         });
 
-                        resetEvent.WaitOne();
+                        resetEvent.WaitOne(); // ќжидает сигнала о завершении задачи
+                        resetEvent.Reset(); // —брасывает событие дл€ следующей итерации
                     }
-
 
                     if (countTracks == listAudio.Count()) itsAll = true;
 

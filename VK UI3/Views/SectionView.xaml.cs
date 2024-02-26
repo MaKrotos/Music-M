@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using MusicX.Core.Models;
+using MusicX.Core.Models.General;
 using MusicX.Core.Services;
 using ProtoBuf.Meta;
 using System;
@@ -37,16 +38,72 @@ namespace VK_UI3.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class SectionView : Page, INotifyPropertyChanged
+    public sealed partial class SectionView : Page
     {
         public Section section;
-        public string SectionID;
+        string nextLoad = null;
         public SectionType sectionType;
        
         public SectionView()
         {
             this.InitializeComponent();
+
+
+            this.Loading += SectionView_Loading;
+            this.Loaded += SectionView_Loaded;
         }
+
+        private void SectionView_Loaded(object sender, RoutedEventArgs e)
+        {
+            scrollViewer = GetScrollViewer(ListBlocks);
+            scrollViewer.ViewChanged += Scrollvi_ViewChanged;
+            if (this.section != null && this.section.Blocks != null && this.section.Blocks.Count != 0)
+            {
+                this.nextLoad = this.section.NextFrom;
+                loadBlocks(this.section.Blocks);
+           
+            }
+            else
+            {
+
+                LoadAsync();
+            }
+        }
+
+        private void SectionView_Loading(FrameworkElement sender, object args)
+        {
+            
+        }
+
+        ScrollViewer scrollViewer = null;
+      
+        bool loadedAll = false;
+
+        private bool CheckIfAllContentIsVisible(ScrollViewer scrollViewer)
+        {
+            if (scrollViewer.ViewportHeight >= scrollViewer.ExtentHeight)
+            {
+                return true;
+            }
+            return false;
+        }
+
+
+        private void Scrollvi_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            var scrollViewer = sender as ScrollViewer;
+
+            var isAtBottom = scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight - 50;
+            if (isAtBottom)
+            {
+                 if (!loadedAll)
+                 {
+                    LoadAsync();
+                 }
+            }
+        }
+
+       
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -74,31 +131,42 @@ namespace VK_UI3.Views
             base.OnNavigatedTo(e);
 
             openedSectionView = this;
-            
-           
-         
+
+
+
             var section = e.Parameter as Section;
             if (section == null) return;
 
             this.section = section;
-         //   this.sectionType = section;
-            this.SectionID = section.Id;
+            //   this.sectionType = section;
 
-            if (this.section != null && this.section.Blocks != null && this.section.Blocks.Count != 0)
+          
+        }
+    
+       
+
+        public static ScrollViewer GetScrollViewer(DependencyObject depObj)
+        {
+            if (depObj is ScrollViewer) return depObj as ScrollViewer;
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
             {
-                loadBlocks(this.section.Blocks);
+                var child = VisualTreeHelper.GetChild(depObj, i);
+
+                var result = GetScrollViewer(child);
+                if (result != null) return result;
             }
-            else
-            {
-                LoadAsync();
-            }
+            return null;
         }
 
+
+        ResponseData artist = null;
         private async Task LoadArtistSection(string artistId)
         {
             try
             {
-                var artist = await VK.vkService.GetAudioArtistAsync(artistId);
+                if (artist == null)
+                 artist = await VK.vkService.GetAudioArtistAsync(artistId);
                 loadSection(artist.Catalog.DefaultSection);
             }
             catch (Exception ex)
@@ -107,14 +175,15 @@ namespace VK_UI3.Views
 
             }
         }
-
+        ResponseData res = null;
         private async Task LoadSearchSection(string query)
         {
             try
             {
                 if (query == null && nowOpenSearchSug) return;
 
-                var res = await VK.vkService.GetAudioSearchAsync(query);
+                if (res == null)
+                    res = await VK.vkService.GetAudioSearchAsync(query);
 
                 if (query == null)
                 {
@@ -144,6 +213,7 @@ namespace VK_UI3.Views
 
             }
         }
+        
 
         public async Task LoadAsync()
         {
@@ -152,9 +222,9 @@ namespace VK_UI3.Views
             {
                 await (sectionType switch
                 {
-                    SectionType.None => loadSection(this.SectionID),
-                    SectionType.Artist => LoadArtistSection(this.SectionID),
-                    SectionType.Search => LoadSearchSection(this.SectionID),
+                    SectionType.None => loadSection(section.Id),
+                    SectionType.Artist => LoadArtistSection(section.Id),
+                    SectionType.Search => LoadSearchSection(section.Id),
                     _ => throw new ArgumentOutOfRangeException()
                 });
             }
@@ -164,22 +234,38 @@ namespace VK_UI3.Views
             }
         }
 
-
+        bool blockLoad = false;
         private async Task loadSection(string sectionID, bool showTitle = false)
         {
-            blocks.Clear();
-            var sectin =  await VK.vkService.GetSectionAsync(sectionID);
+            if (nextLoad == null) return;
+            if (blockLoad) return;
+            if (loadedAll) return;
+            blockLoad = true;
+            var sectin =  await VK.vkService.GetSectionAsync(sectionID, nextLoad);
+            nextLoad = sectin.Section.NextFrom;
+            if (sectin.Section.NextFrom == null) { 
+                loadedAll = true; 
+            }
             this.section = sectin.Section;
-            loadBlocks(section.Blocks);
+            if (section.Blocks.Count() == 0)
+            { 
+                loadedAll = true;
+                return;
+            }
+            blockLoad = false;
+            loadBlocks(sectin.Section.Blocks);
         }
 
         private void loadBlocks(List<Block> block)
         {
-            foreach (var item in block)
+                foreach (var item in block)
+                {
+                    blocks.Add(item);
+                }
+            if (CheckIfAllContentIsVisible(scrollViewer))
             {
-                blocks.Add(item);
+                LoadAsync();
             }
-            OnPropertyChanged(nameof(section));
         }
 
         private bool nowOpenSearchSug = false;

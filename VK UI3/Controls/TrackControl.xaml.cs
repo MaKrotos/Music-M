@@ -43,15 +43,21 @@ namespace VK_UI3.Controls
         }
         ExtendedAudio dataTrack = null;
         bool addedHandler = false;
+
+    
+
         private void TrackControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
-            if ((args.NewValue as ExtendedAudio) != null)
+       
+
+            if ((DataContext as ExtendedAudio) != null)
             {
 
-                var track = (args.NewValue as ExtendedAudio).audio;
+                var track = (DataContext as ExtendedAudio).audio;
                 if (track == null)
                     return;
-                dataTrack = (args.NewValue as ExtendedAudio);
+
+                dataTrack = (DataContext as ExtendedAudio);
 
 
                 if (!addedHandler)
@@ -71,24 +77,24 @@ namespace VK_UI3.Controls
                 Artists.Text = track.Artist;
                 audio = track;
 
+             
                 if (track.Album != null && track.Album.Thumb != null)
                 {
 
-                    string photoUri = track.Album.Thumb.Photo270 ??
+                       photouri = track.Album.Thumb.Photo270 ??
                        track.Album.Thumb.Photo300 ??
                        track.Album.Thumb.Photo600 ??
                        track.Album.Thumb.Photo34 ??
                        null;
-                    if (photoUri == null)
+                    if (photouri == null || photouri == "")
                     {
                         ImageThumb.Opacity = 1;
-
                     }
                     else
                     {
 
                         changeImage.ChangeImageWithAnimation(
-                     photoUri
+                            photouri
                          );
                     }
                 }
@@ -167,6 +173,8 @@ namespace VK_UI3.Controls
                 }
             }
         }
+
+        string photouri = null;
 
         VkNet.Model.Attachments.Audio audio = new();
         AnimationsChangeImage changeImage = null;
