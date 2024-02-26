@@ -38,6 +38,7 @@
 	  <None Remove="Fonts\VKSansDisplay-Regular.ttf" />
 	  <None Remove="Views\Controls\BlockButtonView.xaml" />
 	  <None Remove="Views\SectionView.xaml" />
+	  <None Remove="Views\Settings\SettingsPage.xaml" />
 	  <None Remove="Views\WaitView.xaml" />
 	</ItemGroup>
 
@@ -117,6 +118,9 @@
     <None Update="Controls\ListPlaylists.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
+    <Page Update="Views\Settings\SettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Controls\PlaylistControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

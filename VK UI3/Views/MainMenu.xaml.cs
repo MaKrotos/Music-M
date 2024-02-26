@@ -85,19 +85,25 @@ namespace VK_UI3
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-       
-      
+
+
 
         // Метод для поиска ScrollViewer внутри элемента
         private ScrollViewer FindScrollViewer(DependencyObject d)
         {
-            if (d is ScrollViewer)
-                return d as ScrollViewer;
+            if (d is ScrollViewer sv)
+                return sv;
 
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(d); i++)
             {
-                var sw = FindScrollViewer(VisualTreeHelper.GetChild(d, i));
-                if (sw != null) return sw;
+                var child = VisualTreeHelper.GetChild(d, i);
+                var svChild = child as ScrollViewer;
+                if (svChild != null)
+                    return svChild;
+
+                var svFound = FindScrollViewer(child);
+                if (svFound != null)
+                    return svFound;
             }
 
             return null;

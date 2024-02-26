@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="VK_UI3.Views.Settings.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VK_UI3.Views.Settings"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    >
+
+    <StackPanel>
+        <StackPanel.Resources>
+            <Style TargetType="Border">
+                <Setter Property="Margin" Value="5,5,5,0"/>
+      
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="CornerRadius" Value="6"/>
+
+                <Setter Property="Background" Value="{ThemeResource SystemControlAltHighAcrylicElementBrush}"/>
+                <Setter Property="Padding" Value="10"/>
+            </Style>
+        </StackPanel.Resources>
+        <Border>
+            <local:StartUpSetting></local:StartUpSetting>
+        </Border>
+    </StackPanel>
+</Page>

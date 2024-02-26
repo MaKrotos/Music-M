@@ -447,6 +447,7 @@ namespace VK_UI3.Views
 
                     case "параметры":
 
+                        frame.Navigate(typeof(Settings.SettingsPage), null, new DrillInNavigationTransitionInfo());
                         ContentFrame.BackStack.Clear();
                         NavWiv.IsBackEnabled = false;
                         break;

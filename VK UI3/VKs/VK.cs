@@ -310,18 +310,7 @@ namespace VK_UI3.VKs
                 llogin = arg;
                 Vk2FaCanUsePassword = flowNames.Any(b => b == AuthType.Password);
 
-                // TODO implement without password flow
-                /*if (isPhone && authFlow == AuthFlow.NeedValidation)
-                {
-                    Vk2FaResponse = await _authCategory.ValidatePhoneAsync(arg, sid,
-                            loginWays: new[]
-                            {
-                                LoginWay.Push, LoginWay.Email
-                            });
-
-                    OpenPage(AccountsWindowPage.Vk2Fa);
-                    return;
-                }*/
+             
 
                 HasAnotherVerificationMethods = nextStep?.HasAnotherVerificationMethods ?? false;
 
@@ -346,7 +335,7 @@ namespace VK_UI3.VKs
 
                         chooseVerMethods.vk = this;
 
-                        login.Frame.Navigate(typeof(ChooseVerMethods), chooseVerMethods);
+                        login.Frame.Navigate(typeof(ChooseVerMethods), chooseVerMethods, new DrillInNavigationTransitionInfo());
 
                         return;
                     }
@@ -380,7 +369,7 @@ namespace VK_UI3.VKs
                     passview.Phone = llogin ?? null;
 
 
-                    login.Frame.Navigate(typeof(Password), passview);
+                    login.Frame.Navigate(typeof(Password), passview, new DrillInNavigationTransitionInfo());
                     return;
                 }
 
@@ -396,7 +385,7 @@ namespace VK_UI3.VKs
         {
             if (Sid is null)
                 return;
-            login.Frame.Navigate(typeof(waitPage));
+            login.Frame.Navigate(typeof(waitPage), null, new DrillInNavigationTransitionInfo());
 
             //   var modal = StaticService.Container.GetRequiredService<LoginVerificationMethodsModalViewModel>();
             ObservableRangeCollection<EcosystemVerificationMethod> VerificationMethods = new();
@@ -418,7 +407,7 @@ namespace VK_UI3.VKs
 
             chooseVerMethods.vk = this;
 
-            login.Frame.Navigate(typeof(ChooseVerMethods), chooseVerMethods);
+            login.Frame.Navigate(typeof(ChooseVerMethods), chooseVerMethods,  new DrillInNavigationTransitionInfo());
         }
 
 
@@ -475,7 +464,7 @@ namespace VK_UI3.VKs
         private AuthValidatePhoneResponse? Vk2FaResponse { get; set; }
         public async Task NextStepAsync(LoginWay loginWay, string? phone = null)
         {
-            login.Frame.Navigate(typeof(waitPage));
+            login.Frame.Navigate(typeof(waitPage), null, new DrillInNavigationTransitionInfo());
             Vk2FaCanUsePassword = false;
 
             if (loginWay == LoginWay.Passkey)
@@ -525,7 +514,7 @@ namespace VK_UI3.VKs
                 passview.Phone = llogin ?? null;
 
 
-                login.Frame.Navigate(typeof(Password), passview);
+                login.Frame.Navigate(typeof(Password), passview, new DrillInNavigationTransitionInfo());
 
                 return;
             }
@@ -543,7 +532,7 @@ namespace VK_UI3.VKs
 
             otpCodee.vk = this;
 
-            login.Frame.Navigate(typeof(OtpCode), otpCodee);
+            login.Frame.Navigate(typeof(OtpCode), otpCodee, new DrillInNavigationTransitionInfo());
             // OpenPage(AccountsWindowPage.Vk2Fa);
         }
 
@@ -579,7 +568,7 @@ namespace VK_UI3.VKs
 
         public async Task AuthAsync(string? password)
         {
-            login.Frame.Navigate(typeof(waitPage));
+            login.Frame.Navigate(typeof(waitPage), null, new DrillInNavigationTransitionInfo());
             try
             {
 
@@ -634,7 +623,7 @@ namespace VK_UI3.VKs
         {
             if (string.IsNullOrEmpty(arg) || !int.TryParse(arg, out _) || arg.Length < Vk2FaResponse?.CodeLength)
                 return;
-            login.Frame.Navigate(typeof(waitPage));
+            login.Frame.Navigate(typeof(waitPage), null, new DrillInNavigationTransitionInfo());
             if (_grantType == AndroidGrantType.PhoneConfirmationSid)
             {
                 var response = await _ecosystemCategory.CheckOtpAsync(Sid, Vk2FaResponse!.ValidationType, arg);
@@ -663,7 +652,7 @@ namespace VK_UI3.VKs
                         passview.Phone = llogin ?? null;    
 
 
-                        login.Frame.Navigate(typeof(Password), passview);
+                        login.Frame.Navigate(typeof(Password), passview, new DrillInNavigationTransitionInfo());
                     }
                    
                     return;
