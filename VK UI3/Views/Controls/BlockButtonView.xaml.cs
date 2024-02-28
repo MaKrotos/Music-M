@@ -67,27 +67,27 @@ namespace VK_UI3.Views.Controls
             switch (Action.Action.Type)
             {
                 case "toggle_artist_subscription" when blockBTN.Artist is not null && blockBTN.ParentBlock is not null:
-                    changeText.ChangeTextWithAnimation(blockBTN.Artist.IsFollowed ? "Отписаться" : "Подписаться");
+                    changeText.ChangeTextWithAnimation(blockBTN.Artist.IsFollowed ? "РћС‚РїРёСЃР°С‚СЊСЃСЏ" : "РџРѕРґРїРёСЃР°С‚СЊСЃСЏ");
                     changeIcon.ChangeSymbolIconWithAnimation(blockBTN.Artist.IsFollowed ? Symbol.UnFavorite : Symbol.Favorite);
                     break;
                 case "play_shuffled_audios_from_block":
-                    changeText.ChangeTextWithAnimation("Перемешать все");
+                    changeText.ChangeTextWithAnimation("РџРµСЂРµРјРµС€Р°С‚СЊ РІСЃРµ");
                     changeIcon.ChangeSymbolIconWithAnimation(Symbol.Play);
                     break;
                 case "create_playlist":
-                    changeText.ChangeTextWithAnimation("Создать плейлист");
+                    changeText.ChangeTextWithAnimation("РЎРѕР·РґР°С‚СЊ РїР»РµР№Р»РёСЃС‚");
                     changeIcon.ChangeSymbolIconWithAnimation(Symbol.Add);
                     break;
                 case "play_audios_from_block":
-                    changeText.ChangeTextWithAnimation("Слушать всё");
+                    changeText.ChangeTextWithAnimation("РЎР»СѓС€Р°С‚СЊ РІСЃС‘");
                     changeIcon.ChangeSymbolIconWithAnimation(Symbol.Play);
                     break;
                 case "open_section":
-                    changeText.ChangeTextWithAnimation(Action.Title ?? "Открыть");
+                    changeText.ChangeTextWithAnimation(Action.Title ?? "РћС‚РєСЂС‹С‚СЊ");
                     changeIcon.ChangeSymbolIconWithAnimation(Symbol.OpenFile);
                     break;
                 case "music_follow_owner":
-                    changeText.ChangeTextWithAnimation(Action.IsFollowing ? "Вы подписаны на музыку" : "Подписаться на музыку");
+                    changeText.ChangeTextWithAnimation(Action.IsFollowing ? "Р’С‹ РїРѕРґРїРёСЃР°РЅС‹ РЅР° РјСѓР·С‹РєСѓ" : "РџРѕРґРїРёСЃР°С‚СЊСЃСЏ РЅР° РјСѓР·С‹РєСѓ");
                     changeIcon.ChangeSymbolIconWithAnimation(Action.IsFollowing ? Symbol.SolidStar : Symbol.Add);
                     break;
                 case "open_url":
