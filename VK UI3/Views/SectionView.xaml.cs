@@ -5,6 +5,8 @@ using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using MusicX.Core.Models;
 using MusicX.Core.Models.General;
+using MusicX.Core.Services;
+using ProtoBuf.Meta;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -34,48 +36,9 @@ namespace VK_UI3.Views
             this.InitializeComponent();
 
 
-            this.Loading += SectionView_Loading;
-            this.Loaded += SectionView_Loaded;
+          //  this.Loading += SectionView_Loading;
+          //  this.Loaded += SectionView_Loaded;
         }
-
-        private void SectionView_Loaded(object sender, RoutedEventArgs e)
-        {
-        //    scrollViewer = GetScrollViewer(ListBlocks);
-        //    scrollViewer.ViewChanged += Scrollvi_ViewChanged;
-            if (this.section != null && this.section.Blocks != null && this.section.Blocks.Count != 0)
-            {
-                this.nextLoad = this.section.NextFrom;
-                loadBlocks(this.section.Blocks);
-           
-            }
-            else
-            {
-
-                LoadAsync();
-            }
-        }
-
-        private void SectionView_Loading(FrameworkElement sender, object args)
-        {
-            
-        }
-
-        ScrollViewer scrollViewer = null;
-      
-        bool loadedAll = false;
-
-        private bool CheckIfAllContentIsVisible(ScrollViewer scrollViewer)
-        {
-            if (scrollVIew.ViewportHeight >= scrollVIew.ExtentHeight)
-            {
-                return true;
-            }
-            return false;
-        }
-
-
-       
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -97,7 +60,7 @@ namespace VK_UI3.Views
             MyListAudio,
             PlayList
         }
-
+        string SectionID;
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
@@ -110,25 +73,18 @@ namespace VK_UI3.Views
             if (section == null) return;
 
             this.section = section;
-            //   this.sectionType = section;
+         //   this.sectionType = section;
+            this.SectionID = section.Id;
 
-          
-        }
-    
-       
-
-        public static ScrollViewer GetScrollViewer(DependencyObject depObj)
-        {
-            if (depObj is ScrollViewer) return depObj as ScrollViewer;
-
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+            if (this.section != null && this.section.Blocks != null && this.section.Blocks.Count != 0)
             {
-                var child = VisualTreeHelper.GetChild(depObj, i);
-
-                var result = GetScrollViewer(child);
-                if (result != null) return result;
+                loadBlocks(this.section.Blocks);
             }
-            return null;
+            else
+            {
+                LoadAsync();
+            }
+            return;
         }
 
 
@@ -207,33 +163,11 @@ namespace VK_UI3.Views
         }
 
         bool blockLoad = false;
-
-
-
-        private void HideLoad()
-        {
-            // Создаем Storyboard
-            LoadingIndicator.Visibility = Visibility.Collapsed;
-        }
-
         bool hidedLoad = false;
         private async Task loadSection(string sectionID, bool showTitle = false)
         {
-            if (nextLoad == null || loadedAll)
-            {
-                if (hidedLoad) return;
-                hidedLoad = true;
-                HideLoad();
-                return;
-            }
-            if (blockLoad) return;
-          
-            blockLoad = true;
-            var sectin =  await VK.vkService.GetSectionAsync(sectionID, nextLoad);
-            nextLoad = sectin.Section.NextFrom;
-            if (sectin.Section.NextFrom == null) { 
-                loadedAll = true; 
-            }
+            blocks.Clear();
+            var sectin =  await VK.vkService.GetSectionAsync(sectionID);
             this.section = sectin.Section;
             if (section.Blocks.Count() == 0)
             { 
@@ -248,21 +182,9 @@ namespace VK_UI3.Views
         {
             foreach (var item in block)
             {
-                this.DispatcherQueue.TryEnqueue(() =>
-                    {
-                        blocks.Add(item);
-                    });
+                blocks.Add(item);
             }
-            if (CheckIfAllContentIsVisible(scrollViewer))
-            {
-                LoadAsync();
-            }
-            if (nextLoad == null || loadedAll)
-            {
-                if (hidedLoad) return;
-                hidedLoad = true;
-                HideLoad();
-            }
+            OnPropertyChanged(nameof(section));
         }
 
         private bool nowOpenSearchSug = false;
@@ -305,6 +227,9 @@ namespace VK_UI3.Views
             }
         }
 
+
+
+        bool loadedAll = false;
         private void scrollVIew_ViewChanged(ScrollView sender, object args)
         {
             var scrollViewer = sender as ScrollView;
@@ -325,6 +250,11 @@ namespace VK_UI3.Views
                     LoadAsync();
                 }
             }
+        }
+
+        private void HideLoad()
+        {
+            LoadingIndicator.Visibility = Visibility.Collapsed;
         }
     }
 
