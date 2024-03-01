@@ -10,20 +10,21 @@
     mc:Ignorable="d"
     >
     <Grid>
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
 
         </Grid.RowDefinitions>
-
+        
         <ListView Grid.Row="0" AllowDrop="True"  CanReorderItems="True" x:Name="TrackListView" ItemsSource="{x:Bind Tracks.listAudio, Mode=OneWay}"  IsItemClickEnabled="False" SelectionMode="None">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <custom:TrackControl></custom:TrackControl>
                 </DataTemplate>
             </ListView.ItemTemplate>
+           
         </ListView>
-
-   
+       
     </Grid>
 </Page>

@@ -116,13 +116,14 @@ namespace VK_UI3.Views.Controls
                             else
                                 await vkService.FollowArtist(Action.ArtistId, blockBTN.ParentBlock.Id);
 
+
+
                             blockBTN.Artist.IsFollowed = !blockBTN.Artist.IsFollowed;
                             Refresh();
                             break;
                         }
                     case "play_shuffled_audios_from_block" or "play_audios_from_block":
                         {
-
                             Task task = new Task(async () =>
                             {
                                 AudioPlayer.PlayList(new SectionAudio(Action.BlockId, this.DispatcherQueue));

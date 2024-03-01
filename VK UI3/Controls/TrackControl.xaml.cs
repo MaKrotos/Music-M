@@ -44,16 +44,6 @@ namespace VK_UI3.Controls
                 changeIconPlayBTN = new AnimationsChangeIcon(PlayBTN);
         }
 
-        private void TrackControl_Loading(FrameworkElement sender, object args)
-        {
-        
-        }
-
-        ExtendedAudio dataTrack = null;
-        bool addedHandler = false;
-
-    
-
         private void TrackControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             if ((DataContext as ExtendedAudio) != null)
@@ -94,15 +84,20 @@ namespace VK_UI3.Controls
                     null;
                     if (photouri == null || photouri == "")
                     {
-                        ImageThumb.Opacity = 1;
+                        ImageThumbGrid.Opacity = 0;
                     }
                     else
                     {
+                        ImageThumbGrid.Opacity = 1;
 
                         changeImage.ChangeImageWithAnimation(
                             photouri
                          );
                     }
+                }
+                else
+                {
+                    ImageThumbGrid.Opacity = 0;
                 }
 
 
@@ -179,6 +174,19 @@ namespace VK_UI3.Controls
                 }
             }
         }
+
+        private void TrackControl_Loading(FrameworkElement sender, object args)
+        {
+            
+
+        }
+
+        ExtendedAudio dataTrack = null;
+        bool addedHandler = false;
+
+    
+
+        
 
         string photouri = null;
 

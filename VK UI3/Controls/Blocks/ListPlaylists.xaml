@@ -16,7 +16,8 @@
         <ThemeShadow />
     </UserControl.Shadow>
 
-    <Grid Height="Auto" x:Name="gridCh">
+    <Grid CornerRadius="8" Height="Auto" x:Name="gridCh">
+        
         <GridView ScrollViewer.HorizontalScrollMode="Enabled" ScrollViewer.IsScrollInertiaEnabled="False"  ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Visible" x:Name="gridV"  SelectionMode="None" ItemsSource="{x:Bind playlists, Mode=OneWay}">
             <GridView.ItemsPanel>
                 <ItemsPanelTemplate>

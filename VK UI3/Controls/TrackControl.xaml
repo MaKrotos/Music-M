@@ -58,11 +58,13 @@
                 <Grid Margin="8,6.5,6,6" VerticalAlignment="Center">
                     <Grid CornerRadius="5" Width="45" Height="45" Background = "{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}">
                     <FontIcon Glyph="&#xEC4F;" />
-                    <Image x:Name="ImageThumb">
+
+                        <Grid x:Name="ImageThumbGrid">
+                        <Image Opacity="0" x:Name="ImageThumb"/>
+                        </Grid>
 
 
-                    </Image>
-                    <Grid x:Name="GridPlayIcon" Opacity="0" CornerRadius="0" Background="{StaticResource CustomAcrylicInAppBrush}">
+                        <Grid x:Name="GridPlayIcon" Opacity="0" CornerRadius="0" Background="{StaticResource CustomAcrylicInAppBrush}">
                         <SymbolIcon x:Name="PlayBTN" Symbol="Play"/>
                         <Grid.Resources>
                             <!-- Анимация прозрачности от 0 до 1 -->
