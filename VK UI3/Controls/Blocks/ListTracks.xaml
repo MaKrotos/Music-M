@@ -1,8 +1,8 @@
 <UserControl
-    x:Class="VK_UI3.Controls.ListTracks"
+    x:Class="VK_UI3.Controls.Blocks.ListTracks"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:VK_UI3.Controls"
+    xmlns:local="using:VK_UI3.Controls.Blocks"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:custom="using:VK_UI3.Controls"
@@ -19,8 +19,6 @@
 
     <Grid Height="Auto" x:Name="gridCh">
         <GridView     CornerRadius="5"   ScrollViewer.IsScrollInertiaEnabled="False" ScrollViewer.HorizontalScrollMode="Enabled"  ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Visible"   x:Name="gridV"  SelectionMode="None" ItemsSource="{x:Bind sectionAudio.listAudio, Mode=OneWay}">
-            
-            
             <GridView.ItemContainerStyle>
                 <Style TargetType="GridViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />

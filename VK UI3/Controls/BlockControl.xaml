@@ -6,6 +6,7 @@
     xmlns:local="using:VK_UI3.Controls"
     xmlns:controls="using:VK_UI3.Controls" 
     xmlns:blocks="using:VK_UI3.Controls.Blocks" 
+    
     Margin="0"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -24,16 +25,16 @@
 
 
         <DataTemplate x:Key="music_audios_triple_stacked_slider" >
-            <controls:ListTracks  Tracks="{Binding Audios}"  />
+            <blocks:ListTracks />
         </DataTemplate>
         <DataTemplate x:Key="music_audios_music_chart_triple_stacked_slider" >
-            <controls:ListTracks Tracks="{Binding Audios}"  />
+            <blocks:ListTracks/>
         </DataTemplate>
         <DataTemplate x:Key="music_audios_list" >
-            <controls:ListTracks Tracks="{Binding Audios}"  />
+            <blocks:ListTracksFull/>
         </DataTemplate>
         <DataTemplate x:Key="music_audios_music_chart_list" >
-            <controls:ListTracks Tracks="{Binding Audios}"  />
+            <blocks:ListTracksFull/>
         </DataTemplate>
 
 

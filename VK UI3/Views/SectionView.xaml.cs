@@ -10,10 +10,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using VK_UI3.Controls;
+using VK_UI3.Controls.Blocks;
 using VK_UI3.Helpers;
 using VK_UI3.VKs;
+using VK_UI3.VKs.IVK;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -26,7 +29,22 @@ namespace VK_UI3.Views
     public sealed partial class SectionView : Page
     {
         public Section section;
-        string nextLoad = null;
+
+        
+        string nextLoad { get {
+
+                if (tracksFull == null) return _nextLoade;
+                return tracksFull.sectionAudio.Next;
+            }
+            set {
+
+                _nextLoade = value;
+
+                if (tracksFull != null)
+                 tracksFull.sectionAudio.Next = value;
+
+            } }
+        string _nextLoade = null;
         public SectionType sectionType;
        
         public SectionView()
@@ -150,6 +168,7 @@ namespace VK_UI3.Views
         ResponseData res = null;
         private async Task LoadSearchSection(string query)
         {
+
             try
             {
                 if (query == null && nowOpenSearchSug) return;
@@ -163,12 +182,12 @@ namespace VK_UI3.Views
                     try
                     {
                         res.Catalog.Sections[0].Blocks[1].Suggestions = res.Suggestions;
-                         loadBlocks(res.Catalog.Sections[0].Blocks);
+                        loadBlocks(res.Catalog.Sections[0].Blocks);
                         nowOpenSearchSug = true;
                     }
                     catch (Exception ex)
                     {
-                         loadBlocks(res.Catalog.Sections[0].Blocks);
+                        loadBlocks(res.Catalog.Sections[0].Blocks);
                     }
 
                     return;
@@ -189,10 +208,22 @@ namespace VK_UI3.Views
 
         public async Task LoadAsync()
         {
-          
+
+            if (tracksFull != null)
+            {
+                this.DispatcherQueue.TryEnqueue(() =>
+                {
+                    tracksFull.sectionAudio.GetTracks();
+                });
+                return;
+            }
             try
             {
-                await (sectionType switch
+
+               
+               
+
+                    await (sectionType switch
                 {
                     SectionType.None => loadSection(section.Id),
                     SectionType.Artist => LoadArtistSection(section.Id),
@@ -219,6 +250,11 @@ namespace VK_UI3.Views
         bool hidedLoad = false;
         private async Task loadSection(string sectionID, bool showTitle = false)
         {
+
+            // string key = string.IsNullOrEmpty(block.Layout?.Name) ? block.DataType : $"{block.DataType}_{block.Layout.Name}";
+
+            
+
             if (nextLoad == null || loadedAll)
             {
                 if (hidedLoad) return;
@@ -241,17 +277,71 @@ namespace VK_UI3.Views
                 return;
             }
             blockLoad = false;
-            loadBlocks(sectin.Section.Blocks);
+           
+                loadBlocks(sectin.Section.Blocks);
+            
         }
+        ListTracksFull _tracksFull = null;
+        ListTracksFull tracksFull
 
+        { get {
+                if (_tracksFull != null) return _tracksFull;
+
+                var lastItem = ListBlocks.Items.LastOrDefault();
+                if (lastItem != null)
+                {
+                    var container = ListBlocks.ContainerFromItem(lastItem) as ListViewItem;
+                    var dataTemplate = container.ContentTemplateRoot as ListTracksFull;
+                    if (dataTemplate != null && _tracksFull == null)
+                    {
+                        _tracksFull = dataTemplate;
+                        _tracksFull.sectionAudio.onListUpdate += SectionAudio_onListUpdate;
+                    }
+                }
+
+                return _tracksFull; 
+            } set { _tracksFull = value; } }
+
+        bool connectedLoad = false;
         private void loadBlocks(List<Block> block)
         {
             foreach (var item in block)
             {
-                this.DispatcherQueue.TryEnqueue(() =>
+
+                var lastItem = ListBlocks.Items.LastOrDefault();
+                if (lastItem != null)
+                {
+                    var container = ListBlocks.ContainerFromItem(lastItem) as ListViewItem;
+                    var dataTemplate = container.ContentTemplateRoot as ListTracksFull;
+                    if (dataTemplate != null && tracksFull == null)
                     {
-                        blocks.Add(item);
-                    });
+                        tracksFull = dataTemplate;
+                        tracksFull.sectionAudio.onListUpdate += SectionAudio_onListUpdate;
+                    }
+
+                }
+            
+                if (tracksFull != null) 
+                {
+                    foreach (var audio in item.Audios)
+                    {
+                        this.DispatcherQueue.TryEnqueue(() =>
+                        {
+                            tracksFull.sectionAudio.listAudio.Add(new ExtendedAudio(audio, tracksFull.sectionAudio));
+                            tracksFull.sectionAudio.NotifyOnListUpdate();
+                            tracksFull.sectionAudio.Next = item.NextFrom;
+                        });
+                    }
+                    continue;
+                }
+
+                this.DispatcherQueue.TryEnqueue(() =>
+                        {
+                            blocks.Add(item);
+                        });
+
+               
+               
             }
             if (CheckIfAllContentIsVisible(scrollViewer))
             {
@@ -263,6 +353,15 @@ namespace VK_UI3.Views
                 hidedLoad = true;
                 HideLoad();
             }
+
+           
+        }
+
+
+        private void SectionAudio_onListUpdate(object sender, EventArgs e)
+        {
+            nextLoad = (sender as SectionAudio).Next;
+            if ((sender as SectionAudio).itsAll) nextLoad = null;
         }
 
         private bool nowOpenSearchSug = false;

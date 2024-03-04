@@ -26,9 +26,9 @@ using Windows.Foundation.Collections;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace VK_UI3.Controls
+namespace VK_UI3.Controls.Blocks
 {
-    public partial class ListTracks : UserControl, INotifyPropertyChanged
+    public partial class ListTracks : UserControl
     {
 
 
@@ -37,13 +37,20 @@ namespace VK_UI3.Controls
             InitializeComponent();
 
         
-          //  this.Loaded += ListTracks_Loaded;
-            this.DataContextChanged += ListTracks_DataContextChanged;
-
          
-    
+            this.DataContextChanged += ListTracks_DataContextChanged;
+            this.Loading += ListTracks_Loading;
 
         }
+
+       
+
+        private void ListTracks_Loading(FrameworkElement sender, object args)
+        {
+           
+        }
+
+        
 
         private void ListTracks_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
@@ -54,55 +61,21 @@ namespace VK_UI3.Controls
 
                 sectionAudio = new SectionAudio(block, this.DispatcherQueue);
                 sectionAudio.countTracks = block.Audios.Count;
-                OnPropertyChanged(nameof(sectionAudio));
-
-                sectionAudio.onListUpdate += SectionAudio_onListUpdate;
+       
             }
             catch (Exception ex)
             {
                 AppCenterHelper.SendCrash(ex);
-     
-
             }
         }
 
         private SectionAudio sectionAudio;
 
      
-        protected void OnPropertyChanged(string propertyName)
-        {
-            this.DispatcherQueue.TryEnqueue(async () =>
-            {
-                //   this.ImgUri = uri;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-              
-            });
-           
-        }
-        private void SectionAudio_onListUpdate(object sender, EventArgs e)
-        {
-            OnPropertyChanged(nameof(sectionAudio));
-        }
+       
 
-        
-
-        public static readonly DependencyProperty TracksProperty =
-         DependencyProperty.Register("Tracks", typeof(List<Audio>), typeof(ListTracks), new PropertyMetadata(new List<Audio>()));
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public List<Audio> Tracks
-        {
-            get { return (List<Audio>)GetValue(TracksProperty); }
-            set
-            {
-                SetValue(TracksProperty, value);
-            }
-        }
-        ObservableCollection<Audio> _tracks = new ObservableCollection<Audio>();
-
-
-        int itCounts = 0;
+       
+      
        
 
     }

@@ -75,7 +75,7 @@ namespace VK_UI3.VKs.IVK
             Task.Run(async () =>
             {
                 int offset = listAudio.Count;
-                int count = 500;
+                int count = 250;
 
                 if (countTracks > listAudio.Count)
                 {

@@ -1,15 +1,11 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
 using MusicX.Core.Models;
-using System;
 using VK_UI3.Helpers.Animations;
 using VK_UI3.Views;
 using VK_UI3.Views.Controls;
 using static VK_UI3.Views.Controls.BlockButtonView;
-
-using Button = Microsoft.UI.Xaml.Controls.Button;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.

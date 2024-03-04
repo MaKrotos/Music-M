@@ -362,10 +362,7 @@ namespace VK_UI3.VKs.IVK
             }
         }
 
-        public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
-        {
-            throw new NotImplementedException();
-        }
+      
     }
 
 

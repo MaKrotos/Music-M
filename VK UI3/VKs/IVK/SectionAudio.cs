@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI.Dispatching;
 using MusicX.Core.Models;
+using MusicX.Core.Models.General;
 using MusicX.Core.Services;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using VK_UI3.Helpers;
 
 namespace VK_UI3.VKs.IVK
 {
-    class SectionAudio : IVKGetAudio
+    public class SectionAudio : IVKGetAudio
     {
 
 
@@ -46,43 +47,52 @@ namespace VK_UI3.VKs.IVK
             if (getLoadedTracks) return;
             getLoadedTracks = true;
 
-            Task.Run(async () =>
-            {
-                var a = await VK.vkService.GetSectionAsync(id, Next);
-                if (a.Section != null)
+            ResponseData a = null;
+                Task.Run(async () =>
                 {
-                    if (a.Section.NextFrom == null)
+                     a = await VK.vkService.GetSectionAsync(id, Next);
+                }).Wait();
+            if (a.Section != null)
                     {
-                        itsAll = true;
+                        if (a.Section.NextFrom == null)
+                        {
+                            itsAll = true;
 
+                        }
+                        Next = a.Section.NextFrom;
                     }
-                    Next = a.Section.NextFrom;
-                }
 
-                var audios = a.Audios;
+                    var audios = a.Audios;
 
-                if (audios.Count == 0)
-                {
-                    countTracks = listAudio.Count;
-                    itsAll = true;
-                }
-                foreach (var item in audios)
-                {
-                    ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
-
-                    ManualResetEvent resetEvent = new ManualResetEvent(false);
-                    DispatcherQueue.TryEnqueue(() =>
+                    if (audios.Count == 0)
                     {
-                        listAudio.Add(extendedAudio);
-                        resetEvent.Set();
-                    });
+                        countTracks = listAudio.Count;
+                        itsAll = true;
+                    }
+                    foreach (var item in audios)
+                    {
+                        ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
 
-                    resetEvent.WaitOne();
-                    NotifyOnListUpdate();
-                }
+                        ManualResetEvent resetEvent = new ManualResetEvent(false);
 
-                getLoadedTracks = false;
-            }).Wait();
+                        try
+                        {
+                            DispatcherQueue.TryEnqueue(() =>
+                            {
+                                listAudio.Add(extendedAudio);
+                                resetEvent.Set();
+                            });
+                        }catch (Exception ex)
+                        {
+                            throw ex;
+                        }
+
+                        resetEvent.WaitOne();
+                        NotifyOnListUpdate();
+                    }
+
+                    getLoadedTracks = false;
+              
         }
     }
 }

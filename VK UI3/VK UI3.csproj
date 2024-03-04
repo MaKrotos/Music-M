@@ -24,6 +24,7 @@
 	  <None Remove="Controls\BannerControl.xaml" />
 	  <None Remove="Controls\BlockControl.xaml" />
 	  <None Remove="Controls\Blocks\ArtistBannerBlockControl.xaml" />
+	  <None Remove="Controls\Blocks\Ext\ListTracksFull.xaml" />
 	  <None Remove="Controls\Blocks\ListPlaylists.xaml" />
 	  <None Remove="Controls\Blocks\RecommsPlaylistBlock.xaml" />
 	  <None Remove="Controls\DefaultControl.xaml" />
@@ -84,6 +85,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Controls\Blocks\Ext\ListTracksFull.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
     <Page Update="Controls\Blocks\ListPlaylists.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
