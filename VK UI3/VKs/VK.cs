@@ -35,7 +35,7 @@ namespace VK_UI3.VKs
 {
     internal class VK
     {
-        public readonly IVkApi api = App._host.Services.GetRequiredService<IVkApi>();
+        public static readonly IVkApi api = App._host.Services.GetRequiredService<IVkApi>();
         public readonly IAuthCategory _authCategory = App._host.Services.GetRequiredService<IAuthCategory>();
         Login login;
         private readonly IEcosystemCategory _ecosystemCategory = App._host.Services.GetRequiredService<IEcosystemCategory>();
@@ -836,8 +836,35 @@ namespace VK_UI3.VKs
             return null;
         }
 
-        
+        public static async Task<string> AddDislike(long Id, long OwnerId)
+        {
+            var parameters = new VkParameters
+                {
+                    { "audio_ids", $"{Id}_{OwnerId}" }
+                };
+
+            var response = await api.CallAsync("audio.addDislike", parameters);
+
+            return response;
+        }
+
+        public static async Task<string> RemoveDislike(long Id, long OwnerId)
+        {
+            var parameters = new VkParameters
+                {
+                    { "audio_ids", $"{Id}_{OwnerId}" }
+                };
+
+            var response = await api.CallAsync("audio.addDislike", parameters);
+
+            return response;
+        }
+
+
     }
+
+
+
 
 }
 

@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="VkNet" Version="1.70.0" />
+      <ProjectReference Include="..\VkNet\VkNet.csproj" />
     </ItemGroup>
 
 </Project>

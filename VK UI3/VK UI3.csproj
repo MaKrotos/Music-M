@@ -19,6 +19,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Content Remove="Assets\SVGs\thumb-dislike-fill.svg" />
+	  <Content Remove="Assets\SVGs\thumb-dislike.svg" />
+	  <Content Remove="Assets\SVGs\thumbdislike.xaml" />
+	  <Content Remove="Assets\SVGs\thumbdislikefill.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Remove="Controllers\NavMenuController.xaml" />
 	  <None Remove="Controllers\PlayListPage.xaml" />
 	  <None Remove="Controls\BannerControl.xaml" />
@@ -44,6 +51,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Page Remove="Assets\SVGs\thumbdislike.xaml" />
+	  <Page Remove="Assets\SVGs\thumbdislikefill.xaml" />
 	  <Page Remove="Controls\ListPlaylists.xaml" />
 	</ItemGroup>
 
@@ -66,7 +75,6 @@
     <PackageReference Include="QRCoder" Version="1.4.3" />
     <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
     <PackageReference Include="System.Text.Json" Version="8.0.0" />
-    <PackageReference Include="VkNet" Version="1.70.0" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
@@ -119,6 +127,20 @@
     <Page Update="Controllers\PlayListPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <None Update="Assets\SVGs\thumb-dislike-fill.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\SVGs\thumb-dislike.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\SVGs\thumbdislike.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\SVGs\thumbdislikefill.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Controls\ListPlaylists.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>

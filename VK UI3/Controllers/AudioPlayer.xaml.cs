@@ -166,7 +166,6 @@ namespace VK_UI3.Controllers
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             });
-
         }
 
 

@@ -3,12 +3,18 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using MusicX.Core.Models;
 using MusicX.Core.Services;
 using MusicX.Shared.Player;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using VK_UI3.Controllers;
 using VK_UI3.Converters;
 using VK_UI3.DB;
@@ -19,6 +25,7 @@ using VK_UI3.Views;
 using VK_UI3.VKs;
 using VkNet.Model;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 using static VK_UI3.Views.SectionView;
 
@@ -54,7 +61,7 @@ namespace VK_UI3.Controls
                     return;
 
                 dataTrack = (DataContext as ExtendedAudio);
-
+                
 
                 if (!addedHandler)
                 {
@@ -162,6 +169,9 @@ namespace VK_UI3.Controls
                 Time.Text = (string)timeString;
 
 
+
+                SetIconDislieAsync();
+
                 try
                 {
                     Symbol symbol = dataTrack.PlayThis ? Symbol.Pause : Symbol.Play;
@@ -172,6 +182,32 @@ namespace VK_UI3.Controls
                 {
                     AppCenterHelper.SendCrash(ex);
                 }
+            }
+        }
+
+        private async Task SetIconDislieAsync()
+        {
+            try
+            {
+                // Загрузите файл XAML
+                var uri = new Uri("ms-appx:///Assets/SVGs/thumb-dislike.xaml");
+                var file = await StorageFile.GetFileFromApplicationUriAsync(uri);
+
+                // Прочитайте содержимое файла
+                var fileContent = await FileIO.ReadTextAsync(file);
+
+                // Создайте новый объект PathIcon и установите его данные
+                var pathIcon = new PathIcon { Data = (Geometry)XamlReader.Load(fileContent) };
+                DislikeIconSet.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+                // Установите иконку для элемента
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    DislikeIconSet.Data = pathIcon.Data;
+                });
+            }
+            catch (Exception e)
+            { 
+            
             }
         }
 
@@ -323,8 +359,7 @@ namespace VK_UI3.Controls
             }
             else
             {
-                 vkService.AudioAddAsync((long) audio.Id, (long) audio.OwnerId);
-                            
+                 vkService.AudioAddAsync((long) audio.Id, (long) audio.OwnerId);       
             }
         }
         public void AddArtistIgnore_Click(object sender, RoutedEventArgs e)
@@ -370,7 +405,17 @@ namespace VK_UI3.Controls
             }
         }
 
-
+        private void DislikeClick(object sender, RoutedEventArgs e)
+        {
+            if (dataTrack.audio.Dislike)
+            {
+                VK.RemoveDislike((long)dataTrack.audio.Id, (long)dataTrack.audio.OwnerId);
+            }
+            else
+            {
+                VK.AddDislike((long)dataTrack.audio.Id, (long)dataTrack.audio.OwnerId);
+            }
+        }
     }
 }
 

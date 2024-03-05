@@ -1,0 +1,72 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;net5.0;net6.0</TargetFrameworks>
+		<AssemblyName>VkNet</AssemblyName>
+		<VersionPrefix>1.68.0</VersionPrefix>
+		<VersionSufix>
+		</VersionSufix>
+		<NeutralLanguage>ru-RU</NeutralLanguage>
+		<PackageId>VkNet</PackageId>
+		<Title>Реализация ВКонтакте API для .NET.</Title>
+		<Description>
+			Реализация ВКонтакте API для .NET.
+			Список методов см. https://vknet.github.io/vk/
+		</Description>
+		<Authors>inyutin_maxim;azhidkov</Authors>
+		
+		<PackageProjectUrl>https://vknet.github.io/vk/</PackageProjectUrl>
+	
+		<RepositoryUrl>https://github.com/vknet/vk</RepositoryUrl>
+		<RepositoryType>GIT</RepositoryType>
+		<PackageTags>vk;vk api;vknet;vkontakte;api</PackageTags>
+		<PackageReleaseNotes>
+			Обсуждение в Telegram: https://t.me/VkDotNet
+			Группа в Контакте: https://vk.com/vknetdotnet
+			_____________________________________________
+			Список изменений: https://github.com/vknet/vk/milestone/42?closed=1
+		</PackageReleaseNotes>
+		<LangVersion>latest</LangVersion>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+		<GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+		<GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+		<GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+		<GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+		<GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+		<GenerateNeutralResourcesLanguageAttribute>false</GenerateNeutralResourcesLanguageAttribute>
+		<GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+		<GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DefineConstants>TRACE;DEBUG;UWP</DefineConstants>
+		<DocumentationFile>..\Build\$(Configuration)\VkNet.xml</DocumentationFile>
+		<OutputPath>..\Build\$(Configuration)\</OutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AsyncFixer" Version="1.6.0" PrivateAssets="all" />
+		<PackageReference Include="HtmlAgilityPack" Version="1.11.42" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="Microsoft.DotNet.Analyzers.Compatibility" Version="0.2.12-alpha" PrivateAssets="all" />
+		<PackageReference Include="SonarAnalyzer.CSharp" Version="8.39.0.47922" PrivateAssets="all" />
+		<PackageReference Include="JetBrains.Annotations" Version="2022.1.0" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(TargetFramework) != 'net6.0'">
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="[5.0.2, 6.0.0)" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="[5.0.0,6.0.0)" />
+		<PackageReference Include="System.Text.Encoding.CodePages" Version="[5.0.0,6.0.0)" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(TargetFramework) == 'net6.0'">
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+		<PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
+	</ItemGroup>
+
+</Project>

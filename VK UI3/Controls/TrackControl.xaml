@@ -22,6 +22,14 @@
                 
             </MenuFlyoutSubItem>
             <MenuFlyoutItem Text="Добавить в плейлист" Click="AddToPlaylist_Click" Icon="Add" />
+            <MenuFlyoutItem Text="Не нравится" Click="DislikeClick">
+                <MenuFlyoutItem.Icon>
+
+                    <PathIcon  x:Name="DislikeIconSet" Foreground="White" >
+        
+                    </PathIcon>
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
             <MenuFlyoutItem Text="Пропускать треки исполнителя" Click="AddArtistIgnore_Click" Icon="BlockContact" />
             <MenuFlyoutItem Text="Скачать" Click="Download_Click" Icon="Download" />
             <MenuFlyoutItem Text="Возпроизвести следующим" Click="PlayNext_Click" Icon="Play" />
