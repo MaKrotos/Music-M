@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:custom="using:VK_UI3.Controls"
-    Margin="10"
+    Margin="-16,0,-16,0"
 
     mc:Ignorable="d"
     >
@@ -16,7 +16,7 @@
     <UserControl.Shadow>
         <ThemeShadow />
     </UserControl.Shadow>
-    <ListView Padding="0,16,0,16"  CanReorderItems="false" x:Name="TrackListView" ItemsSource="{x:Bind sectionAudio.listAudio, Mode=OneWay}"   IsItemClickEnabled="False" SelectionMode="None">
+    <ListView Padding="0,0,0,0"  CanReorderItems="false" x:Name="TrackListView" ItemsSource="{x:Bind sectionAudio.listAudio, Mode=OneWay}"   IsItemClickEnabled="False" SelectionMode="None">
         <ListView.ItemTemplate>
             <DataTemplate>
                 <custom:TrackControl

@@ -30,21 +30,9 @@ namespace VK_UI3.Views
     {
         public Section section;
 
-        
-        string nextLoad { get {
 
-                if (tracksFull == null) return _nextLoade;
-                return tracksFull.sectionAudio.Next;
-            }
-            set {
-
-                _nextLoade = value;
-
-                if (tracksFull != null)
-                 tracksFull.sectionAudio.Next = value;
-
-            } }
-        string _nextLoade = null;
+        string nextLoad = null;
+   
         public SectionType sectionType;
        
         public SectionView()
@@ -208,22 +196,20 @@ namespace VK_UI3.Views
 
         public async Task LoadAsync()
         {
-
-            if (tracksFull != null)
-            {
-                this.DispatcherQueue.TryEnqueue(() =>
-                {
-                    tracksFull.sectionAudio.GetTracks();
-                });
-                return;
-            }
             try
             {
 
-               
-               
+                if (tracksFull != null)
+                {
+                    tracksFull.DispatcherQueue.TryEnqueue(() =>
+                    {
+                        tracksFull.sectionAudio.GetTracks();
+                    });
+                    return;
+                }
 
-                    await (sectionType switch
+
+                await (sectionType switch
                 {
                     SectionType.None => loadSection(section.Id),
                     SectionType.Artist => LoadArtistSection(section.Id),
@@ -243,7 +229,6 @@ namespace VK_UI3.Views
 
         private void HideLoad()
         {
-            // Создаем Storyboard
             LoadingIndicator.Visibility = Visibility.Collapsed;
         }
 
@@ -251,35 +236,43 @@ namespace VK_UI3.Views
         private async Task loadSection(string sectionID, bool showTitle = false)
         {
 
-            // string key = string.IsNullOrEmpty(block.Layout?.Name) ? block.DataType : $"{block.DataType}_{block.Layout.Name}";
-
-            
-
-            if (nextLoad == null || loadedAll)
+            try
             {
-                if (hidedLoad) return;
-                hidedLoad = true;
-                HideLoad();
-                return;
-            }
-            if (blockLoad) return;
-          
-            blockLoad = true;
-            var sectin =  await VK.vkService.GetSectionAsync(sectionID, nextLoad);
-            nextLoad = sectin.Section.NextFrom;
-            if (sectin.Section.NextFrom == null) { 
-                loadedAll = true; 
-            }
-            this.section = sectin.Section;
-            if (section.Blocks.Count() == 0)
-            { 
-                loadedAll = true;
-                return;
-            }
-            blockLoad = false;
-           
+                // string key = string.IsNullOrEmpty(block.Layout?.Name) ? block.DataType : $"{block.DataType}_{block.Layout.Name}";
+                if (nextLoad == null || loadedAll)
+                {
+                    if (hidedLoad) return;
+                    hidedLoad = true;
+                    HideLoad();
+                    return;
+                }
+                if (blockLoad) return;
+
+                blockLoad = true;
+
+                var sectin = await VK.vkService.GetSectionAsync(sectionID, nextLoad);
+                nextLoad = sectin.Section.NextFrom;
+                if (sectin.Section.NextFrom == null)
+                {
+                    loadedAll = true;
+                }
+                this.section = sectin.Section;
+                if (section.Blocks.Count() == 0)
+                {
+                    blockLoad = false;
+                    loadedAll = true;
+                    return;
+                }
+                blockLoad = false;
+
                 loadBlocks(sectin.Section.Blocks);
-            
+            }
+            catch (Exception e)
+            {
+                
+                blockLoad = false;
+                throw e;
+            }
         }
         ListTracksFull _tracksFull = null;
         ListTracksFull tracksFull
@@ -308,28 +301,19 @@ namespace VK_UI3.Views
             foreach (var item in block)
             {
 
-                var lastItem = ListBlocks.Items.LastOrDefault();
-                if (lastItem != null)
-                {
-                    var container = ListBlocks.ContainerFromItem(lastItem) as ListViewItem;
-                    var dataTemplate = container.ContentTemplateRoot as ListTracksFull;
-                    if (dataTemplate != null && tracksFull == null)
-                    {
-                        tracksFull = dataTemplate;
-                        tracksFull.sectionAudio.onListUpdate += SectionAudio_onListUpdate;
-                    }
-
-                }
-            
                 if (tracksFull != null) 
                 {
+
+         
                     foreach (var audio in item.Audios)
                     {
                         this.DispatcherQueue.TryEnqueue(() =>
                         {
                             tracksFull.sectionAudio.listAudio.Add(new ExtendedAudio(audio, tracksFull.sectionAudio));
-                            tracksFull.sectionAudio.NotifyOnListUpdate();
                             tracksFull.sectionAudio.Next = item.NextFrom;
+                            if (item.NextFrom == null) tracksFull.sectionAudio.itsAll = true;
+                            tracksFull.sectionAudio.NotifyOnListUpdate();
+              
                         });
                     }
                     continue;
@@ -360,8 +344,13 @@ namespace VK_UI3.Views
 
         private void SectionAudio_onListUpdate(object sender, EventArgs e)
         {
-            nextLoad = (sender as SectionAudio).Next;
-            if ((sender as SectionAudio).itsAll) nextLoad = null;
+            if ((sender as SectionAudio).itsAll)
+
+                this.DispatcherQueue.TryEnqueue(() =>
+                {
+                    HideLoad();
+                });
+
         }
 
         private bool nowOpenSearchSug = false;
@@ -404,6 +393,9 @@ namespace VK_UI3.Views
             }
         }
 
+
+
+
         private void scrollVIew_ViewChanged(ScrollView sender, object args)
         {
             var scrollViewer = sender as ScrollView;
@@ -416,16 +408,17 @@ namespace VK_UI3.Views
                     if (hidedLoad) return;
                     hidedLoad = true;
                     HideLoad();
-
                 }
 
                 if (!loadedAll)
                 {
-                    LoadAsync();
+                    _ = LoadAsync();
                 }
             }
         }
     }
+
+
 
     public class BlockTemplateSelector : DataTemplateSelector
     {

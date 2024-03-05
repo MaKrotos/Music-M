@@ -45,22 +45,24 @@ namespace VK_UI3.VKs.IVK
         public override void GetTracks()
         {
             if (getLoadedTracks) return;
+            if (itsAll) return;
             getLoadedTracks = true;
 
             ResponseData a = null;
+
                 Task.Run(async () =>
                 {
                      a = await VK.vkService.GetSectionAsync(id, Next);
-                }).Wait();
-            if (a.Section != null)
-                    {
-                        if (a.Section.NextFrom == null)
-                        {
-                            itsAll = true;
+            
+                    if (a.Section != null)
+                            {
+                                if (a.Section.NextFrom == null)
+                                {
+                                    itsAll = true;
 
-                        }
-                        Next = a.Section.NextFrom;
-                    }
+                                }
+                                Next = a.Section.NextFrom;
+                            }
 
                     var audios = a.Audios;
 
@@ -72,26 +74,44 @@ namespace VK_UI3.VKs.IVK
                     foreach (var item in audios)
                     {
                         ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
-
                         ManualResetEvent resetEvent = new ManualResetEvent(false);
 
                         try
                         {
-                            DispatcherQueue.TryEnqueue(() =>
+                            bool isEnqueued = DispatcherQueue.TryEnqueue(() =>
                             {
                                 listAudio.Add(extendedAudio);
                                 resetEvent.Set();
                             });
-                        }catch (Exception ex)
+
+                            if (!isEnqueued)
+                            {
+                                // Действия при неудачной попытке добавления в очередь
+                                Console.WriteLine("TryEnqueue не удалось добавить задачу в очередь.");
+                            }
+
+                        }
+                        catch
                         {
-                            throw ex;
+                            throw;
                         }
 
                         resetEvent.WaitOne();
                         NotifyOnListUpdate();
                     }
+                }).ContinueWith(t =>
+                    {
+                        if (t.IsFaulted)
+                        {
+                            getLoadedTracks = false;
 
-                    getLoadedTracks = false;
+                            Console.WriteLine(t.Exception.Message);
+                        }
+                        else
+                        {
+                            getLoadedTracks = false;
+                        }
+                    });
               
         }
     }
