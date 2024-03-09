@@ -30,7 +30,7 @@ namespace VK_UI3.Views.LoginWindow
 
       
      
-        public TaskCompletionSource<string?> Submitted { get; private set; } = new();
+     
 
         public OtpCode()
         {
@@ -83,7 +83,7 @@ namespace VK_UI3.Views.LoginWindow
 
                 if (!HasAnotherVerificationMethods) goAnotherBTN.Visibility = Visibility.Collapsed;
 
-                Submitted =   viewModel.Submitted;
+               
 
                 this.vk = viewModel.vk;
                 
@@ -109,9 +109,7 @@ namespace VK_UI3.Views.LoginWindow
 
         private void sumbit() 
         {
-
-            Submitted.SetResult(CodeBox.Text);
-            Submitted = new TaskCompletionSource<string?>();
+          
 
 
             vk.Vk2FaCompleteAsync(CodeBox.Text);

@@ -24,5 +24,11 @@
         <Border>
             <local:StartUpSetting></local:StartUpSetting>
         </Border>
+
+
+
+        <TextBlock TextAlignment="Center"  Margin="0,20,0,0">
+            <Hyperlink NavigateUri="https://t.me/Music_M_VK">Music M в telegram</Hyperlink>
+        </TextBlock>
     </StackPanel>
 </Page>

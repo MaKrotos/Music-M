@@ -149,56 +149,6 @@ namespace VK_UI3.VKs
     
 
 
-        /*
-        private async ValueTask<string?> CodeRequestedAsync(LoginWay requestedLoginWay, AuthState state)
-        {
-            if (requestedLoginWay == LoginWay.Passkey)
-            {
-
-                return default;
-            }
-
-            if (requestedLoginWay == LoginWay.Password)
-            {
-
-
-                requestedLoginWay = UnwrapTwoFactorWay(requestedLoginWay);
-
-                OtpCode otpCodee = new OtpCode();
-
-                otpCodee.LoginWay = requestedLoginWay;
-
-                if (state is VerificationAuthState verificationAuthStatee)
-                {
-                    otpCodee.CodeLength = verificationAuthStatee.CodeLength;
-                    otpCodee.Info = verificationAuthStatee.Info;
-                }
-
-                login.Frame.Navigate(typeof(OtpCode), otpCodee);
-
-                return new(await otpCodee.Submitted.Task);
-            }
-
-
-
-            requestedLoginWay = UnwrapTwoFactorWay(requestedLoginWay);
-
-            OtpCode otpCode = new OtpCode();
-
-            otpCode.LoginWay = requestedLoginWay;
-
-            if (state is VerificationAuthState verificationAuthState)
-            {
-                otpCode.CodeLength = verificationAuthState.CodeLength;
-                otpCode.Info = verificationAuthState.Info;
-            }
-
-            login.Frame.Navigate(typeof(OtpCode), otpCode);
-
-
-            return new(await otpCode.Submitted.Task);
-        }
-        */
 
 
         private LoginWay UnwrapTwoFactorWay(LoginWay way)
@@ -626,7 +576,15 @@ namespace VK_UI3.VKs
             login.Frame.Navigate(typeof(waitPage), null, new DrillInNavigationTransitionInfo());
             if (_grantType == AndroidGrantType.PhoneConfirmationSid)
             {
-                var response = await _ecosystemCategory.CheckOtpAsync(Sid, Vk2FaResponse!.ValidationType, arg);
+                EcosystemCheckOtpResponse response = null;
+                try
+                {
+                   response = await _ecosystemCategory.CheckOtpAsync(Sid, Vk2FaResponse!.ValidationType, arg);
+
+                }catch (Exception ex) {
+                    login.Frame.GoBack();
+                    return;
+                }
 
                 Profile = response.Profile;
 
@@ -649,13 +607,17 @@ namespace VK_UI3.VKs
                         passview.vk = this;
                         passview.FirstName = Profile.FirstName ?? "Незнакомец";
                         passview.Photo200 = Profile?.Photo200 ?? null;
-                        passview.Phone = llogin ?? null;    
+                        passview.Phone = llogin ?? null;
 
 
                         login.Frame.Navigate(typeof(Password), passview, new DrillInNavigationTransitionInfo());
                     }
-                   
+
                     return;
+                }
+                else
+                { 
+                
                 }
             }
 
