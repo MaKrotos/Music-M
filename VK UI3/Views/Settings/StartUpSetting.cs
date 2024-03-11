@@ -35,7 +35,9 @@ namespace VK_UI3.Views.Settings
 
         private void StartUpSetting_Loaded(object sender, RoutedEventArgs e)
         {
-          
+         
+
+
             this.DispatcherQueue.TryEnqueue(async () =>
             {
                 this.IsChecked = await Helpers.StartupManager.IsAppInStartupAsync();

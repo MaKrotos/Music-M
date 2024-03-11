@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Input;
 using VK_UI3.DB;
 using static VK_UI3.DB.AccountsDB;
 using VK_UI3.Views;
+using System;
 
 namespace VK_UI3.Controllers
 {
@@ -67,7 +68,8 @@ namespace VK_UI3.Controllers
         {
             // Здесь добавьте код для удаления элемента
             DatabaseHandler.getConnect().Delete<Accounts>(this.accounts.id);
-            MainView.updateAccounts();
+            MainView.invokeUpdateAccounts();
+        
         }
     }
 }

@@ -56,7 +56,13 @@
                     <NavigationViewItemSeparator/>
                     <NavigationViewItem   Padding="-10,0,-20,0" SelectsOnInvoked="False" >
                         <Grid Translation="0,0,24" Margin="-1,10,10,10" Padding="0,-5,-10,-5" >
-                            <ListView SelectedIndex="{x:Bind getSelectedNumber, Mode=OneTime}"  ItemsSource="{x:Bind AccList, Mode=TwoWay}"  SelectionChanged="ListView_SelectionChanged" x:Name="AccountsList">
+                            <ListView 
+                                SelectionMode="Single"
+                                AllowDrop="False" CanReorderItems="False"  CanDrag="False"
+                                SelectedIndex="{x:Bind getSelectedNumber, Mode=OneWay}"  
+                                ItemsSource="{x:Bind AccList, Mode=TwoWay}"  
+                                SelectionChanged="ListView_SelectionChanged" 
+                                x:Name="AccountsList">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <custom:AccountController Margin="-1,0,0,0" accounts="{Binding }"></custom:AccountController>
@@ -81,9 +87,8 @@
            
         </Grid>
         <Frame   BorderThickness="0,1,0,0" CornerRadius="10"
-  BorderBrush="{ThemeResource SystemControlAltHighAcrylicElementBrush}"  Grid.Row="1" VerticalAlignment="Bottom"
+              BorderBrush="{ThemeResource SystemControlAltHighAcrylicElementBrush}"  Grid.Row="1" VerticalAlignment="Bottom"
         >
-            
             <custom:AudioPlayer  Margin="0,0,0,0"></custom:AudioPlayer>
         </Frame>
     </Grid>

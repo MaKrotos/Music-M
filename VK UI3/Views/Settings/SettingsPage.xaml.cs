@@ -1,3 +1,4 @@
+using Microsoft.Toolkit.Uwp.Notifications;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -26,6 +27,14 @@ namespace VK_UI3.Views.Settings
         public SettingsPage()
         {
             this.InitializeComponent();
+            this.Loaded += SettingsPage_Loaded;
+        }
+
+        private void SettingsPage_Loaded(object sender, RoutedEventArgs e)
+        {
+    
+           
+
         }
     }
 }

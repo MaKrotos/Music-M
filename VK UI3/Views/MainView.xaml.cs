@@ -49,7 +49,21 @@ namespace VK_UI3.Views
             ContentFrame.Navigated += ContentFrame_Navigated;
             NavWiv.BackRequested += NavWiv_BackRequested;
             createNavigation();
+            onUpdateAccounts += MainView_onUpdateAccounts;
         }
+
+        private void MainView_onUpdateAccounts(object sender, EventArgs e)
+        {
+            updateAccounts();
+        }
+
+        public static void invokeUpdateAccounts()
+        {
+            onUpdateAccounts?.Invoke(null, EventArgs.Empty);
+        }
+     
+
+        public static event EventHandler onUpdateAccounts;
 
         private void NavWiv_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
         {
@@ -74,10 +88,21 @@ namespace VK_UI3.Views
         }
 
 
-        public ObservableCollection<NavSettings> navSettings = new ObservableCollection<NavSettings>();
+    
+        public List<NavMenuController> navMenuControllers = new();
 
         private async void createNavigation()
         {
+             ObservableCollection<NavSettings> navSettings = new ObservableCollection<NavSettings>();
+
+            NavWiv.SelectedItem = 0;
+            foreach (var item in navMenuControllers)
+            {
+                NavWiv.MenuItems.Remove(item);
+            }
+            navMenuControllers.Clear();
+            navSettings.Clear();
+
             var catalogs = await VK.vkService.GetAudioCatalogAsync();
             var updatesSection = await VK.vkService.GetAudioCatalogAsync("https://vk.com/audio?section=updates");
 
@@ -93,24 +118,24 @@ namespace VK_UI3.Views
             catalogs.Catalog.Sections.AddRange(await sectionsService.GetSectionsAsync().ToArrayAsync());
 
             var icons = new List<Symbol>
-{
-    Symbol.MusicInfo,
-    Symbol.Audio,
-    Symbol.Play,
-    Symbol.Pause,
-    Symbol.Stop,
-    Symbol.Forward,
-    Symbol.Back,
-    Symbol.Previous,
-    Symbol.Next,
-    Symbol.Volume,
-    Symbol.Mute,
-    Symbol.More,
-    Symbol.Pictures,
-    Symbol.Map,
-    Symbol.CalendarDay,
-    Symbol.Bookmarks,
-};
+                {
+                    Symbol.MusicInfo,
+                    Symbol.Audio,
+                    Symbol.Play,
+                    Symbol.Pause,
+                    Symbol.Stop,
+                    Symbol.Forward,
+                    Symbol.Back,
+                    Symbol.Previous,
+                    Symbol.Next,
+                    Symbol.Volume,
+                    Symbol.Mute,
+                    Symbol.More,
+                    Symbol.Pictures,
+                    Symbol.Map,
+                    Symbol.CalendarDay,
+                    Symbol.Bookmarks,
+                };
 
 
 
@@ -170,14 +195,13 @@ namespace VK_UI3.Views
                         navSettings = setting,
                         Content = setting.MyMusicItem,
                         Icon = new SymbolIcon(setting.Icon)
+
                     };
                     NavWiv.MenuItems.Insert(index, navViewItem);
+                    navMenuControllers.Add(navViewItem);
                     index++;
                 });
             }
-
-
-
         }
 
 
@@ -250,7 +274,7 @@ namespace VK_UI3.Views
             updateAccounts();
         }
 
-        public static void updateAccounts()
+        public void updateAccounts()
         {
             Accounts.Clear();
             var accounts = AccountsDB.GetAllAccountsSorted();
@@ -261,7 +285,7 @@ namespace VK_UI3.Views
                 Accounts.Add(item);
                 if (item.Active)
                 {
-                    //AccountsList.SelectedIndex = i;
+                    AccountsList.SelectedIndex = i;
                 }
                 i++;
             }
@@ -272,52 +296,46 @@ namespace VK_UI3.Views
 
         private int previousSelectedAccount = -1;
 
+
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var selectedAccount = (Accounts)AccountsList.SelectedItem;
-            // selectedAccount.itemSelected();
-            if (selectedAccount == null) return;
-            if (selectedAccount.Token == null)
+            this.DispatcherQueue.TryEnqueue(async () =>
             {
+                var selectedAccount = (Accounts)AccountsList.SelectedItem;
 
-                // Создайте объект NavigationInfo и установите исходную страницу
-                //  var navigationInfo = new NavigationInfo { SourcePageType = this };
-
-
-
-                //  PopupFrame.Navigate(typeof(Login), navigationInfo, new DrillInNavigationTransitionInfo());
-                //  CustomPopup.IsOpen = true;
-                if (previousSelectedAccount != -1)
+                if (selectedAccount == null) return;
+                if (selectedAccount.Token == null)
                 {
-                    AccountsList.SelectedItem = previousSelectedAccount;
+                    if (previousSelectedAccount != -1)
+                    {
+                        AccountsList.SelectedItem = previousSelectedAccount;
+                    }
+                    else
+                    {
+                        AccountsList.SelectedIndex = -1;
+                    }
+                    AccountsDB.activeAccount = new AccountsDB.Accounts();
+                    this.Frame.Navigate(typeof(Login), this, new DrillInNavigationTransitionInfo());
+                    previousSelectedAccount = AccountsList.SelectedIndex;
                 }
                 else
                 {
-                    AccountsList.SelectedIndex = -1;
+                    AccountsDB.ActivateAccount(selectedAccount.id);
+                    activeAccount = selectedAccount;
+                    if (ContentFrame.Content != null)
+                    {
+                        createNavigation();
+                        // var a = ContentFrame.Content.GetType();
+                        // ContentFrame.Navigate(a, this, new DrillInNavigationTransitionInfo());
+                    }
+                    else
+                    {
+                        OpenMyPage(SectionType.MyListAudio);
+                    }
+
+
                 }
-                AccountsDB.activeAccount = new AccountsDB.Accounts();
-                this.Frame.Navigate(typeof(Login), this, new DrillInNavigationTransitionInfo());
-                previousSelectedAccount = AccountsList.SelectedIndex;
-            }
-            else
-            {
-
-                AccountsDB.ActivateAccount(selectedAccount.id);
-                activeAccount = selectedAccount;
-                if (ContentFrame.Content != null)
-                {
-                    var a = ContentFrame.Content.GetType();
-                    ContentFrame.Navigate(a, this, new DrillInNavigationTransitionInfo());
-                }
-                else
-                {
-                    OpenMyPage(SectionType.MyListAudio);
-                }
-
-            }
-
-
-
+            });
         }
 
 
@@ -397,7 +415,7 @@ namespace VK_UI3.Views
             // Установите целевой объект и свойство для анимации
             Storyboard.SetTarget(da, trans);
             Storyboard.SetTargetProperty(da, "Y");
-
+           
             // Запустите анимацию
             sb.Begin();
         }
@@ -508,10 +526,12 @@ namespace VK_UI3.Views
             
             frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
         }
-       
+
+     
+        
     }
 
-   
+
 
     public class NavigationInfo
     {

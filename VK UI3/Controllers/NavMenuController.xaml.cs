@@ -43,8 +43,6 @@ namespace VK_UI3.Controllers
 
         public NavMenuController()
         {
-          //  navSettings.MyMusicItem = "Моя музыка";
-         //   navSettings.Icon = new SymbolIcon(Symbol.Home);
         }
     }
 }
