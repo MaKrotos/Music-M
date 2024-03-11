@@ -14,7 +14,13 @@
     Width="Auto"
     
     mc:Ignorable="d">
-
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Resource/icons.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <UserControl.ContextFlyout>
         <MenuFlyout x:Name="flyOutm">
             <MenuFlyoutItem x:Name="AddRemove" Text="Добавить" Click="AddRemove_Click" Icon="Add" />
@@ -22,12 +28,11 @@
                 
             </MenuFlyoutSubItem>
             <MenuFlyoutItem Text="Добавить в плейлист" Click="AddToPlaylist_Click" Icon="Add" />
-            <MenuFlyoutItem Text="Не нравится" Click="DislikeClick">
+            <MenuFlyoutItem x:Name="disText" Text="Не нравится" Click="DislikeClick">
                 <MenuFlyoutItem.Icon>
 
-                    <PathIcon  x:Name="DislikeIconSet" Foreground="White" >
-        
-                    </PathIcon>
+                    <PathIcon Data="{x:Bind IconData,Mode=OneWay}"/>
+
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
             <MenuFlyoutItem Text="Пропускать треки исполнителя" Click="AddArtistIgnore_Click" Icon="BlockContact" />
@@ -45,6 +50,7 @@
 
 
     <Grid
+        
        Width="Auto"
         x:Name="Card"
         Margin="0,0,0,0"
@@ -53,6 +59,8 @@
         BorderBrush="{ThemeResource ApplicationForegroundThemeBrush}"
         CornerRadius="5"
         BorderThickness="0">
+        
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />

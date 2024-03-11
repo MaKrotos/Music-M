@@ -30,6 +30,7 @@ using System.Collections.Generic;
 using VkNet.Enums.Filters;
 using MusicX.Core.Services;
 using Microsoft.AppCenter.Crashes;
+using Microsoft.UI.Xaml.Controls;
 
 namespace VK_UI3.VKs
 {
@@ -43,7 +44,7 @@ namespace VK_UI3.VKs
         private readonly IVkApiAuthAsync _vkApiAuth = App._host.Services.GetRequiredService<IVkApiAuthAsync>();
         private readonly IVkApiAuthAsync _vkApi = App._host.Services.GetRequiredService<IVkApiAuthAsync>();
         public static readonly VkService vkService = App._host.Services.GetRequiredService<VkService>();
-       
+
 
         public event EventHandler? LoggedIn;
 
@@ -54,16 +55,16 @@ namespace VK_UI3.VKs
         public static readonly BoomService boomService = App._host.Services.GetRequiredService<BoomService>();
 
         public static readonly SafeBoomService safeBoomService = new SafeBoomService(boomService);
-        
+
 
         public class SafeBoomService
         {
             private readonly BoomService _boomService;
-            
+
             public SafeBoomService(BoomService boomService)
             {
                 _boomService = boomService;
-        
+
             }
 
             public T CallWithRetry<T>(Func<BoomService, T> func)
@@ -77,7 +78,7 @@ namespace VK_UI3.VKs
                     }
                     catch (Exception ex)
                     {
-                   
+
                         AuthBoomAsync();
                         Console.WriteLine($"Произошла ошибка: {ex.Message}");
                         retryCount++;
@@ -134,9 +135,9 @@ namespace VK_UI3.VKs
 
         }
 
-            public VK()
+        public VK()
         {
-           
+
 
         }
 
@@ -146,7 +147,7 @@ namespace VK_UI3.VKs
 
         }
 
-    
+
 
 
 
@@ -236,18 +237,18 @@ namespace VK_UI3.VKs
 
 
 
-                    var (_, isPhone, authFlow, flowNames, sid, nextStep) = await _authCategory.ValidateAccountAsync(arg, passkeySupported: true, loginWays:
-                    new[]
-                    {
+                var (_, isPhone, authFlow, flowNames, sid, nextStep) = await _authCategory.ValidateAccountAsync(arg, passkeySupported: true, loginWays:
+                new[]
+                {
                     LoginWay.Push, LoginWay.Sms, LoginWay.CallReset, LoginWay.ReserveCode,
                     LoginWay.Codegen, LoginWay.Email, LoginWay.Passkey
-                    });
-                
+                });
+
 
                 PInvoke.WebAuthNIsUserVerifyingPlatformAuthenticatorAvailable(out var authenticatorAvailable);
                 uint? authenticatorVersion = authenticatorAvailable ? PInvoke.WebAuthNGetApiVersionNumber() : null;
 
-               
+
                 if (authenticatorVersion <= 4) hasOnePass = false;
 
                 if (authenticatorVersion >= 4 && flowNames.All(b => b != AuthType.Password && b != AuthType.Otp))
@@ -260,7 +261,7 @@ namespace VK_UI3.VKs
                 llogin = arg;
                 Vk2FaCanUsePassword = flowNames.Any(b => b == AuthType.Password);
 
-             
+
 
                 HasAnotherVerificationMethods = nextStep?.HasAnotherVerificationMethods ?? false;
 
@@ -295,7 +296,7 @@ namespace VK_UI3.VKs
 
                 if (nextStep is null || nextStep.VerificationMethod == LoginWay.Password)
                 {
-                     
+
                     if (nextStep == null)
                     {
 
@@ -324,10 +325,11 @@ namespace VK_UI3.VKs
                 }
 
                 await NextStepAsync(nextStep.VerificationMethod);
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw (ex);
-            
+
             }
         }
 
@@ -357,7 +359,7 @@ namespace VK_UI3.VKs
 
             chooseVerMethods.vk = this;
 
-            login.Frame.Navigate(typeof(ChooseVerMethods), chooseVerMethods,  new DrillInNavigationTransitionInfo());
+            login.Frame.Navigate(typeof(ChooseVerMethods), chooseVerMethods, new DrillInNavigationTransitionInfo());
         }
 
 
@@ -374,7 +376,7 @@ namespace VK_UI3.VKs
                 if (!hResult.Succeeded)
                 {
                     login.DialogMessageShow("Не удалось отменить текущий процесс входа, VK M не смог отменить текущий процесс входа! Закройте все диалоги входа с ключем и повторите попытку.");
-                 //   _snackbarService.Show();
+                    //   _snackbarService.Show();
                     return;
                 }
             }
@@ -420,7 +422,7 @@ namespace VK_UI3.VKs
             if (loginWay == LoginWay.Passkey)
             {
                 _grantType = AndroidGrantType.Passkey;
-              //  OpenPage(AccountsWindowPage.Passkey);
+                //  OpenPage(AccountsWindowPage.Passkey);
                 await AuthPasskeyAsync();
                 return;
             }
@@ -460,7 +462,7 @@ namespace VK_UI3.VKs
 
                 passview.vk = this;
                 passview.FirstName = "Незнакомец";
-                passview.Photo200 =  "null";
+                passview.Photo200 = "null";
                 passview.Phone = llogin ?? null;
 
 
@@ -491,7 +493,7 @@ namespace VK_UI3.VKs
             if (state is TwoFactorAuthState twoFactorAuthState)
             {
                 Vk2FaResponse = new(twoFactorAuthState.IsSms ? LoginWay.Sms : LoginWay.CallReset, LoginWay.None, null, 0,
-                    (int) twoFactorAuthState.CodeLength, true, twoFactorAuthState.PhoneMask);
+                    (int)twoFactorAuthState.CodeLength, true, twoFactorAuthState.PhoneMask);
             }
             else
             {
@@ -503,7 +505,7 @@ namespace VK_UI3.VKs
                     requestedLoginWay = LoginWay.Push;
                 else if (requestedLoginWay == LoginWay.TwoFactorEmail)
                     requestedLoginWay = LoginWay.Email;
-              //  else _logger.Error("Unknown login way {LoginWay}", requestedLoginWay);
+                //  else _logger.Error("Unknown login way {LoginWay}", requestedLoginWay);
 
                 Vk2FaResponse = new(requestedLoginWay, LoginWay.None, null, 0, 6, false, llogin);
             }
@@ -511,7 +513,7 @@ namespace VK_UI3.VKs
             _codeTask = new();
 
             Vk2FaCanUsePassword = false;
-         //   OpenPage(AccountsWindowPage.Vk2Fa);
+            //   OpenPage(AccountsWindowPage.Vk2Fa);
 
             return new(_codeTask.Task);
         }
@@ -523,8 +525,8 @@ namespace VK_UI3.VKs
             {
 
 
-               await _vkApiAuth.AuthorizeAsync(new AndroidApiAuthParams(llogin, Sid, ActionRequestedAsync,
-                    new[] { LoginWay.Push, LoginWay.Email }, password)
+                await _vkApiAuth.AuthorizeAsync(new AndroidApiAuthParams(llogin, Sid, ActionRequestedAsync,
+                     new[] { LoginWay.Push, LoginWay.Email }, password)
                 {
                     AndroidGrantType = _grantType
                 });
@@ -532,9 +534,9 @@ namespace VK_UI3.VKs
 
 
                 await LoggedInAsync();
-            }catch (Exception ex) 
+            }
+            catch (Exception ex)
             {
-
                 login.Frame.GoBack();
             }
         }
@@ -545,27 +547,27 @@ namespace VK_UI3.VKs
             try
             {
                 var (token, profile) = await _authCategory.GetExchangeToken();
-               
 
-       
+                AccountsDB.activeAccount.ExchangeToken = token;
 
-               profile = (await api.Users.GetAsync(new List<long> { profile.Id }, ProfileFields.PhotoMax)).FirstOrDefault();
+                profile = (await api.Users.GetAsync(new List<long> { }, ProfileFields.PhotoMax)).FirstOrDefault();
 
 
                 AccountsDB.activeAccount.id = profile.Id;
                 AccountsDB.activeAccount.Name = $"{profile.FirstName} {profile.LastName}";
-                AccountsDB.activeAccount.ExchangeToken = token;
+           
 
                 AccountsDB.activeAccount.UserPhoto = (profile.PhotoMax ?? profile.Photo400Orig ?? profile.Photo200Orig ?? profile.Photo200 ?? profile.Photo100 ?? new Uri("https://vk.com/images/camera_200.png")).ToString();
-                 
+
                 AccountsDB.activeAccount.Update();
 
 
                 login.Frame.Navigate(typeof(MainView), null, new DrillInNavigationTransitionInfo());
 
             }
-            catch (Exception ex)  
-            { 
+            catch (Exception ex)
+            {
+                login.Frame.GoBack();
             }
         }
 
@@ -579,9 +581,11 @@ namespace VK_UI3.VKs
                 EcosystemCheckOtpResponse response = null;
                 try
                 {
-                   response = await _ecosystemCategory.CheckOtpAsync(Sid, Vk2FaResponse!.ValidationType, arg);
+                    response = await _ecosystemCategory.CheckOtpAsync(Sid, Vk2FaResponse!.ValidationType, arg);
 
-                }catch (Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     login.Frame.GoBack();
                     return;
                 }
@@ -616,8 +620,8 @@ namespace VK_UI3.VKs
                     return;
                 }
                 else
-                { 
-                
+                {
+
                 }
             }
 
@@ -628,7 +632,7 @@ namespace VK_UI3.VKs
                 return;
             }
 
-   //      _snackbarService.Show("Ошибка", $"Отправка кода с типом {_grantType} не реализована!");
+            //      _snackbarService.Show("Ошибка", $"Отправка кода с типом {_grantType} не реализована!");
         }
 
         private unsafe bool TryBeginPasskey(string passkeyData, out byte[] authenticatorData, out byte[] signature,
@@ -673,7 +677,7 @@ namespace VK_UI3.VKs
             IntPtr clientDataJsonPtr = Marshal.AllocHGlobal(bytes.Length);
             Marshal.Copy(bytes, 0, clientDataJsonPtr, bytes.Length);
 
-          
+
             var sha256Ptr = Marshal.StringToHGlobalUni("SHA-256");
 
             HRESULT hResult;
@@ -733,7 +737,7 @@ namespace VK_UI3.VKs
             return hResult.Succeeded;
         }
 
-       
+
 
         /*
 
@@ -773,10 +777,10 @@ namespace VK_UI3.VKs
         */
         public IVkApi getVKAPI()
         {
-         
+
             return api;
         }
-        
+
         public List<Audio> GetUserMusic()
         {
 
@@ -798,29 +802,62 @@ namespace VK_UI3.VKs
             return null;
         }
 
-        public static async Task<string> AddDislike(long Id, long OwnerId)
+        public static async Task<bool> AddDislike(long Id, long OwnerId)
         {
-            var parameters = new VkParameters
+            try
+            {
+                var parameters = new VkParameters
                 {
                     { "audio_ids", $"{Id}_{OwnerId}" }
                 };
 
-            var response = await api.CallAsync("audio.addDislike", parameters);
+                var response = await api.CallAsync("audio.addDislike", parameters);
 
-            return response;
+                if (response.RawJson == "1")
+                {
+                    return true;
+                }
+                else
+                {
+
+
+                    return false;
+                }
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        public static async Task<string> RemoveDislike(long Id, long OwnerId)
+        public static async Task<bool> RemoveDislike(long Id, long OwnerId)
         {
-            var parameters = new VkParameters
+            try
+            {
+                var parameters = new VkParameters
                 {
                     { "audio_ids", $"{Id}_{OwnerId}" }
                 };
 
-            var response = await api.CallAsync("audio.addDislike", parameters);
+                var response = await api.CallAsync("audio.removeDislike", parameters);
 
-            return response;
+                if (response.RawJson == "1")
+                {
+                    return true;
+                }
+                else
+                {
+                    // Обработка ошибок
+
+                    return false;
+                }
+            }
+            catch
+            {
+                return false;
+            }
         }
+
 
 
     }

@@ -1,6 +1,12 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml;
+using System.Xml.Linq;
+using System.Linq;
+using System.IO;
+using System.Threading.Tasks;
+using Windows.Storage;
+using System;
 
 namespace VK_UI3.Helpers
 {
@@ -26,5 +32,20 @@ namespace VK_UI3.Helpers
             return null;
         }
 
+
+        public static async Task<string> GetPathDataAsync(string filePath)
+        {
+            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(filePath));
+            var svgContent = await FileIO.ReadTextAsync(file);
+            var doc = XDocument.Parse(svgContent);
+            XNamespace ns = "http://www.w3.org/2000/svg";
+            var pathElement = doc.Descendants(ns + "path").FirstOrDefault();
+            if (pathElement != null)
+            {
+                var pathData = pathElement.Attribute("d")?.Value;
+                return pathData;
+            }
+            return null;
+        }
     }
 }

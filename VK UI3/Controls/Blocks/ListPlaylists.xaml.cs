@@ -5,8 +5,6 @@ using System;
 using System.Collections.ObjectModel;
 using VK_UI3.Helpers;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace VK_UI3.Controls.Blocks
 {
@@ -18,6 +16,12 @@ namespace VK_UI3.Controls.Blocks
 
             DataContextChanged += RecommsPlaylistBlock_DataContextChanged;
             this.Loading += ListPlaylists_Loading;
+            this.Loaded += ListPlaylists_Loaded;
+        }
+
+        private void ListPlaylists_Loaded(object sender, RoutedEventArgs e)
+        {
+           
         }
 
         private void ListPlaylists_Loading(FrameworkElement sender, object args)

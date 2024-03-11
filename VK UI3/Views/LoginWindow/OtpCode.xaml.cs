@@ -35,8 +35,6 @@ namespace VK_UI3.Views.LoginWindow
         public OtpCode()
         {
             this.InitializeComponent();
-
-
         }
 
 
@@ -101,17 +99,11 @@ namespace VK_UI3.Views.LoginWindow
         }
         private void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
-
             sumbit();
-
-
         }
 
         private void sumbit() 
         {
-          
-
-
             vk.Vk2FaCompleteAsync(CodeBox.Text);
 
         }

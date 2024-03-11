@@ -67,12 +67,17 @@ namespace VK_UI3.Controls
                 {
                     dataTrack.iVKGetAudio.AudioPlayedChangeEvent += UserAudio_AudioPlayedChangeEvent;
                     addedHandler = true;
-                }
+                }   
 
                 if (track.OwnerId == AccountsDB.activeAccount.id)
                 {
                     AddRemove.Text = "Удалить";
                     AddRemove.Icon = new SymbolIcon(Symbol.Remove);
+                }
+                else
+                {
+                    AddRemove.Text = "Добавть";
+                    AddRemove.Icon = new SymbolIcon(Symbol.Add);
                 }
 
                 Title.Text = track.Title;
@@ -165,12 +170,12 @@ namespace VK_UI3.Controls
 
                 // Преобразование секунд в строку времени
                 object timeString = converter.Convert(track.Duration, null, null, null);
-                Console.WriteLine(timeString);  // Выводит "60:00"
+                Console.WriteLine(timeString);
                 Time.Text = (string)timeString;
 
 
 
-                SetIconDislieAsync();
+                SetIconDislike();
 
                 try
                 {
@@ -185,31 +190,29 @@ namespace VK_UI3.Controls
             }
         }
 
-        private async Task SetIconDislieAsync()
+        private void SetIconDislike()
         {
-            try
+            // Загрузите ResourceDictionary из файла XAML внутри пакета .appx
+            ResourceDictionary myResourceDictionary = new ResourceDictionary();
+            myResourceDictionary.Source = new Uri("ms-appx:///Resource/icons.xaml", UriKind.Absolute);
+
+            // Получите доступ к ресурсу по ключу
+            if (!dataTrack.audio.Dislike)
             {
-                // Загрузите файл XAML
-                var uri = new Uri("ms-appx:///Assets/SVGs/thumb-dislike.xaml");
-                var file = await StorageFile.GetFileFromApplicationUriAsync(uri);
-
-                // Прочитайте содержимое файла
-                var fileContent = await FileIO.ReadTextAsync(file);
-
-                // Создайте новый объект PathIcon и установите его данные
-                var pathIcon = new PathIcon { Data = (Geometry)XamlReader.Load(fileContent) };
-                DislikeIconSet.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
-                // Установите иконку для элемента
-                DispatcherQueue.TryEnqueue(() =>
-                {
-                    DislikeIconSet.Data = pathIcon.Data;
-                });
+                 IconData = myResourceDictionary["Dislike"] as string;
+                disText.Text = "Не нравиться";
             }
-            catch (Exception e)
-            { 
-            
+            else
+            {
+                 IconData = myResourceDictionary["FilledDislike"] as string;
+                disText.Text = "Убрать дизлайк";
             }
+         
+         
         }
+
+        public string IconData = "m12.4829 18.2961c-.7988.8372-2.0916.3869-2.4309-.5904-.27995-.8063-.6436-1.7718-.99794-2.4827-1.05964-2.1259-1.67823-3.3355-3.38432-4.849-.22637-.2008-.51811-.3626-.84069-.49013-1.12914-.44632-2.19096-1.61609-1.91324-3.0047l.35304-1.76517c.1857-.92855.88009-1.67247 1.79366-1.92162l5.59969-1.52721c2.5456-.694232 5.1395.94051 5.6115 3.53646l.6839 3.7617c.3348 1.84147-1.0799 3.53667-2.9516 3.53667h-.8835l.0103.0522c.0801.4082.1765.9703.241 1.5829.0642.6103.0983 1.2844.048 1.9126-.0493.6163-.1839 1.2491-.5042 1.7296-.1095.1643-.2721.3484-.4347.5188z";
+
 
         private void TrackControl_Loading(FrameworkElement sender, object args)
         {
@@ -405,16 +408,36 @@ namespace VK_UI3.Controls
             }
         }
 
+
+        bool waitDisliked = false;
         private void DislikeClick(object sender, RoutedEventArgs e)
         {
-            if (dataTrack.audio.Dislike)
-            {
-                VK.RemoveDislike((long)dataTrack.audio.Id, (long)dataTrack.audio.OwnerId);
-            }
-            else
-            {
-                VK.AddDislike((long)dataTrack.audio.Id, (long)dataTrack.audio.OwnerId);
-            }
+            if (waitDisliked) return;
+            waitDisliked = true;
+            Task.Run(
+                  async () =>
+                  {
+                      if (dataTrack.audio.Dislike)
+                      {
+
+                         var complete = await VK.RemoveDislike((long)dataTrack.audio.Id, (long)dataTrack.audio.OwnerId);
+                          if (complete) 
+                              this.dataTrack.audio.Dislike = !this.dataTrack.audio.Dislike;
+
+                      }
+                      else
+                      {
+                          var complete = await VK.AddDislike((long)dataTrack.audio.Id, (long)dataTrack.audio.OwnerId);
+                          if (complete) 
+                              this.dataTrack.audio.Dislike = !this.dataTrack.audio.Dislike;
+                          
+                      }
+                      DispatcherQueue.TryEnqueue(async () =>
+                      {
+                          SetIconDislike();
+                      });
+                      waitDisliked = false;
+                  });
         }
     }
 }

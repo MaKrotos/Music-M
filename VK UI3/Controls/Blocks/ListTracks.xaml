@@ -18,7 +18,7 @@
     </UserControl.Shadow>
 
     <Grid Height="Auto" x:Name="gridCh">
-        <GridView     CornerRadius="5"   ScrollViewer.IsScrollInertiaEnabled="False" ScrollViewer.HorizontalScrollMode="Enabled"  ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Visible"   x:Name="gridV"  SelectionMode="None" ItemsSource="{x:Bind sectionAudio.listAudio, Mode=OneWay}">
+        <GridView      CornerRadius="5"   ScrollViewer.IsScrollInertiaEnabled="False" ScrollViewer.HorizontalScrollMode="Enabled"  ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Visible"   x:Name="gridV"  SelectionMode="None" ItemsSource="{x:Bind sectionAudio.listAudio, Mode=OneWay}">
             <GridView.ItemContainerStyle>
                 <Style TargetType="GridViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />

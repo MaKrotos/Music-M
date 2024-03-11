@@ -19,13 +19,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Content Remove="Assets\SVGs\thumb-dislike-fill.svg" />
-	  <Content Remove="Assets\SVGs\thumb-dislike.svg" />
-	  <Content Remove="Assets\SVGs\thumbdislike.xaml" />
-	  <Content Remove="Assets\SVGs\thumbdislikefill.xaml" />
+	  <Content Remove="Assets\icons.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Assets\SVGs\thumb-dislike-fill.svg" />
+	  <None Remove="Assets\SVGs\thumb-dislike.svg" />
+	  <None Remove="Assets\SVGs\thumbdislike.xaml" />
+	  <None Remove="Assets\SVGs\thumbdislikefill.xaml" />
 	  <None Remove="Controllers\NavMenuController.xaml" />
 	  <None Remove="Controllers\PlayListPage.xaml" />
 	  <None Remove="Controls\BannerControl.xaml" />
@@ -54,6 +55,7 @@
 	  <Page Remove="Assets\SVGs\thumbdislike.xaml" />
 	  <Page Remove="Assets\SVGs\thumbdislikefill.xaml" />
 	  <Page Remove="Controls\ListPlaylists.xaml" />
+	  <Page Remove="themes\icons.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -64,8 +66,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.3" />
     <PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.3" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
-
+	<PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" /> 
     <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.49-beta">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -88,6 +91,20 @@
 
   <ItemGroup>
     <Content Update="Assets\StoreLogo.scale-400.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\SVGs\thumb-dislike-fill.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\SVGs\thumb-dislike.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\SVGs\thumbdislike.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Assets\SVGs\thumbdislikefill.xaml">
+      <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -127,21 +144,10 @@
     <Page Update="Controllers\PlayListPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <None Update="Assets\SVGs\thumb-dislike-fill.svg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Assets\SVGs\thumb-dislike.svg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Assets\SVGs\thumbdislike.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Assets\SVGs\thumbdislikefill.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Controls\ListPlaylists.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Assets\icons.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
     <Page Update="Views\Settings\SettingsPage.xaml">
@@ -189,5 +195,9 @@
     <Resource Include="Fonts\VKSansDisplay-Regular.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Resource\" />
   </ItemGroup>
 </Project>
