@@ -4,6 +4,7 @@
 
 ![image](https://github.com/MaKrotos/Music-M/assets/43302537/a79291b3-281b-4775-a05c-6718510496bf)
 
+![image](https://github.com/MaKrotos/Music-M/assets/43302537/7cb986ff-e835-4ff6-a24d-542cbc21f050)
 
 
 
