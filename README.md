@@ -2,6 +2,7 @@
 
 ![image](https://github.com/MaKrotos/Music-M/assets/43302537/3247ee7a-a9f7-4232-9978-3c7a31a66180)
 
+![image](https://github.com/MaKrotos/Music-M/assets/43302537/a79291b3-281b-4775-a05c-6718510496bf)
 
 
 
