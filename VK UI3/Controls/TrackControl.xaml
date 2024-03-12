@@ -27,12 +27,16 @@
             <MenuFlyoutSubItem x:Name="GoArtist" Text="Перейти к исполнителю" Icon="ContactInfo">
                 
             </MenuFlyoutSubItem>
+            <MenuFlyoutItem Text="Перейти в альбом" Click="GoToAlbum">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xE93C;" ></FontIcon>
+                    </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+
             <MenuFlyoutItem Text="Добавить в плейлист" Click="AddToPlaylist_Click" Icon="Add" />
             <MenuFlyoutItem x:Name="disText" Text="Не нравится" Click="DislikeClick">
                 <MenuFlyoutItem.Icon>
-
-                    <PathIcon Data="{x:Bind IconData,Mode=OneWay}"/>
-
+                    <PathIcon Data="{x:Bind IconData, Mode=OneWay}"/>
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
             <MenuFlyoutItem Text="Пропускать треки исполнителя" Click="AddArtistIgnore_Click" Icon="BlockContact" />
@@ -130,9 +134,7 @@
                             
                             Text="Title"
                             TextTrimming="CharacterEllipsis">
-                            <ToolTipService.ToolTip>
-                                <ToolTip Content="Перейти к альбому" />
-                            </ToolTipService.ToolTip>
+                           
                         </TextBlock>
 
                         <TextBlock
@@ -155,9 +157,7 @@
                            Text="Artist"
                            TextWrapping="NoWrap"
                            TextTrimming="CharacterEllipsis">
-                            <ToolTipService.ToolTip>
-                               <ToolTip Content="Перейти к исполнителю" />
-                           </ToolTipService.ToolTip>
+                           
                         </TextBlock>
                     </Grid>
 

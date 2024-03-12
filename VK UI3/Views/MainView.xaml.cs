@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -12,6 +13,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms.VisualStyles;
 using VK_UI3.Controllers;
@@ -22,6 +25,7 @@ using VK_UI3.Views.LoginWindow;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
 using Windows.Foundation;
+using Windows.UI.Text.Core;
 using static VK_UI3.DB.AccountsDB;
 using static VK_UI3.Views.SectionView;
 
@@ -48,8 +52,15 @@ namespace VK_UI3.Views
             //OpenMyPage(SectionType.MyListAudio);
             ContentFrame.Navigated += ContentFrame_Navigated;
             NavWiv.BackRequested += NavWiv_BackRequested;
-            createNavigation();
+            this.Loaded += MainView_Loaded;
+         
             onUpdateAccounts += MainView_onUpdateAccounts;
+        }
+        private static DispatcherQueue dispatcherQueue = null;
+        private void MainView_Loaded(object sender, RoutedEventArgs e)
+        {
+            _ = CreateNavigation();
+            dispatcherQueue = this.DispatcherQueue;
         }
 
         private void MainView_onUpdateAccounts(object sender, EventArgs e)
@@ -90,119 +101,165 @@ namespace VK_UI3.Views
 
     
         public List<NavMenuController> navMenuControllers = new();
-
-        private async void createNavigation()
+        private CancellationTokenSource _cts = new CancellationTokenSource();
+        //   private CancellationTokenSource cts = null;
+        private async Task CreateNavigation()
         {
-             ObservableCollection<NavSettings> navSettings = new ObservableCollection<NavSettings>();
+            // Отменить предыдущую задачу, если она была запущена
+            _cts.Cancel();
+            _cts = new CancellationTokenSource();
+            var token = _cts.Token;
 
-            NavWiv.SelectedItem = 0;
+
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    ObservableCollection<NavSettings> navSettings = new ObservableCollection<NavSettings>();
+
+                    this.DispatcherQueue.TryEnqueue(async () =>
+                    {
+                        NavWiv.SelectedItem = 0;
+                        ClearMenuItems();
+                    });
+                    var catalogs = await VK.vkService.GetAudioCatalogAsync();
+
+
+                    token.ThrowIfCancellationRequested();
+                    var updatesSection = await VK.vkService.GetAudioCatalogAsync("https://vk.com/audio?section=updates");
+
+                    token.ThrowIfCancellationRequested();
+                    if (updatesSection.Catalog?.Sections?.Count > 0)
+                    {
+                        var section = updatesSection.Catalog.Sections[0];
+                        section.Title = "Подписки";
+                        catalogs.Catalog.Sections.Insert(catalogs.Catalog.Sections.Count - 1, section);
+                    }
+
+                  
+
+                    var sectionsService = StaticService.Container.GetRequiredService<ICustomSectionsService>();
+                    catalogs.Catalog.Sections.AddRange(await sectionsService.GetSectionsAsync().ToArrayAsync());
+
+                    var icons = GetIcons();
+
+                    token.ThrowIfCancellationRequested();
+
+                    foreach (var section in catalogs.Catalog.Sections)
+                    {
+                        var navSet = CreateNavSettings(section, icons);
+                        navSettings.Add(navSet);
+                    }
+                    int index = 0;
+                    this.DispatcherQueue.TryEnqueue(async () =>
+                    {
+                        index = NavWiv.MenuItems.IndexOf(NavWiv.MenuItems.OfType<NavigationViewItemHeader>().First());
+                    });
+
+                    token.ThrowIfCancellationRequested();
+
+
+                    foreach (var setting in navSettings)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        this.DispatcherQueue.TryEnqueue(async() =>
+                        {
+                            var navViewItem = new NavMenuController
+                            {
+                                navSettings = setting,
+                                Content = setting.MyMusicItem,
+                                Icon = new SymbolIcon(setting.Icon)
+                            };
+                            NavWiv.MenuItems.Insert(index, navViewItem);
+                            navMenuControllers.Add(navViewItem);
+                            index++;
+                        });
+                    }
+
+
+                }
+                catch (OperationCanceledException)
+                {
+                    // Задача была отменена
+                }
+
+
+            }, token);
+        }
+
+        private void ClearMenuItems()
+        {
             foreach (var item in navMenuControllers)
             {
                 NavWiv.MenuItems.Remove(item);
             }
             navMenuControllers.Clear();
-            navSettings.Clear();
-
-            var catalogs = await VK.vkService.GetAudioCatalogAsync();
-            var updatesSection = await VK.vkService.GetAudioCatalogAsync("https://vk.com/audio?section=updates");
-
-            if (updatesSection.Catalog?.Sections?.Count > 0)
-            {
-                var section = updatesSection.Catalog.Sections[0];
-                section.Title = "Подписки";
-                catalogs.Catalog.Sections.Insert(catalogs.Catalog.Sections.Count - 1, section);
-            }
-
-            var sectionsService = StaticService.Container.GetRequiredService<ICustomSectionsService>();
-
-            catalogs.Catalog.Sections.AddRange(await sectionsService.GetSectionsAsync().ToArrayAsync());
-
-            var icons = new List<Symbol>
-                {
-                    Symbol.MusicInfo,
-                    Symbol.Audio,
-                    Symbol.Play,
-                    Symbol.Pause,
-                    Symbol.Stop,
-                    Symbol.Forward,
-                    Symbol.Back,
-                    Symbol.Previous,
-                    Symbol.Next,
-                    Symbol.Volume,
-                    Symbol.Mute,
-                    Symbol.More,
-                    Symbol.Pictures,
-                    Symbol.Map,
-                    Symbol.CalendarDay,
-                    Symbol.Bookmarks,
-                };
-
-
-
-            var rand = new Random();
-
-            foreach (var section in catalogs.Catalog.Sections)
-            {
-                Symbol icon;
-
-                switch (section.Title.ToLower())
-                {
-                    case "главная":
-                        icon = Symbol.Home;
-                        break;
-                    case "моя музыка":
-                        icon = Symbol.Audio;
-                        section.Title = "Музыка";
-                        break;
-                    case "обзор":
-                        icon = Symbol.PreviewLink;
-                        break;
-                    case "подкасты":
-                        icon = Symbol.Microphone;
-                        break;
-                    case "подписки":
-                        icon = Symbol.Favorite;
-                        break;
-                    case "каталоги":
-                        icon = Symbol.Library;
-                        break;
-                    case "поиск":
-                        icon = Symbol.Find;
-                        break;
-                    case "книги и шоу":
-                        icon = Symbol.Bookmarks;
-                        break;
-                    default:
-                       
-                        icon = icons[0];
-                        icons.RemoveAt(0);
-                        break;
-
-                }
-
-                var navSet = new NavSettings() { Icon = icon, MyMusicItem = section.Title, section = section };
-                navSettings.Add(navSet);
-            }
-
-
-            int index = NavWiv.MenuItems.IndexOf(NavWiv.MenuItems.OfType<NavigationViewItemHeader>().First());
-            foreach (var setting in navSettings)
-            {
-                this.DispatcherQueue.TryEnqueue(() =>
-                {
-                    var navViewItem = new NavMenuController
-                    {
-                        navSettings = setting,
-                        Content = setting.MyMusicItem,
-                        Icon = new SymbolIcon(setting.Icon)
-
-                    };
-                    NavWiv.MenuItems.Insert(index, navViewItem);
-                    navMenuControllers.Add(navViewItem);
-                    index++;
-                });
-            }
         }
+
+        private List<Symbol> GetIcons()
+        {
+            return new List<Symbol>
+    {
+        Symbol.MusicInfo,
+        Symbol.Audio,
+        Symbol.Play,
+        Symbol.Pause,
+        Symbol.Stop,
+        Symbol.Forward,
+        Symbol.Back,
+        Symbol.Previous,
+        Symbol.Next,
+        Symbol.Volume,
+        Symbol.Mute,
+        Symbol.More,
+        Symbol.Pictures,
+        Symbol.Map,
+        Symbol.CalendarDay,
+        Symbol.Bookmarks,
+        };
+            }
+
+        private NavSettings CreateNavSettings(Section section, List<Symbol> icons)
+        {
+            Symbol icon;
+
+            switch (section.Title.ToLower())
+            {
+                case "главная":
+                    icon = Symbol.Home;
+                    break;
+                case "моя музыка":
+                    icon = Symbol.Audio;
+                    section.Title = "Музыка";
+                    break;
+                case "обзор":
+                    icon = Symbol.PreviewLink;
+                    break;
+                case "подкасты":
+                    icon = Symbol.Microphone;
+                    break;
+                case "подписки":
+                    icon = Symbol.Favorite;
+                    break;
+                case "каталоги":
+                    icon = Symbol.Library;
+                    break;
+                case "поиск":
+                    icon = Symbol.Find;
+                    break;
+                case "книги и шоу":
+                    icon = Symbol.Bookmarks;
+                    break;
+                default:
+                    icon = icons[0];
+                    icons.RemoveAt(0);
+                    break;
+            }
+
+            return new NavSettings() { Icon = icon, MyMusicItem = section.Title, section = section };
+        }
+
+
 
 
         public async void RemoveNavItems()
@@ -224,6 +281,7 @@ namespace VK_UI3.Views
 
 
         public static ObservableCollection<Accounts> Accounts { get; set; } = new ObservableCollection<Accounts>();
+        
 
         ObservableCollection<Accounts> AccList
         {
@@ -252,9 +310,6 @@ namespace VK_UI3.Views
 
         private async void ListViewItem_PointerExited(object sender, PointerRoutedEventArgs e)
         {
-
-
-
         }
 
 
@@ -324,9 +379,8 @@ namespace VK_UI3.Views
                     activeAccount = selectedAccount;
                     if (ContentFrame.Content != null)
                     {
-                        createNavigation();
-                        // var a = ContentFrame.Content.GetType();
-                        // ContentFrame.Navigate(a, this, new DrillInNavigationTransitionInfo());
+                        _ = CreateNavigation();
+                      
                     }
                     else
                     {
@@ -515,6 +569,19 @@ namespace VK_UI3.Views
             var sectionView = new WaitView();
             sectionView.sectionType = SectionType.PlayList;
             sectionView.iVKGetAudio = iVKGetAudio;
+            frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
+        }
+       
+        public static void OpenPlayList(long AlbumID, long AlbumOwnerID, string AlbumAccessKey)
+        {
+            var sectionView = new WaitView();
+            sectionView.sectionType = SectionType.PlayList;
+            Playlist playlist = new Playlist();
+            playlist.Id = AlbumID;
+            playlist.OwnerId = AlbumOwnerID;
+            playlist.AccessKey = AlbumAccessKey;
+            PlayListVK playListVK = new PlayListVK(playlist, dispatcherQueue);
+            sectionView.iVKGetAudio = playListVK;
             frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
         }
 

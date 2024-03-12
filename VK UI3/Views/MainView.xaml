@@ -48,10 +48,6 @@
                     </NavigationViewItem>
 
                     <NavigationViewItemSeparator/>
-
-
-
-
                     <NavigationViewItemHeader Content="Аккаунты"/>
                     <NavigationViewItemSeparator/>
                     <NavigationViewItem   Padding="-10,0,-20,0" SelectsOnInvoked="False" >

@@ -1,5 +1,6 @@
 using MusicX.Core.Models;
 using System.ComponentModel;
+using VK_UI3.Controllers;
 using VK_UI3.VKs.IVK;
 
 
@@ -22,8 +23,20 @@ namespace VK_UI3.Helpers
         {
             get
             {
-                if (NumberInList == null) return false;
-                return (NumberInList == iVKGetAudio.currentTrack);
+
+                //if (NumberInList == null) return false;
+                // return (NumberInList == iVKGetAudio.currentTrack);
+                if (AudioPlayer._TrackDataThis == null) return false;
+
+                if (AudioPlayer._TrackDataThis.audio.AccessKey == this.audio.AccessKey)
+                {
+                    return true;
+                }
+                else
+                    return false;
+
+               // if (AudioPlayer._TrackDataThis.audio.o)
+
             }
         }
 

@@ -11,9 +11,11 @@ using MusicX.Core.Services;
 using MusicX.Shared.Player;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using VK_UI3.Controllers;
 using VK_UI3.Converters;
@@ -36,7 +38,7 @@ namespace VK_UI3.Controls
 {
 
 
-    public sealed partial class TrackControl : UserControl
+    public sealed partial class TrackControl : UserControl, INotifyPropertyChanged
     {
 
         public TrackControl()
@@ -88,7 +90,6 @@ namespace VK_UI3.Controls
 
                 if (track.Album != null && track.Album.Thumb != null)
                 {
-
                     photouri = track.Album.Thumb.Photo270 ??
                     track.Album.Thumb.Photo300 ??
                     track.Album.Thumb.Photo600 ??
@@ -211,7 +212,32 @@ namespace VK_UI3.Controls
          
         }
 
-        public string IconData = "m12.4829 18.2961c-.7988.8372-2.0916.3869-2.4309-.5904-.27995-.8063-.6436-1.7718-.99794-2.4827-1.05964-2.1259-1.67823-3.3355-3.38432-4.849-.22637-.2008-.51811-.3626-.84069-.49013-1.12914-.44632-2.19096-1.61609-1.91324-3.0047l.35304-1.76517c.1857-.92855.88009-1.67247 1.79366-1.92162l5.59969-1.52721c2.5456-.694232 5.1395.94051 5.6115 3.53646l.6839 3.7617c.3348 1.84147-1.0799 3.53667-2.9516 3.53667h-.8835l.0103.0522c.0801.4082.1765.9703.241 1.5829.0642.6103.0983 1.2844.048 1.9126-.0493.6163-.1839 1.2491-.5042 1.7296-.1095.1643-.2721.3484-.4347.5188z";
+        public string _iconData  = "m12.4829 18.2961c-.7988.8372-2.0916.3869-2.4309-.5904-.27995-.8063-.6436-1.7718-.99794-2.4827-1.05964-2.1259-1.67823-3.3355-3.38432-4.849-.22637-.2008-.51811-.3626-.84069-.49013-1.12914-.44632-2.19096-1.61609-1.91324-3.0047l.35304-1.76517c.1857-.92855.88009-1.67247 1.79366-1.92162l5.59969-1.52721c2.5456-.694232 5.1395.94051 5.6115 3.53646l.6839 3.7617c.3348 1.84147-1.0799 3.53667-2.9516 3.53667h-.8835l.0103.0522c.0801.4082.1765.9703.241 1.5829.0642.6103.0983 1.2844.048 1.9126-.0493.6163-.1839 1.2491-.5042 1.7296-.1095.1643-.2721.3484-.4347.5188z";
+
+        public string IconData
+        {
+            get { return _iconData; }
+            set
+            {
+                if (_iconData != value)
+                {
+                    _iconData = value;
+                    OnPropertyChanged(nameof(IconData));
+                }
+            }
+        }
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            this.DispatcherQueue.TryEnqueue(async () =>
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            });
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        
 
 
         private void TrackControl_Loading(FrameworkElement sender, object args)
@@ -329,12 +355,13 @@ namespace VK_UI3.Controls
 
         public void Download_Click(object sender, RoutedEventArgs e)
         {
-            // Ваш код здесь
+           
         }
 
         public void AddToQueue_Click(object sender, RoutedEventArgs e)
         {
-            // Ваш код здесь
+          
+          
         }
 
         public void CopyLink(object sender, RoutedEventArgs e) { 
@@ -348,7 +375,7 @@ namespace VK_UI3.Controls
 
         public void AddToPlaylist_Click(object sender, RoutedEventArgs e)
         {
-            // Ваш код здесь
+            
         }
 
         public void AddRemove_Click(object sender, RoutedEventArgs e)
@@ -410,6 +437,9 @@ namespace VK_UI3.Controls
 
 
         bool waitDisliked = false;
+
+     
+
         private void DislikeClick(object sender, RoutedEventArgs e)
         {
             if (waitDisliked) return;
@@ -438,6 +468,14 @@ namespace VK_UI3.Controls
                       });
                       waitDisliked = false;
                   });
+        }
+
+        private void GoToAlbum(object sender, RoutedEventArgs e)
+        {
+            MainView.OpenPlayList(
+                dataTrack.audio.Album.Id, 
+                dataTrack.audio.Album.OwnerId, 
+                dataTrack.audio.Album.AccessKey);
         }
     }
 }

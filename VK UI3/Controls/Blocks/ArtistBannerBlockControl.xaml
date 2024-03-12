@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <UserControl
    
+    Margin="0,8,0,0"
     x:Class="VK_UI3.Controls.Blocks.ArtistBannerBlockControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -14,11 +15,11 @@
         x:Name="ArtistBanner">
 
 
-        <Image Height="450" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="ArtistBannerImage" Stretch="UniformToFill">
-    
-                </Image>
-           
-      
+        <Grid MaxHeight="450" Height="450">
+            <Image Height="{Binding ElementName=ArtistBannerImage, Path=Width}" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="ArtistBannerImage"  Stretch="UniformToFill">
+            </Image>
+        </Grid>
+
         <Rectangle
           Height="450"
           Margin="0,0,-15,0"
@@ -43,9 +44,8 @@
               FontFamily="{StaticResource VKSansBold}"
               FontSize="50"
               FontWeight="Bold"
-              
               Text="Artist text" />
-            <Grid x:Name="ActionsGrid" />
+            <Grid x:Name="ActionsGrid" HorizontalAlignment="Left" />
         </StackPanel>
     </Grid>
 </UserControl>

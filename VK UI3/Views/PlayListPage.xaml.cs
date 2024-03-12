@@ -20,7 +20,7 @@ using Windows.Foundation.Collections;
 
 namespace VK_UI3.Views
 {
-
+    public record PlaylistData(long PlaylistId, long OwnerId, string AccessKey);
     public sealed partial class PlayListPage : Page
     {
         public PlayListPage()

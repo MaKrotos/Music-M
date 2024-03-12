@@ -808,7 +808,7 @@ namespace VK_UI3.VKs
             {
                 var parameters = new VkParameters
                 {
-                    { "audio_ids", $"{Id}_{OwnerId}" }
+                    { "audio_ids", $"{OwnerId}_{Id}" }
                 };
 
                 var response = await api.CallAsync("audio.addDislike", parameters);
@@ -836,7 +836,7 @@ namespace VK_UI3.VKs
             {
                 var parameters = new VkParameters
                 {
-                    { "audio_ids", $"{Id}_{OwnerId}" }
+                  { "audio_ids", $"{OwnerId}_{Id}" }
                 };
 
                 var response = await api.CallAsync("audio.removeDislike", parameters);

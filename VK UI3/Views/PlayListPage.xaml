@@ -15,7 +15,7 @@
     <Page.Resources>
         <ThemeShadow x:Name="SharedShadow" />
     </Page.Resources>
-    <ListView Padding="0,16,0,16"  CanReorderItems="false" x:Name="TrackListView" ItemsSource="{x:Bind vkGetAudio.listAudio, Mode=OneWay}"   IsItemClickEnabled="False" SelectionMode="None">
+    <ListView Padding="0,0,0,16"  CanReorderItems="false" x:Name="TrackListView" ItemsSource="{x:Bind vkGetAudio.listAudio, Mode=OneWay}"   IsItemClickEnabled="False" SelectionMode="None">
         <ListView.Header>
                     <Grid Margin="15">
                         <Grid.ColumnDefinitions>
