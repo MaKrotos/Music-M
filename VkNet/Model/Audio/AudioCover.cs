@@ -46,10 +46,16 @@ namespace VkNet.Model
 		[JsonProperty("photo_600")]
 		public string Photo600 { get; set; }
 
-		/// <summary>
-		/// Ширина изображения обложки.
-		/// </summary>
-		[JsonProperty("width")]
+        /// <summary>
+        /// Uri обложки с максимальным размером 1200x1200.
+        /// </summary>
+        [JsonProperty("photo_1200")]
+        public string Photo1200 { get; set; }
+
+        /// <summary>
+        /// Ширина изображения обложки.
+        /// </summary>
+        [JsonProperty("width")]
 		public long Width { get; set; }
 
 		/// <summary>

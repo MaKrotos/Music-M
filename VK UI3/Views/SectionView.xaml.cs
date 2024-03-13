@@ -101,7 +101,8 @@ namespace VK_UI3.Views
             Artist,
             Search,
             MyListAudio,
-            PlayList
+            PlayList,
+            UserPlayListList
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

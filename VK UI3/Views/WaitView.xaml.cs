@@ -9,6 +9,7 @@ using VK_UI3.Helpers;
 using VK_UI3.Views.LoginWindow;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
+using VkNet.Model.Attachments;
 using Windows.Media.Playlists;
 using static VK_UI3.Views.SectionView;
 
@@ -17,7 +18,7 @@ using static VK_UI3.Views.SectionView;
 
 namespace VK_UI3.Views
 {
-    public sealed partial class WaitView : Page
+    public sealed partial class WaitView : Microsoft.UI.Xaml.Controls.Page
     {
         public WaitView()
         {
@@ -38,26 +39,24 @@ namespace VK_UI3.Views
         public Section section;
         internal IVKGetAudio iVKGetAudio;
 
-        public MusicX.Core.Models.Playlist Playlist { get; internal set; }
+        public AudioPlaylist Playlist { get; internal set; }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-
-            frameSection.Navigate(typeof(waitPage), null, new DrillInNavigationTransitionInfo());
-
-
-
-            var waitView = e.Parameter as WaitView;
-            if (waitView == null) return;
+            
+                frameSection.Navigate(typeof(waitPage), null, new DrillInNavigationTransitionInfo());
 
 
-            this.section = waitView.section;
-            this.sectionType = waitView.sectionType;
-            this.SectionID = waitView.SectionID;
-            this.Playlist = waitView.Playlist;
-            this.iVKGetAudio = waitView.iVKGetAudio;
 
-          
+                var waitView = e.Parameter as WaitView;
+                if (waitView == null) return;
+
+
+                this.section = waitView.section;
+                this.sectionType = waitView.sectionType;
+                this.SectionID = waitView.SectionID;
+                this.Playlist = waitView.Playlist;
+                this.iVKGetAudio = waitView.iVKGetAudio;
         }
 
 
@@ -81,7 +80,6 @@ namespace VK_UI3.Views
             try
             {
                 if (query == null 
-                    //&& nowOpenSearchSug
                     ) return;
 
                 var res = await VK.vkService.GetAudioSearchAsync(query);
@@ -128,6 +126,7 @@ namespace VK_UI3.Views
                     SectionType.Artist => LoadArtistSection(this.SectionID),
                     SectionType.Search => LoadSearchSection(this.SectionID),
                     SectionType.PlayList => LoadPlayList(),
+                    SectionType.UserPlayListList => UserPlayListList(),
                     SectionType.MyListAudio => LoadMyAudioList(),
                     _ => throw new ArgumentOutOfRangeException()
                 }); ; ;
@@ -136,6 +135,12 @@ namespace VK_UI3.Views
             {
                 //  ContentState = ContentState.Loaded;
             }
+        }
+
+        private async Task UserPlayListList()
+        {
+            var list = await VK.api.Audio.GetPlaylistsAsync(long.Parse(SectionID), 100);
+            frameSection.Navigate(typeof(UserPlayList), list, new DrillInNavigationTransitionInfo());
         }
 
         private async Task LoadPlayList()

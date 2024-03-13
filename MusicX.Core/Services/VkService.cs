@@ -985,7 +985,7 @@ namespace MusicX.Core.Services
 
                 var result = await vkApi.Audio.CreatePlaylistAsync(ownerId, title, description, audios);
 
-                return result.Id.Value;
+                return result.Id;
             }catch (Exception ex)
             {
                 logger.Error("VK API ERROR:");

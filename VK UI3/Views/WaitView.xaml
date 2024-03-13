@@ -12,7 +12,7 @@
  
      mc:Ignorable="d">
 
-    <Frame x:Name="frameSection" Margin="0" Padding="0" >
+    <Frame  x:Name="frameSection" Margin="0" Padding="0" >
        
     </Frame>
 </Page>

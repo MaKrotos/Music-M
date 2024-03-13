@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -19,6 +20,7 @@ namespace VK_UI3.Helpers.Animations
         Storyboard storyboard = null;
         Image imageControl = null;
         ImageBrush imageBrushControl = null;
+        PersonPicture personPicture = null;
         DispatcherQueue dispatcherQueue = null;
 
         string databaseFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "photosCache");
@@ -26,6 +28,12 @@ namespace VK_UI3.Helpers.Animations
         public AnimationsChangeImage(Image imageControl, DispatcherQueue dispatcherQueue)
         {
             this.imageControl = imageControl;
+            this.dispatcherQueue = dispatcherQueue;
+        }
+
+        public AnimationsChangeImage(PersonPicture personPicture, DispatcherQueue dispatcherQueue)
+        {
+            this.personPicture = personPicture;
             this.dispatcherQueue = dispatcherQueue;
         }
 
@@ -55,12 +63,19 @@ namespace VK_UI3.Helpers.Animations
                 {
                     storyboard.Pause();
                 }
+                Object element = null;
+                if (imageControl != null)
+                    element = imageControl;
+                if (imageBrushControl != null)
+                    element = imageBrushControl;
+                if (personPicture != null)
+                    element = personPicture;
 
                 var animation = new DoubleAnimation
                 {
-                    From = imageControl != null ? imageControl.Opacity : imageBrushControl.Opacity,
+                    From = (element as FrameworkElement).Opacity,
                     To = 0.0,
-                    Duration = TimeSpan.FromMilliseconds(50),
+                    Duration = TimeSpan.FromMilliseconds(250),
                 };
 
                 storyboard = new Storyboard();
@@ -78,14 +93,18 @@ namespace VK_UI3.Helpers.Animations
                     {
                         imageControl.Source = bitmapImage;
                     }
-                    else
+                    if (imageBrushControl != null)
                     {
                         imageBrushControl.ImageSource = bitmapImage;
+                    }
+                    if (personPicture != null)
+                    {
+                        personPicture.ProfilePicture = bitmapImage;
                     }
 
                     var animation = new DoubleAnimation
                     {
-                        From = imageControl != null ? imageControl.Opacity : imageBrushControl.Opacity,
+                        From = (element as FrameworkElement).Opacity,
                         To = 1,
                         Duration = TimeSpan.FromMilliseconds(500),
                     };

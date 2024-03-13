@@ -55,6 +55,7 @@ namespace VK_UI3.Controls
 
         private void TrackControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
+            ImageThumb.Opacity = 0;
             if ((DataContext as ExtendedAudio) != null)
             {
 
@@ -175,6 +176,14 @@ namespace VK_UI3.Controls
                 Time.Text = (string)timeString;
 
 
+                if (this.dataTrack.audio.Album != null)
+                {
+                    FlyGoAlbum.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    FlyGoAlbum.Visibility = Visibility.Collapsed;
+                }
 
                 SetIconDislike();
 

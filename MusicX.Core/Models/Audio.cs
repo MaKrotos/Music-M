@@ -7,8 +7,6 @@ namespace MusicX.Core.Models
 {
     public class Audio : VkNet.Model.Attachments.Audio
     {
-    
-
         public string DurationString
         {
             get
@@ -19,9 +17,6 @@ namespace MusicX.Core.Models
                 return t.ToString("m\\:ss");
             }
         }
-
-
-
 
         public bool IsAvailable { get; set; } = true;
 

@@ -13,19 +13,15 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms.VisualStyles;
 using VK_UI3.Controllers;
 using VK_UI3.DB;
-
 using VK_UI3.Services;
 using VK_UI3.Views.LoginWindow;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
-using Windows.Foundation;
-using Windows.UI.Text.Core;
+using VkNet.Model.Attachments;
 using static VK_UI3.DB.AccountsDB;
 using static VK_UI3.Views.SectionView;
 
@@ -37,7 +33,7 @@ namespace VK_UI3.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainView : Page, INotifyPropertyChanged
+    public sealed partial class MainView : Microsoft.UI.Xaml.Controls.Page, INotifyPropertyChanged
     {
 
         public static Frame frame;
@@ -53,9 +49,15 @@ namespace VK_UI3.Views
             ContentFrame.Navigated += ContentFrame_Navigated;
             NavWiv.BackRequested += NavWiv_BackRequested;
             this.Loaded += MainView_Loaded;
-         
-            onUpdateAccounts += MainView_onUpdateAccounts;
+            Accounts.CollectionChanged += Accounts_CollectionChanged;
+               onUpdateAccounts += MainView_onUpdateAccounts;
         }
+
+        private void Accounts_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+          //  throw new NotImplementedException();
+        }
+
         private static DispatcherQueue dispatcherQueue = null;
         private void MainView_Loaded(object sender, RoutedEventArgs e)
         {
@@ -308,11 +310,7 @@ namespace VK_UI3.Views
         }
 
 
-        private async void ListViewItem_PointerExited(object sender, PointerRoutedEventArgs e)
-        {
-        }
-
-
+     
 
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -356,6 +354,7 @@ namespace VK_UI3.Views
         {
             this.DispatcherQueue.TryEnqueue(async () =>
             {
+
                 var selectedAccount = (Accounts)AccountsList.SelectedItem;
 
                 if (selectedAccount == null) return;
@@ -375,6 +374,10 @@ namespace VK_UI3.Views
                 }
                 else
                 {
+
+                    if (Accounts[AccountsList.SelectedIndex].id == AccountsDB.activeAccount.id) 
+                        return;
+
                     AccountsDB.ActivateAccount(selectedAccount.id);
                     activeAccount = selectedAccount;
                     if (ContentFrame.Content != null)
@@ -389,6 +392,8 @@ namespace VK_UI3.Views
 
 
                 }
+             
+                
             });
         }
 
@@ -511,17 +516,17 @@ namespace VK_UI3.Views
                     case "моя музыка":
 
                         OpenMyPage(SectionType.MyListAudio);
+                    
+                        break;
 
-                        //  ContentFrame.Navigate(typeof(MainMenu), null, new DrillInNavigationTransitionInfo());
-                        ContentFrame.BackStack.Clear();
-                        NavWiv.IsBackEnabled = false;
+                    case "мои плейлисты":
+                        OpenPlayListLists();
                         break;
 
                     case "параметры":
 
                         frame.Navigate(typeof(Settings.SettingsPage), null, new DrillInNavigationTransitionInfo());
-                        ContentFrame.BackStack.Clear();
-                        NavWiv.IsBackEnabled = false;
+                        OpenMyPage(SectionType.MyListAudio);
                         break;
 
                     default:
@@ -529,14 +534,15 @@ namespace VK_UI3.Views
                         OpenSection(Item.navSettings.section.Id);
 
 
-                        ContentFrame.BackStack.Clear();
-                        NavWiv.IsBackEnabled = false;
-                        // RemoveNavItems();
+                       
                         break;
-                        // и так далее...
+                 
                       
                 }
-              
+
+                ContentFrame.BackStack.Clear();
+                NavWiv.IsBackEnabled = false;
+
             }
             else
             {
@@ -556,7 +562,19 @@ namespace VK_UI3.Views
             frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
         }
 
-        public static void OpenPlayList(Playlist playlist)
+
+        public static void OpenPlayListLists(long? id = null)
+        {
+            var sectionView = new WaitView();
+            if (id == null)
+                id = activeAccount.id;
+            sectionView.sectionType = SectionType.UserPlayListList;
+            sectionView.SectionID = id.ToString();
+            frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
+        }
+
+
+        public static void OpenPlayList(AudioPlaylist playlist)
         {
             var sectionView = new WaitView();
             sectionView.sectionType = SectionType.PlayList;
@@ -594,8 +612,31 @@ namespace VK_UI3.Views
             frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
         }
 
-     
-        
+        private void AccountsList_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
+        {
+            Task.Run(async () =>
+            {
+                var i = 0;
+                foreach (var item in Accounts)
+                {
+                    if (item.Token == null) continue;
+                    item.sortID = i++;
+                    item.Update();
+
+                    if (item.Active)
+                        AccountsList.SelectedIndex = i;
+                }
+            });
+        }
+
+        private void AccountsList_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
+        {
+            var items = (sender as ListView).Items;
+            if (e.Items.Contains(items[items.Count - 1]))
+            {
+                e.Cancel = true;
+            }
+        }
     }
 
 

@@ -27,7 +27,7 @@
             <MenuFlyoutSubItem x:Name="GoArtist" Text="Перейти к исполнителю" Icon="ContactInfo">
                 
             </MenuFlyoutSubItem>
-            <MenuFlyoutItem Text="Перейти в альбом" Click="GoToAlbum">
+            <MenuFlyoutItem x:Name="FlyGoAlbum" Text="Перейти в альбом" Click="GoToAlbum">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xE93C;" ></FontIcon>
                     </MenuFlyoutItem.Icon>

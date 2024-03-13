@@ -8,10 +8,10 @@ using VkNet.Utils.JsonConverter;
 
 namespace VkNet.Model.Attachments
 {
-	/// <summary>
-	/// Плейлист.
-	/// </summary>
-	[Serializable]
+    /// <summary>
+    /// Плейлист.
+    /// </summary>
+    [Serializable]
 	public class AudioPlaylist : MediaAttachment
 	{
 		/// <inheritdoc />
@@ -154,53 +154,101 @@ namespace VkNet.Model.Attachments
 		[JsonProperty("is_explicit")]
 		public bool IsExplicit { get; set; }
 
-	#region Методы
 
-		/// <summary>
-		/// Разобрать из json.
-		/// </summary>
-		/// <param name="response"> Ответ сервера. </param>
-		/// <returns> </returns>
-		public static AudioPlaylist FromJson(VkResponse response)
-		{
-			var playlist = new AudioPlaylist
-			{
-				Id = response["id"],
-				OwnerId = response["owner_id"],
-				Type = response["type"],
-				Title = response["title"],
-				Description = response["description"],
-				Genres = response["genres"].ToReadOnlyCollectionOf<AudioPlaylistGenre>(x => x),
-				Count = response["count"],
-				IsFollowing = response["is_following"],
-				Followers = response["followers"],
-				Plays = response["plays"],
-				CreateTime = response["create_time"],
-				UpdateTime = response["update_time"],
-				Year = response["year"],
-				Original = response["original"],
-				Follower = response["followed"],
-				Photo = response["photo"],
-				Thumbs = response["thumbs"].ToReadOnlyCollectionOf<AudioCover>(x => x),
-				OwnerIds = response["display_owner_ids"].ToReadOnlyCollectionOf<long>(x => x),
-				MainArtist = response["main_artist"],
-				Artists = response["artists"].ToReadOnlyCollectionOf<AudioArtist>(x => x),
-				MainArtists = response["main_artists"].ToReadOnlyCollectionOf<AudioArtist>(x => x),
-				FeaturedArtists = response["featured_artists"].ToReadOnlyCollectionOf<AudioArtist>(x => x),
-				AccessKey = response["access_key"],
-				IsExplicit = response["is_explicit"]
-			};
+        [JsonProperty("id")]
+        public long Id { get; set; }
 
-			return playlist;
-		}
+        [JsonProperty("owner_id")]
+        public long OwnerId { get; set; }
 
-		/// <summary>
-		/// Преобразование класса <see cref="AudioPlaylist" /> в
-		/// <see cref="VkParameters" />
-		/// </summary>
-		/// <param name="response"> Ответ сервера. </param>
-		/// <returns> Результат преобразования в <see cref="AudioPlaylist" /> </returns>
-		public static implicit operator AudioPlaylist(VkResponse response)
+        public string? OwnerName { get; set; }
+
+      
+
+        [JsonProperty("subtitle_badge")]
+        public bool SubtitleBadge { get; set; }
+
+        [JsonProperty("subtitle")]
+        public string Subtitle { get; set; }
+
+        [JsonProperty("play_button")]
+        public bool PlayButton { get; set; }
+
+        [JsonProperty("access_key")]
+        public string AccessKey { get; set; }
+
+		[JsonProperty("audios")]
+		public ReadOnlyCollection<Audio> Audios { get; set; }
+
+
+        public string Cover
+        {
+            get
+            {
+                if (Photo == null) return null;
+                if (Photo.Photo270 != null) return Photo.Photo270;
+                if (Photo.Photo135 != null) return Photo.Photo135;
+                if (Photo.Photo300 != null) return Photo.Photo300;
+                if (Photo.Photo600 != null) return Photo.Photo600;
+                if (Photo.Photo1200 != null) return Photo.Photo1200;
+                if (Photo.Photo68 != null) return Photo.Photo68;
+                return null;
+
+
+            }
+        }
+        #region Методы
+
+        /// <summary>
+        /// Разобрать из json.
+        /// </summary>
+        /// <param name="response"> Ответ сервера. </param>
+        /// <returns> </returns>
+        public static AudioPlaylist FromJson(VkResponse response)
+        {
+            var playlist = new AudioPlaylist
+            {
+                Id = response["id"],
+                OwnerId = response["owner_id"],
+                OwnerName = response["owner_name"],
+                SubtitleBadge = response["subtitle_badge"],
+                Subtitle = response["subtitle"],
+                PlayButton = response["play_button"],
+                Type = response["type"],
+                Title = response["title"],
+                Description = response["description"],
+                Genres = response["genres"].ToReadOnlyCollectionOf<AudioPlaylistGenre>(x => x),
+                Count = response["count"],
+                IsFollowing = response["is_following"],
+                Followers = response["followers"],
+                Plays = response["plays"],
+                CreateTime = response["create_time"],
+                UpdateTime = response["update_time"],
+                Year = response["year"],
+                Original = response["original"],
+                Follower = response["followed"],
+                Photo = response["photo"],
+                Thumbs = response["thumbs"].ToReadOnlyCollectionOf<AudioCover>(x => x),
+                OwnerIds = response["display_owner_ids"].ToReadOnlyCollectionOf<long>(x => x),
+                MainArtist = response["main_artist"],
+                Artists = response["artists"].ToReadOnlyCollectionOf<AudioArtist>(x => x),
+                MainArtists = response["main_artists"].ToReadOnlyCollectionOf<AudioArtist>(x => x),
+                FeaturedArtists = response["featured_artists"].ToReadOnlyCollectionOf<AudioArtist>(x => x),
+                AccessKey = response["access_key"],
+                IsExplicit = response["is_explicit"],
+                Audios = response["audios"].ToReadOnlyCollectionOf<Audio>(x => x)
+            };
+
+            return playlist;
+        }
+
+        /// <summary>
+        /// Преобразование класса <see cref="AudioPlaylist" /> в
+        /// <see cref="VkParameters" />
+        /// </summary>
+        /// <param name="response"> Ответ сервера. </param>
+        /// <returns> Результат преобразования в <see cref="AudioPlaylist" /> </returns>
+        public static implicit operator AudioPlaylist(VkResponse response)
 		{
 			if (response == null)
 			{

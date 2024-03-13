@@ -47,6 +47,12 @@
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
 
+                    <NavigationViewItem Content="Мои плейлисты">
+                        <NavigationViewItem.Icon>
+                            <FontIcon Glyph="&#xE93C;" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+
                     <NavigationViewItemSeparator/>
                     <NavigationViewItemHeader Content="Аккаунты"/>
                     <NavigationViewItemSeparator/>
@@ -54,8 +60,10 @@
                         <Grid Translation="0,0,24" Margin="-1,10,10,10" Padding="0,-5,-10,-5" >
                             <ListView 
                                 SelectionMode="Single"
-                                AllowDrop="False" CanReorderItems="False"  CanDrag="False"
-                                SelectedIndex="{x:Bind getSelectedNumber, Mode=OneWay}"  
+                                CanDragItems="True"
+                                DragItemsCompleted="AccountsList_DragItemsCompleted"
+                                DragItemsStarting="AccountsList_DragItemsStarting"
+                                AllowDrop="True" CanReorderItems="True"  
                                 ItemsSource="{x:Bind AccList, Mode=TwoWay}"  
                                 SelectionChanged="ListView_SelectionChanged" 
                                 x:Name="AccountsList">
@@ -70,7 +78,7 @@
                     </NavigationViewItem>
 
                 </NavigationView.MenuItems>
-                <Grid Margin="0"  PointerEntered="ListViewItem_PointerEntered" PointerExited="ListViewItem_PointerExited">
+                <Grid Margin="0"  PointerEntered="ListViewItem_PointerEntered">
                 <Frame Grid.Row="0" x:Name="ContentFrame">
                     <Frame.ContentTransitions>
                         <TransitionCollection>

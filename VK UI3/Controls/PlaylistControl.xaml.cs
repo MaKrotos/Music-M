@@ -9,6 +9,7 @@ using VK_UI3.Helpers.Animations;
 using VK_UI3.Views;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
+using VkNet.Model.Attachments;
 using Windows.Media.Playlists;
 using Playlist = MusicX.Core.Models.Playlist;
 
@@ -45,7 +46,7 @@ namespace VK_UI3.Controls
         AnimationsChangeFontIcon AnimationsChangeFontIcon;
         AnimationsChangeImage animationsChangeImage;
 
-        MusicX.Core.Models.Playlist _PlayList { get; set; }
+        AudioPlaylist _PlayList { get; set; }
         private void RecommsPlaylist_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             if (DataContext == null) return;
@@ -53,11 +54,11 @@ namespace VK_UI3.Controls
 
 
             AnimationsChangeFontIcon.ChangeFontIconWithAnimation("\uF5B0");
-            animationsChangeImage.ChangeImageWithAnimation((DataContext as Playlist).Cover);
-            if ((DataContext as Playlist).MainArtists != null && (DataContext as Playlist).MainArtists.Count != 0)
-            Subtitle.Text = (DataContext as Playlist).MainArtists[0].Name;
-            Title.Text = (DataContext as Playlist).Title;
-            _PlayList = (DataContext as Playlist);
+            animationsChangeImage.ChangeImageWithAnimation((DataContext as AudioPlaylist).Cover);
+            if ((DataContext as AudioPlaylist).MainArtists != null && (DataContext as AudioPlaylist).MainArtists.Count != 0)
+            Subtitle.Text = (DataContext as AudioPlaylist).MainArtists[0].Name;
+            Title.Text = (DataContext as AudioPlaylist).Title;
+            _PlayList = (DataContext as AudioPlaylist);
         }
         bool entered;
         private void UserControl_PointerEntered(object sender, PointerRoutedEventArgs e)

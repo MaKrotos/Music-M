@@ -5,6 +5,7 @@ using MusicX.Core.Services;
 using ProtoBuf.Meta;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.Json.Nodes;
 using System.Threading;
@@ -21,7 +22,7 @@ namespace VK_UI3.VKs.IVK
 {
     public class PlayListVK : IVKGetAudio
     {
-        Playlist playlist;
+        AudioPlaylist playlist;
         public string _Year;
         public string _Description;
         public string genres;
@@ -29,7 +30,7 @@ namespace VK_UI3.VKs.IVK
 
         public string Plays { get; private set; }
 
-        public PlayListVK(Playlist _playlist, DispatcherQueue dispatcher) : base(dispatcher)
+        public PlayListVK(AudioPlaylist _playlist, DispatcherQueue dispatcher) : base(dispatcher)
         {
             Task.Run(async () =>
             {
@@ -38,7 +39,7 @@ namespace VK_UI3.VKs.IVK
 
                     var p = await VK.vkService.GetPlaylistAsync(100, _playlist.Id, _playlist.AccessKey, _playlist.OwnerId);
 
-                    if (p.Playlist.MainArtists.Count == 0)
+                    if (p.Playlist.MainArtists == null || p.Playlist.MainArtists.Count == 0)
                     {
                         if (p.Playlist.OwnerId < 0)
                         {
@@ -50,7 +51,8 @@ namespace VK_UI3.VKs.IVK
                         }
                     }
                     playlist = p.Playlist;
-                    playlist.Audios = p.Audios;
+                    playlist.Audios = new ReadOnlyCollection<VkNet.Model.Attachments.Audio>(p.Audios.Cast<VkNet.Model.Attachments.Audio>().ToList());
+
                     DispatcherQueue.TryEnqueue(() =>
                     {
                         foreach (var item in playlist.Audios)
@@ -87,12 +89,12 @@ namespace VK_UI3.VKs.IVK
 
                     if (playlist.Year == 0)
                     {
-                        var date = new DateTime(1970, 1, 1) + TimeSpan.FromSeconds(playlist.UpdateTime);
+                        var date = playlist.UpdateTime;
                         _Year = $"Обновлен {date.ToString("dd MMMM")}";
                         genres = "Подборка";
                     }
 
-                    if (playlist.MainArtists.Count > 0)
+                    if (playlist.MainArtists != null && playlist.MainArtists.Count > 0)
                     {
                         string s = string.Empty;
                         foreach (var trackArtist in playlist.MainArtists)
