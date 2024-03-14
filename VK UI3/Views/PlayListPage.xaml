@@ -28,7 +28,7 @@
                         <Grid  Width="250" Height="250"
     Translation="0,0,24"
     
-    CornerRadius="8" Margin="0,0,8,0" Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}" Grid.Column="0">
+    CornerRadius="8" Margin="0,0,8,0" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" Grid.Column="0">
                             <FontIcon Glyph="&#xE90B;" />
                             <Image x:Name="ImageThumb" Stretch="UniformToFill"
          Width="250" Height="250"></Image>

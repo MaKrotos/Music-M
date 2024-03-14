@@ -17,7 +17,7 @@
 
     <Grid Translation="0,0,24"
      
-            CornerRadius="8" Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}" Margin="50" VerticalAlignment="Center" HorizontalAlignment="Center" >
+            CornerRadius="8"  Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" Margin="50" VerticalAlignment="Center" HorizontalAlignment="Center" >
         <Grid.Shadow>
             <ThemeShadow />
         </Grid.Shadow>

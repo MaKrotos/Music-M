@@ -126,7 +126,14 @@ namespace VK_UI3.Helpers.Animations
             var fileName = Path.Combine(databaseFolderPath, GetHashString(newImageSourceUrl));
 
             if (!Directory.Exists(databaseFolderPath)) Directory.CreateDirectory(databaseFolderPath);
-            if (File.Exists(fileName))
+
+            if (new Uri(newImageSourceUrl).IsFile)
+            {
+                var bitmapImage = new BitmapImage();
+                bitmapImage.UriSource = new Uri(newImageSourceUrl);
+                return bitmapImage;
+            }
+            else if (File.Exists(fileName))
             {
                 var bitmapImage = new BitmapImage();
                 bitmapImage.UriSource = new Uri(fileName);
@@ -160,6 +167,7 @@ namespace VK_UI3.Helpers.Animations
                 }
             }
         }
+
 
         private string GetHashString(string inputString)
         {

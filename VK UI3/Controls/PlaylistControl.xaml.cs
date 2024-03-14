@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using MusicX.Core.Models;
 using System;
+using System.Collections.Generic;
 using VK_UI3.Controllers;
 using VK_UI3.DB;
 using VK_UI3.Helpers.Animations;
@@ -11,6 +12,7 @@ using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
 using Windows.Media.Playlists;
+using Image = Microsoft.UI.Xaml.Controls.Image;
 using Playlist = MusicX.Core.Models.Playlist;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -25,7 +27,7 @@ namespace VK_UI3.Controls
             this.InitializeComponent();
 
             AnimationsChangeFontIcon = new AnimationsChangeFontIcon(PlayPause, this.DispatcherQueue);
-            animationsChangeImage = new AnimationsChangeImage(Cover, this.DispatcherQueue);
+          
 
             DataContextChanged += RecommsPlaylist_DataContextChanged;
 
@@ -54,12 +56,60 @@ namespace VK_UI3.Controls
 
 
             AnimationsChangeFontIcon.ChangeFontIconWithAnimation("\uF5B0");
-            animationsChangeImage.ChangeImageWithAnimation((DataContext as AudioPlaylist).Cover);
+         
             if ((DataContext as AudioPlaylist).MainArtists != null && (DataContext as AudioPlaylist).MainArtists.Count != 0)
             Subtitle.Text = (DataContext as AudioPlaylist).MainArtists[0].Name;
             Title.Text = (DataContext as AudioPlaylist).Title;
             _PlayList = (DataContext as AudioPlaylist);
+
+            GridThumbs.Children.Clear();
+
+            if (_PlayList.Photo != null)
+            {
+                AddImageToGrid((DataContext as AudioPlaylist).Cover, Microsoft.UI.Xaml.Media.Stretch.Fill);
+            }
+            else if (_PlayList.Thumbs != null)
+            {
+                int count = _PlayList.Thumbs.Count;
+                int index = 0;
+
+                foreach (var item in _PlayList.Thumbs)
+                {
+                    string photo = item.Photo600 ?? item.Photo1200 ?? item.Photo300 ?? item.Photo34 ?? item.Photo270 ?? item.Photo135 ?? item.Photo68;
+                    AddImageToGrid(photo, Microsoft.UI.Xaml.Media.Stretch.UniformToFill, count, index);
+                    index++;
+                }
+            }
+
         }
+
+        void AddImageToGrid(string photo, Microsoft.UI.Xaml.Media.Stretch stretch, int count = 1, int index = 0)
+        {
+            Image image = new Image
+            {
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Stretch = stretch
+            };
+
+            animationsChangeImage = new AnimationsChangeImage(image, this.DispatcherQueue);
+            GridThumbs.Children.Add(image);
+
+            int col = index % 2;
+            int row = index / 2;
+            int colspan = (count == 1 || (count == 2 && index == 0) || (count == 3 && index == 0)) ? 2 : 1;
+            int rowspan = (count == 1 || (count == 2 && index < 2) || (count == 3 && index == 0)) ? 2 : 1;
+
+            Grid.SetColumnSpan(image, colspan);
+            Grid.SetRowSpan(image, rowspan);
+            Grid.SetColumn(image, col);
+            Grid.SetRow(image, row);
+
+            animationsChangeImage.ChangeImageWithAnimation(photo);
+        }
+
+
+
         bool entered;
         private void UserControl_PointerEntered(object sender, PointerRoutedEventArgs e)
         {

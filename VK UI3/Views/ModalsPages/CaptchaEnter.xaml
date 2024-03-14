@@ -7,7 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    >
 
     <Page.Resources>
         <ThemeShadow x:Name="SharedShadow" />
@@ -15,7 +15,7 @@
 
     <Grid Translation="0,0,100"
    
-          CornerRadius="8" Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}" Margin="50" VerticalAlignment="Center" HorizontalAlignment="Center" >
+          CornerRadius="8" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" Margin="50" VerticalAlignment="Center" HorizontalAlignment="Center" >
         <Grid.Shadow>
             <ThemeShadow />
         </Grid.Shadow>

@@ -520,13 +520,16 @@ namespace VK_UI3.Views
                         break;
 
                     case "мои плейлисты":
-                        OpenPlayListLists();
+                        OpenPlayListLists(openedPlayList: OpenedPlayList.UserPlayList);
+                        break;
+
+                    case "альбомы":
+                        OpenPlayListLists(openedPlayList: OpenedPlayList.UserAlbums);
                         break;
 
                     case "параметры":
 
                         frame.Navigate(typeof(Settings.SettingsPage), null, new DrillInNavigationTransitionInfo());
-                        OpenMyPage(SectionType.MyListAudio);
                         break;
 
                     default:
@@ -563,13 +566,14 @@ namespace VK_UI3.Views
         }
 
 
-        public static void OpenPlayListLists(long? id = null)
+        public static void OpenPlayListLists(long? id = null, OpenedPlayList openedPlayList= OpenedPlayList.all)
         {
             var sectionView = new WaitView();
             if (id == null)
                 id = activeAccount.id;
             sectionView.sectionType = SectionType.UserPlayListList;
             sectionView.SectionID = id.ToString();
+            sectionView.openedPlayList = openedPlayList;
             frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
         }
 

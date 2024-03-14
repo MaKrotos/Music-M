@@ -58,7 +58,7 @@
        Width="Auto"
         x:Name="Card"
         Margin="0,0,0,0"
-        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
         
         BorderBrush="{ThemeResource ApplicationForegroundThemeBrush}"
         CornerRadius="5"

@@ -17,7 +17,7 @@
 
         </Grid.RowDefinitions>
         
-        <ListView Grid.Row="0" AllowDrop="True"  CanReorderItems="True" x:Name="TrackListView" ItemsSource="{x:Bind Tracks.listAudio, Mode=OneWay}"  IsItemClickEnabled="False" SelectionMode="None">
+        <ListView Grid.Row="0" AllowDrop="True"  CanReorderItems="True" x:Name="TrackListView" ItemsSource="{x:Bind Tracks.listAudio, Mode=OneWay}"  IsItemClickEnabled="True" SelectionMode="None">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <custom:TrackControl></custom:TrackControl>

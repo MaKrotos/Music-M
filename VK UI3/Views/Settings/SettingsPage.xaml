@@ -16,13 +16,17 @@
       
                 <Setter Property="BorderThickness" Value="1"/>
                 <Setter Property="CornerRadius" Value="6"/>
-
-                <Setter Property="Background" Value="{ThemeResource SystemControlAltHighAcrylicElementBrush}"/>
+       
+                <Setter Property="Background" Value="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"/>
                 <Setter Property="Padding" Value="10"/>
             </Style>
         </StackPanel.Resources>
         <Border>
             <local:StartUpSetting></local:StartUpSetting>
+        </Border>
+
+        <Border>
+            <local:BackDropSetting></local:BackDropSetting>
         </Border>
 
 

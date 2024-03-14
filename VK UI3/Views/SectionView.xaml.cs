@@ -285,6 +285,7 @@ namespace VK_UI3.Views
                 if (lastItem != null)
                 {
                     var container = ListBlocks.ContainerFromItem(lastItem) as ListViewItem;
+                    if (container == null) return null;
                     var dataTemplate = container.ContentTemplateRoot as ListTracksFull;
                     if (dataTemplate != null && _tracksFull == null)
                     {
@@ -294,7 +295,7 @@ namespace VK_UI3.Views
                 }
 
                 return _tracksFull; 
-            } set { _tracksFull = value; } }
+        } set { _tracksFull = value; } }
 
         bool connectedLoad = false;
         private void loadBlocks(List<Block> block)

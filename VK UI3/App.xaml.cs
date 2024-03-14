@@ -38,6 +38,7 @@ namespace VK_UI3
     public partial class App : Application
     {
 
+     
         public static readonly IHost _host = Host.CreateDefaultBuilder()
         .ConfigureAppConfiguration(c =>
         {
@@ -127,6 +128,6 @@ namespace VK_UI3
             //   await (appUpdater.CheckForUpdaterBool)
         }
 
-        private Microsoft.UI.Xaml.Window m_window;
+        public static Microsoft.UI.Xaml.Window m_window;
     }
 }

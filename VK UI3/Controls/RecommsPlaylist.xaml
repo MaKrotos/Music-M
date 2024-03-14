@@ -19,7 +19,7 @@
         <ThemeShadow />
     </UserControl.Shadow>
 
-    <Grid   Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" CornerRadius="8">
+    <Grid   Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" CornerRadius="8">
         <Grid.Resources>
             <!-- Анимация прозрачности от 0 до 1 -->
             <Storyboard x:Name="FadeInAnimationGridPlayIcon">

@@ -586,7 +586,7 @@ namespace VK_UI3.Controllers
         private void goToPlayList_BTN(object sender, TappedRoutedEventArgs e)
         {
             var navigationInfo = new NavigationInfo { SourcePageType = this };
-            MainWindow.contentFrame.Navigate(typeof(PlayList), navigationInfo, new DrillInNavigationTransitionInfo());
+            MainView.frame.Navigate(typeof(PlayList), navigationInfo, new DrillInNavigationTransitionInfo());
         }
 
         public void OnDisplayNameChanged(string newDisplayName, ref Guid eventContext)

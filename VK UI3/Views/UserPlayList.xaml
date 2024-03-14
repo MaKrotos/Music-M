@@ -8,12 +8,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-        xmlns:custom="using:VK_UI3.Controls"
+    xmlns:custom="using:VK_UI3.Controls"
    >
     <Grid CornerRadius="8" Height="Auto" x:Name="gridCh">
-
         <GridView ScrollViewer.HorizontalScrollMode="Disabled"   x:Name="gridV"  SelectionMode="None" ItemsSource="{x:Bind audioPlaylists, Mode=OneWay}">
-          
             <GridView.ItemTemplate>
                 <DataTemplate>
                     <custom:PlaylistControl
@@ -23,6 +21,17 @@
          ></custom:PlaylistControl>
                 </DataTemplate>
             </GridView.ItemTemplate>
+            <GridView.Footer>
+                <ProgressRing x:Name="LoadingIndicator" IsActive="False" />
+            </GridView.Footer>
         </GridView>
+        <Grid x:Name="CreateButton" PointerPressed="CreateButton_PointerPressed" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <StackPanel Orientation="Horizontal">
+                <FontIcon Glyph="" />
+                <!-- Это иконка плюса -->
+                <TextBlock Margin="5,0,0,0">Создать плейлист</TextBlock>
+            </StackPanel>
+        </Grid>
+
     </Grid>
 </Page>

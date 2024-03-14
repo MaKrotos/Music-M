@@ -28,7 +28,7 @@
                 
             </Grid.RowDefinitions>
 
-            <NavigationView HorizontalAlignment="Stretch"  Margin="0,32,0,0" Name="NavWiv"
+            <NavigationView HorizontalAlignment="Stretch"  Margin="0,0,0,0" Name="NavWiv"
                      Grid.RowSpan="2"
              PaneDisplayMode="Auto" 
              SelectionChanged="NavWiv_SelectionChanged"
@@ -48,6 +48,12 @@
                     </NavigationViewItem>
 
                     <NavigationViewItem Content="Мои плейлисты">
+                        <NavigationViewItem.Icon>
+                            <FontIcon Glyph="&#xE93C;" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+
+                    <NavigationViewItem Content="Альбомы">
                         <NavigationViewItem.Icon>
                             <FontIcon Glyph="&#xE93C;" />
                         </NavigationViewItem.Icon>

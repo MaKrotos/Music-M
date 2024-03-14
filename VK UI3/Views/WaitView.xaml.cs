@@ -38,6 +38,7 @@ namespace VK_UI3.Views
         public string SectionID;
         public Section section;
         internal IVKGetAudio iVKGetAudio;
+        internal OpenedPlayList openedPlayList;
 
         public AudioPlaylist Playlist { get; internal set; }
 
@@ -57,6 +58,7 @@ namespace VK_UI3.Views
                 this.SectionID = waitView.SectionID;
                 this.Playlist = waitView.Playlist;
                 this.iVKGetAudio = waitView.iVKGetAudio;
+                this.openedPlayList = waitView.openedPlayList;
         }
 
 
@@ -139,8 +141,17 @@ namespace VK_UI3.Views
 
         private async Task UserPlayListList()
         {
-            var list = await VK.api.Audio.GetPlaylistsAsync(long.Parse(SectionID), 100);
-            frameSection.Navigate(typeof(UserPlayList), list, new DrillInNavigationTransitionInfo());
+            var id = long.Parse(SectionID);
+            var list = await VK.api.Audio.GetPlaylistsAsync(id, 100);
+            UserPlayList userPlayList = new UserPlayList();
+            userPlayList.VKaudioPlaylists = list;
+            userPlayList.UserId = id;
+            userPlayList.offset = 100;
+            userPlayList.LoadedAll = (list.Count != 100);
+            userPlayList.openedPlayList = openedPlayList;
+
+
+            frameSection.Navigate(typeof(UserPlayList), userPlayList, new DrillInNavigationTransitionInfo());
         }
 
         private async Task LoadPlayList()

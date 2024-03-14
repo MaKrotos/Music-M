@@ -21,7 +21,7 @@
         </Grid.RowDefinitions>
        
 
-            <Grid Height="34" Padding="0,0,0,0"  x:Name="AppTitleBar" Grid.Row="1" VerticalAlignment="Top">
+            <Grid Height="34" Padding="0,0,0,0"  x:Name="AppTitleBar" Grid.Row="0" VerticalAlignment="Top">
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" ></ColumnDefinition>

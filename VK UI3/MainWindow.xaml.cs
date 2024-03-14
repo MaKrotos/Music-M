@@ -18,6 +18,9 @@ using System.IO;
 using Microsoft.UI.Windowing;
 using Microsoft.UI;
 using Windows.UI.ViewManagement;
+using Microsoft.UI.Composition.SystemBackdrops;
+using Microsoft.UI.Xaml.Media;
+using vkPosterBot.DB;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -31,10 +34,14 @@ namespace VK_UI3
     public sealed partial class MainWindow : Microsoft.UI.Xaml.Window
     {
         internal static HWND hvn;
+
         public MainWindow()
         {
             
             this.InitializeComponent();
+
+          
+
             contentFrame = ContentFrame;
             this.ExtendsContentIntoTitleBar = true;
             this.SetTitleBar(AppTitleBar);
@@ -43,8 +50,12 @@ namespace VK_UI3
             AppWindowTitleBar m_TitleBar = m_AppWindow.TitleBar;
 
 
-       
-        
+
+            CheckMica();
+            updateMica += OnUpdateMica;
+
+
+
             m_TitleBar.ButtonForegroundColor = (Application.Current.RequestedTheme == ApplicationTheme.Dark) 
                 ? Colors.White : Colors.Black;
             UISettings uI = new();
@@ -79,6 +90,30 @@ namespace VK_UI3
             hvn = (HWND)WinRT.Interop.WindowNative.GetWindowHandle(this);
 
             checkUpdate();
+        }
+
+        private void OnUpdateMica(object sender, EventArgs e)
+        {
+            CheckMica();
+        }
+
+        public static EventHandler updateMica;
+
+        private void CheckMica()
+        {
+            var set = SettingsTable.GetSetting("backDrop");
+            if (set != null)
+            {
+                if (!(SystemBackdrop is MicaBackdrop))
+                SystemBackdrop = new MicaBackdrop()
+                { Kind = MicaKind.BaseAlt };
+            }
+            else
+            {
+                if (!(SystemBackdrop is DesktopAcrylicBackdrop))
+                    SystemBackdrop = new DesktopAcrylicBackdrop()
+                    {  };
+            }
         }
 
         private void UI_ColorValuesChanged(UISettings sender, object args)

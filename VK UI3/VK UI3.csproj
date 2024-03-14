@@ -46,6 +46,7 @@
 	  <None Remove="Fonts\VKSansDisplay-Medium.ttf" />
 	  <None Remove="Fonts\VKSansDisplay-Regular.ttf" />
 	  <None Remove="Views\Controls\BlockButtonView.xaml" />
+	  <None Remove="Views\ModalsPages\CreatePlayList.xaml" />
 	  <None Remove="Views\SectionView.xaml" />
 	  <None Remove="Views\Settings\SettingsPage.xaml" />
 	  <None Remove="Views\UserPlayList.xaml" />
@@ -153,6 +154,9 @@
     <None Update="Assets\icons.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
+    <Page Update="Views\ModalsPages\CreatePlayList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\UserPlayList.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
