@@ -33,8 +33,8 @@ namespace VK_UI3.Views
     }
     public sealed partial class UserPlayList : Microsoft.UI.Xaml.Controls.Page
     {
-      
 
+        public ObservableRangeCollection<AudioPlaylist> audioPlaylists { get; set; } = new ObservableRangeCollection<AudioPlaylist>();
 
 
         public UserPlayList()
@@ -44,7 +44,7 @@ namespace VK_UI3.Views
             this.Loading += UserPlayList_Loading;
             
         }
-        public ObservableRangeCollection<AudioPlaylist> audioPlaylists = new ObservableRangeCollection<AudioPlaylist>();
+
         public VkCollection<AudioPlaylist> VKaudioPlaylists;
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -150,46 +150,30 @@ namespace VK_UI3.Views
             }
         }
 
-       
-        private void CreateButton_PointerPressed(object sender, PointerRoutedEventArgs e)
+        private async void CreateButton_Click(object sender, RoutedEventArgs e)
         {
-            Grid button = sender as Grid;
-            if (button != null)
+            ContentDialog dialog = new ContentDialog();
+
+            // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
+            dialog.XamlRoot = this.XamlRoot;
+    
+
+            var a = new CreatePlayList();
+            dialog.Content = a;
+            dialog.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
+            a.cancelPressed += (s, e) =>
             {
-                Popup popup;
-                CreatePlayList dialogContent = new CreatePlayList();
-                // dialogContent.CloseRequested += (s, e) => popup.IsOpen = false;
+                dialog.Hide();
+                dialog = null;
 
-                popup = new Popup
-                {
-                    Child = dialogContent,
-                    XamlRoot = this.XamlRoot,
-                    IsOpen = true,
-                };
-                Point clickPosition = e.GetCurrentPoint(button).Position;
-                Point buttonPosition = button.TransformToVisual(null).TransformPoint(new Point());
-                double horizontalOffset = clickPosition.X + buttonPosition.X;
-                double verticalOffset = clickPosition.Y + buttonPosition.Y;
-
-                // Проверка, чтобы всплывающее окно не выходило за пределы окна
-                double windowWidth = App.m_window.Bounds.Width;
-                double windowHeight = App.m_window.Bounds.Height;
-
-                var dialogContentA = dialogContent.GetFirstChild() as Grid;
-                
-
-                if (horizontalOffset + dialogContentA.ActualWidth > windowWidth)
-                {
-                    horizontalOffset = windowWidth - dialogContentA.ActualWidth;
+                if (s != null && s is AudioPlaylist)
+                { 
+                    var playlist = s as AudioPlaylist;
+                    this.audioPlaylists.Insert(0, playlist);
                 }
-                if (verticalOffset + dialogContentA.ActualWidth > windowHeight)
-                {
-                    verticalOffset = windowHeight - dialogContentA.ActualHeight;
-                }
+            };
 
-                popup.HorizontalOffset = horizontalOffset;
-                popup.VerticalOffset = verticalOffset;
-            }
+            dialog.ShowAsync();
         }
     }
 }

@@ -2,6 +2,7 @@
 using MusicX.Core.Models;
 using MusicX.Core.Models.General;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NLog;
 using System.Diagnostics;
 using System.Net.Http.Headers;
@@ -1021,7 +1022,7 @@ namespace MusicX.Core.Services
             }
         }
 
-        public async Task<UploadPlaylistCoverServerResult> GetPlaylistCoverUploadServerAsync(long ownerId, long playlistId)
+        public async Task<string?> GetPlaylistCoverUploadServerAsync(long ownerId, long playlistId)
         {
             try
             {
@@ -1029,16 +1030,17 @@ namespace MusicX.Core.Services
                 {
                     
                     {"device_id", await _deviceIdStore.GetDeviceIdAsync()},
-                    
+                
                     {"owner_id", ownerId},
                     {"playlist_id", playlistId},
                 };
 
                 var json = await apiInvoke.InvokeAsync("photos.getAudioPlaylistCoverUploadServer", parameters);
+                var js = JObject.Parse(json);
 
-                var model = JsonConvert.DeserializeObject<UploadPlaylistCoverServerResult>(json);
 
-                return model;
+
+                return js["upload_url"].ToString() ;
             }
             catch(Exception ex)
             {

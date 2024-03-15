@@ -184,6 +184,9 @@ namespace VkNet.Model.Attachments
         [JsonProperty("permissions")]
         public Permissions Permissions { get; set; }
 
+		[JsonProperty("no_discover")]
+		public bool No_discover { get; set; } = false;
+
         [JsonExtensionData]
         public Dictionary<string, object> AdditionalData { get; set; }
 

@@ -46,9 +46,9 @@ namespace VkNet.Categories
 
 		/// <inheritdoc />
 		public Task<bool> EditPlaylistAsync(long ownerId, int playlistId, string title, string description = null,
-											IEnumerable<string> audioIds = null)
+											IEnumerable<string> audioIds = null, bool No_discover = false)
 		{
-			return TypeHelper.TryInvokeMethodAsync(() => EditPlaylist(ownerId, playlistId, title, description, audioIds));
+			return TypeHelper.TryInvokeMethodAsync(() => EditPlaylist(ownerId, playlistId, title, description, audioIds, No_discover));
 		}
 
 		/// <inheritdoc />

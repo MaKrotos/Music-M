@@ -28,7 +28,7 @@ namespace VkNet.Abstractions
 		long Edit(AudioEditParams @params);
 
 		/// <inheritdoc cref="IAudioCategoryAsync.EditPlaylistAsync"/>
-		bool EditPlaylist(long ownerId, int playlistId, string title, string description = null, IEnumerable<string> audioIds = null);
+		bool EditPlaylist(long ownerId, int playlistId, string title, string description = null, IEnumerable<string> audioIds = null, bool No_discover = false);
 
 		/// <inheritdoc cref="IAudioCategoryAsync.GetAsync"/>
 		VkCollection<Audio> Get(AudioGetParams @params);

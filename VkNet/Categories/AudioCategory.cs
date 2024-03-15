@@ -96,7 +96,7 @@ namespace VkNet.Categories
 		}
 
 		/// <inheritdoc />
-		public bool EditPlaylist(long ownerId, int playlistId, string title, string description = null, IEnumerable<string> audioIds = null)
+		public bool EditPlaylist(long ownerId, int playlistId, string title, string description = null, IEnumerable<string> audioIds = null, bool show = false)
 		{
 			var parameters = new VkParameters
 			{
@@ -104,8 +104,10 @@ namespace VkNet.Categories
 				{ "playlist_id", playlistId },
 				{ "title", title },
 				{ "description", description },
-				{ "audio_ids", audioIds }
-			};
+				{ "audio_ids", audioIds },
+                { "no_discover", show }
+
+            };
 
 			return _vk.Call<bool>("audio.editPlaylist", parameters);
 		}

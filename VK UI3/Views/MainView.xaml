@@ -55,7 +55,7 @@
 
                     <NavigationViewItem Content="Альбомы">
                         <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xE93C;" />
+                            <FontIcon Glyph="&#xEB51;" />
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
 

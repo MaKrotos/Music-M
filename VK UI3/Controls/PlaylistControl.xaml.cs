@@ -1,15 +1,27 @@
+using Microsoft.AppCenter.Crashes;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using MusicX.Core.Models;
+using MusicX.Core.Models.Genius;
+using MusicX.Core.Services;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using VK_UI3.Controllers;
 using VK_UI3.DB;
+using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
+using VK_UI3.Services;
 using VK_UI3.Views;
+using VK_UI3.Views.ModalsPages;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
+using VkNet.AudioBypassService.Models.Auth;
+using VkNet.AudioBypassService.Models.Ecosystem;
 using VkNet.Model.Attachments;
 using Windows.Media.Playlists;
 using Image = Microsoft.UI.Xaml.Controls.Image;
@@ -27,18 +39,54 @@ namespace VK_UI3.Controls
             this.InitializeComponent();
 
             AnimationsChangeFontIcon = new AnimationsChangeFontIcon(PlayPause, this.DispatcherQueue);
-          
+            titleAnim = new AnimationsChangeText(Title, this.DispatcherQueue);
+            descrAnim = new AnimationsChangeText(Subtitle, this.DispatcherQueue);
+
 
             DataContextChanged += RecommsPlaylist_DataContextChanged;
 
             this.Loading += RecommsPlaylist_Loading;
         }
+        AnimationsChangeText titleAnim { get; set; }
+        AnimationsChangeText descrAnim { get; set; }
 
+
+        
+
+
+        public static readonly DependencyProperty PlaylistItemsProperty =
+         DependencyProperty.Register(
+            "_PlaylistItems",
+             typeof(ObservableRangeCollection<AudioPlaylist>),
+             typeof(PlaylistControl),
+             new PropertyMetadata(default(ObservableRangeCollection<AudioPlaylist>)));
+
+        public DependencyProperty PlaylistItems => PlaylistItemsProperty;
+        public ObservableRangeCollection<AudioPlaylist> _PlaylistItems
+        {
+            get { return (ObservableRangeCollection<AudioPlaylist>)GetValue(PlaylistItemsProperty); }
+            set { SetValue(PlaylistItemsProperty, value); }
+        }
+
+     
 
         public void AddRemove_Click(object sender, RoutedEventArgs e)
         {
 
-         
+
+            try
+            {
+ 
+                VK.vkService.AddPlaylistAsync(_PlayList.Id, _PlayList.OwnerId, _PlayList.AccessKey);
+
+              //  snackbarService.Show("Плейлист добавлен", "Плейлист теперь находится в Вашей библиотеке", ControlAppearance.Success);
+            }
+            catch (Exception ex)
+            {
+             
+
+            }
+
         }
 
         private void RecommsPlaylist_Loading(FrameworkElement sender, object args)
@@ -49,24 +97,45 @@ namespace VK_UI3.Controls
         AnimationsChangeImage animationsChangeImage;
 
         AudioPlaylist _PlayList { get; set; }
+   
+
         private void RecommsPlaylist_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             if (DataContext == null) return;
-            var Data = DataContext;
+            _PlayList = (DataContext as AudioPlaylist);
+            FadeOutAnimationGrid.Completed += FadeOutAnimationGrid_Completed;
+            update();
+        }
 
+        private void FadeOutAnimationGrid_Completed(object sender, object e)
+        {
+            update();
+        }
+
+        public void update() {
+
+
+        
 
             AnimationsChangeFontIcon.ChangeFontIconWithAnimation("\uF5B0");
+
+            if (_PlayList.Description != null)
+            {
+                descrAnim.ChangeTextWithAnimation(_PlayList.Description);
+            }
+            else
+            if (_PlayList.MainArtists != null && _PlayList.MainArtists.Count != 0)
+                descrAnim.ChangeTextWithAnimation(_PlayList.MainArtists[0].Name);
+               
+            titleAnim.ChangeTextWithAnimation(_PlayList.Title);
          
-            if ((DataContext as AudioPlaylist).MainArtists != null && (DataContext as AudioPlaylist).MainArtists.Count != 0)
-            Subtitle.Text = (DataContext as AudioPlaylist).MainArtists[0].Name;
-            Title.Text = (DataContext as AudioPlaylist).Title;
-            _PlayList = (DataContext as AudioPlaylist);
+
 
             GridThumbs.Children.Clear();
 
             if (_PlayList.Photo != null)
             {
-                AddImageToGrid((DataContext as AudioPlaylist).Cover, Microsoft.UI.Xaml.Media.Stretch.Fill);
+                AddImageToGrid(_PlayList.Cover, Microsoft.UI.Xaml.Media.Stretch.Fill);
             }
             else if (_PlayList.Thumbs != null)
             {
@@ -80,7 +149,41 @@ namespace VK_UI3.Controls
                     index++;
                 }
             }
+            if (_PlayList.Permissions.Edit)
+            {
+                editAlbum.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                editAlbum.Visibility = Visibility.Collapsed;
+            }
 
+            if (_PlayList.Permissions.Delete)
+            {
+                DeleteAlbum.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                DeleteAlbum.Visibility = Visibility.Collapsed;
+            }
+            if (_PlayList.Permissions.Follow)
+            {
+                AddRemove.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                AddRemove.Visibility = Visibility.Collapsed;
+            }
+
+
+
+            bool isUserPlaylist = _PlayList.OwnerId == AccountsDB.activeAccount.id && _PlayList.Original == null;
+            {
+
+
+            }
+
+            FadeInAnimationGrid.Begin();
         }
 
         void AddImageToGrid(string photo, Microsoft.UI.Xaml.Media.Stretch stretch, int count = 1, int index = 0)
@@ -179,6 +282,53 @@ namespace VK_UI3.Controls
                 });
             };
             iVKGetAudio.onListUpdate += handler;
+        }
+
+        private void editAlbum_Click(object sender, RoutedEventArgs e)
+        {
+            ContentDialog dialog = new ContentDialog();
+
+            // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
+            dialog.XamlRoot = this.XamlRoot;
+
+
+            var a = new CreatePlayList(_PlayList);
+            
+            dialog.Content = a;
+            dialog.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
+            a.cancelPressed += (s, e) =>
+            {
+                if (s != null && e is AudioPlaylist)
+                {
+                    _PlayList = s as AudioPlaylist;
+
+                    
+                    FadeOutAnimationGrid.Begin();
+                }
+
+                try
+                {
+                    dialog.Hide();
+                    dialog = null;
+                }
+                catch
+                {
+
+                }
+            };
+
+            dialog.ShowAsync();
+        }
+
+        private async void DeleteAlbum_Click(object sender, RoutedEventArgs e)
+        {
+            this.DispatcherQueue.TryEnqueue(async () =>
+            {
+                await VK.api.Audio.DeletePlaylistAsync(_PlayList.OwnerId, _PlayList.Id);
+                var index = _PlaylistItems.IndexOf(_PlayList);
+                if (index != -1)
+                    _PlaylistItems.RemoveAt(index);
+            });
         }
     }
 }

@@ -141,7 +141,7 @@ namespace VkNet.Abstractions
 		/// Страница документации ВКонтакте -неизвестно-.
 		/// </remarks>
 		Task<bool> EditPlaylistAsync(long ownerId, int playlistId, string title, string description = null,
-									IEnumerable<string> audioIds = null);
+									IEnumerable<string> audioIds = null, bool No_discover = false);
 
 		/// <summary>
 		/// Возвращает список аудиозаписей пользователя или сообщества.

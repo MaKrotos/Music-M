@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <UserControl CornerRadius="8"
-             
              PointerEntered="UserControl_PointerEntered"
              PointerExited="UserControl_PointerExited"
              PointerPressed="UserControl_PointerPressed"
@@ -18,6 +17,8 @@
     <UserControl.ContextFlyout>
         <MenuFlyout x:Name="flyOutm">
             <MenuFlyoutItem x:Name="AddRemove" Text="Добавить к себе" Click="AddRemove_Click" Icon="Add" />
+            <MenuFlyoutItem x:Name="editAlbum" Text="Редактировать" Click="editAlbum_Click"  Icon="Edit" />
+            <MenuFlyoutItem x:Name="DeleteAlbum" Text="Удалить" Click="DeleteAlbum_Click"  Icon="Delete" />
         </MenuFlyout>
     </UserControl.ContextFlyout>
 
@@ -43,11 +44,26 @@ To="1" Duration="0:0:0.25"/>
 Storyboard.TargetProperty="Opacity"
 To="0" Duration="0:0:0.25"/>
                 </Storyboard>
+
+                <Storyboard x:Name="FadeInAnimationGrid">
+                    <DoubleAnimation Storyboard.TargetName="fadeOp"
+Storyboard.TargetProperty="Opacity"
+To="1" Duration="0:0:0.25"/>
+                </Storyboard>
+                <!-- Анимация прозрачности от 1 до 0 -->
+                <Storyboard x:Name="FadeOutAnimationGrid">
+                    <DoubleAnimation Storyboard.TargetName="fadeOp"
+Storyboard.TargetProperty="Opacity"
+To="0" Duration="0:0:0.25"/>
+                </Storyboard>
+
+
             </Grid.Resources>
 
             <Grid>
                 <FontIcon Glyph="&#xE90B;" />
-                <Grid x:Name="GridThumbs" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" >
+                <Grid x:Name="fadeOp" Opacity="0" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}">
+                    <Grid x:Name="GridThumbs"  >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
@@ -57,6 +73,7 @@ To="0" Duration="0:0:0.25"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
+                    </Grid>
                 </Grid>
             </Grid>
             
@@ -81,7 +98,7 @@ To="0" Duration="0:0:0.25"/>
                            FontFamily="{StaticResource VKSansMedium}"
                            Margin="0,8,0,4"/>
             <TextBlock x:Name="Subtitle" TextWrapping="Wrap"
-                           Opacity="0.6"
+                           Opacity="0.4"
                            FontSize="12"
                      
                            FontFamily="{StaticResource VKSansRegular}" />
