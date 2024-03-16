@@ -42,6 +42,11 @@ namespace VK_UI3.VKs.IVK
             return null;
         }
 
+        public override List<string> getPhotosList()
+        {
+            return new List<string>();
+        }
+
         public override void GetTracks()
         {
             if (getLoadedTracks) return;

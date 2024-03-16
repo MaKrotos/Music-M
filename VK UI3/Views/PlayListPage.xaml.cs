@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using VK_UI3.DB;
+using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
@@ -39,8 +40,10 @@ namespace VK_UI3.Views
                 vkGetAudio = new UserAudio(AccountsDB.activeAccount.id, this.DispatcherQueue);
             }
 
-            animationsChangeImage = new AnimationsChangeImage(ImageThumb, this.DispatcherQueue);
-            animationsChangeImage.ChangeImageWithAnimation(vkGetAudio.photoUri);
+
+
+            SmallHelpers.AddImagesToGrid(GridThumbs, vkGetAudio.getPhotosList(), DispatcherQueue);
+       
 
 
 
@@ -57,11 +60,10 @@ namespace VK_UI3.Views
                 LoadingIndicator.Visibility = Visibility.Collapsed;
         }
 
-        AnimationsChangeImage animationsChangeImage;
-
+    
         private void VkGetAudio_onPhotoUpdated(object sender, EventArgs e)
         {
-            animationsChangeImage.ChangeImageWithAnimation(vkGetAudio.photoUri);
+            SmallHelpers.AddImagesToGrid(GridThumbs, vkGetAudio.getPhotosList(), DispatcherQueue);
         }
 
       

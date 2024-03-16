@@ -219,7 +219,7 @@ namespace VK_UI3.VKs.IVK
 
         public abstract long? getCount();
 
-
+        public abstract List<string> getPhotosList();
 
 
 

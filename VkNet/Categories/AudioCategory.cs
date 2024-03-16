@@ -43,15 +43,17 @@ namespace VkNet.Categories
 		}
 
 		/// <inheritdoc />
-		public AudioPlaylist CreatePlaylist(long ownerId, string title, string description = null, IEnumerable<string> audioIds = null)
+		public AudioPlaylist CreatePlaylist(long ownerId, string title, string description = null, IEnumerable<string> audioIds = null, bool No_discover = false)
 		{
 			var parameters = new VkParameters
 			{
 				{ "owner_id", ownerId },
 				{ "title", title },
 				{ "description", description },
-				{ "audio_ids", audioIds }
-			};
+				{ "audio_ids", audioIds },
+
+                  { "no_discover", No_discover }
+            };
 
 			return _vk.Call<AudioPlaylist>("audio.createPlaylist", parameters);
 		}
@@ -96,7 +98,7 @@ namespace VkNet.Categories
 		}
 
 		/// <inheritdoc />
-		public bool EditPlaylist(long ownerId, int playlistId, string title, string description = null, IEnumerable<string> audioIds = null, bool show = false)
+		public bool EditPlaylist(long ownerId, int playlistId, string title, string description = null, IEnumerable<string> audioIds = null, bool No_discover = false)
 		{
 			var parameters = new VkParameters
 			{
@@ -105,7 +107,7 @@ namespace VkNet.Categories
 				{ "title", title },
 				{ "description", description },
 				{ "audio_ids", audioIds },
-                { "no_discover", show }
+                { "no_discover", No_discover }
 
             };
 

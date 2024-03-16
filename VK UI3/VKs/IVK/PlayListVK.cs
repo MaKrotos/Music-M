@@ -217,5 +217,27 @@ namespace VK_UI3.VKs.IVK
             });
         }
 
+        public override List<string> getPhotosList()
+        {
+            List<string> list = new List<string>();
+            if (playlist.Cover != null)
+                list.Add(playlist.Cover);
+            else
+            {
+                foreach (var item in playlist.Thumbs)
+                {
+                    list.Add(
+                        item.Photo600 ?? 
+                        item.Photo1200 ?? 
+                        item.Photo300 ??
+                        item.Photo34 ??
+                        item.Photo270 ?? 
+                        item.Photo135 ?? 
+                        item.Photo68
+                        );
+                }
+            }
+            return list;  
+        }
     }
 }

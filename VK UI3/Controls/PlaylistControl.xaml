@@ -10,8 +10,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Width="200"
-  Translation="0,0,24"
+    Translation="0,0,24"
     Height="250"
+
     mc:Ignorable="d">
 
     <UserControl.ContextFlyout>
@@ -98,7 +99,7 @@ To="0" Duration="0:0:0.25"/>
                            FontFamily="{StaticResource VKSansMedium}"
                            Margin="0,8,0,4"/>
             <TextBlock x:Name="Subtitle" TextWrapping="Wrap"
-                           Opacity="0.4"
+                           Opacity="0.6"
                            FontSize="12"
                      
                            FontFamily="{StaticResource VKSansRegular}" />

@@ -16,7 +16,7 @@ namespace VkNet.Abstractions
 		long Add(long audioId, long ownerId, string accessKey = null, long? groupId = null, long? albumId = null);
 
 		/// <inheritdoc cref="IAudioCategoryAsync.CreatePlaylistAsync"/>
-		AudioPlaylist CreatePlaylist(long ownerId, string title, string description = null, IEnumerable<string> audioIds = null);
+		AudioPlaylist CreatePlaylist(long ownerId, string title, string description = null, IEnumerable<string> audioIds = null, bool No_discover = false);
 
 		/// <inheritdoc cref="IAudioCategoryAsync.DeleteAsync"/>
 		bool Delete(long audioId, long ownerId);

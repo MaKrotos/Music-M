@@ -21,9 +21,9 @@ namespace VkNet.Categories
 
 		/// <inheritdoc />
 		public Task<AudioPlaylist> CreatePlaylistAsync(long ownerId, string title, string description = null,
-														IEnumerable<string> audioIds = null)
+														IEnumerable<string> audioIds = null, bool No_discover = false)
 		{
-			return TypeHelper.TryInvokeMethodAsync(() => CreatePlaylist(ownerId, title, description, audioIds));
+			return TypeHelper.TryInvokeMethodAsync(() => CreatePlaylist(ownerId, title, description, audioIds, No_discover));
 		}
 
 		/// <inheritdoc />

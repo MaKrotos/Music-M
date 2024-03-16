@@ -22,16 +22,16 @@ namespace VK_UI3.Views.Settings
         {
     
 
-            this.Content = "Выключить прозрачность";
+            this.Content = "Р’С‹РєР»СЋС‡РёС‚СЊ РїСЂРѕР·СЂР°С‡РЅРѕСЃС‚СЊ";
 
             this.Checked += StartUpSetting_Checked;
             this.Unchecked += StartUpSetting_Unchecked;
             this.Loaded += StartUpSetting_Loaded;
 
-            // Получение стиля из ресурсов
+            // РџРѕР»СѓС‡РµРЅРёРµ СЃС‚РёР»СЏ РёР· СЂРµСЃСѓСЂСЃРѕРІ
             Style style = Application.Current.Resources["DefaultCheckBoxStyle"] as Style;
 
-            // Установка стиля
+            // РЈСЃС‚Р°РЅРѕРІРєР° СЃС‚РёР»СЏ
             this.Style = style;
         }
 

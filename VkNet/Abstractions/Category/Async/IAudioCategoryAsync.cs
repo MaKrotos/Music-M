@@ -64,7 +64,7 @@ namespace VkNet.Abstractions
 		/// <remarks>
 		/// Страница документации ВКонтакте -неизвестно-.
 		/// </remarks>
-		Task<AudioPlaylist> CreatePlaylistAsync(long ownerId, string title, string description = null, IEnumerable<string> audioIds = null);
+		Task<AudioPlaylist> CreatePlaylistAsync(long ownerId, string title, string description = null, IEnumerable<string> audioIds = null, bool No_discover = false);
 
 		/// <summary>
 		/// Удаляет аудиозапись со страницы пользователя или сообщества.

@@ -20,16 +20,16 @@ namespace VK_UI3.Views.Settings
         {
     
 
-            this.Content = "Добавить приложение в автозагрузку";
+            this.Content = "Р”РѕР±Р°РІРёС‚СЊ РїСЂРёР»РѕР¶РµРЅРёРµ РІ Р°РІС‚РѕР·Р°РіСЂСѓР·РєСѓ";
 
             this.Checked += StartUpSetting_Checked;
             this.Unchecked += StartUpSetting_Unchecked;
             this.Loaded += StartUpSetting_Loaded;
 
-            // Получение стиля из ресурсов
+            // РџРѕР»СѓС‡РµРЅРёРµ СЃС‚РёР»СЏ РёР· СЂРµСЃСѓСЂСЃРѕРІ
             Style style = Application.Current.Resources["DefaultCheckBoxStyle"] as Style;
 
-            // Установка стиля
+            // РЈСЃС‚Р°РЅРѕРІРєР° СЃС‚РёР»СЏ
             this.Style = style;
         }
 

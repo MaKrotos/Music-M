@@ -30,9 +30,19 @@
     
     CornerRadius="8" Margin="0,0,8,0" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" Grid.Column="0">
                             <FontIcon Glyph="&#xE90B;" />
-                            <Image x:Name="ImageThumb" Stretch="UniformToFill"
-         Width="250" Height="250"></Image>
-                        </Grid>
+                    <Grid x:Name="GridThumbs" Width="250" Height="250">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                    </Grid>
+                </Grid>
 
                         <!-- Элемент, заполняющий оставшееся пространство во втором столбце -->
                         <StackPanel Grid.Column="1" Margin="20,0,0,0">

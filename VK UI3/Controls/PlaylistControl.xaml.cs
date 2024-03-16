@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Input;
 using MusicX.Core.Models;
 using MusicX.Core.Models.Genius;
 using MusicX.Core.Services;
+using NAudio.Gui;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -131,23 +132,24 @@ namespace VK_UI3.Controls
          
 
 
-            GridThumbs.Children.Clear();
+      
 
-            if (_PlayList.Photo != null)
+            if (_PlayList.Cover != null)
             {
-                AddImageToGrid(_PlayList.Cover, Microsoft.UI.Xaml.Media.Stretch.Fill);
+                SmallHelpers.AddImagesToGrid(GridThumbs, _PlayList.Cover, this.DispatcherQueue);
             }
             else if (_PlayList.Thumbs != null)
             {
                 int count = _PlayList.Thumbs.Count;
                 int index = 0;
-
+                List<string> list = new List<string>();
                 foreach (var item in _PlayList.Thumbs)
                 {
                     string photo = item.Photo600 ?? item.Photo1200 ?? item.Photo300 ?? item.Photo34 ?? item.Photo270 ?? item.Photo135 ?? item.Photo68;
-                    AddImageToGrid(photo, Microsoft.UI.Xaml.Media.Stretch.UniformToFill, count, index);
+                    list.Add(photo);
                     index++;
                 }
+                SmallHelpers.AddImagesToGrid(GridThumbs, list, this.DispatcherQueue);
             }
             if (_PlayList.Permissions.Edit)
             {
@@ -186,30 +188,8 @@ namespace VK_UI3.Controls
             FadeInAnimationGrid.Begin();
         }
 
-        void AddImageToGrid(string photo, Microsoft.UI.Xaml.Media.Stretch stretch, int count = 1, int index = 0)
-        {
-            Image image = new Image
-            {
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
-                Stretch = stretch
-            };
+        
 
-            animationsChangeImage = new AnimationsChangeImage(image, this.DispatcherQueue);
-            GridThumbs.Children.Add(image);
-
-            int col = index % 2;
-            int row = index / 2;
-            int colspan = (count == 1 || (count == 2 && index == 0) || (count == 3 && index == 0)) ? 2 : 1;
-            int rowspan = (count == 1 || (count == 2 && index < 2) || (count == 3 && index == 0)) ? 2 : 1;
-
-            Grid.SetColumnSpan(image, colspan);
-            Grid.SetRowSpan(image, rowspan);
-            Grid.SetColumn(image, col);
-            Grid.SetRow(image, row);
-
-            animationsChangeImage.ChangeImageWithAnimation(photo);
-        }
 
 
 

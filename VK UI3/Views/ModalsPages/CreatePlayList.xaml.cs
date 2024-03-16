@@ -113,13 +113,13 @@ namespace VK_UI3.Views.ModalsPages
              
             if (audio == null)
             {
-                audioPlaylist = await VK.api.Audio.CreatePlaylistAsync(AccountsDB.activeAccount.id, this.Title.Text, this.Description.Text);
+                audioPlaylist = await VK.api.Audio.CreatePlaylistAsync(AccountsDB.activeAccount.id, this.Title.Text, this.Description.Text, No_discover: HideFromSearch.IsOn);
             }
             else
             {
                 List<string> audios = new();
                 audios.Add(audio.OwnerId + "_" + audio.Id);
-                audioPlaylist = await VK.api.Audio.CreatePlaylistAsync(AccountsDB.activeAccount.id, this.Title.Text, this.Description.Text, audios);
+                audioPlaylist = await VK.api.Audio.CreatePlaylistAsync(AccountsDB.activeAccount.id, this.Title.Text, this.Description.Text, audios, No_discover: HideFromSearch.IsOn);
             }
             await UploadCoverPlaylist();
             audioPlaylist = await VK.api.Audio.GetPlaylistByIdAsync(audioPlaylist.OwnerId, audioPlaylist.Id);

@@ -9,12 +9,14 @@ namespace VK_UI3.Helpers.Animations
         string textNow = null;
         Storyboard storyboard = null;
         TextBlock textBlockControl = null;
+        double opac;
         Microsoft.UI.Dispatching.DispatcherQueue dispatcherQueue = null;
 
         public AnimationsChangeText(TextBlock textBlockControl, Microsoft.UI.Dispatching.DispatcherQueue dispatcherQueue)
         {
             this.textBlockControl = textBlockControl;
             this.dispatcherQueue = dispatcherQueue;
+            opac = textBlockControl.Opacity;
         }
 
         public void ChangeTextWithAnimation(string newText)
@@ -57,7 +59,7 @@ namespace VK_UI3.Helpers.Animations
                     var animation = new DoubleAnimation
                     {
                         From = textBlockControl.Opacity,
-                        To = 1,
+                        To = opac,
                         Duration = TimeSpan.FromMilliseconds(500),
                     };
                     // Create Storyboard object to control the animation
