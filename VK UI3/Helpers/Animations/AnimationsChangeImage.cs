@@ -19,6 +19,7 @@ namespace VK_UI3.Helpers.Animations
         string imageSourceNow = null;
         Storyboard storyboard = null;
         Image imageControl = null;
+        ImageIcon imageIcon = null;
         ImageBrush imageBrushControl = null;
         PersonPicture personPicture = null;
         DispatcherQueue dispatcherQueue = null;
@@ -28,6 +29,13 @@ namespace VK_UI3.Helpers.Animations
         public AnimationsChangeImage(Image imageControl, DispatcherQueue dispatcherQueue)
         {
             this.imageControl = imageControl;
+            this.dispatcherQueue = dispatcherQueue;
+        }
+
+
+        public AnimationsChangeImage(ImageIcon imageIcon, DispatcherQueue dispatcherQueue)
+        {
+            this.imageIcon = imageIcon;
             this.dispatcherQueue = dispatcherQueue;
         }
 
@@ -70,6 +78,8 @@ namespace VK_UI3.Helpers.Animations
                     element = imageBrushControl;
                 if (personPicture != null)
                     element = personPicture;
+                if (imageIcon != null)
+                    element = imageIcon;
 
                 var animation = new DoubleAnimation
                 {
@@ -79,7 +89,7 @@ namespace VK_UI3.Helpers.Animations
                 };
 
                 storyboard = new Storyboard();
-                Storyboard.SetTarget(animation, imageControl != null ? imageControl : imageBrushControl);
+                Storyboard.SetTarget(animation, (element as FrameworkElement));
                 Storyboard.SetTargetProperty(animation, "Opacity");
 
                 storyboard.Children.Add(animation);
@@ -101,6 +111,11 @@ namespace VK_UI3.Helpers.Animations
                     {
                         personPicture.ProfilePicture = bitmapImage;
                     }
+                    if (imageIcon != null)
+                    {
+                        imageIcon.Source = bitmapImage;
+                    }
+                    
 
                     var animation = new DoubleAnimation
                     {
@@ -110,7 +125,7 @@ namespace VK_UI3.Helpers.Animations
                     };
 
                     storyboard = new Storyboard();
-                    Storyboard.SetTarget(animation, imageControl != null ? imageControl : imageBrushControl);
+                    Storyboard.SetTarget(animation, (element as FrameworkElement));
                     Storyboard.SetTargetProperty(animation, "Opacity");
 
                     storyboard.Children.Add(animation);

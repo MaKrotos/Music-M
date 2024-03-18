@@ -38,6 +38,14 @@ namespace VK_UI3.Views.ModalsPages
             this.InitializeComponent();
             this.Loaded += CreatePlayList_Loaded;
             this.audioPlaylist = audioPlaylist;
+            this.audio = audio;
+        }
+
+        public CreatePlayList(Audio audio)
+        {
+            this.InitializeComponent();
+            this.Loaded += CreatePlayList_Loaded;
+            this.audio = audio;
         }
         public CreatePlayList()
         {

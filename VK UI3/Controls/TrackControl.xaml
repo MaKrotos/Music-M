@@ -11,6 +11,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Translation="0,0,24"
 
+    RightTapped="UCcontrol_RightTapped"
     Width="Auto"
     
     mc:Ignorable="d">
@@ -33,7 +34,10 @@
                     </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
 
-            <MenuFlyoutItem Text="Добавить в плейлист" Click="AddToPlaylist_Click" Icon="Add" />
+
+            <MenuFlyoutSubItem x:Name="AddPlayList" Text="Добавить в плейлист" Icon="Add"></MenuFlyoutSubItem>
+
+
             <MenuFlyoutItem x:Name="disText" Text="Не нравится" Click="DislikeClick">
                 <MenuFlyoutItem.Icon>
                     <PathIcon Data="{x:Bind IconData, Mode=OneWay}"/>

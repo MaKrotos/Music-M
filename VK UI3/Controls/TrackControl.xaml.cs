@@ -24,12 +24,16 @@ using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
 using VK_UI3.Services;
 using VK_UI3.Views;
+using VK_UI3.Views.ModalsPages;
 using VK_UI3.VKs;
 using VkNet.Model;
+using VkNet.Model.Attachments;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
+using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 using static VK_UI3.Views.SectionView;
+using Image = Microsoft.UI.Xaml.Controls.Image;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -50,7 +54,7 @@ namespace VK_UI3.Controls
             this.Loading += TrackControl_Loading;
             if (changeImage == null)
                 changeImage = new AnimationsChangeImage(ImageThumb, DispatcherQueue);
-                changeIconPlayBTN = new AnimationsChangeIcon(PlayBTN);
+            changeIconPlayBTN = new AnimationsChangeIcon(PlayBTN);
         }
 
         private void TrackControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
@@ -64,13 +68,13 @@ namespace VK_UI3.Controls
                     return;
 
                 dataTrack = (DataContext as ExtendedAudio);
-                
+
 
                 if (!addedHandler)
                 {
                     dataTrack.iVKGetAudio.AudioPlayedChangeEvent += UserAudio_AudioPlayedChangeEvent;
                     addedHandler = true;
-                }   
+                }
 
                 if (track.OwnerId == AccountsDB.activeAccount.id)
                 {
@@ -209,19 +213,19 @@ namespace VK_UI3.Controls
             // Получите доступ к ресурсу по ключу
             if (!dataTrack.audio.Dislike)
             {
-                 IconData = myResourceDictionary["Dislike"] as string;
+                IconData = myResourceDictionary["Dislike"] as string;
                 disText.Text = "Не нравиться";
             }
             else
             {
-                 IconData = myResourceDictionary["FilledDislike"] as string;
+                IconData = myResourceDictionary["FilledDislike"] as string;
                 disText.Text = "Убрать дизлайк";
             }
-         
-         
+
+
         }
 
-        public string _iconData  = "m12.4829 18.2961c-.7988.8372-2.0916.3869-2.4309-.5904-.27995-.8063-.6436-1.7718-.99794-2.4827-1.05964-2.1259-1.67823-3.3355-3.38432-4.849-.22637-.2008-.51811-.3626-.84069-.49013-1.12914-.44632-2.19096-1.61609-1.91324-3.0047l.35304-1.76517c.1857-.92855.88009-1.67247 1.79366-1.92162l5.59969-1.52721c2.5456-.694232 5.1395.94051 5.6115 3.53646l.6839 3.7617c.3348 1.84147-1.0799 3.53667-2.9516 3.53667h-.8835l.0103.0522c.0801.4082.1765.9703.241 1.5829.0642.6103.0983 1.2844.048 1.9126-.0493.6163-.1839 1.2491-.5042 1.7296-.1095.1643-.2721.3484-.4347.5188z";
+        public string _iconData = "m12.4829 18.2961c-.7988.8372-2.0916.3869-2.4309-.5904-.27995-.8063-.6436-1.7718-.99794-2.4827-1.05964-2.1259-1.67823-3.3355-3.38432-4.849-.22637-.2008-.51811-.3626-.84069-.49013-1.12914-.44632-2.19096-1.61609-1.91324-3.0047l.35304-1.76517c.1857-.92855.88009-1.67247 1.79366-1.92162l5.59969-1.52721c2.5456-.694232 5.1395.94051 5.6115 3.53646l.6839 3.7617c.3348 1.84147-1.0799 3.53667-2.9516 3.53667h-.8835l.0103.0522c.0801.4082.1765.9703.241 1.5829.0642.6103.0983 1.2844.048 1.9126-.0493.6163-.1839 1.2491-.5042 1.7296-.1095.1643-.2721.3484-.4347.5188z";
 
         public string IconData
         {
@@ -246,21 +250,21 @@ namespace VK_UI3.Controls
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        
+
 
 
         private void TrackControl_Loading(FrameworkElement sender, object args)
         {
-            
+
 
         }
 
         ExtendedAudio dataTrack = null;
         bool addedHandler = false;
 
-    
 
-        
+
+
 
         string photouri = null;
 
@@ -268,7 +272,7 @@ namespace VK_UI3.Controls
         AnimationsChangeImage changeImage = null;
         private void TrackControl_Loaded(object sender, RoutedEventArgs e)
         {
-           
+
         }
 
         public void Title_PointerPressed(object sender, RoutedEventArgs e)
@@ -304,8 +308,9 @@ namespace VK_UI3.Controls
                 ChangeSymbolIcon(symbol);
                 HandleAnimation(dataTrack.PlayThis);
             }
-            catch (Exception ex) { 
-                AppCenterHelper.SendCrash(ex); 
+            catch (Exception ex)
+            {
+                AppCenterHelper.SendCrash(ex);
             }
         }
 
@@ -364,27 +369,28 @@ namespace VK_UI3.Controls
 
         public void Download_Click(object sender, RoutedEventArgs e)
         {
-           
+
         }
 
         public void AddToQueue_Click(object sender, RoutedEventArgs e)
         {
-          
-          
+
+
         }
 
-        public void CopyLink(object sender, RoutedEventArgs e) { 
+        public void CopyLink(object sender, RoutedEventArgs e)
+        {
             var dataPackage = new DataPackage();
             string audioLink = $"https://vk.com/audio{audio.OwnerId}_{audio.Id}";
             dataPackage.SetText(audioLink);
-            Clipboard.SetContent(dataPackage); 
+            Clipboard.SetContent(dataPackage);
         }
 
 
 
         public void AddToPlaylist_Click(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
         public void AddRemove_Click(object sender, RoutedEventArgs e)
@@ -394,11 +400,11 @@ namespace VK_UI3.Controls
 
             if (audio.OwnerId == AccountsDB.activeAccount.id)
             {
-                 vkService.AudioDeleteAsync((long)audio.Id, (long) audio.OwnerId);
+                vkService.AudioDeleteAsync((long)audio.Id, (long)audio.OwnerId);
             }
             else
             {
-                 vkService.AudioAddAsync((long) audio.Id, (long) audio.OwnerId);       
+                vkService.AudioAddAsync((long)audio.Id, (long)audio.OwnerId);
             }
         }
         public void AddArtistIgnore_Click(object sender, RoutedEventArgs e)
@@ -447,7 +453,7 @@ namespace VK_UI3.Controls
 
         bool waitDisliked = false;
 
-     
+
 
         private void DislikeClick(object sender, RoutedEventArgs e)
         {
@@ -459,17 +465,17 @@ namespace VK_UI3.Controls
                       if (dataTrack.audio.Dislike)
                       {
 
-                         var complete = await VK.RemoveDislike((long)dataTrack.audio.Id, (long)dataTrack.audio.OwnerId);
-                          if (complete) 
+                          var complete = await VK.RemoveDislike((long)dataTrack.audio.Id, (long)dataTrack.audio.OwnerId);
+                          if (complete)
                               this.dataTrack.audio.Dislike = !this.dataTrack.audio.Dislike;
 
                       }
                       else
                       {
                           var complete = await VK.AddDislike((long)dataTrack.audio.Id, (long)dataTrack.audio.OwnerId);
-                          if (complete) 
+                          if (complete)
                               this.dataTrack.audio.Dislike = !this.dataTrack.audio.Dislike;
-                          
+
                       }
                       DispatcherQueue.TryEnqueue(async () =>
                       {
@@ -482,10 +488,106 @@ namespace VK_UI3.Controls
         private void GoToAlbum(object sender, RoutedEventArgs e)
         {
             MainView.OpenPlayList(
-                dataTrack.audio.Album.Id, 
-                dataTrack.audio.Album.OwnerId, 
+                dataTrack.audio.Album.Id,
+                dataTrack.audio.Album.OwnerId,
                 dataTrack.audio.Album.AccessKey);
+        }
+
+        private void UCcontrol_RightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            AddPlayList.Items.Clear();
+
+            Task.Run(
+                   async () =>
+                   {
+                       var listed = await TempPlayLists.TempPlayLists.GetPlayListAsync();
+                       
+
+                        DispatcherQueue.TryEnqueue(async () =>
+                        {
+                            foreach (var album in listed)
+                            {
+
+
+
+
+                                var menuItem = new MenuFlyoutItem
+                                {
+                                    Text = album.Title,
+                                    Icon = new FontIcon
+                                    {
+                                        Glyph = "\uE142", // Замените на код глифа вашей иконки альбома
+
+                                    }
+                                };
+
+
+                                menuItem.Click += (s, e) =>
+                                {
+
+
+                                    try
+                                    {
+                                        VK.api.Audio.AddToPlaylistAsync((long)audio.OwnerId, album.Id, new List<string> { $"{audio.OwnerId}_{audio.Id}" });
+
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        AppCenterHelper.SendCrash(ex);
+                                    }
+
+                                };
+
+                                AddPlayList.Items.Add(menuItem);
+                             }
+
+
+                            var menuItemx = new MenuFlyoutItem
+                            {
+                                Text = "Создать",
+                                Icon = new FontIcon
+                                {
+                                    Glyph = "\uECC8", // Замените на код глифа вашей иконки альбома
+
+                                }
+                            };
+
+
+                            menuItemx.Click += (s, e) =>
+                            {
+
+                                ContentDialog dialog = new ContentDialog();
+
+                                // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
+                                dialog.XamlRoot = this.XamlRoot;
+
+
+                                var a = new CreatePlayList(audio);
+                                dialog.Content = a;
+                                dialog.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
+                                
+                                a.cancelPressed += (s, e) =>
+                                {
+                                    dialog.Hide();
+                                    dialog = null;
+
+                                    if (s != null && s is AudioPlaylist)
+                                    {
+                                        TempPlayLists.TempPlayLists.GetPlayListAsync(true);
+                                    }
+                                };
+
+                                dialog.ShowAsync();
+
+
+                            };
+
+                            AddPlayList.Items.Add(menuItemx);
+
+                        });
+                       
+                   });
+
         }
     }
 }
-
