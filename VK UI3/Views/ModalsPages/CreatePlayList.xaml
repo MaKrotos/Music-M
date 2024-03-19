@@ -12,15 +12,17 @@
 
  
     >
-    <Grid  x:Name="MainGrid" Translation="0,0,24"  Padding="10"
+    <Page.Shadow>
+        <ThemeShadow />
+    </Page.Shadow>
+
+    <ScrollView  x:Name="MainGrid"   Padding="10"
   CornerRadius="8" Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
-        <Grid.Shadow>
-            <ThemeShadow />
-        </Grid.Shadow>
+       
 
         <!-- Добавляем кнопку "Назад" -->
 
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+        <StackPanel ScrollViewer.VerticalScrollMode="Enabled" Orientation="Vertical" HorizontalAlignment="Center">
             <Grid  Width="300" Height="300" DragOver="Grid_DragOver" Drop="PlaylistImage_Drop"  AllowDrop="True" Translation="0,0,24" PointerPressed="PlaylistImage_PointerPressed"  CornerRadius="10" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}">
                 <Image VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill"   x:Name="PlaylistImage" />
                 <SymbolIcon  Symbol="Edit"/>
@@ -33,5 +35,5 @@
                 <Button x:Name="SaveBTN" Click="SaveBTN_Click">Сохранить</Button>
             </StackPanel>
         </StackPanel>
-    </Grid>
+    </ScrollView>
 </Page>

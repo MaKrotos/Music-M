@@ -22,7 +22,7 @@ namespace VK_UI3.VKs.IVK
 {
     public class PlayListVK : IVKGetAudio
     {
-        AudioPlaylist playlist;
+        public AudioPlaylist playlist;
         public string _Year;
         public string _Description;
         public string genres;
@@ -224,6 +224,7 @@ namespace VK_UI3.VKs.IVK
                 list.Add(playlist.Cover);
             else
             {
+                if (playlist.Thumbs != null)
                 foreach (var item in playlist.Thumbs)
                 {
                     list.Add(

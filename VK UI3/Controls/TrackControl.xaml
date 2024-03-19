@@ -24,7 +24,8 @@
     </UserControl.Resources>
     <UserControl.ContextFlyout>
         <MenuFlyout x:Name="flyOutm">
-            <MenuFlyoutItem x:Name="AddRemove" Text="Добавить" Click="AddRemove_Click" Icon="Add" />
+            <MenuFlyoutItem x:Name="AddRemove" Text="Добавить к себе" Click="AddRemove_Click" Icon="Add" />
+            <MenuFlyoutItem Visibility="Collapsed" x:Name="RemovePlayList" Text="Удалить из плейлиста" Click="RemovePlayList_Click"  Icon="Delete" />
             <MenuFlyoutSubItem x:Name="GoArtist" Text="Перейти к исполнителю" Icon="ContactInfo">
                 
             </MenuFlyoutSubItem>
@@ -35,7 +36,20 @@
             </MenuFlyoutItem>
 
 
-            <MenuFlyoutSubItem x:Name="AddPlayList" Text="Добавить в плейлист" Icon="Add"></MenuFlyoutSubItem>
+            <MenuFlyoutSubItem x:Name="AddPlayList" Text="Добавить в плейлист" Icon="Add">
+
+                
+                <MenuFlyoutItem x:Name="addToPlayListMore" Text="Показать больше" Click="addToPlayListMore_Click">
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="&#xE93C;" ></FontIcon>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem x:Name="CreatePlayListBTN" Text="Создать" Click="CreatePlayListBTN_Click">
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="&#xECC8;" ></FontIcon>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+            </MenuFlyoutSubItem>
 
 
             <MenuFlyoutItem x:Name="disText" Text="Не нравится" Click="DislikeClick">

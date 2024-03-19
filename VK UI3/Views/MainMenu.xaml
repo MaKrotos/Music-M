@@ -24,7 +24,7 @@
             <ListView.Footer>
                 <ProgressRing x:Name="LoadingIndicator" IsActive="False" />
             </ListView.Footer>
-        </ListView>
+    </ListView>
 
 
 </Page>

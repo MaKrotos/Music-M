@@ -209,18 +209,19 @@ namespace VK_UI3.Views.ModalsPages
             cancelPressed?.Invoke(this, EventArgs.Empty);
         }
 
-        private void SaveBTN_Click(object sender, RoutedEventArgs e)
+        private async void SaveBTN_Click(object sender, RoutedEventArgs e)
         {
             if (audioPlaylist == null)
             {
 
-                create();
+              await  create();
 
             }
             else
             {
-                EditAsync();
+              await  EditAsync();
             }
+            TempPlayLists.TempPlayLists.updateNextRequest = true;
         }
     }
 

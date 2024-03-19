@@ -304,6 +304,7 @@ namespace VK_UI3.Controls
         {
             this.DispatcherQueue.TryEnqueue(async () =>
             {
+                TempPlayLists.TempPlayLists.updateNextRequest = true;
                 await VK.api.Audio.DeletePlaylistAsync(_PlayList.OwnerId, _PlayList.Id);
                 var index = _PlaylistItems.IndexOf(_PlayList);
                 if (index != -1)

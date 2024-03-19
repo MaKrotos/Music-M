@@ -380,10 +380,10 @@ namespace VK_UI3.Views
 
                     AccountsDB.ActivateAccount(selectedAccount.id);
                     activeAccount = selectedAccount;
+                    TempPlayLists.TempPlayLists.updateNextRequest = true;
                     if (ContentFrame.Content != null)
                     {
                         _ = CreateNavigation();
-                      
                     }
                     else
                     {

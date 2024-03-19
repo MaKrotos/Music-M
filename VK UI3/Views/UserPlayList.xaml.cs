@@ -3,12 +3,15 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
+using VK_UI3.Controls;
 using VK_UI3.DB;
 using VK_UI3.Helpers;
 using VK_UI3.Views.ModalsPages;
@@ -45,6 +48,17 @@ namespace VK_UI3.Views
             
         }
 
+        public UserPlayList(Audio audio)
+        {
+            this.InitializeComponent();
+            this.Loaded += UserPlayList_Loaded;
+            this.Loading += UserPlayList_Loading;
+            this.audio = audio;
+
+            
+        }
+        Audio audio = null;
+
         public VkCollection<AudioPlaylist> VKaudioPlaylists;
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -57,14 +71,12 @@ namespace VK_UI3.Views
             UserId = userPlayList.UserId;
             LoadedAll = userPlayList.LoadedAll;
             openedPlayList = userPlayList.openedPlayList;
-            if (openedPlayList != OpenedPlayList.UserPlayList)
-            {
-                CreateButton.Visibility = Visibility.Collapsed;
-            }
+
+           
             
         }
-        public uint offset;
-        public long UserId;
+        public uint offset = 0;
+        public long? UserId = null;
         public OpenedPlayList openedPlayList;
 
         private bool CheckIfAllContentIsVisible(ScrollViewer scrollViewer)
@@ -81,21 +93,45 @@ namespace VK_UI3.Views
 
             if (LoadedAll)
             {
-
                 LoadingIndicator.Visibility = Visibility.Collapsed;
+            }
+            if (openedPlayList != OpenedPlayList.UserPlayList)
+            {
+                CreateButton.Visibility = Visibility.Collapsed;
+            }
+            if (audio != null)
+            {
+                this.Background = Application.Current.Resources["AcrylicBackgroundFillColorDefaultBrush"] as SolidColorBrush;
+                CreateButton.Visibility = Visibility.Collapsed;
+                this.Margin = new Thickness(-25);
+                Cancel.Visibility = Visibility.Visible;
             }
         }
         ScrollViewer scrollViewer { get; set; }
         private void UserPlayList_Loaded(object sender, RoutedEventArgs e)
         {
             scrollViewer = SmallHelpers.FindScrollViewer(gridV);
+            if (audio != null)
+            {
+                gridV.SelectionMode = ListViewSelectionMode.Single;
+                this.openedPlayList = OpenedPlayList.UserPlayList;
+               
+            }
 
-            addToList(VKaudioPlaylists);
+            if (VKaudioPlaylists != null)
+            {
+                addToList(VKaudioPlaylists);
+            }
+            else
+            { 
+                
+            }
 
             if (CheckIfAllContentIsVisible(scrollViewer))
             {
                 loadMoreAsync();
             }
+
             this.scrollViewer.ViewChanged += ScrollViewer_ViewChanged;
         }
 
@@ -127,13 +163,17 @@ namespace VK_UI3.Views
         }
 
 
-        public bool LoadedAll; 
+        public bool LoadedAll;
+        internal EventHandler selectedPlayList;
+
         private async Task loadMoreAsync()
         {
+            if (UserId == null)
+                UserId = AccountsDB.activeAccount.id;
             if (LoadedAll) return;
             LoadingIndicator.IsActive = true;
 
-            var a = await VK.api.Audio.GetPlaylistsAsync(UserId, 100, offset);
+            var a = await VK.api.Audio.GetPlaylistsAsync((long)UserId, 100, offset);
 
             addToList(a);
             LoadingIndicator.IsActive = false;
@@ -174,6 +214,48 @@ namespace VK_UI3.Views
             };
 
             dialog.ShowAsync();
+        }
+
+        private void gridV_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Проверка на наличие выбранных элементов
+            if (e.AddedItems.Count == 0)
+            {
+                return;
+            }
+
+            // Получение индекса выбранного элемента
+            int selectedIndex = gridV.Items.IndexOf(e.AddedItems[0]);
+
+            // Проверка на корректность индекса
+            if (selectedIndex < 0 || selectedIndex >= audioPlaylists.Count)
+            {
+                return;
+            }
+
+            // Получение ID плейлиста
+            var playlistId = audioPlaylists[selectedIndex].Id;
+
+            // Добавление аудио в плейлист
+            VK.api.Audio.AddToPlaylistAsync((long)audioPlaylists[selectedIndex].OwnerId, playlistId, new List<string> { $"{audio.OwnerId}_{audio.Id}" });
+
+            // Вызов события
+            selectedPlayList?.Invoke(playlistId, EventArgs.Empty);
+        }
+
+        private void gridV_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
+        {
+            if (audio == null) return;
+            var control = args.ItemContainer.ContentTemplateRoot as PlaylistControl;
+            if (control != null)
+            {
+                control.IsHitTestVisible = false;
+            }
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            selectedPlayList?.Invoke(null, EventArgs.Empty);
         }
     }
 }
