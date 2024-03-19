@@ -9,15 +9,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-
+   
  
     >
     <Page.Shadow>
         <ThemeShadow />
     </Page.Shadow>
 
-    <ScrollView  x:Name="MainGrid"   Padding="10"
-  CornerRadius="8" Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"   VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
+    <Grid Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}">
+        <ScrollView   x:Name="MainGrid"   Padding="10"
+  CornerRadius="8"    VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
        
 
         <!-- Добавляем кнопку "Назад" -->
@@ -36,4 +37,5 @@
             </StackPanel>
         </StackPanel>
     </ScrollView>
+        </Grid>
 </Page>

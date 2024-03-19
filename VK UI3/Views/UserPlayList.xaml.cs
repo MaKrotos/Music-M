@@ -115,7 +115,7 @@ namespace VK_UI3.Views
             {
                 gridV.SelectionMode = ListViewSelectionMode.Single;
                 this.openedPlayList = OpenedPlayList.UserPlayList;
-               
+                MainGrid.Background = (Brush)Application.Current.Resources["AcrylicBackgroundFillColorDefaultBrush"];
             }
 
             if (VKaudioPlaylists != null)

@@ -9,10 +9,10 @@
     mc:Ignorable="d"
     x:Name="ThisPage"
     Margin="0"
-    Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
+  
     xmlns:custom="using:VK_UI3.Controls"
 >
-    <Grid CornerRadius="8" Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}">
+    <Grid x:Name="MainGrid" CornerRadius="8" >
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>

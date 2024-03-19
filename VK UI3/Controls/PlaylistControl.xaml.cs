@@ -278,7 +278,7 @@ namespace VK_UI3.Controls
             dialog.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
             a.cancelPressed += (s, e) =>
             {
-                if (s != null && e is AudioPlaylist)
+                if (s != null && s is AudioPlaylist)
                 {
                     _PlayList = s as AudioPlaylist;
 

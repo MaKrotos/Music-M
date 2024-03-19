@@ -114,7 +114,7 @@ namespace VK_UI3.Views.ModalsPages
         {
             if (string.IsNullOrEmpty(Title.Text) || string.IsNullOrWhiteSpace(Title.Text))
             {
-               // _snackbarService.Show("Обязательные поля не заполнены", "Вы должны заполнить название плейлиста");
+              
                 return;
             }
 

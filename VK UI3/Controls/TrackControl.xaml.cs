@@ -623,17 +623,23 @@ namespace VK_UI3.Controls
             if (!(dataTrack.iVKGetAudio is PlayListVK)) return;
 
             // Создаем параметры для метода audio.moveToAlbum
-            var parameters = new VkParameters
-                {
-                    { "owner_id", dataTrack.audio.OwnerId },
-                    { "audio_ids", $"{dataTrack.audio.OwnerId}_{dataTrack.audio.Id}"  },
-                    { "playlist_id",
-                           (dataTrack.iVKGetAudio as PlayListVK).playlist.Id
-                    }
-                };
+            _ = Task.Run(
+                  async () =>
+                  {
+
+                        var deleted =  await VK.deleteFromPlaylist((long)dataTrack.audio.Id, (long)dataTrack.audio.OwnerId,
+                       (dataTrack.iVKGetAudio as PlayListVK).playlist.Id);
+                          if (deleted)
+
+                          this.DispatcherQueue.TryEnqueue(async () =>
+                          {
+                              dataTrack.iVKGetAudio.listAudio.Remove(dataTrack);
+                          });
+                  }
+                  );
 
             // Вызываем метод audio.moveToAlbum через метод Call
-           await VK.api.CallAsync("audio.removeFromPlaylist", parameters);
+
         }
     }
 }

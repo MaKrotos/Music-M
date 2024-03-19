@@ -31,6 +31,7 @@ using VkNet.Enums.Filters;
 using MusicX.Core.Services;
 using Microsoft.AppCenter.Crashes;
 using Microsoft.UI.Xaml.Controls;
+using VK_UI3.VKs.IVK;
 
 namespace VK_UI3.VKs
 {
@@ -839,7 +840,7 @@ namespace VK_UI3.VKs
                   { "audio_ids", $"{OwnerId}_{Id}" }
                 };
 
-                var response = await api.CallAsync("audio.removeDislike", parameters);
+                var response = await api.CallAsync("audio.removeFromPlaylist", parameters);
 
                 if (response.RawJson == "1")
                 {
@@ -858,8 +859,34 @@ namespace VK_UI3.VKs
             }
         }
 
+        public static async Task<bool> deleteFromPlaylist(long Id, long OwnerId, long playlistID)
+        {
+            try
+            {
+                var parameters = new VkParameters
+                {
+                    { "owner_id", OwnerId },
+                    { "audio_ids", $"{OwnerId}_{Id}"  },
+                    { "playlist_id", playlistID
+                    }
+                };
 
 
+                var response = await api.CallAsync("audio.removeDislike", parameters);
+
+                if (response.RawJson == "1")
+                {
+                    return true;
+                }
+                else
+                {
+                    // Обработка ошибок
+
+                    return false;
+                }
+            }
+            catch { return false; }
+        }
     }
 
 
