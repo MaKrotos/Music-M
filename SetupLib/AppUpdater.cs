@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
+using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
+using System.Text.RegularExpressions;
 
 namespace SetupLib
 {
@@ -38,8 +40,10 @@ namespace SetupLib
 
         public async Task<bool> CheckForUpdates()
         {
-            var releases = await client.Repository.Release.GetAll("MaKrotos", "Music-M");
+            
 
+            var releases = await client.Repository.Release.GetAll("MaKrotos", "Music-M");
+       
             foreach (var release in releases)
             {
                 if (string.Compare(release.TagName, currentVersion) <= 0)
@@ -96,7 +100,7 @@ namespace SetupLib
 
         public async Task DownloadAndOpenFile()
         {
-            var httpClient = new HttpClient();
+      
 
             // Проверяем, запущено ли приложение с правами администратора.
             bool isElevated;
@@ -108,61 +112,8 @@ namespace SetupLib
 
             if (isElevated)
             {
-            
-
                 // Сначала скачиваем и устанавливаем сертификат
-                using (var response = await httpClient.GetAsync(UriDownload, HttpCompletionOption.ResponseHeadersRead))
-                using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
-                {
-                    var path = Path.Combine(Path.GetTempPath(), Path.GetFileName(UriDownload));
-                    using (var streamToWriteTo = File.Create(path))
-                    {
-                        var totalRead = 0L;
-                        var buffer = new byte[8192];
-                        var isMoreToRead = true;
-
-                        do
-                        {
-                            var read = await streamToReadFrom.ReadAsync(buffer, 0, buffer.Length);
-                            if (read == 0)
-                            {
-                                isMoreToRead = false;
-                            }
-                            else
-                            {
-                                await streamToWriteTo.WriteAsync(buffer, 0, read);
-
-                                totalRead += read;
-                                var percentage = totalRead * 100d / response.Content.Headers.ContentLength.Value;
-
-                                // Вызовите событие
-
-                                /*
-                                DownloadProgressChanged?.Invoke(this, new DownloadProgressChangedEventArgs
-                                {
-                                    TotalBytes = response.Content.Headers.ContentLength.Value,
-                                    BytesDownloaded = totalRead,
-                                    Percentage = percentage
-                                });
-                                */
-                            }
-                        } while (isMoreToRead);
-                    }
-
-                    // Установка сертификата
-                    X509Certificate2 cert = new X509Certificate2(path);
-                    X509Store store = new X509Store(StoreName.TrustedPeople, StoreLocation.LocalMachine);
-                    store.Open(OpenFlags.ReadWrite);
-
-                    // Проверка на существование сертификата и его срок действия
-                    bool certificateExists = store.Certificates.Find(X509FindType.FindByThumbprint, cert.Thumbprint, false).Count > 0;
-                    if (!certificateExists || cert.NotAfter <= DateTime.Now)
-                    {
-                        store.Add(cert);
-                    }
-
-                    store.Close();
-                }
+                intsallCertAsync();
             }
 
             bool isInstalled = IsAppInstalled("AppInstaller");
@@ -170,65 +121,19 @@ namespace SetupLib
             if (!isInstalled)
             if (!IsAppInstalled("WindowsAppRuntime"))
             {
-                // Затем скачиваем файл .msix
-                using (var response = await httpClient.GetAsync(GetOSArchitectureURI()))
-                using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
-                {
-                    var path = Path.Combine(Path.GetTempPath(), Path.GetFileName(UriDownloadMSIX));
-                    using (var streamToWriteTo = File.Create(path))
-                    {
-                        var totalRead = 0L;
-                        var buffer = new byte[8192];
-                        var isMoreToRead = true;
+                    // Затем скачиваем AppRuntime
+                    DownlloadAppRuntimeAsync();
 
-                        do
-                        {
-                            var read = await streamToReadFrom.ReadAsync(buffer, 0, buffer.Length);
-                            if (read == 0)
-                            {
-                                isMoreToRead = false;
-                            }
-                            else
-                            {
-                                await streamToWriteTo.WriteAsync(buffer, 0, read);
-
-                                totalRead += read;
-                                var percentage = totalRead * 100d / response.Content.Headers.ContentLength.Value;
-
-                                // Вызовите событие
-                                DownloadProgressChanged?.Invoke(this, new DownloadProgressChangedEventArgs
-                                {
-                                    TotalBytes = response.Content.Headers.ContentLength.Value,
-                                    BytesDownloaded = totalRead,
-                                    Percentage = percentage
-                                });
-                            }
-                        } while (isMoreToRead);
-                    }
-
-
-
-
-                    string command = $"Add-AppxPackage -Path {path}";
-                    ProcessStartInfo startInfo = new ProcessStartInfo()
-                    {
-                        FileName = "powershell.exe",
-                        Arguments = $"-Command \"{command}\"",
-                        RedirectStandardOutput = true,
-                        UseShellExecute = false,
-                        CreateNoWindow = true,
-                    };
-                    Process process = new Process() { StartInfo = startInfo };
-                    process.Start();
-                    string output = process.StandardOutput.ReadToEnd();
-                    process.WaitForExit();
-
-                }
             }
 
 
-            // Затем скачиваем файл .msix
-            using (var response = await httpClient.GetAsync(UriDownloadMSIX))
+            // Затем скачиваем обновление
+            downloadUpdateAsync(isInstalled);
+        }
+
+        private async Task downloadUpdateAsync(bool isInstalled)
+        {
+            using (var response = await new HttpClient().GetAsync(UriDownloadMSIX))
             using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
             {
                 var path = Path.Combine(Path.GetTempPath(), Path.GetFileName(UriDownloadMSIX));
@@ -251,8 +156,6 @@ namespace SetupLib
 
                             totalRead += read;
                             var percentage = totalRead * 100d / response.Content.Headers.ContentLength.Value;
-
-                            // Вызовите событие
                             DownloadProgressChanged?.Invoke(this, new DownloadProgressChangedEventArgs
                             {
                                 TotalBytes = response.Content.Headers.ContentLength.Value,
@@ -264,7 +167,7 @@ namespace SetupLib
                 }
 
 
-         
+
                 if (isInstalled)
                 {
 
@@ -307,10 +210,154 @@ namespace SetupLib
             }
         }
 
+        private async Task DownlloadAppRuntimeAsync()
+        {
+            using (var response = await new HttpClient().GetAsync(GetOSArchitectureURI()))
+            using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
+            using (var streamToWriteTo = File.Create(Path.Combine(Path.GetTempPath(), Path.GetFileName(UriDownloadMSIX))))
+            {
+                var totalRead = 0L;
+                var buffer = new byte[8192];
+
+                while (true)
+                {
+                    var read = await streamToReadFrom.ReadAsync(buffer, 0, buffer.Length);
+                    if (read == 0) break;
+
+                    await streamToWriteTo.WriteAsync(buffer, 0, read);
+
+                    totalRead += read;
+                    var percentage = totalRead * 100d / response.Content.Headers.ContentLength.Value;
+
+                    DownloadProgressChanged?.Invoke(this, new DownloadProgressChangedEventArgs
+                    {
+                        TotalBytes = response.Content.Headers.ContentLength.Value,
+                        BytesDownloaded = totalRead,
+                        Percentage = percentage
+                    });
+                }
+            }
+
+            string command = $"Add-AppxPackage -Path {Path.Combine(Path.GetTempPath(), Path.GetFileName(UriDownloadMSIX))}";
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = "powershell.exe",
+                Arguments = $"-Command \"{command}\"",
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+            };
+            using (var process = new Process { StartInfo = startInfo })
+            {
+                process.Start();
+                string output = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
+            }
+        }
+
+        private async Task intsallCertAsync()
+        {
+                using (var response = await new HttpClient().GetAsync(UriDownload, HttpCompletionOption.ResponseHeadersRead))
+                using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
+                {
+                    var path = Path.Combine(Path.GetTempPath(), Path.GetFileName(UriDownload));
+                    using (var streamToWriteTo = File.Create(path))
+                    {
+                        await streamToReadFrom.CopyToAsync(streamToWriteTo);
+                    }
+
+                    // Установка сертификата
+                    X509Certificate2 cert = new X509Certificate2(path);
+                    X509Store store = new X509Store(StoreName.TrustedPeople, StoreLocation.LocalMachine);
+                    store.Open(OpenFlags.ReadWrite);
+                    // Проверка на существование сертификата и его срок действия
+                    bool certificateExists = store.Certificates.Find(X509FindType.FindByThumbprint, cert.Thumbprint, false).Count > 0;
+                    if (!certificateExists || cert.NotAfter <= DateTime.Now)
+                    {
+                        store.Add(cert);
+                    }
+
+                    store.Close();
+                }
+            
+        }
+
+      
+
+        public bool IsVersionInstalled(string targetVersion)
+        {
+            var installedVersions = GetInstalledDotNetVersions();
+            var targetVersionNumber = GetVersionNumber(targetVersion);
+
+            foreach (var version in installedVersions)
+            {
+                var versionNumber = GetVersionNumber(version);
+                if (versionNumber != null && versionNumber >= targetVersionNumber)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private Version GetVersionNumber(string versionString)
+        {
+            var match = Regex.Match(versionString, @"(\d+(\.\d+)+)");
+            if (match.Success)
+            {
+                return new Version(match.Value);
+            }
+
+            return null;
+        }
+
+
+        public List<string> GetInstalledDotNetVersions()
+        {
+            var versions = new List<string>();
+
+            //  .NET SDK
+            versions.AddRange(GetDotNetInfo("dotnet --list-sdks"));
+
+            //  .NET Runtime
+            versions.AddRange(GetDotNetInfo("dotnet --list-runtimes"));
+
+            // Удалить пустые строки и объединить все версии в один список
+            versions = versions.Where(v => !string.IsNullOrWhiteSpace(v)).ToList();
+
+            return versions;
+        }
+
+        private List<string> GetDotNetInfo(string command)
+        {
+            var info = new List<string>();
+            var process = new Process()
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "powershell.exe",
+                    Arguments = $"-Command \"{command}\"",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                }
+            };
+            process.Start();
+
+            while (!process.StandardOutput.EndOfStream)
+            {
+                var line = process.StandardOutput.ReadLine();
+                info.Add(line);
+            }
+
+            return info;
+        }
 
 
 
-        static bool IsAppInstalled(string appName)
+
+        bool IsAppInstalled(string appName)
         {
             string command = $"if ((Get-AppxPackage).Name -like '*{appName}*') {{ Write-Output \"True\" }} else {{ Write-Output \"False\" }}";
             ProcessStartInfo startInfo = new ProcessStartInfo()
@@ -329,7 +376,46 @@ namespace SetupLib
         }
 
 
-        public static string GetOSArchitecture()
+
+
+
+
+        public void InstallLatestDotNetAppRuntime()
+        {
+            string architecture;
+            if (RuntimeInformation.ProcessArchitecture == Architecture.X64)
+            {
+                architecture = "x64";
+            }
+            else if (RuntimeInformation.ProcessArchitecture == Architecture.X86)
+            {
+                architecture = "x86";
+            }
+            else if (RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
+            {
+                architecture = "arm64";
+            }
+            else
+            {
+                throw new Exception("Unsupported architecture");
+            }
+
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = "powershell.exe",
+                Arguments = $"-Command echo Y | winget install --id Microsoft.DotNet.runtime.8",
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            var process = new Process { StartInfo = startInfo };
+            process.Start();
+            process.WaitForExit();
+        }
+
+
+
+        public string GetOSArchitecture()
         {
             if (RuntimeInformation.OSArchitecture == Architecture.Arm64)
             {
@@ -351,7 +437,34 @@ namespace SetupLib
         }
 
 
-        public static Uri GetOSArchitectureURI()
+       public bool CheckIfWingetIsInstalled()
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.FileName = "powershell.exe";
+            startInfo.Arguments = "-Command \"& {winget}\"";
+            startInfo.RedirectStandardOutput = true;
+            startInfo.UseShellExecute = false;
+            startInfo.CreateNoWindow = true;
+
+            Process process = new Process();
+            process.StartInfo = startInfo;
+            process.Start();
+
+            string output = process.StandardOutput.ReadToEnd();
+            if (output.Contains("Windows Package Manager"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+            process.WaitForExit();
+        }
+
+
+        public Uri GetOSArchitectureURI()
         {
             if (RuntimeInformation.OSArchitecture == Architecture.Arm64)
             {
@@ -373,4 +486,5 @@ namespace SetupLib
         }
 
     }
-}
+
+    }
