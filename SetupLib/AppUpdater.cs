@@ -98,37 +98,41 @@ namespace SetupLib
 
 
 
-        public async Task DownloadAndOpenFile()
+        public async Task DownloadAndOpenFile(bool skip = false)
         {
-      
-
-            // Проверяем, запущено ли приложение с правами администратора.
-            bool isElevated;
-            using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
-            {
-                WindowsPrincipal principal = new WindowsPrincipal(identity);
-                isElevated = principal.IsInRole(WindowsBuiltInRole.Administrator);
-            }
-
-            if (isElevated)
-            {
-                // Сначала скачиваем и устанавливаем сертификат
-                intsallCertAsync();
-            }
-
             bool isInstalled = IsAppInstalled("AppInstaller");
-
-            if (!isInstalled)
-            if (!IsAppInstalled("WindowsAppRuntime"))
+            if (!skip)
             {
-                    // Затем скачиваем AppRuntime
-                    DownlloadAppRuntimeAsync();
+                // Проверяем, запущено ли приложение с правами администратора.
+                bool isElevated;
+                using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
+                {
+                    WindowsPrincipal principal = new WindowsPrincipal(identity);
+                    isElevated = principal.IsInRole(WindowsBuiltInRole.Administrator);
+                }
 
+                if (isElevated)
+                {
+                    // Сначала скачиваем и устанавливаем сертификат
+                    await intsallCertAsync();
+                }
+
+              
+
+                if (!isInstalled)
+                {
+                    await InstallAppInstallerAsync();
+                    if (!IsAppInstalled("WindowsAppRuntime"))
+                    {
+                        // Затем скачиваем AppRuntime
+                        await DownlloadAppRuntimeAsync();
+                    }
+                }
+                isInstalled = IsAppInstalled("AppInstaller");
             }
-
 
             // Затем скачиваем обновление
-            downloadUpdateAsync(isInstalled);
+            await downloadUpdateAsync(isInstalled);
         }
 
         private async Task downloadUpdateAsync(bool isInstalled)
@@ -165,8 +169,6 @@ namespace SetupLib
                         }
                     } while (isMoreToRead);
                 }
-
-
 
                 if (isInstalled)
                 {
@@ -286,19 +288,25 @@ namespace SetupLib
 
         public bool IsVersionInstalled(string targetVersion)
         {
-            var installedVersions = GetInstalledDotNetVersions();
-            var targetVersionNumber = GetVersionNumber(targetVersion);
-
-            foreach (var version in installedVersions)
+            try
             {
-                var versionNumber = GetVersionNumber(version);
-                if (versionNumber != null && versionNumber >= targetVersionNumber)
-                {
-                    return true;
-                }
-            }
+                var installedVersions = GetInstalledDotNetVersions();
+                var targetVersionNumber = GetVersionNumber(targetVersion);
 
-            return false;
+
+                foreach (var version in installedVersions)
+                {
+                    var ver = GetVersionNumber(version);
+                  
+                    var versionNumber = GetVersionNumber(version);
+                    if (versionNumber != null && versionNumber >= targetVersionNumber && version.Contains("WindowsDesktop"))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            } catch (Exception ex) { return false; };
         }
 
         private Version GetVersionNumber(string versionString)
@@ -375,35 +383,73 @@ namespace SetupLib
             return output.Contains("True");
         }
 
+        public async Task InstallAppInstallerAsync() 
+        {
+            var uri = "https://github.com/microsoft/winget-cli/releases/download/v1.7.10661/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle";
+            using (var response = await new HttpClient().GetAsync(uri))
+            using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
+            {
+                var path = Path.Combine(Path.GetTempPath(), Path.GetFileName(uri));
+                using (var streamToWriteTo = File.Create(path))
+                {
+                    var totalRead = 0L;
+                    var buffer = new byte[8192];
+                    var isMoreToRead = true;
 
+                    do
+                    {
+                        var read = await streamToReadFrom.ReadAsync(buffer, 0, buffer.Length);
+                        if (read == 0)
+                        {
+                            isMoreToRead = false;
+                        }
+                        else
+                        {
+                            await streamToWriteTo.WriteAsync(buffer, 0, read);
+
+                            totalRead += read;
+                            var percentage = totalRead * 100d / response.Content.Headers.ContentLength.Value;
+                            DownloadProgressChanged?.Invoke(this, new DownloadProgressChangedEventArgs
+                            {
+                                TotalBytes = response.Content.Headers.ContentLength.Value,
+                                BytesDownloaded = totalRead,
+                                Percentage = percentage
+                            });
+                        }
+                    } while (isMoreToRead);
+                }
+
+
+ 
+                    string command = $"Add-AppxPackage -Path {path};";
+                    ProcessStartInfo startInfo = new ProcessStartInfo()
+                    {
+                        FileName = "powershell.exe",
+                        Arguments = $"-Command \"{command}\"",
+                        RedirectStandardOutput = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                    };
+                    Process process = new Process() { StartInfo = startInfo };
+                    process.Start();
+                    string output = process.StandardOutput.ReadToEnd();
+                    process.WaitForExit();
+
+            }
+
+
+        }
 
 
 
 
         public void InstallLatestDotNetAppRuntime()
         {
-            string architecture;
-            if (RuntimeInformation.ProcessArchitecture == Architecture.X64)
-            {
-                architecture = "x64";
-            }
-            else if (RuntimeInformation.ProcessArchitecture == Architecture.X86)
-            {
-                architecture = "x86";
-            }
-            else if (RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
-            {
-                architecture = "arm64";
-            }
-            else
-            {
-                throw new Exception("Unsupported architecture");
-            }
-
+            var vers = GetVersionNumber(RuntimeInformation.FrameworkDescription);
             var startInfo = new ProcessStartInfo
             {
                 FileName = "powershell.exe",
-                Arguments = $"-Command echo Y | winget install --id Microsoft.DotNet.runtime.8",
+                Arguments = $"-Command echo Y | winget install Microsoft.DotNet.DesktopRuntime.{vers.Major}",
                 UseShellExecute = false,
                 CreateNoWindow = true
             };
@@ -436,12 +482,11 @@ namespace SetupLib
             }
         }
 
-
-       public bool CheckIfWingetIsInstalled()
+        public bool CheckIfWingetIsInstalled()
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = "powershell.exe";
-            startInfo.Arguments = "-Command \"& {winget}\"";
+            startInfo.Arguments = "-Command \"& {winget; echo $?}\"";
             startInfo.RedirectStandardOutput = true;
             startInfo.UseShellExecute = false;
             startInfo.CreateNoWindow = true;
@@ -451,16 +496,11 @@ namespace SetupLib
             process.Start();
 
             string output = process.StandardOutput.ReadToEnd();
-            if (output.Contains("Windows Package Manager"))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
 
             process.WaitForExit();
+
+            // Если последняя строка равна "True", значит winget установлен
+            return output.Trim().EndsWith("True");
         }
 
 

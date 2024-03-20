@@ -170,7 +170,7 @@
             label10.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label10.AutoSize = true;
             label10.FlatStyle = FlatStyle.Flat;
-            label10.Location = new Point(128, 83);
+            label10.Location = new Point(142, 83);
             label10.Name = "label10";
             label10.Size = new Size(40, 15);
             label10.TabIndex = 14;
@@ -195,7 +195,7 @@
             Controls.Add(progressBar1);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = (Icon)resources.GetObject("$this.Icon");
-            Name = "Setup VK M";
+            Name = "Setup";
             Text = "Установщик VK M";
             Load += Form1_Load;
             ResumeLayout(false);

@@ -53,9 +53,7 @@ namespace VK_UI3.Views
             UpdateBTN.IsEnabled = false;
             backBTN.IsEnabled = true;
             // Start the download and open the file
-            await appUpdater.DownloadAndOpenFile();
-
-            
+            await appUpdater.DownloadAndOpenFile(true);
         }
 
         private async void goBack(object sender, RoutedEventArgs e)

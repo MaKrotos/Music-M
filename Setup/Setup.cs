@@ -39,10 +39,13 @@ namespace Setup
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            
+
+
+            button1.Enabled = false;
+
             bool a= appUpdater.IsVersionInstalled(RuntimeInformation.FrameworkDescription);
 
-            if (a)
+            if (!a)
             {
                 var result = MessageBox.Show(
                  $"Необходимо установить .NET веерсии минимум {RuntimeInformation.FrameworkDescription}",
@@ -53,7 +56,7 @@ namespace Setup
 
                 if (result == DialogResult.Yes)
                 {
-                  bool winget_installed = appUpdater.CheckIfWingetIsInstalled();
+                    bool winget_installed = appUpdater.CheckIfWingetIsInstalled();
 
                     if (winget_installed)
                     {
@@ -62,7 +65,7 @@ namespace Setup
                     else
                     {
                         var resultw = MessageBox.Show(
-                           $"Отсуствуют некоторые компоненты для автоматической установки .NET После установки прилоэение, .NET необходимо будет установить вручную."
+                           $"Отсуствуют некоторые компоненты для автоматической установки .NET После установки приложение, .NET необходимо будет установить вручную."
                         );
                     }
                 }
@@ -73,7 +76,7 @@ namespace Setup
             }
 
             appUpdater.DownloadProgressChanged += AppUpdater_DownloadProgressChanged;
-            button1.Enabled = false;
+         
 
 
             await appUpdater.DownloadAndOpenFile();
