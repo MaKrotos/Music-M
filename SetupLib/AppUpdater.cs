@@ -297,7 +297,7 @@ namespace SetupLib
                 foreach (var version in installedVersions)
                 {
                     var ver = GetVersionNumber(version);
-                  
+                    if (ver.Major != targetVersionNumber.Major) continue;
                     var versionNumber = GetVersionNumber(version);
                     if (versionNumber != null && versionNumber >= targetVersionNumber && version.Contains("WindowsDesktop"))
                     {

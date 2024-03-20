@@ -26,7 +26,7 @@ namespace Setup
             label10.Text = appUpdater.version;
             label9.Text = appUpdater.Name;
             label8.Text = appUpdater.Tit;
-            label7.Text = Math.Round((float)appUpdater.sizeFile / 1024 / 1024, 2).ToString() + " Мб";
+            label7.Text = Math.Round((float)appUpdater.sizeFile / 1024 / 1024, 2).ToString() + " РњР±";
             label10.Text = appUpdater.version;
             button1.Enabled = true;
 
@@ -34,7 +34,7 @@ namespace Setup
         private void AppUpdater_DownloadProgressChanged(object sender, AppUpdater.DownloadProgressChangedEventArgs e)
         {
             progressBar1.Value = (int)Math.Round(e.Percentage);
-            label6.Text = Math.Round((float)e.BytesDownloaded / 1024 / 1024, 2).ToString() + " Мб";
+            label6.Text = Math.Round((float)e.BytesDownloaded / 1024 / 1024, 2).ToString() + " РњР±";
         }
 
         private async void button1_Click(object sender, EventArgs e)
@@ -48,8 +48,8 @@ namespace Setup
             if (!a)
             {
                 var result = MessageBox.Show(
-                 $"Необходимо установить .NET веерсии минимум {RuntimeInformation.FrameworkDescription}",
-                 "Установить?",
+                 $"РќРµРѕР±С…РѕРґРёРјРѕ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ .NET РІРµРµСЂСЃРёРё РјРёРЅРёРјСѓРј {RuntimeInformation.FrameworkDescription}",
+                 "РЈСЃС‚Р°РЅРѕРІРёС‚СЊ?",
                  MessageBoxButtons.YesNo,
                  MessageBoxIcon.Question
                  );
@@ -65,13 +65,13 @@ namespace Setup
                     else
                     {
                         var resultw = MessageBox.Show(
-                           $"Отсуствуют некоторые компоненты для автоматической установки .NET После установки приложение, .NET необходимо будет установить вручную."
+                           $"РћС‚СЃСѓСЃС‚РІСѓСЋС‚ РЅРµРєРѕС‚РѕСЂС‹Рµ РєРѕРјРїРѕРЅРµРЅС‚С‹ РґР»СЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРѕР№ СѓСЃС‚Р°РЅРѕРІРєРё .NET РџРѕСЃР»Рµ СѓСЃС‚Р°РЅРѕРІРєРё РїСЂРёР»РѕР¶РµРЅРёРµ, .NET РЅРµРѕР±С…РѕРґРёРјРѕ Р±СѓРґРµС‚ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ РІСЂСѓС‡РЅСѓСЋ."
                         );
                     }
                 }
                 else
                 {
-                    // Код, если пользователь выбрал "Нет"
+                    // РљРѕРґ, РµСЃР»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РІС‹Р±СЂР°Р» "РќРµС‚"
                 }
             }
 
