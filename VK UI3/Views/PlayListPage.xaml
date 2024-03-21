@@ -12,9 +12,7 @@
     <Page.Shadow>
         <ThemeShadow />
     </Page.Shadow>
-    <Page.Resources>
-        <ThemeShadow x:Name="SharedShadow" />
-    </Page.Resources>
+   
     <ListView Padding="0,0,0,16"  CanReorderItems="false" x:Name="TrackListView" ItemsSource="{x:Bind vkGetAudio.listAudio, Mode=OneWay}"   IsItemClickEnabled="False" SelectionMode="None">
         <ListView.Header>
                     <Grid Margin="15">
@@ -62,86 +60,104 @@
                    Text="{Binding Title}" />
                             </ScrollViewer>
 
-                            <TextBlock 
+                    <TextBlock 
         x:Name="textBlock1"
         Margin="0,10,0,0"
         FontFamily="{StaticResource VKSansRegular}"
-        FontSize="22"
+        FontSize="33"
         
-        Opacity="0.8"
-        Text="{Binding ArtistText}"
-        TextTrimming="CharacterEllipsis" />
-                            <StackPanel Grid.Column="1"
+        Opacity="1"
+        
+        TextTrimming="CharacterEllipsis">
+                        
+                    </TextBlock>
+
+                    <TextBlock 
+                x:Name="DescriptionText"
+                Margin="0,0,0,0"
+                FontFamily="{StaticResource VKSansRegular}"
+                FontSize="22"
+                MaxHeight="200"
+                Opacity="0.6"
+
+                        TextWrapping="Wrap"
+                TextTrimming="CharacterEllipsis">
+
+                    </TextBlock>
+
+
+                    <StackPanel Grid.Column="1"
         x:Name="AddInfo"
         Margin="0,10,0,0"
         Opacity="0.5"
-        Orientation="Horizontal"
+        Orientation="Vertical"
         Visibility="{Binding Path=VisibileAddInfo}">
+                        <TextBlock
+                            x:Name="FollowersText"
+               Visibility="Collapsed"
+                FontFamily="{StaticResource VKSansRegular}"
 
-                                <TextBlock
+                Text="{Binding Genres}">
+                            
+                        </TextBlock>
+                        <TextBlock
             x:Name="Genres"
             FontFamily="{StaticResource VKSansRegular}"
-            
-            Text="{Binding Genres}" />
+            Visibility="Collapsed"
+            Text="{Binding Genres}"></TextBlock>
                                 <TextBlock
             x:Name="Dot2"
-            Margin="3,0,0,0"
-            
-            Text="•" />
+            Margin="0,0,0,0"
+                 Visibility="Collapsed"
+            Text="" />
                                 <TextBlock
             x:Name="Year"
-            Margin="3,0,0,0"
+            Margin="0,0,0,0"
             FontFamily="{StaticResource VKSansRegular}"
-            
+                 Visibility="Collapsed"
             Text="{Binding Year}" />
-                                <TextBlock
-            x:Name="Dot3"
-            Margin="3,0,0,0"
-            
-            Text="•" />
+                            
                                 <TextBlock
             x:Name="Plays"
-            Margin="3,0,0,0"
+            Margin="0,0,0,0"
             FontFamily="{StaticResource VKSansRegular}"
-            
+                 Visibility="Collapsed"
             Text="{Binding Plays}" />
                                 <TextBlock
             x:Name="PlaysText"
             Margin="3,0,0,0"
-            
-            Text="прослушиваний" />
+                 Visibility="Collapsed"
+            Text="" />
                             </StackPanel>
 
-                            <StackPanel
+                            <GridView
         x:Name="stackPanel"
-        Margin="0,50,0,0"
-        Orientation="Horizontal"
+        Margin="0,0,0,0"
+                                
+        SelectionMode="None"
         RenderTransformOrigin="0.5,0.5">
-                                <StackPanel.RenderTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform />
-                                        <SkewTransform />
-                                        <RotateTransform />
-                                        <TranslateTransform />
-                                    </TransformGroup>
-                                </StackPanel.RenderTransform>
-                                <Button
+                        <GridView.ItemContainerStyle>
+                            <Style TargetType="GridViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Left" />
+                            </Style>
+                        </GridView.ItemContainerStyle>
+                        <Button
     x:Name="AddPlaylist"
-    MinWidth="200"
-   
+    Margin="5,5,0,0"
+    Width="170"
     Click="AddPlaylist_Click">
                                     <Button.Content>
                                         <StackPanel Orientation="Horizontal">
-                                            <SymbolIcon Symbol="Add"/>
-                                            <TextBlock Text="Добавить к себе" Margin="10,0,0,0"/>
+                                            <SymbolIcon x:Name="iconAdd" Symbol="Add"/>
+                                            <TextBlock x:Name="textAdd" Text="Добавить к себе" Margin="10,0,0,0"/>
                                         </StackPanel>
                                     </Button.Content>
                                 </Button>
                                 <Button
     x:Name="PlayPlaylist"
-    MinWidth="150"
-    Margin="10,0,0,0"
-
+  
+      Margin="5,5,0,0"
+   Width="170"
     Click="PlayPlaylist_Click">
                                     <Button.Content>
                                         <StackPanel Orientation="Horizontal">
@@ -153,9 +169,8 @@
 
                                 <Button
     x:Name="EditPlaylist"
-    MinWidth="150"
-    Margin="10,0,0,0"
-
+      Margin="5,5,0,0"
+    Width="170"
     Click="EditPlaylist_Click">
                                     <Button.Content>
                                         <StackPanel Orientation="Horizontal">
@@ -167,12 +182,13 @@
 
                                 <Button
     x:Name="DownloadPlaylist"
-    MinWidth="120"
-    Margin="10,0,0,0"
-
+    HorizontalAlignment="Left"
+    Margin="5,5,0,0"
+                                       Width="170"
     Click="DownloadPlaylist_Click">
                                     <Button.Content>
-                                        <StackPanel Orientation="Horizontal">
+                                        <StackPanel  Orientation="Horizontal">
+                                            
                                             <SymbolIcon Symbol="Download"/>
                                             <TextBlock Text="Скачать" Margin="10,0,0,0"/>
                                         </StackPanel>
@@ -181,7 +197,7 @@
 
 
 
-                            </StackPanel>
+                            </GridView>
 
                             <TextBlock x:Name="__"
                Margin="0,10,0,0" 

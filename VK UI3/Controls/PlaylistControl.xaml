@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<UserControl CornerRadius="8"
+<UserControl 
              PointerEntered="UserControl_PointerEntered"
              PointerExited="UserControl_PointerExited"
              PointerPressed="UserControl_PointerPressed"
@@ -10,8 +10,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Width="200"
+    CornerRadius="8"   
+    
+  
     Translation="0,0,24"
     Height="250"
+    Margin="3,0,4,6"
 
     mc:Ignorable="d">
 
@@ -27,82 +31,86 @@
     <UserControl.Shadow>
         <ThemeShadow />
     </UserControl.Shadow>
-    <StackPanel Padding="10"
+    <Grid CornerRadius="8">
+        <StackPanel Padding="10"
+               
+                   CornerRadius="8"
            Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
         >
 
-        <Grid Width="180" Height="180"   Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" CornerRadius="8">
-            <Grid.Resources>
-                <!-- Анимация прозрачности от 0 до 1 -->
-                <Storyboard x:Name="FadeInAnimationGridPlayIcon">
-                    <DoubleAnimation Storyboard.TargetName="btnGrid"
+            <Grid CornerRadius="8" Width="180" Height="180"  Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" >
+                <Grid.Resources>
+                    <!-- Анимация прозрачности от 0 до 1 -->
+                    <Storyboard x:Name="FadeInAnimationGridPlayIcon">
+                        <DoubleAnimation Storyboard.TargetName="btnGrid"
 Storyboard.TargetProperty="Opacity"
 To="1" Duration="0:0:0.25"/>
-                </Storyboard>
-                <!-- Анимация прозрачности от 1 до 0 -->
-                <Storyboard x:Name="FadeOutAnimationGridPlayIcon">
-                    <DoubleAnimation Storyboard.TargetName="btnGrid"
+                    </Storyboard>
+                    <!-- Анимация прозрачности от 1 до 0 -->
+                    <Storyboard x:Name="FadeOutAnimationGridPlayIcon">
+                        <DoubleAnimation Storyboard.TargetName="btnGrid"
 Storyboard.TargetProperty="Opacity"
 To="0" Duration="0:0:0.25"/>
-                </Storyboard>
+                    </Storyboard>
 
-                <Storyboard x:Name="FadeInAnimationGrid">
-                    <DoubleAnimation Storyboard.TargetName="fadeOp"
+                    <Storyboard x:Name="FadeInAnimationGrid">
+                        <DoubleAnimation Storyboard.TargetName="fadeOp"
 Storyboard.TargetProperty="Opacity"
 To="1" Duration="0:0:0.25"/>
-                </Storyboard>
-                <!-- Анимация прозрачности от 1 до 0 -->
-                <Storyboard x:Name="FadeOutAnimationGrid">
-                    <DoubleAnimation Storyboard.TargetName="fadeOp"
+                    </Storyboard>
+                    <!-- Анимация прозрачности от 1 до 0 -->
+                    <Storyboard x:Name="FadeOutAnimationGrid">
+                        <DoubleAnimation Storyboard.TargetName="fadeOp"
 Storyboard.TargetProperty="Opacity"
 To="0" Duration="0:0:0.25"/>
-                </Storyboard>
+                    </Storyboard>
 
 
-            </Grid.Resources>
+                </Grid.Resources>
 
-            <Grid>
-                <FontIcon Glyph="&#xE90B;" />
-                <Grid x:Name="fadeOp" Opacity="0" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}">
-                    <Grid x:Name="GridThumbs"  >
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                 
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+                <Grid >
+                    <FontIcon Glyph="&#xE90B;" />
+                    <Grid x:Name="fadeOp" Opacity="0" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}">
+                        <Grid x:Name="GridThumbs"  >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                        </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
-            
-            <Grid Padding="10">
-                <Grid Opacity="0" x:Name="btnGrid" Width="50" CornerRadius="100" Height="50" Background="{ThemeResource SystemControlBackgroundAltMediumHighBrush}"  VerticalAlignment="Bottom" HorizontalAlignment="Right">
-                    <Button Click="Button_Click"  Translation="0,0,24" Opacity="1" Width="50" CornerRadius="50" Height="50"  HorizontalAlignment="Center" VerticalAlignment="Center" >
-                        <FontIcon x:Name="PlayPause"  Glyph="&#xF5B0;"
+
+                <Grid    Padding="10">
+                    <Grid Opacity="0" x:Name="btnGrid" Width="50" CornerRadius="100" Height="50" Background="{ThemeResource SystemControlBackgroundAltMediumHighBrush}"  VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                        <Button Click="Button_Click"  Translation="0,0,24" Opacity="1" Width="50" CornerRadius="50" Height="50"  HorizontalAlignment="Center" VerticalAlignment="Center" >
+                            <FontIcon x:Name="PlayPause"  Glyph="&#xF5B0;"
                         HorizontalAlignment="Center" VerticalAlignment="Center"
                    />
-                    </Button>
+                        </Button>
+                    </Grid>
                 </Grid>
+
+
+
+
             </Grid>
-
-
-
-
-        </Grid>
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
-            <TextBlock x:Name="Title" TextWrapping="Wrap"
+            <StackPanel  Background="Transparent" CornerRadius="8" Orientation="Vertical" HorizontalAlignment="Left">
+                <TextBlock x:Name="Title" TextWrapping="Wrap"
                            FontSize="14"
                     
                            FontFamily="{StaticResource VKSansMedium}"
                            Margin="0,8,0,4"/>
-            <TextBlock x:Name="Subtitle" TextWrapping="Wrap"
+                <TextBlock  x:Name="Subtitle" TextWrapping="Wrap"
                            Opacity="0.6"
                            FontSize="12"
                      
                            FontFamily="{StaticResource VKSansRegular}" />
+            </StackPanel>
         </StackPanel>
-    </StackPanel>
+    </Grid>
 </UserControl>

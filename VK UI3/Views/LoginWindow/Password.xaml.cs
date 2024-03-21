@@ -30,7 +30,7 @@ namespace VK_UI3.Views.LoginWindow
        
 
 
-
+       Helpers.Animations.AnimationsChangeImage AnimationsChangeImage { get; set; }
 
 
 
@@ -39,6 +39,7 @@ namespace VK_UI3.Views.LoginWindow
         public Password()
         {
             this.InitializeComponent();
+            
         }
         
 
@@ -77,8 +78,14 @@ namespace VK_UI3.Views.LoginWindow
 
                 if (FirstName == "Незнакомец") NameT.Visibility = Visibility.Collapsed;
                 if (Photo200 == "null") imagesName.Visibility = Visibility.Collapsed;
+                else
+                {
+                    AnimationsChangeImage = new Helpers.Animations.AnimationsChangeImage(imagesName, this.DispatcherQueue);
+                    AnimationsChangeImage.ChangeImageWithAnimation(Photo200);
+                }
                 if (Phone == "***********") phoneText.Visibility = Visibility.Collapsed;
             }
+           
         }
 
         private void SubmitButton_Click(object sender, RoutedEventArgs e)

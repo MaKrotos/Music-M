@@ -10,12 +10,10 @@
     xmlns:custom="using:VK_UI3.Controllers"
     VerticalAlignment="Center" HorizontalAlignment="Center"
    >
-    <Page.Resources>
-        <ThemeShadow x:Name="SharedShadow" />
-    </Page.Resources>
+
     <Grid
         Translation="0,0,24"
-            CornerRadius="8" Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}" Margin="50" VerticalAlignment="Center" HorizontalAlignment="Center"
+            CornerRadius="8" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" Margin="50" VerticalAlignment="Center" HorizontalAlignment="Center"
         >
         <Grid.Shadow>
             <ThemeShadow />

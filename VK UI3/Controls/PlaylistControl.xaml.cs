@@ -10,6 +10,7 @@ using NAudio.Gui;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using VK_UI3.Controllers;
@@ -71,22 +72,45 @@ namespace VK_UI3.Controls
 
      
 
-        public void AddRemove_Click(object sender, RoutedEventArgs e)
+        public async void AddRemove_Click(object sender, RoutedEventArgs e)
         {
+            
+            
+
+            _ = Task.Run(
+               async () =>
+               {
+
+                   try
+                   {
+
+                       if (_PlayList.Permissions.Follow)
+                       {
 
 
-            try
-            {
- 
-                VK.vkService.AddPlaylistAsync(_PlayList.Id, _PlayList.OwnerId, _PlayList.AccessKey);
+                           await VK.vkService.AddPlaylistAsync(_PlayList.Id, _PlayList.OwnerId, _PlayList.AccessKey);
+                           _PlayList.Permissions.Follow = false;
+                          
 
-              //  snackbarService.Show("Плейлист добавлен", "Плейлист теперь находится в Вашей библиотеке", ControlAppearance.Success);
-            }
-            catch (Exception ex)
-            {
-             
+                       }
+                       else
+                       {
 
-            }
+                           await VK.vkService.DeletePlaylistAsync(_PlayList.Id, _PlayList.OwnerId);
+                           _PlayList.Permissions.Follow = true;
+
+                           updateAddedBTN();
+                       }
+
+                   }catch (Exception ex) 
+                   { 
+                   
+                   
+                   }
+                   updateAddedBTN();
+               });
+
+
 
         }
 
@@ -154,6 +178,7 @@ namespace VK_UI3.Controls
             if (_PlayList.Permissions.Edit)
             {
                 editAlbum.Visibility = Visibility.Visible;
+               
             }
             else
             {
@@ -168,14 +193,10 @@ namespace VK_UI3.Controls
             {
                 DeleteAlbum.Visibility = Visibility.Collapsed;
             }
-            if (_PlayList.Permissions.Follow)
-            {
-                AddRemove.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                AddRemove.Visibility = Visibility.Collapsed;
-            }
+
+            updateAddedBTN();
+
+
 
 
 
@@ -188,10 +209,34 @@ namespace VK_UI3.Controls
             FadeInAnimationGrid.Begin();
         }
 
-        
+        private void updateAddedBTN()
+        {
+            this.DispatcherQueue.TryEnqueue(async () =>
+            {
+                AddRemove.Visibility = Visibility.Visible;
+                
+                if (_PlayList.Permissions.Edit)
+                    AddRemove.Visibility = Visibility.Collapsed;
 
+                if (_PlayList.Permissions.Follow)
+                {
+                    AddRemove.Text = "Добавить к себе";
+                    AddRemove.Icon = new SymbolIcon(Symbol.Add);
+                    //AddRemove.Visibility = Visibility.Visible;
 
+                }
+                else
+                {
+                    AddRemove.Text = "Отписаться";
+                    AddRemove.Icon = new SymbolIcon(Symbol.Delete);
 
+                    if (_PlayList.OwnerId != AccountsDB.activeAccount.id)
+                    {
+                        AddRemove.Visibility = Visibility.Collapsed;
+                    }
+                }
+            });
+        }
 
         bool entered;
         private void UserControl_PointerEntered(object sender, PointerRoutedEventArgs e)

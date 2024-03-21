@@ -58,9 +58,9 @@ namespace VK_UI3.Helpers.Animations
                 ChangeImageWithAnimation(newImageSourceUrl.ToString());
         }
 
-        public void ChangeImageWithAnimation(string? newImageSourceUrl)
+        public void ChangeImageWithAnimation(string? newImageSourceUrl, bool justDoIt = false)
         {
-            if (imageSourceNow != null && imageSourceNow == newImageSourceUrl)
+            if (imageSourceNow != null && imageSourceNow == newImageSourceUrl && !justDoIt)
                 return;
             imageSourceNow = newImageSourceUrl;
 

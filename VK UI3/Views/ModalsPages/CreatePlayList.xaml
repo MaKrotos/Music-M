@@ -28,8 +28,8 @@
                 <Image VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill"   x:Name="PlaylistImage" />
                 <SymbolIcon  Symbol="Edit"/>
             </Grid>
-            <TextBox x:Name="Title" Header="Название" />
-            <TextBox x:Name="Description" Header="Описание" AcceptsReturn="True" TextWrapping="Wrap" />
+            <TextBox MaxLength="1024" x:Name="Title" Header="Название" />
+            <TextBox MaxLength="1024" x:Name="Description" Header="Описание" AcceptsReturn="True" TextWrapping="Wrap" />
             <ToggleSwitch x:Name="HideFromSearch" Header="Скрыть из поиска и рекомендаций" />
             <StackPanel Margin="0,10,0,0" HorizontalAlignment="Right" Orientation="Horizontal">
                 <Button Click="Button_Click" Margin="5">Отмена</Button>

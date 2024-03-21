@@ -122,7 +122,7 @@ namespace VK_UI3.Controls
                         ImageThumbGrid.Opacity = 1;
 
                         changeImage.ChangeImageWithAnimation(
-                            photouri
+                            photouri, true
                          );
                     }
                 }
@@ -228,7 +228,7 @@ namespace VK_UI3.Controls
             if (!dataTrack.audio.Dislike)
             {
                 IconData = myResourceDictionary["Dislike"] as string;
-                disText.Text = "Не нравиться";
+                disText.Text = "Не нравится";
             }
             else
             {

@@ -62,6 +62,10 @@ namespace VK_UI3.VKs.IVK
 
         public void countUpdated() { onCountUpDated?.Invoke(this, EventArgs.Empty); }
 
+        public event EventHandler onInfoUpdated;
+
+        public void InfoUpdated() { onCountUpDated?.Invoke(this, EventArgs.Empty); }
+
         public event EventHandler onNameUpdated;
 
         public void NameUpdated() { onNameUpdated?.Invoke(this, EventArgs.Empty); }
