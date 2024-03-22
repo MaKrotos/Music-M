@@ -15,13 +15,7 @@
     Width="Auto"
     
     mc:Ignorable="d">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../Resource/icons.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
+  
     <UserControl.ContextFlyout>
         <MenuFlyout x:Name="flyOutm">
             <MenuFlyoutItem x:Name="AddRemove" Text="Добавить к себе" Click="AddRemove_Click" Icon="Add" />

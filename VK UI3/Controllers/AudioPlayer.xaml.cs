@@ -43,7 +43,7 @@ namespace VK_UI3.Controllers
     /// </summary>
     {
 
-        private static Windows.Media.Playback.MediaPlayer mediaPlayer = new MediaPlayer();
+        public static Windows.Media.Playback.MediaPlayer mediaPlayer = new MediaPlayer();
 
         public static event EventHandler oniVKUpdate; // Событие OnDeviceAttached
         public static void NotifyoniVKUpdate()
@@ -80,7 +80,8 @@ namespace VK_UI3.Controllers
 
         public static event EventHandler TrackDataThisChanged;
 
-
+        public static event EventHandler onIVKUpdated;
+        public static void IVKUpdated() { onIVKUpdated?.Invoke(null, EventArgs.Empty); }
 
         public static ExtendedAudio _TrackDataThis
         {

@@ -198,10 +198,19 @@ namespace VK_UI3.VKs.IVK
 
         public void shareToVK()
         {
-            var a = GetTrackPlay().audio;
-            api.Audio.SetBroadcastAsync(
-               a.OwnerId + "_" + a.Id
-                ); ;
+            try
+            {
+
+                var a = GetTrackPlay().audio;
+                if (a != null)
+                    VK.api.Audio.SetBroadcastAsync(
+                       a.OwnerId + "_" + a.Id
+                        );
+            }
+            catch (Exception e)
+            { 
+            
+            }
         }
 
         public void NotifyOnListUpdate()

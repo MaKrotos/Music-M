@@ -32,6 +32,7 @@ using VkNet.Model;
 using VkNet.Model.Attachments;
 using VkNet.Utils;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Media.Playlists;
 using Windows.Storage;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
@@ -131,9 +132,6 @@ namespace VK_UI3.Controls
                     ImageThumbGrid.Opacity = 0;
                 }
 
-             
-
-
 
 
                 if ((track.MainArtists == null) || (!track.MainArtists.Any()))
@@ -194,6 +192,9 @@ namespace VK_UI3.Controls
                 Time.Text = (string)timeString;
 
 
+ 
+
+
                 if (this.dataTrack.audio.Album != null) 
                 {
                     FlyGoAlbum.Visibility = Visibility.Visible;
@@ -217,6 +218,8 @@ namespace VK_UI3.Controls
                 }
             }
         }
+
+        
 
         private void SetIconDislike()
         {

@@ -517,7 +517,7 @@ namespace MusicX.Core.Services
 
         }
 
-        public async Task AddPlaylistAsync(long playlistId, long ownerId, string accessKey)
+        public async Task<JObject> AddPlaylistAsync(long playlistId, long ownerId, string accessKey)
         {
             try
             {
@@ -534,13 +534,15 @@ namespace MusicX.Core.Services
 
                 if (accessKey != null) parameters.Add("access_key", accessKey);
 
-                var json = await apiInvoke.InvokeAsync("audio.followPlaylist", parameters);
-
-                logger.Debug("RESULT OF 'audio.followPlaylist'" + json);
+                var json = JObject.Parse((await apiInvoke.InvokeAsync("audio.followPlaylist", parameters)));
 
 
+
+    
                 logger.Info("Successful invoke 'audio.followPlaylist' ");
-            }catch(Exception ex)
+                return json;
+            }
+            catch(Exception ex)
             {
                 logger.Error("VK API ERROR:");
                 logger.Error(ex, ex.Message);
@@ -550,11 +552,12 @@ namespace MusicX.Core.Services
 
         }
 
-        public async Task DeletePlaylistAsync(long playlistId, long ownerId)
+        public async Task<bool> DeletePlaylistAsync(long playlistId, long ownerId)
         {
             try
             {
                 var result = await vkApi.Audio.DeletePlaylistAsync(ownerId, playlistId);
+                return result;
 
             }catch(Exception ex)
             {

@@ -8,12 +8,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
+    
 >
     <Page.Shadow>
         <ThemeShadow />
     </Page.Shadow>
    
-    <ListView Padding="0,0,0,16"  CanReorderItems="false" x:Name="TrackListView" ItemsSource="{x:Bind vkGetAudio.listAudio, Mode=OneWay}"   IsItemClickEnabled="False" SelectionMode="None">
+    <ListView  Padding="0"  CanReorderItems="false" x:Name="TrackListView" ItemsSource="{x:Bind vkGetAudio.listAudio, Mode=OneWay}"   IsItemClickEnabled="False" SelectionMode="None">
+        <ListView.Shadow>
+            <ThemeShadow />
+        </ListView.Shadow>
         <ListView.Header>
                     <Grid Margin="15">
                         <Grid.ColumnDefinitions>
@@ -24,11 +28,11 @@
 
                         <!-- Квадратный элемент в первом столбце -->
                         <Grid  Width="250" Height="250"
-    Translation="0,0,24"
+  
     
-    CornerRadius="8" Margin="0,0,8,0" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" Grid.Column="0">
+    CornerRadius="8" Margin="5" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" Grid.Column="0">
                             <FontIcon Glyph="&#xE90B;" />
-                    <Grid x:Name="GridThumbs" Width="250" Height="250">
+                    <Grid   Translation="0,0,24"  x:Name="GridThumbs" Width="250" Height="250">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
@@ -143,8 +147,8 @@
                         </GridView.ItemContainerStyle>
                         <Button
     x:Name="AddPlaylist"
-    Margin="5,5,0,0"
-    Width="170"
+    Margin="0,5,0,0"
+  Width="170"
     Click="AddPlaylist_Click">
                                     <Button.Content>
                                         <StackPanel Orientation="Horizontal">
@@ -156,7 +160,7 @@
                                 <Button
     x:Name="PlayPlaylist"
   
-      Margin="5,5,0,0"
+      Margin="0,5,0,0"
    Width="170"
     Click="PlayPlaylist_Click">
                                     <Button.Content>
@@ -169,7 +173,7 @@
 
                                 <Button
     x:Name="EditPlaylist"
-      Margin="5,5,0,0"
+      Margin="0,5,0,0"
     Width="170"
     Click="EditPlaylist_Click">
                                     <Button.Content>
@@ -183,7 +187,7 @@
                                 <Button
     x:Name="DownloadPlaylist"
     HorizontalAlignment="Left"
-    Margin="5,5,0,0"
+    Margin="0,5,0,0"
                                        Width="170"
     Click="DownloadPlaylist_Click">
                                     <Button.Content>

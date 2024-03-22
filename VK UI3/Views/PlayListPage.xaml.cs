@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using MusicX.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -69,6 +70,7 @@ namespace VK_UI3.Views
         {
             this.DispatcherQueue.TryEnqueue(async () =>
             {
+               
 
                 SmallHelpers.AddImagesToGrid(GridThumbs, vkGetAudio.getPhotosList(), DispatcherQueue);
                 if (vkGetAudio is (PlayListVK))
@@ -78,16 +80,50 @@ namespace VK_UI3.Views
                     {
                         stackPanel.Items.Remove(EditPlaylist);
                     }
-                    
+
+                    if (playlist.Follower != null)
+                    {
+                        _ = Task.Run(
+                                 async () =>
+                                 {
+                                     (this.vkGetAudio as PlayListVK).playlist = VK.api.Audio.GetPlaylistById(playlist.Follower.OwnerId, playlist.Follower.PlaylistId);
+                                 });
+                    }
+
                     if (playlist.Permissions.Edit && !playlist.Permissions.Follow)
                         stackPanel.Items.Remove(AddPlaylist);
-                    
-                    
                     else
-                    if (playlist.IsFollowing && !playlist.Permissions.Edit)
                     {
-                        iconAdd.Symbol = Symbol.Delete;
-                        textAdd.Text = "Удалить";
+                        if (playlist.IsFollowing && !playlist.Permissions.Edit)
+                        {
+                            if (load)
+                            {
+                                iconAdd.Symbol = Symbol.Delete;
+                                textAdd.Text = "РЈРґР°Р»РёС‚СЊ";
+                            }
+                            else
+                            {
+                                Helpers.Animations.AnimationsChangeText animationsChangeText = new (textAdd, this.DispatcherQueue);
+                                Helpers.Animations.AnimationsChangeIcon animationsChangeicon = new(iconAdd);
+                                animationsChangeText.ChangeTextWithAnimation("РЈРґР°Р»РёС‚СЊ");
+                                animationsChangeicon.ChangeSymbolIconWithAnimation(Symbol.Delete);
+                            }
+                        }
+                        else
+                        {
+                            if (load)
+                            {
+                                iconAdd.Symbol = Symbol.Add;
+                                textAdd.Text = "Р”РѕР±Р°РІРёС‚СЊ Рє СЃРµР±Рµ";
+                            }
+                            else 
+                            {
+                                Helpers.Animations.AnimationsChangeText animationsChangeText = new(textAdd, this.DispatcherQueue);
+                                Helpers.Animations.AnimationsChangeIcon animationsChangeicon = new(iconAdd);
+                                animationsChangeText.ChangeTextWithAnimation("Р”РѕР±Р°РІРёС‚СЊ Рє СЃРµР±Рµ");
+                                animationsChangeicon.ChangeSymbolIconWithAnimation(Symbol.Add);
+                            }
+                        }
                     }
 
                     if (load)
@@ -96,33 +132,34 @@ namespace VK_UI3.Views
                         descriptionText.ChangeTextWithAnimation(playlist.Description);
 
                     FollowersText.Visibility = Visibility.Visible;
-                    FollowersText.Text = $"{playlist.Followers} подписчиков";
+                    FollowersText.Text = $"{playlist.Followers} РїРѕРґРїРёСЃС‡РёРєРѕРІ";
 
-
-                    string GenresText = string.Join(", ", playlist.Genres.Select(g => g.Name));
-
-
-                    Genres.Text = $"Жанры: {GenresText}" ;
-                    Genres.Visibility = Visibility.Visible;
-
+                    if (playlist.Genres.Count == 0)
+                    {
+                        Genres.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        string GenresText = string.Join(", ", playlist.Genres.Select(g => g.Name));
+                        Genres.Text = $"Р–Р°РЅСЂС‹: {GenresText}";
+                        Genres.Visibility = Visibility.Visible;
+                    }
 
                     string dateInDesiredFormat = playlist.CreateTime.ToString("d MMMM yyyy", System.Globalization.CultureInfo.CurrentCulture);
                     string updateTimeF = playlist.UpdateTime.ToString("d MMMM yyyy", System.Globalization.CultureInfo.CurrentCulture);
 
                     if (playlist.UpdateTime != DateTime.MinValue && playlist.CreateTime.Date != playlist.UpdateTime.Date)
                     {
-                        Year.Text = $"Создан: {dateInDesiredFormat}, обновлён {updateTimeF}";
+                        Year.Text = $"РЎРѕР·РґР°РЅ: {dateInDesiredFormat}, РѕР±РЅРѕРІР»С‘РЅ {updateTimeF}";
                     }
                     else
                     {
-                        Year.Text = $"Создан: {dateInDesiredFormat}";
+                        Year.Text = $"РЎРѕР·РґР°РЅ: {dateInDesiredFormat}";
                     }
                     Year.Visibility = Visibility.Visible;
 
-                    Plays.Text = $"Прослушиваний : {playlist.Plays}";
+                    Plays.Text = $"РџСЂРѕСЃР»СѓС€РёРІР°РЅРёР№ : {playlist.Plays}";
                     Plays.Visibility = Visibility.Visible;
-
-
 
                 }
                 else
@@ -184,12 +221,12 @@ namespace VK_UI3.Views
         ScrollViewer scrollViewer;
         private void PlayListPage_Loaded(object sender, RoutedEventArgs e)
         {
-            // Находим ScrollViewer внутри ListView
+            // РќР°С…РѕРґРёРј ScrollViewer РІРЅСѓС‚СЂРё ListView
 
             scrollViewer = FindScrollViewer(TrackListView);
             if (scrollViewer != null)
             {
-                // Подписываемся на событие изменения прокрутки
+                // РџРѕРґРїРёСЃС‹РІР°РµРјСЃСЏ РЅР° СЃРѕР±С‹С‚РёРµ РёР·РјРµРЅРµРЅРёСЏ РїСЂРѕРєСЂСѓС‚РєРё
                 scrollViewer.ViewChanged += ScrollViewer_ViewChanged; ;
             }
         }
@@ -225,15 +262,30 @@ namespace VK_UI3.Views
 
                          if (playlist.IsFollowing)
                          {
-                             await VK.vkService.DeletePlaylistAsync(playlist.Id, playlist.OwnerId);
-                             playlist.IsFollowing = false;
+                             bool deleted = false;
+                             if (playlist.Follower != null)
+                             {
+                                 deleted = await VK.vkService.DeletePlaylistAsync(playlist.Follower.PlaylistId, playlist.Follower.OwnerId);
+                             }
+                             else
+                             {
+                                 deleted = await VK.vkService.DeletePlaylistAsync(playlist.Id, playlist.OwnerId);
+                             }
+                             (vkGetAudio as PlayListVK).playlist = await VK.api.Audio.GetPlaylistByIdAsync(playlist.Original.OwnerId, playlist.Original.PlaylistId);
                          }
                          else
                          {
-                             await VK.vkService.AddPlaylistAsync(playlist.Id, playlist.OwnerId, playlist.AccessKey);
-                             playlist.IsFollowing = true;
-
-
+                             if (playlist.Original != null)
+                             {
+                                 var js = await VK.vkService.AddPlaylistAsync(playlist.Original.PlaylistId, playlist.Original.OwnerId, playlist.Original.AccessKey);
+                                 (vkGetAudio as PlayListVK).playlist = await VK.api.Audio.GetPlaylistByIdAsync((long)js["owner_id"], (long)js["playlist_id"]);
+                             }
+                             else
+                             {
+                                  var js = await VK.vkService.AddPlaylistAsync(playlist.Id, playlist.OwnerId, playlist.AccessKey);
+                                 (vkGetAudio as PlayListVK).playlist = await VK.api.Audio.GetPlaylistByIdAsync((long)js["owner_id"], (long)js["playlist_id"]);
+                             }
+                            
                          }
                          updateUI();
 
