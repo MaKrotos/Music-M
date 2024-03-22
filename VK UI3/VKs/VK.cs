@@ -840,7 +840,7 @@ namespace VK_UI3.VKs
                   { "audio_ids", $"{OwnerId}_{Id}" }
                 };
 
-                var response = await api.CallAsync("audio.removeFromPlaylist", parameters);
+                var response = await api.CallAsync("audio.removeDislike", parameters);
 
                 if (response.RawJson == "1")
                 {
@@ -871,8 +871,8 @@ namespace VK_UI3.VKs
                     }
                 };
 
-
-                var response = await api.CallAsync("audio.removeDislike", parameters);
+                
+                var response = await api.CallAsync("audio.removeFromPlaylist", parameters);
 
                 if (response.RawJson == "1")
                 {
@@ -886,6 +886,29 @@ namespace VK_UI3.VKs
                 }
             }
             catch { return false; }
+        }
+
+
+        public static async Task sendStartEvent(long Id, long OwnerId, long? playlistID = null)
+        {
+            try
+            {
+                var parameters = new VkParameters
+                {
+                    { "uuid", Guid.NewGuid() },
+                    { "audio_id", $"{OwnerId}_{Id}"  },
+                    
+                };
+                if (playlistID != null)
+                    parameters.Add("playlist_id", playlistID);
+
+                var response = await api.CallAsync("audio.sendStartEvent", parameters);
+
+                
+            }
+            catch (Exception e){ 
+              
+            }
         }
     }
 

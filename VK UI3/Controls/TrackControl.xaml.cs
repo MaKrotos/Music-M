@@ -621,6 +621,11 @@ namespace VK_UI3.Controls
 
         }
 
+
+
+
+
+
         private async void RemovePlayList_Click(object sender, RoutedEventArgs e)
         {
             if (!(dataTrack.iVKGetAudio is PlayListVK)) return;
@@ -631,9 +636,8 @@ namespace VK_UI3.Controls
                   {
 
                         var deleted =  await VK.deleteFromPlaylist((long)dataTrack.audio.Id, (long)dataTrack.audio.OwnerId,
-                       (dataTrack.iVKGetAudio as PlayListVK).playlist.Id);
+                            (dataTrack.iVKGetAudio as PlayListVK).playlist.Id);
                           if (deleted)
-
                           this.DispatcherQueue.TryEnqueue(async () =>
                           {
                               dataTrack.iVKGetAudio.listAudio.Remove(dataTrack);

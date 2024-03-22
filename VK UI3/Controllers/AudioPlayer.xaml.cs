@@ -534,7 +534,13 @@ namespace VK_UI3.Controllers
             if (v != null) iVKGetAudio.currentTrack = (long)v;
             iVKGetAudio.ChangePlayAudio();
 
-          
+            if (iVKGetAudio is PlayListVK)
+            {
+
+                VK.sendStartEvent((long)_TrackDataThis.audio.Id, (long)_TrackDataThis.audio.OwnerId, (iVKGetAudio as PlayListVK).playlist.Id);
+            }
+            else
+            VK.sendStartEvent((long)_TrackDataThis.audio.Id, (long)_TrackDataThis.audio.OwnerId);
 
 
             var mediaSource = Windows.Media.Core.MediaSource.CreateFromUri(new Uri(_TrackDataThis.audio.Url.ToString()));

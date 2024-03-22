@@ -147,22 +147,38 @@ namespace VK_UI3.Controls
                    try
                    {
 
-                       if (_PlayList.Permissions.Follow)
+                       if (!_PlayList.IsFollowing)
                        {
+                           if (_PlayList.Original != null)
+                           {
+                               await VK.vkService.AddPlaylistAsync(_PlayList.Original.PlaylistId, _PlayList.Original.OwnerId, _PlayList.Original.AccessKey);
+                           }else
+                               await VK.vkService.AddPlaylistAsync(_PlayList.Id, _PlayList.OwnerId, _PlayList.AccessKey);
 
 
-                           await VK.vkService.AddPlaylistAsync(_PlayList.Id, _PlayList.OwnerId, _PlayList.AccessKey);
+
+                           _PlayList.IsFollowing = true;
                            _PlayList.Permissions.Follow = false;
-                          
+
 
                        }
                        else
                        {
+                         
+                           if (_PlayList.Follower != null)
+                           {
+                                   await VK.vkService.DeletePlaylistAsync(_PlayList.Follower.PlaylistId, _PlayList.Follower.OwnerId);
+                           }
+                           else
+                           {
+                               await VK.vkService.DeletePlaylistAsync(_PlayList.Id, _PlayList.OwnerId);
+                           }
 
-                           await VK.vkService.DeletePlaylistAsync(_PlayList.Id, _PlayList.OwnerId);
+                          
+                           _PlayList.IsFollowing = false;
                            _PlayList.Permissions.Follow = true;
 
-                           updateAddedBTN();
+                         
                        }
 
                    }catch (Exception ex) 
@@ -281,7 +297,10 @@ namespace VK_UI3.Controls
                 if (_PlayList.Permissions.Edit)
                     AddRemove.Visibility = Visibility.Collapsed;
 
-                if (_PlayList.Permissions.Follow)
+                if (!_PlayList.IsFollowing && !_PlayList.Permissions.Follow)
+                    AddRemove.Visibility = Visibility.Collapsed;
+
+                if (!_PlayList.IsFollowing && _PlayList.OwnerId != AccountsDB.activeAccount.id)
                 {
                     AddRemove.Text = "Добавить к себе";
                     AddRemove.Icon = new SymbolIcon(Symbol.Add);
@@ -293,10 +312,7 @@ namespace VK_UI3.Controls
                     AddRemove.Text = "Отписаться";
                     AddRemove.Icon = new SymbolIcon(Symbol.Delete);
 
-                    if (_PlayList.OwnerId != AccountsDB.activeAccount.id)
-                    {
-                        AddRemove.Visibility = Visibility.Collapsed;
-                    }
+                   
                 }
             });
         }
