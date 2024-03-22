@@ -1,10 +1,12 @@
 [Скачать установщик](https://github.com/MaKrotos/Music-M/releases/download/0.1.5.2/Setup.VK.M.exe)
 
-![image](https://github.com/MaKrotos/Music-M/assets/43302537/7df48676-e3a8-4d73-bec8-ea747d14fd44)
+![image](https://github.com/MaKrotos/Music-M/assets/43302537/1c1cc594-1f86-4613-acd2-cf71870018f3)
 
-![image](https://github.com/MaKrotos/Music-M/assets/43302537/ff3323ff-16c3-4f39-ac20-e58063da562b)
+![image](https://github.com/MaKrotos/Music-M/assets/43302537/41d13b1a-8a65-43bf-bd04-c233100ffb3d)
 
-![image](https://github.com/MaKrotos/Music-M/assets/43302537/c5c1e49a-e475-459c-8d2e-e3cdd1fd7595)
+![image](https://github.com/MaKrotos/Music-M/assets/43302537/99247c70-5d35-47fe-b69c-50274b339f1e)
+
+![image](https://github.com/MaKrotos/Music-M/assets/43302537/cbb60515-37c5-4b82-9bf4-d600d7005b68)
 
 
 Отдельная благодарность [Fooxboy/MusicX-WPF](https://github.com/Fooxboy/MusicX-WPF)https://github.com/Fooxboy/MusicX-WPF
