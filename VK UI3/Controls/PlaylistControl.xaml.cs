@@ -278,26 +278,34 @@ namespace VK_UI3.Controls
         {
             this.DispatcherQueue.TryEnqueue(async () =>
             {
-                var canEdit = _PlayList.Permissions.Edit;
-                var canDelete = _PlayList.Permissions.Delete;
-                var isFollowing = _PlayList.IsFollowing;
-                var isOwner = _PlayList.OwnerId == AccountsDB.activeAccount.id;
+                bool canEdit = _PlayList.Permissions.Edit;
+                bool canDelete = _PlayList.Permissions.Delete;
+          
 
                 editAlbum.Visibility = canEdit ? Visibility.Visible : Visibility.Collapsed;
                 DeleteAlbum.Visibility = canDelete ? Visibility.Visible : Visibility.Collapsed;
 
-                if (!canEdit && (isFollowing || _PlayList.Permissions.Follow) && !isOwner)
+
+                AddRemove.Visibility = Visibility.Visible;
+
+                if (_PlayList.Permissions.Edit)
+                    AddRemove.Visibility = Visibility.Collapsed;
+
+                if (!_PlayList.IsFollowing && !_PlayList.Permissions.Follow)
+                    AddRemove.Visibility = Visibility.Collapsed;
+
+                if (AddRemove.Visibility != Visibility.Collapsed)
+                if (!_PlayList.IsFollowing && _PlayList.OwnerId != AccountsDB.activeAccount.id)
                 {
-                    AddRemove.Visibility = Visibility.Visible;
-                    AddRemove.Text = "Добавить к себе"; 
+                    AddRemove.Text = "Добавить к себе";
                     AddRemove.Icon = new SymbolIcon(Symbol.Add);
                 }
-
                 else
                 {
-                    AddRemove.Visibility = Visibility.Collapsed;
                     AddRemove.Text = "Отписаться";
                     AddRemove.Icon = new SymbolIcon(Symbol.Delete);
+
+
                 }
             });
         }
