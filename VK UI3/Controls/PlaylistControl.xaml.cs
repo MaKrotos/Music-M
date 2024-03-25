@@ -297,12 +297,12 @@ namespace VK_UI3.Controls
                 if (AddRemove.Visibility != Visibility.Collapsed)
                 if (!_PlayList.IsFollowing && _PlayList.OwnerId != AccountsDB.activeAccount.id)
                 {
-                    AddRemove.Text = "Добавить к себе";
+                    AddRemove.Text = "Р”РѕР±Р°РІРёС‚СЊ Рє СЃРµР±Рµ";
                     AddRemove.Icon = new SymbolIcon(Symbol.Add);
                 }
                 else
                 {
-                    AddRemove.Text = "Отписаться";
+                    AddRemove.Text = "РћС‚РїРёСЃР°С‚СЊСЃСЏ";
                     AddRemove.Icon = new SymbolIcon(Symbol.Delete);
 
 
@@ -375,7 +375,7 @@ namespace VK_UI3.Controls
                         iVKGetAudio.currentTrack = 0;
                         AudioPlayer.PlayList(iVKGetAudio);
 
-                        // Отсоединить обработчик событий после выполнения Navigate
+                        //                                                 Navigate
                         iVKGetAudio.onListUpdate -= handler;
                     });
                 };
