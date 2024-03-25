@@ -289,9 +289,10 @@ namespace VK_UI3.Controls
                 if (!canEdit && (isFollowing || _PlayList.Permissions.Follow) && !isOwner)
                 {
                     AddRemove.Visibility = Visibility.Visible;
-                    AddRemove.Text = "Добавить к себе";
+                    AddRemove.Text = "Добавить к себе"; 
                     AddRemove.Icon = new SymbolIcon(Symbol.Add);
                 }
+
                 else
                 {
                     AddRemove.Visibility = Visibility.Collapsed;
