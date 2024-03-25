@@ -90,7 +90,7 @@ namespace VK_UI3.Views
                                  });
                     }
 
-                    if (!playlist.Permissions.Follow)
+                    if (!playlist.Permissions.Follow && (playlist.OwnerId != AccountsDB.activeAccount.id || (playlist.Original == null)))
                         stackPanel.Items.Remove(AddPlaylist);
                     else
                     {

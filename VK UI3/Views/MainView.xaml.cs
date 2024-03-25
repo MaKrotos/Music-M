@@ -50,7 +50,19 @@ namespace VK_UI3.Views
             NavWiv.BackRequested += NavWiv_BackRequested;
             this.Loaded += MainView_Loaded;
             Accounts.CollectionChanged += Accounts_CollectionChanged;
-               onUpdateAccounts += MainView_onUpdateAccounts;
+            onUpdateAccounts += MainView_onUpdateAccounts;
+
+            this.KeyDown += MainView_KeyDown;
+
+        }
+
+        private void MainView_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == Windows.System.VirtualKey.F5)
+            {
+               MainWindow.onRefreshClickedvoid();
+            }
+    
         }
 
         private void Accounts_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -63,6 +75,8 @@ namespace VK_UI3.Views
         {
             _ = CreateNavigation();
             dispatcherQueue = this.DispatcherQueue;
+
+           MainWindow.mainWindow.MainWindow_showRefresh();
         }
 
         private void MainView_onUpdateAccounts(object sender, EventArgs e)
@@ -322,7 +336,7 @@ namespace VK_UI3.Views
             {
                 // Используйте navigationInfo здесь
                 // ((MainWindow) navigationInfo.SourcePageType).GoLogin();
-                mainWindow = (MainWindow)navigationInfo.SourcePageType;
+                MainWindow.mainWindow = (MainWindow)navigationInfo.SourcePageType;
             }
             updateAccounts();
         }
@@ -345,7 +359,6 @@ namespace VK_UI3.Views
             Accounts.Add(new Accounts { });
         }
 
-        MainWindow mainWindow = null;
 
         private int previousSelectedAccount = -1;
 

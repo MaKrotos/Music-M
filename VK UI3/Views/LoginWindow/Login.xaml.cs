@@ -33,7 +33,7 @@ namespace VK_UI3.Views.LoginWindow
             
             //BackBTN.IsEnabled = this.Frame.CanGoBack;
             this.Loaded += Login_Loaded;
-
+            
 
          
 
@@ -47,6 +47,8 @@ namespace VK_UI3.Views.LoginWindow
             var accounts = AccountsDB.GetAllAccounts();
             if (accounts.Count < 0 || !Frame.CanGoBack) BackBTN.Visibility = Visibility.Collapsed;
             // BackBTN.IsEnabled = this.Frame.CanGoBack;
+
+            MainWindow.mainWindow.MainWindow_hideRefresh();
         }
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)

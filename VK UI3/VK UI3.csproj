@@ -82,6 +82,7 @@
     <PackageReference Include="QRCoder" Version="1.4.3" />
     <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
     <PackageReference Include="System.Text.Json" Version="8.0.0" />
+    <PackageReference Include="Uno.WinUI.Lottie" Version="5.1.87" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 

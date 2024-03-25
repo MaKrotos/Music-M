@@ -99,7 +99,7 @@ To="0" Duration="0:0:0.25"/>
 
 
             </Grid>
-            <StackPanel  Background="Transparent" CornerRadius="8" Orientation="Vertical" HorizontalAlignment="Left">
+            <StackPanel  Background="Transparent" CornerRadius="0" Orientation="Vertical" HorizontalAlignment="Left">
                 <TextBlock x:Name="Title" TextWrapping="Wrap"
                            FontSize="14"
                     

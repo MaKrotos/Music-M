@@ -26,13 +26,22 @@ namespace VK_UI3.Views
 
    
             this.Loading += WaitView_Loading;
+
+            MainWindow.onRefreshClicked_clear();
+            MainWindow.onRefreshClicked += MainWindow_onRefreshClicked;
         }
 
         private void WaitView_Loading(Microsoft.UI.Xaml.FrameworkElement sender, object args)
         {
             LoadAsync();
+
         }
 
+        private void MainWindow_onRefreshClicked(object sender, EventArgs e)
+        {
+            frameSection.Navigate(typeof(waitPage), null, new DrillInNavigationTransitionInfo());
+            LoadAsync();
+        }
 
         public SectionType sectionType;
         public string SectionID;
@@ -44,8 +53,10 @@ namespace VK_UI3.Views
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            
+
+            frameSection.Navigated += FrameSection_Navigated; 
                 frameSection.Navigate(typeof(waitPage), null, new DrillInNavigationTransitionInfo());
+
 
 
 
@@ -61,7 +72,16 @@ namespace VK_UI3.Views
                 this.openedPlayList = waitView.openedPlayList;
         }
 
+        private void FrameSection_Navigated(object sender, NavigationEventArgs e)
+        {
 
+            frameSection.BackStack.Clear();
+        }
+
+        private void FrameSection_Navigating(object sender, NavigatingCancelEventArgs e)
+        {
+           
+        }
 
         private async Task LoadArtistSection(string artistId)
         {

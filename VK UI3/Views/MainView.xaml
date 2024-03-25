@@ -34,10 +34,6 @@
              SelectionChanged="NavWiv_SelectionChanged"
              CompactPaneLength="80"
              IsSettingsVisible="True"
-                       
-             
-    
-                      
              IsPaneOpen="False">
 
                 <NavigationView.MenuItems >

@@ -26,6 +26,7 @@ using VkNet.AudioBypassService.Models.Auth;
 using VkNet.AudioBypassService.Models.Ecosystem;
 using VkNet.Model.Attachments;
 using Windows.Media.Playlists;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using Image = Microsoft.UI.Xaml.Controls.Image;
 using Playlist = MusicX.Core.Models.Playlist;
 
@@ -155,10 +156,17 @@ namespace VK_UI3.Controls
                            }else
                                await VK.vkService.AddPlaylistAsync(_PlayList.Id, _PlayList.OwnerId, _PlayList.AccessKey);
 
+                           if (_PlayList.Original != null)
+                           {
+                               var js = await VK.vkService.AddPlaylistAsync(_PlayList.Original.PlaylistId, _PlayList.Original.OwnerId, _PlayList.Original.AccessKey);
+                               _PlayList = await VK.api.Audio.GetPlaylistByIdAsync((long)js["owner_id"], (long)js["playlist_id"]);
+                           }
+                           else
+                           {
+                               var js = await VK.vkService.AddPlaylistAsync(_PlayList.Id, _PlayList.OwnerId, _PlayList.AccessKey);
+                               _PlayList = await VK.api.Audio.GetPlaylistByIdAsync((long)js["owner_id"], (long)js["playlist_id"]);
+                           }
 
-
-                           _PlayList.IsFollowing = true;
-                           _PlayList.Permissions.Follow = false;
 
 
                        }
@@ -167,20 +175,15 @@ namespace VK_UI3.Controls
                          
                            if (_PlayList.Follower != null)
                            {
-                                   await VK.vkService.DeletePlaylistAsync(_PlayList.Follower.PlaylistId, _PlayList.Follower.OwnerId);
+                               await VK.vkService.DeletePlaylistAsync(_PlayList.Follower.PlaylistId, _PlayList.Follower.OwnerId);
                            }
                            else
                            {
                                await VK.vkService.DeletePlaylistAsync(_PlayList.Id, _PlayList.OwnerId);
                            }
-
-                          
-                           _PlayList.IsFollowing = false;
-                           _PlayList.Permissions.Follow = true;
-
-                         
+                           if (_PlayList.Original != null)
+                               _PlayList = await VK.api.Audio.GetPlaylistByIdAsync(_PlayList.Original.OwnerId, _PlayList.Original.PlaylistId);
                        }
-
                    }catch (Exception ex) 
                    { 
                    
@@ -254,24 +257,7 @@ namespace VK_UI3.Controls
                 }
                 SmallHelpers.AddImagesToGrid(GridThumbs, list, this.DispatcherQueue);
             }
-            if (_PlayList.Permissions.Edit)
-            {
-                editAlbum.Visibility = Visibility.Visible;
-               
-            }
-            else
-            {
-                editAlbum.Visibility = Visibility.Collapsed;
-            }
-
-            if (_PlayList.Permissions.Delete)
-            {
-                DeleteAlbum.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                DeleteAlbum.Visibility = Visibility.Collapsed;
-            }
+           
 
             updateAddedBTN();
             updatePlayState();
@@ -292,27 +278,25 @@ namespace VK_UI3.Controls
         {
             this.DispatcherQueue.TryEnqueue(async () =>
             {
-                AddRemove.Visibility = Visibility.Visible;
-                
-                if (_PlayList.Permissions.Edit)
-                    AddRemove.Visibility = Visibility.Collapsed;
+                var canEdit = _PlayList.Permissions.Edit;
+                var canDelete = _PlayList.Permissions.Delete;
+                var isFollowing = _PlayList.IsFollowing;
+                var isOwner = _PlayList.OwnerId == AccountsDB.activeAccount.id;
 
-                if (!_PlayList.IsFollowing && !_PlayList.Permissions.Follow)
-                    AddRemove.Visibility = Visibility.Collapsed;
+                editAlbum.Visibility = canEdit ? Visibility.Visible : Visibility.Collapsed;
+                DeleteAlbum.Visibility = canDelete ? Visibility.Visible : Visibility.Collapsed;
 
-                if (!_PlayList.IsFollowing && _PlayList.OwnerId != AccountsDB.activeAccount.id)
+                if (!canEdit && (isFollowing || _PlayList.Permissions.Follow) && !isOwner)
                 {
+                    AddRemove.Visibility = Visibility.Visible;
                     AddRemove.Text = "Добавить к себе";
                     AddRemove.Icon = new SymbolIcon(Symbol.Add);
-                    //AddRemove.Visibility = Visibility.Visible;
-
                 }
                 else
                 {
+                    AddRemove.Visibility = Visibility.Collapsed;
                     AddRemove.Text = "Отписаться";
                     AddRemove.Icon = new SymbolIcon(Symbol.Delete);
-
-                   
                 }
             });
         }

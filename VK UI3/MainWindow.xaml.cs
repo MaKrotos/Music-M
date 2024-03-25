@@ -21,6 +21,12 @@ using Windows.UI.ViewManagement;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Xaml.Media;
 using vkPosterBot.DB;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Collections.Generic;
+using Windows.Graphics.Display;
+using Microsoft.UI.Input;
+using Windows.Foundation;
+using Microsoft.AppCenter.Utils;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -34,19 +40,25 @@ namespace VK_UI3
     public sealed partial class MainWindow : Microsoft.UI.Xaml.Window
     {
         internal static HWND hvn;
-
+        AppWindow m_AppWindow = null;
+       public static  MainWindow mainWindow;
         public MainWindow()
         {
             
             this.InitializeComponent();
 
-          
+            m_AppWindow = this.AppWindow;
+
+            mainWindow = this;
 
             contentFrame = ContentFrame;
             this.ExtendsContentIntoTitleBar = true;
             this.SetTitleBar(AppTitleBar);
+            AppTitleBar.Loaded += AppTitleBar_Loaded;
+            AppTitleBar.SizeChanged += AppTitleBar_SizeChanged;
 
-            AppWindow m_AppWindow = this.AppWindow;
+
+
             AppWindowTitleBar m_TitleBar = m_AppWindow.TitleBar;
 
 
@@ -62,7 +74,7 @@ namespace VK_UI3
             uI.ColorValuesChanged += UI_ColorValuesChanged; ;
 
 
-
+            
 
 
 
@@ -71,7 +83,7 @@ namespace VK_UI3
              if (AccountsDB.GetAllAccounts().Count == 0) {
 
                 GoLogin();
-           }else
+             }else
                 ContentFrame.Navigate(typeof(MainView), navigationInfo, new DrillInNavigationTransitionInfo());
        
 
@@ -88,6 +100,153 @@ namespace VK_UI3
 
 
             hvn = (HWND)WinRT.Interop.WindowNative.GetWindowHandle(this);
+
+            AnimatedButtonScaleStoryboardShow.Completed += AnimatedButtonScaleStoryboardShow_Completed;
+            AnimatedButtonScaleStoryboardDisShow.Completed += AnimatedButtonScaleStoryboardShow_Completed;
+
+            DownLoadBTNScaleShow.Completed += AnimatedButtonScaleStoryboardShow_Completed;
+            DownLoadBTNScaleHide.Completed += AnimatedButtonScaleStoryboardShow_Completed;
+
+            this.Activated += activated;
+          
+        }
+
+        private void AnimatedButtonScaleStoryboardShow_Completed(object sender, object e)
+        {
+            SetRegionsForCustomTitleBar();
+        }
+
+        public void MainWindow_showRefresh()
+        {
+   
+                AnimatedButtonScaleStoryboardDisShow.Pause();
+                AnimatedButtonScaleStoryboardShow.Begin();
+
+            if (ExtendsContentIntoTitleBar == true)
+            {
+                // Update interactive regions if the size of the window changes.
+                SetRegionsForCustomTitleBar();
+            }
+
+        }
+
+        public void MainWindow_hideRefresh()
+        {
+            AnimatedButtonScaleStoryboardShow.Pause();
+            AnimatedButtonScaleStoryboardDisShow.Begin();
+
+            if (ExtendsContentIntoTitleBar == true)
+            {
+                // Update interactive regions if the size of the window changes.
+                SetRegionsForCustomTitleBar();
+            }
+
+
+        }
+
+        public void MainWindow_showDownload()
+        {
+            DownLoadBTNScaleHide.Pause();
+            DownLoadBTNScaleShow.Begin();
+
+
+            if (ExtendsContentIntoTitleBar == true)
+            {
+                // Update interactive regions if the size of the window changes.
+                SetRegionsForCustomTitleBar();
+            }
+
+        }
+
+        public void MainWindow_hideDownload()
+        {
+            DownLoadBTNScaleShow.Pause();
+            DownLoadBTNScaleHide.Begin();
+
+            if (ExtendsContentIntoTitleBar == true)
+            {
+                // Update interactive regions if the size of the window changes.
+                SetRegionsForCustomTitleBar();
+            }
+        }
+
+
+        private void AppTitleBar_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (ExtendsContentIntoTitleBar == true)
+            {
+                // Update interactive regions if the size of the window changes.
+                SetRegionsForCustomTitleBar();
+            }
+        }
+
+        private void SetRegionsForCustomTitleBar()
+        {
+            // Specify the interactive regions of the title bar.
+
+            double scaleAdjustment = AppTitleBar.XamlRoot.RasterizationScale;
+            var nonClientInputSrc = InputNonClientPointerSource.GetForWindowId(m_AppWindow.Id);
+
+
+            // Получите все дочерние элементы StackPanel
+            var children = AppTitleBar.Children;
+
+            // Создайте список для хранения прямоугольников каждого элемента
+            List<Windows.Graphics.RectInt32> rects = new List<Windows.Graphics.RectInt32>();
+
+            foreach (var child in children)
+            {
+                var frameworkElement = child as FrameworkElement;
+                // Пропустите TitIcon и AppTitle
+                if (frameworkElement.Name == "TitIcon" || frameworkElement.Name == "AppTitle")
+                    continue;
+
+                // Получите границы каждого элемента
+                var transform = child.TransformToVisual(null);
+                var bounds = transform.TransformBounds(new Rect(0, 0, frameworkElement.ActualWidth, frameworkElement.ActualHeight));
+
+                // Преобразуйте координаты DPI
+             
+                var rect = new Windows.Graphics.RectInt32(
+                    _X: (int)Math.Round(bounds.X * scaleAdjustment),
+                    _Y: (int)Math.Round(bounds.Y * scaleAdjustment),
+                    _Width: (int)Math.Round(bounds.Width * scaleAdjustment),
+                    _Height: (int)Math.Round(bounds.Height * scaleAdjustment)
+                );
+
+                // Добавьте прямоугольник в список
+                rects.Add(rect);
+            }
+
+            // Установите области, которые будут прозрачными для кликов мыши
+            nonClientInputSrc.SetRegionRects(NonClientRegionKind.Passthrough, rects.ToArray());
+
+
+        }
+
+
+
+        private Windows.Graphics.RectInt32 GetRect(Rect bounds, double scale)
+        {
+            return new Windows.Graphics.RectInt32(
+                _X: (int)Math.Round(bounds.X * scale),
+                _Y: (int)Math.Round(bounds.Y * scale),
+                _Width: (int)Math.Round(bounds.Width * scale),
+                _Height: (int)Math.Round(bounds.Height * scale)
+            );
+        }
+
+        private void AppTitleBar_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (ExtendsContentIntoTitleBar == true)
+            {
+                // Set the initial interactive regions.
+                SetRegionsForCustomTitleBar();
+            }
+        }
+
+        private void activated(object sender, WindowActivatedEventArgs args)
+        {
 
             checkUpdate();
         }
@@ -277,6 +436,38 @@ namespace VK_UI3
         internal interface IWindowNative
         {
             IntPtr WindowHandle { get; }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+        //    AnimatedIcon.SetState(this.SearchAnimatedIcon, "PointerOver");
+
+        }
+        public static event EventHandler? onRefreshClicked;
+        public static event EventHandler? onDownloadClicked;
+        public static void onRefreshClickedvoid()
+        {
+            MainWindow.mainWindow.RotationStoryboard.Begin();
+            onRefreshClicked?.Invoke(null, EventArgs.Empty);
+
+        }
+
+        public static void onRefreshClicked_clear()
+        {
+            onRefreshClicked = null;
+
+        }
+        private void RefreshClick_Click(object sender, RoutedEventArgs e)
+        {
+            RotationStoryboard.Begin();
+            onRefreshClicked?.Invoke(this, EventArgs.Empty);
+
+        }
+
+        private void DownLoadBTN_Click(object sender, RoutedEventArgs e)
+        {
+            ScaleStoryboard.Begin();
+            onDownloadClicked?.Invoke(this, EventArgs.Empty);
         }
     }
 

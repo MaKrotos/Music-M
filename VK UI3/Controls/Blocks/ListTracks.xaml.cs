@@ -26,7 +26,11 @@ namespace VK_UI3.Controls.Blocks
         private void ListTracks_Loaded(object sender, RoutedEventArgs e)
         {
             scrollViewer = SmallHelpers.FindScrollViewer(gridV);
-            sectionAudio.NotifyOnListUpdate();
+            try
+            {
+                sectionAudio?.NotifyOnListUpdate();
+            }
+            catch { }
         }
 
         private bool CheckIfAllContentIsVisible(ScrollViewer scrollViewer)

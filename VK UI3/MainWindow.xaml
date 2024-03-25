@@ -10,41 +10,145 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:custom="using:VK_UI3.Controllers"
 
+    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     mc:Ignorable="d">
     <Window.SystemBackdrop>
         <DesktopAcrylicBackdrop />
     </Window.SystemBackdrop>
-    <Grid >
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
+
+        <Grid Height="35">
+           
+            <StackPanel  Orientation="Horizontal" Height="35" Padding="0,0,0,0"  x:Name="AppTitleBar" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+
+            
+                <ImageIcon x:Name="TitIcon" Width="25" Height="25" Margin="5" Grid.Column="0" Source="ms-appx:///Assets/StoreLogo.scale-400.png" />
+                <TextBlock Grid.Column="1" Text="VK M" x:Name="AppTitle"  VerticalAlignment="Center" HorizontalAlignment="Left"  />
+
+
+                
+                <Button  x:Name="AnimatedButton" Padding="0" Margin="15,0,0,0" Width="30" Height="25" Background="Transparent" Click="RefreshClick_Click">
+                    <Button.RenderTransform>
+                        <ScaleTransform x:Name="AnimatedButtonScaleTransform" ScaleX="0" ScaleY="0" />
+                    </Button.RenderTransform>
+                    <Button.RenderTransformOrigin>
+                        0.5,0.5
+                    </Button.RenderTransformOrigin>
+                    <FontIcon x:Name="AnimatedIcon" FontSize="16" Glyph="&#xE72C;">
+                        <FontIcon.RenderTransform>
+                            <RotateTransform x:Name="IconRotateTransform" Angle="0" />
+                        </FontIcon.RenderTransform>
+                        <FontIcon.RenderTransformOrigin>
+                            0.5,0.5
+                        </FontIcon.RenderTransformOrigin>
+                        <FontIcon.Resources>
+                            <Storyboard x:Name="RotationStoryboard">
+                                <DoubleAnimation Storyboard.TargetName="IconRotateTransform"
+                                 Storyboard.TargetProperty="Angle"
+                                 From="0" To="360" Duration="0:0:1">
+                                    <DoubleAnimation.EasingFunction>
+                                        <BounceEase Bounces="1" EasingMode="EaseOut" 
+                                    Bounciness="5" />
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                            </Storyboard>
+                        </FontIcon.Resources>
+                    </FontIcon>
+                    <Button.Resources>
+                        <Storyboard x:Name="AnimatedButtonScaleStoryboardShow">
+                        <DoubleAnimation Storyboard.TargetName="AnimatedButtonScaleTransform"
+                         Storyboard.TargetProperty="ScaleX"
+                         To="1" Duration="0:0:0.1" />
+                        <DoubleAnimation Storyboard.TargetName="AnimatedButtonScaleTransform"
+                          Storyboard.TargetProperty="ScaleY"
+                          To="1" Duration="0:0:0.1" />
+                            <DoubleAnimation Storyboard.TargetName="AnimatedButton"
+                         Storyboard.TargetProperty="Opacity"
+                         To="1" Duration="0:0:0.1" />
+                        </Storyboard>
+                        <Storyboard x:Name="AnimatedButtonScaleStoryboardDisShow">
+                            <DoubleAnimation Storyboard.TargetName="AnimatedButtonScaleTransform"
+                         Storyboard.TargetProperty="ScaleX"
+                         To="0" Duration="0:0:0.1" />
+                         <DoubleAnimation Storyboard.TargetName="AnimatedButtonScaleTransform"
+                           Storyboard.TargetProperty="ScaleY"
+                           To="0" Duration="0:0:0.1" />
+                            <DoubleAnimation Storyboard.TargetName="AnimatedButton"
+                         Storyboard.TargetProperty="Opacity"
+                         To="0" Duration="0:0:0.1" />
+                        </Storyboard>
+                    </Button.Resources>
+                </Button>
+
+
+                <Button x:Name="DownLoadBTN" Padding="0" Margin="5,0,0,0" Width="30" Height="25" Background="Transparent" Click="DownLoadBTN_Click" >
+                    <Button.RenderTransform>
+                        <ScaleTransform x:Name="DownLoadBTNScale" ScaleX="0" ScaleY="0" />
+                    </Button.RenderTransform>
+                    <Button.RenderTransformOrigin>
+                        0.5,0.5
+                    </Button.RenderTransformOrigin>
+                    <FontIcon  FontSize="16" Glyph="&#xE896;">
+                        <FontIcon.RenderTransform>
+                            <ScaleTransform x:Name="IconScaleTransform" ScaleX="1" ScaleY="1" />
+                        </FontIcon.RenderTransform>
+                        <FontIcon.RenderTransformOrigin>
+                            0.5,0.5
+                        </FontIcon.RenderTransformOrigin>
+                        <FontIcon.Resources>
+                            <Storyboard x:Name="ScaleStoryboard">
+                                <DoubleAnimation Storyboard.TargetName="IconScaleTransform"
+                                 Storyboard.TargetProperty="ScaleX"
+                                 From="1" To="0.8" AutoReverse="True" Duration="0:0:0.1" />
+                                <DoubleAnimation Storyboard.TargetName="IconScaleTransform"
+                                 Storyboard.TargetProperty="ScaleY"
+                                 From="1" To="0.8" AutoReverse="True" Duration="0:0:0.1" />
+                            </Storyboard>
+                        </FontIcon.Resources>
+                    </FontIcon>
+                    <Button.Resources>
+                        <Storyboard x:Name="DownLoadBTNScaleShow">
+                            <DoubleAnimation Storyboard.TargetName="DownLoadBTNScale"
+                                   Storyboard.TargetProperty="ScaleX"
+                                   To="1" Duration="0:0:0.1" />     
+                            <DoubleAnimation Storyboard.TargetName="DownLoadBTNScale"
+                                Storyboard.TargetProperty="ScaleY"
+                                To="1" Duration="0:0:0.1" />
+                            <DoubleAnimation Storyboard.TargetName="DownLoadBTN"
+                               Storyboard.TargetProperty="Opacity"
+                               To="1" Duration="0:0:0.1" />             
+                        </Storyboard>
+                        <Storyboard x:Name="DownLoadBTNScaleHide">
+                            <DoubleAnimation Storyboard.TargetName="DownLoadBTNScale"
+                               Storyboard.TargetProperty="ScaleX"
+                               To="0" Duration="0:0:0.1" />             
+                            <DoubleAnimation Storyboard.TargetName="DownLoadBTNScale"
+                                Storyboard.TargetProperty="ScaleY"
+                                 To="0" Duration="0:0:0.1" />
+                            <DoubleAnimation Storyboard.TargetName="DownLoadBTN"
+                           Storyboard.TargetProperty="Opacity"
+                           To="0" Duration="0:0:0.1" />
+                        </Storyboard>
+                    </Button.Resources>
+                </Button>
+
+
+            </StackPanel>
+  
+        </Grid>
+
+
+            <Frame Grid.Row="1" x:Name="ContentFrame">
+                <Frame.ContentTransitions>
+                    <TransitionCollection>
+                        <NavigationThemeTransition  />
+                    </TransitionCollection>
+                </Frame.ContentTransitions>
+            </Frame>
        
-
-            <Grid Height="34" Padding="0,0,0,0"  x:Name="AppTitleBar" Grid.Row="0" VerticalAlignment="Top">
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" ></ColumnDefinition>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="50"></RowDefinition>
-
-                </Grid.RowDefinitions>
-                <ImageIcon Margin="10,5,5,20" Grid.Column="0" Source="ms-appx:///Assets/StoreLogo.scale-400.png" />
-                <TextBlock Grid.Column="1" Text="VK M" x:Name="AppTitle"  VerticalAlignment="Top" Margin="8" />
-            </Grid>
-
-
-        <Frame Grid.Row="1" x:Name="ContentFrame">
-            <Frame.ContentTransitions>
-                <TransitionCollection>
-                    <NavigationThemeTransition  />
-                </TransitionCollection>
-            </Frame.ContentTransitions>
-        </Frame>
-
-
-
     </Grid>
 </Window>
