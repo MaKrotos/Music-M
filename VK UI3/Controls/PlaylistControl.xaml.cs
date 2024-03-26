@@ -44,12 +44,23 @@ namespace VK_UI3.Controls
             AnimationsChangeFontIcon = new AnimationsChangeFontIcon(PlayPause, this.DispatcherQueue);
             titleAnim = new AnimationsChangeText(Title, this.DispatcherQueue);
             descrAnim = new AnimationsChangeText(Subtitle, this.DispatcherQueue);
-            AudioPlayer.oniVKUpdate += AudioPlayer_oniVKUpdate;
-
+         
+            this.Unloaded += PlaylistControl_Unloaded;
+            this.Loaded += PlaylistControl_Loaded;
 
             DataContextChanged += RecommsPlaylist_DataContextChanged;
 
-            this.Loading += RecommsPlaylist_Loading;
+
+        }
+
+        private void PlaylistControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            AudioPlayer.oniVKUpdate += AudioPlayer_oniVKUpdate;
+        }
+
+        private void PlaylistControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            AudioPlayer.oniVKUpdate -= AudioPlayer_oniVKUpdate;
         }
 
         private void AudioPlayer_oniVKUpdate(object sender, EventArgs e)
@@ -141,65 +152,46 @@ namespace VK_UI3.Controls
 
         public async void AddRemove_Click(object sender, RoutedEventArgs e)
         {
-            _ = Task.Run(
-               async () =>
-               {
-
-                   try
-                   {
-
-                       if (!_PlayList.IsFollowing)
-                       {
-                           if (_PlayList.Original != null)
-                           {
-                               await VK.vkService.AddPlaylistAsync(_PlayList.Original.PlaylistId, _PlayList.Original.OwnerId, _PlayList.Original.AccessKey);
-                           }else
-                               await VK.vkService.AddPlaylistAsync(_PlayList.Id, _PlayList.OwnerId, _PlayList.AccessKey);
-
-                           if (_PlayList.Original != null)
-                           {
-                               var js = await VK.vkService.AddPlaylistAsync(_PlayList.Original.PlaylistId, _PlayList.Original.OwnerId, _PlayList.Original.AccessKey);
-                               _PlayList = await VK.api.Audio.GetPlaylistByIdAsync((long)js["owner_id"], (long)js["playlist_id"]);
-                           }
-                           else
-                           {
-                               var js = await VK.vkService.AddPlaylistAsync(_PlayList.Id, _PlayList.OwnerId, _PlayList.AccessKey);
-                               _PlayList = await VK.api.Audio.GetPlaylistByIdAsync((long)js["owner_id"], (long)js["playlist_id"]);
-                           }
-
-
-
-                       }
-                       else
-                       {
-                         
-                           if (_PlayList.Follower != null)
-                           {
-                               await VK.vkService.DeletePlaylistAsync(_PlayList.Follower.PlaylistId, _PlayList.Follower.OwnerId);
-                           }
-                           else
-                           {
-                               await VK.vkService.DeletePlaylistAsync(_PlayList.Id, _PlayList.OwnerId);
-                           }
-                           if (_PlayList.Original != null)
-                               _PlayList = await VK.api.Audio.GetPlaylistByIdAsync(_PlayList.Original.OwnerId, _PlayList.Original.PlaylistId);
-                       }
-                   }catch (Exception ex) 
-                   { 
-                   
-                   
-                   }
-                   updateAddedBTN();
-               });
-
-
-
+            try
+            {
+                if (!_PlayList.IsFollowing)
+                {
+                    if (_PlayList.Original != null)
+                    {
+                        await VK.vkService.AddPlaylistAsync(_PlayList.Original.PlaylistId, _PlayList.Original.OwnerId, _PlayList.Original.AccessKey);
+                        var js = await VK.vkService.AddPlaylistAsync(_PlayList.Original.PlaylistId, _PlayList.Original.OwnerId, _PlayList.Original.AccessKey);
+                        _PlayList = await VK.api.Audio.GetPlaylistByIdAsync((long)js["owner_id"], (long)js["playlist_id"]);
+                    }
+                    else
+                    {
+                        await VK.vkService.AddPlaylistAsync(_PlayList.Id, _PlayList.OwnerId, _PlayList.AccessKey);
+                        var js = await VK.vkService.AddPlaylistAsync(_PlayList.Id, _PlayList.OwnerId, _PlayList.AccessKey);
+                        _PlayList = await VK.api.Audio.GetPlaylistByIdAsync((long)js["owner_id"], (long)js["playlist_id"]);
+                    }
+                }
+                else
+                {
+                    if (_PlayList.Follower != null)
+                    {
+                        await VK.vkService.DeletePlaylistAsync(_PlayList.Follower.PlaylistId, _PlayList.Follower.OwnerId);
+                    }
+                    else
+                    {
+                        await VK.vkService.DeletePlaylistAsync(_PlayList.Id, _PlayList.OwnerId);
+                    }
+                    if (_PlayList.Original != null)
+                        _PlayList = await VK.api.Audio.GetPlaylistByIdAsync(_PlayList.Original.OwnerId, _PlayList.Original.PlaylistId);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Добавьте здесь обработку исключений, например, логирование
+                Console.WriteLine(ex.Message);
+            }
+            updateAddedBTN();
         }
 
-        private void RecommsPlaylist_Loading(FrameworkElement sender, object args)
-        {
-
-        }
+       
         AnimationsChangeFontIcon AnimationsChangeFontIcon;
         AnimationsChangeImage animationsChangeImage;
 
@@ -220,9 +212,6 @@ namespace VK_UI3.Controls
         }
 
         public void update() {
-
-
-        
 
             AnimationsChangeFontIcon.ChangeFontIconWithAnimation("\uF5B0");
 
@@ -261,15 +250,6 @@ namespace VK_UI3.Controls
 
             updateAddedBTN();
             updatePlayState();
-
-
-
-
-            bool isUserPlaylist = _PlayList.OwnerId == AccountsDB.activeAccount.id && _PlayList.Original == null;
-            {
-
-
-            }
 
             FadeInAnimationGrid.Begin();
         }

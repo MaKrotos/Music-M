@@ -39,7 +39,6 @@ namespace VK_UI3.Views
 
         public ObservableRangeCollection<AudioPlaylist> audioPlaylists { get; set; } = new ObservableRangeCollection<AudioPlaylist>();
 
-
         public UserPlayList()
         {
             this.InitializeComponent();
@@ -54,8 +53,6 @@ namespace VK_UI3.Views
             this.Loaded += UserPlayList_Loaded;
             this.Loading += UserPlayList_Loading;
             this.audio = audio;
-
-            
         }
         Audio audio = null;
 
@@ -72,9 +69,8 @@ namespace VK_UI3.Views
             LoadedAll = userPlayList.LoadedAll;
             openedPlayList = userPlayList.openedPlayList;
 
-           
-            
         }
+
         public uint offset = 0;
         public long? UserId = null;
         public OpenedPlayList openedPlayList;
@@ -90,7 +86,6 @@ namespace VK_UI3.Views
 
         private void UserPlayList_Loading(FrameworkElement sender, object args)
         {
-
             if (LoadedAll)
             {
                 LoadingIndicator.Visibility = Visibility.Collapsed;

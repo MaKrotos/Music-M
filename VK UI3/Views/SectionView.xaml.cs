@@ -277,25 +277,44 @@ namespace VK_UI3.Views
         }
         ListTracksFull _tracksFull = null;
         ListTracksFull tracksFull
-
-        { get {
-                if (_tracksFull != null) return _tracksFull;
+        {
+            get
+            {
+                if (_tracksFull != null)
+                {
+                    return _tracksFull;
+                }
 
                 var lastItem = ListBlocks.Items.LastOrDefault();
                 if (lastItem != null)
                 {
                     var container = ListBlocks.ContainerFromItem(lastItem) as ListViewItem;
-                    if (container == null) return null;
+                    if (container == null)
+                    {
+                        return null;
+                    }
+
                     var dataTemplate = container.ContentTemplateRoot as ListTracksFull;
                     if (dataTemplate != null && _tracksFull == null)
                     {
                         _tracksFull = dataTemplate;
-                        _tracksFull.sectionAudio.onListUpdate += SectionAudio_onListUpdate;
+                        if (!listened)
+                        {
+                            listened = true;
+                            _tracksFull.sectionAudio.onListUpdate += SectionAudio_onListUpdate;
+                        }
                     }
                 }
 
-                return _tracksFull; 
-        } set { _tracksFull = value; } }
+                return _tracksFull;
+            }
+            set
+            {
+                _tracksFull = value;
+            }
+        }
+
+        bool listened = false;
 
         bool connectedLoad = false;
         private void loadBlocks(List<Block> block)
@@ -347,7 +366,6 @@ namespace VK_UI3.Views
         private void SectionAudio_onListUpdate(object sender, EventArgs e)
         {
             if ((sender as SectionAudio).itsAll)
-
                 this.DispatcherQueue.TryEnqueue(() =>
                 {
                     HideLoad();

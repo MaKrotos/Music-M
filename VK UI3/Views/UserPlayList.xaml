@@ -24,8 +24,6 @@
                         
                         _PlaylistItems="{Binding audioPlaylists, ElementName=ThisPage}"
                         x:Name="trControl"
-              
-                        
                     >
                     </custom:PlaylistControl>
                 </DataTemplate>

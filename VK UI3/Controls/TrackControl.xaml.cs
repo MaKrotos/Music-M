@@ -549,7 +549,7 @@ namespace VK_UI3.Controls
 
                                     try
                                     {
-                                        VK.api.Audio.AddToPlaylistAsync((long)dataTrack.audio.OwnerId, album.Id, new List<string> { $"{dataTrack.audio.OwnerId}_{dataTrack.audio.Id}" });
+                                        VK.api.Audio.AddToPlaylistAsync(album.OwnerId, album.Id, new List<string> { $"{dataTrack.audio.OwnerId}_{dataTrack.audio.Id}" });
 
                                     }
                                     catch (Exception ex)

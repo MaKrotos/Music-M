@@ -7,15 +7,9 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
-using MusicX.Core.Models;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.DB;
 using VK_UI3.Helpers;
@@ -23,12 +17,9 @@ using VK_UI3.Helpers.Animations;
 using VK_UI3.Views;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
-using VkNet.Model;
-using VkNet.Model.Attachments;
 using vkPosterBot.DB;
 using Windows.Media.Playback;
 using Windows.Storage.Streams;
-using Windows.UI.Core;
 
 
 
@@ -49,6 +40,8 @@ namespace VK_UI3.Controllers
         public static void NotifyoniVKUpdate()
         {
             oniVKUpdate?.Invoke(null, EventArgs.Empty);
+
+            oniVKUpdate = null;
         }
 
         public MediaPlayer MediaPlayerЧ
@@ -536,7 +529,6 @@ namespace VK_UI3.Controllers
 
             if (iVKGetAudio is PlayListVK)
             {
-
                 VK.sendStartEvent((long)_TrackDataThis.audio.Id, (long)_TrackDataThis.audio.OwnerId, (iVKGetAudio as PlayListVK).playlist.Id);
             }
             else
@@ -580,7 +572,7 @@ namespace VK_UI3.Controllers
             mediaPlayer.Play();
 
 
-            NotifyoniVKUpdate();
+         
         }
 
 

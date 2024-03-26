@@ -58,6 +58,11 @@ namespace VK_UI3.VKs.IVK
 
         public event EventHandler onListUpdate;
 
+        public void clearListUpdate()
+        {
+            onListUpdate = null;
+        }
+
         public event EventHandler onCountUpDated;
 
         public void countUpdated() { onCountUpDated?.Invoke(this, EventArgs.Empty); }

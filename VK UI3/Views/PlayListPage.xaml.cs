@@ -1,16 +1,9 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using MusicX.Core.Services;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using VK_UI3.Controllers;
 using VK_UI3.DB;
@@ -20,8 +13,6 @@ using VK_UI3.Views.ModalsPages;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 
 
 namespace VK_UI3.Views
@@ -53,19 +44,39 @@ namespace VK_UI3.Views
 
 
             vkGetAudio.onPhotoUpdated += VkGetAudio_onPhotoUpdated;
-            vkGetAudio.onListUpdate += VkGetAudio_onListUpdate; ; ;
-
+            vkGetAudio.onListUpdate += VkGetAudio_onListUpdate;
             vkGetAudio.onNameUpdated += VkGetAudio_onNameUpdated;
             vkGetAudio.onCountUpDated += VkGetAudio_onCountUpDated;
             vkGetAudio.onInfoUpdated += VkGetAudio_onInfoUpdated;
 
             updateUI(true);
-
+             animationsChangeText = new(textAdd, this.DispatcherQueue);
+             animationsChangeicon = new(iconAdd);
 
             base.OnNavigatedTo(e);
         }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+
+            if (vkGetAudio != null)
+            {
+                vkGetAudio.onPhotoUpdated -= VkGetAudio_onPhotoUpdated;
+                vkGetAudio.onListUpdate -= VkGetAudio_onListUpdate;
+                vkGetAudio.onNameUpdated -= VkGetAudio_onNameUpdated;
+                vkGetAudio.onCountUpDated -= VkGetAudio_onCountUpDated;
+                vkGetAudio.onInfoUpdated -= VkGetAudio_onInfoUpdated;
+            }
+        }
+
+
+
         AnimationsChangeText MainText;
         AnimationsChangeText descriptionText;
+        Helpers.Animations.AnimationsChangeText animationsChangeText;
+        Helpers.Animations.AnimationsChangeIcon animationsChangeicon;
+
         private void updateUI(bool load = false)
         {
             this.DispatcherQueue.TryEnqueue(async () =>
@@ -103,8 +114,7 @@ namespace VK_UI3.Views
                             }
                             else
                             {
-                                Helpers.Animations.AnimationsChangeText animationsChangeText = new (textAdd, this.DispatcherQueue);
-                                Helpers.Animations.AnimationsChangeIcon animationsChangeicon = new(iconAdd);
+
                                 animationsChangeText.ChangeTextWithAnimation("Удалить");
                                 animationsChangeicon.ChangeSymbolIconWithAnimation(Symbol.Delete);
                             }
@@ -118,8 +128,7 @@ namespace VK_UI3.Views
                             }
                             else 
                             {
-                                Helpers.Animations.AnimationsChangeText animationsChangeText = new(textAdd, this.DispatcherQueue);
-                                Helpers.Animations.AnimationsChangeIcon animationsChangeicon = new(iconAdd);
+                             
                                 animationsChangeText.ChangeTextWithAnimation("Добавить к себе");
                                 animationsChangeicon.ChangeSymbolIconWithAnimation(Symbol.Add);
                             }

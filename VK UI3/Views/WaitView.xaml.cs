@@ -55,21 +55,17 @@ namespace VK_UI3.Views
         {
 
             frameSection.Navigated += FrameSection_Navigated; 
-                frameSection.Navigate(typeof(waitPage), null, new DrillInNavigationTransitionInfo());
-
-
-
+            frameSection.Navigate(typeof(waitPage), null, new DrillInNavigationTransitionInfo());
 
                 var waitView = e.Parameter as WaitView;
                 if (waitView == null) return;
-
-
                 this.section = waitView.section;
                 this.sectionType = waitView.sectionType;
                 this.SectionID = waitView.SectionID;
                 this.Playlist = waitView.Playlist;
                 this.iVKGetAudio = waitView.iVKGetAudio;
                 this.openedPlayList = waitView.openedPlayList;
+
         }
 
         private void FrameSection_Navigated(object sender, NavigationEventArgs e)
@@ -137,9 +133,15 @@ namespace VK_UI3.Views
             }
         }
 
+        public class HandlerContainer
+        {
+            public EventHandler Handler { get; set; }
+        }
+
         public async Task LoadAsync()
         {
-
+            if (iVKGetAudio != null) iVKGetAudio.clearListUpdate();
+            var handlerContainer = new HandlerContainer();
             try
             {
                 await (sectionType switch
@@ -147,17 +149,18 @@ namespace VK_UI3.Views
                     SectionType.None => loadSection(this.SectionID),
                     SectionType.Artist => LoadArtistSection(this.SectionID),
                     SectionType.Search => LoadSearchSection(this.SectionID),
-                    SectionType.PlayList => LoadPlayList(),
+                    SectionType.PlayList => LoadPlayList(handlerContainer),
                     SectionType.UserPlayListList => UserPlayListList(),
-                    SectionType.MyListAudio => LoadMyAudioList(),
+                    SectionType.MyListAudio => LoadMyAudioList(handlerContainer),
                     _ => throw new ArgumentOutOfRangeException()
-                }); ; ;
+                });
             }
             finally
             {
-                //  ContentState = ContentState.Loaded;
+               
             }
         }
+
 
         private async Task UserPlayListList()
         {
@@ -174,59 +177,51 @@ namespace VK_UI3.Views
             frameSection.Navigate(typeof(UserPlayList), userPlayList, new DrillInNavigationTransitionInfo());
         }
 
-        private async Task LoadPlayList()
+        private async Task LoadPlayList(HandlerContainer handlerContainer)
         {
-           if (iVKGetAudio == null)
-                iVKGetAudio = new PlayListVK (this.Playlist, this.DispatcherQueue);
+     
+            if (iVKGetAudio == null)
+                iVKGetAudio = new PlayListVK(this.Playlist, this.DispatcherQueue);
 
-            if (iVKGetAudio.listAudio.Count != 0) {
-                this.DispatcherQueue.TryEnqueue(async () =>
-                {
-                    frameSection.Navigate(typeof(PlayListPage), iVKGetAudio, new DrillInNavigationTransitionInfo());
-                });
-                }
+            if (iVKGetAudio.listAudio.Count != 0) frameSection.Navigate(typeof(PlayListPage), iVKGetAudio, new DrillInNavigationTransitionInfo());
             else
             {
-                EventHandler handler = null;
-                handler = (sender, e) =>
-                {
-                    this.DispatcherQueue.TryEnqueue(async () =>
+
+                handlerContainer.Handler = (sender, e) =>
                     {
-                        frameSection.Navigate(typeof(PlayListPage), iVKGetAudio, new DrillInNavigationTransitionInfo());
-                        // Отсоединить обработчик событий после выполнения Navigate
-                        iVKGetAudio.onListUpdate -= handler;
-                    });
-                };
-                iVKGetAudio.onListUpdate += handler;
-
+                        iVKGetAudio.onListUpdate -= handlerContainer.Handler;
+                        this.DispatcherQueue.TryEnqueue(async () =>
+                        {
+                            iVKGetAudio.clearListUpdate();
+                            handlerContainer.Handler = null; // Освободить ссылку на обработчик
+                            frameSection.Navigate(typeof(PlayListPage), iVKGetAudio, new DrillInNavigationTransitionInfo());
+                        });
+                    };
+                iVKGetAudio.onListUpdate += handlerContainer.Handler;
             }
-
         }
 
-        private async Task LoadMyAudioList()
+        private async Task LoadMyAudioList(HandlerContainer handlerContainer)
         {
-            var userAudio = new UserAudio(AccountsDB.activeAccount.id, this.DispatcherQueue);
-            EventHandler handler = null;
+            iVKGetAudio = new UserAudio(AccountsDB.activeAccount.id, this.DispatcherQueue);
 
-            handler = (sender, e) => {
+            handlerContainer.Handler = (sender, e) => {
+                iVKGetAudio.onListUpdate -= handlerContainer.Handler;
                 this.DispatcherQueue.TryEnqueue(async () =>
                 {
-                    frameSection.Navigate(typeof(PlayListPage), userAudio, new DrillInNavigationTransitionInfo());
-                    // Отсоединить обработчик событий после выполнения Navigate
-                    userAudio.onListUpdate -= handler;
+                    iVKGetAudio.clearListUpdate();
+                    handlerContainer.Handler = null; // Освободить ссылку на обработчик
+                    frameSection.Navigate(typeof(PlayListPage), iVKGetAudio, new DrillInNavigationTransitionInfo());
                 });
             };
-
-            userAudio.onListUpdate += handler;
+         
+            iVKGetAudio.onListUpdate += handlerContainer.Handler;
         }
 
         private async Task loadSection(string sectionID, bool showTitle = false)
         {
-        
             var sectin = await VK.vkService.GetSectionAsync(sectionID);
             this.section = sectin.Section;
-
-
             frameSection.Navigate(typeof(SectionView), section, new DrillInNavigationTransitionInfo());
         }
 
