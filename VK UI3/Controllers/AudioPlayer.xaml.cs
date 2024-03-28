@@ -36,15 +36,15 @@ namespace VK_UI3.Controllers
 
         public static Windows.Media.Playback.MediaPlayer mediaPlayer = new MediaPlayer();
 
-        public static event EventHandler oniVKUpdate; // Событие OnDeviceAttached
+        public static WeakEventManager oniVKUpdate = new WeakEventManager();
+
+      
         public static void NotifyoniVKUpdate()
         {
-            oniVKUpdate?.Invoke(null, EventArgs.Empty);
-
-            oniVKUpdate = null;
+            oniVKUpdate.RaiseEvent(null, EventArgs.Empty);
         }
 
-        public MediaPlayer MediaPlayerЧ
+        public MediaPlayer MediaPlayer
         {
             get { return mediaPlayer; }
             set { mediaPlayer = value; }
@@ -71,10 +71,12 @@ namespace VK_UI3.Controllers
         private int _trackPosition2;
 
 
-        public static event EventHandler TrackDataThisChanged;
 
-        public static event EventHandler onIVKUpdated;
-        public static void IVKUpdated() { onIVKUpdated?.Invoke(null, EventArgs.Empty); }
+        public static WeakEventManager TrackDataThisChanged = new WeakEventManager();
+
+
+
+
 
         public static ExtendedAudio _TrackDataThis
         {
@@ -93,7 +95,7 @@ namespace VK_UI3.Controllers
                 if (_trackDataThis != value)
                 {
                     _trackDataThis = value;
-                    TrackDataThisChanged?.Invoke(null, EventArgs.Empty);
+                    TrackDataThisChanged?.RaiseEvent(null, EventArgs.Empty);
                 }
             }
         }
@@ -150,6 +152,7 @@ namespace VK_UI3.Controllers
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+
         protected void OnPropertyChanged(string propertyName)
         {
             this.DispatcherQueue.TryEnqueue(async () =>
@@ -181,7 +184,7 @@ namespace VK_UI3.Controllers
             setStatusIcon();
 
 
-            oniVKUpdate += AudioPlayer_oniVKUpdate;
+            oniVKUpdate.Event += AudioPlayer_oniVKUpdate;
 
             this.Loaded += AudioPlayer_Loaded;
 
@@ -194,7 +197,7 @@ namespace VK_UI3.Controllers
             TrackDuration = 0;
             TrackPosition = 0;
 
-            TrackDataThisChanged += AudioPlayer_PropertyChanged;
+            TrackDataThisChanged.Event += AudioPlayer_PropertyChanged;
 
             // Привязка к событию MediaOpened
             mediaPlayer.MediaOpened += MediaPlayer_MediaOpened;

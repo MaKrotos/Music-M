@@ -46,6 +46,8 @@
 	  <None Remove="Fonts\VKSansDisplay-Medium.ttf" />
 	  <None Remove="Fonts\VKSansDisplay-Regular.ttf" />
 	  <None Remove="Views\Controls\BlockButtonView.xaml" />
+	  <None Remove="Views\Download\DownloadController.xaml" />
+	  <None Remove="Views\Download\DOwnloadsList.xaml" />
 	  <None Remove="Views\ModalsPages\CreatePlayList.xaml" />
 	  <None Remove="Views\SectionView.xaml" />
 	  <None Remove="Views\Settings\SettingsPage.xaml" />
@@ -72,6 +74,13 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.3" />
+    <PackageReference Include="NAudio.Core" Version="2.2.1" />
+    <PackageReference Include="NAudio.Lame" Version="2.1.0" />
+    <PackageReference Include="NAudio.Midi" Version="2.2.1" />
+    <PackageReference Include="NAudio.Wasapi" Version="2.2.1" />
+    <PackageReference Include="SharpGrabber" Version="2.1.1" />
+    <PackageReference Include="SharpGrabber.Converter" Version="1.1.0" />
+    <PackageReference Include="SharpGrabber.Hls" Version="1.3.0" />
 	<PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" /> 
     <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.49-beta">
       <PrivateAssets>all</PrivateAssets>
@@ -82,6 +91,7 @@
     <PackageReference Include="QRCoder" Version="1.4.3" />
     <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
     <PackageReference Include="System.Text.Json" Version="8.0.0" />
+    <PackageReference Include="TagLibSharp" Version="2.3.0" />
     <PackageReference Include="Uno.WinUI.Lottie" Version="5.1.87" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
@@ -155,6 +165,16 @@
     <None Update="Assets\icons.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
+    <None Update="DownloadTrack\ffmpeg.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Page Update="Views\Download\DownloadController.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Download\DownloadsList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\ModalsPages\CreatePlayList.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

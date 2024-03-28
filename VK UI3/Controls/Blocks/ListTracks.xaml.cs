@@ -55,7 +55,7 @@ namespace VK_UI3.Controls.Blocks
 
                 sectionAudio = new SectionAudio(block, this.DispatcherQueue);
                 sectionAudio.countTracks = block.Audios.Count;
-                sectionAudio.onListUpdate += SectionAudio_onListUpdate;
+                sectionAudio.onListUpdate.Event += SectionAudio_onListUpdate;
             }
             catch (Exception ex)
             {

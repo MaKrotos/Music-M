@@ -14,7 +14,7 @@
     
   
     Translation="0,0,24"
-    Height="250"
+    Height="260"
     Margin="3,0,4,6"
 
     mc:Ignorable="d">
@@ -98,17 +98,20 @@ To="0" Duration="0:0:0.25"/>
 
 
 
+
             </Grid>
             <StackPanel  Background="Transparent" CornerRadius="0" Orientation="Vertical" HorizontalAlignment="Left">
                 <TextBlock x:Name="Title" TextWrapping="Wrap"
+                           MaxHeight="20"
                            FontSize="14"
-                    
+                            TextTrimming="CharacterEllipsis"
                            FontFamily="{StaticResource VKSansMedium}"
                            Margin="0,8,0,4"/>
                 <TextBlock  x:Name="Subtitle" TextWrapping="Wrap"
                            Opacity="0.6"
                            FontSize="12"
-                     
+                             TextTrimming="CharacterEllipsis"
+                            MaxHeight="40"
                            FontFamily="{StaticResource VKSansRegular}" />
             </StackPanel>
         </StackPanel>

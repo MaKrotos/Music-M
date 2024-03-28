@@ -54,6 +54,24 @@ namespace VK_UI3.Views
             this.Loading += UserPlayList_Loading;
             this.audio = audio;
         }
+
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+
+            this.Loaded -= UserPlayList_Loaded;
+            this.Loading -= UserPlayList_Loading;
+            try
+            {
+                if (scrollViewer != null)
+                this.scrollViewer.ViewChanged -= ScrollViewer_ViewChanged;
+            }
+            catch (Exception ex)
+            { 
+            
+            }
+        }
+
         Audio audio = null;
 
         public VkCollection<AudioPlaylist> VKaudioPlaylists;
@@ -132,8 +150,6 @@ namespace VK_UI3.Views
 
         private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
-           
-            
 
             var isAtBottom = scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight - 50;
             if (isAtBottom)
@@ -159,8 +175,10 @@ namespace VK_UI3.Views
 
 
         public bool LoadedAll;
-        internal EventHandler selectedPlayList;
+    
+       
 
+         internal WeakEventManager selectedPlayList = new WeakEventManager();
         private async Task loadMoreAsync()
         {
             if (UserId == null)
@@ -196,7 +214,7 @@ namespace VK_UI3.Views
             var a = new CreatePlayList();
             dialog.Content = a;
             dialog.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
-            a.cancelPressed += (s, e) =>
+            a.cancelPressed.Event += (s, e) =>
             {
                 dialog.Hide();
                 dialog = null;
@@ -235,7 +253,7 @@ namespace VK_UI3.Views
             VK.api.Audio.AddToPlaylistAsync((long)audioPlaylists[selectedIndex].OwnerId, playlistId, new List<string> { $"{audio.OwnerId}_{audio.Id}" });
 
             // ֲûחמג סמבûעטÿ
-            selectedPlayList?.Invoke(playlistId, EventArgs.Empty);
+            selectedPlayList?.RaiseEvent(playlistId, EventArgs.Empty);
         }
 
         private void gridV_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
@@ -250,7 +268,7 @@ namespace VK_UI3.Views
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            selectedPlayList?.Invoke(null, EventArgs.Empty);
+            selectedPlayList?.RaiseEvent(null, EventArgs.Empty);
         }
     }
 }

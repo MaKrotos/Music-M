@@ -579,7 +579,7 @@ namespace VK_UI3.Controls
             dialog.Content = a;
             dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
 
-            a.cancelPressed += (s, e) =>
+            a.cancelPressed.Event += (s, e) =>
             {
                 dialog.Hide();
                 dialog = null;
@@ -600,7 +600,7 @@ namespace VK_UI3.Controls
             dialog.XamlRoot = this.XamlRoot;
             var a = new UserPlayList(dataTrack.audio);
             dialog.Content = a;
-            a.selectedPlayList += (s, e) =>
+            a.selectedPlayList.Event += (s, e) =>
             {
                 dialog.Hide();
                 dialog = null;

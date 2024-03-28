@@ -51,6 +51,9 @@ namespace VK_UI3.DB
                 {
                     _db = new SQLiteConnection(options);
                     _db.CreateTable<Accounts>();
+                    _db.CreateTable<PathTable>();
+                    _db.CreateTable<SettingsTable>();
+
                 }
                 catch (SQLiteException ex)
                 {
@@ -61,6 +64,7 @@ namespace VK_UI3.DB
                         File.Delete(databasePath);
                         _db = new SQLiteConnection(options);
                         _db.CreateTable<Accounts>();
+                        _db.CreateTable<PathTable>();
                         _db.CreateTable<SettingsTable>();
                     }
                     else
@@ -70,7 +74,7 @@ namespace VK_UI3.DB
                 }
             }
 
-            _db.CreateTable<SettingsTable>();
+          
 
             return _db;
         }

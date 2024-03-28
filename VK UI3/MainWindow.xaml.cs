@@ -27,6 +27,7 @@ using Windows.Graphics.Display;
 using Microsoft.UI.Input;
 using Windows.Foundation;
 using Microsoft.AppCenter.Utils;
+using VK_UI3.DownloadTrack;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -46,7 +47,7 @@ namespace VK_UI3
         {
             
             this.InitializeComponent();
-
+            this.Closed += MainWindow_CloseRequested;
             m_AppWindow = this.AppWindow;
 
             mainWindow = this;
@@ -56,7 +57,8 @@ namespace VK_UI3
             this.SetTitleBar(AppTitleBar);
             AppTitleBar.Loaded += AppTitleBar_Loaded;
             AppTitleBar.SizeChanged += AppTitleBar_SizeChanged;
-
+            PlayListDownload.OnStartDownload.Event += StartDownloadEvent;
+            PlayListDownload.OnEndAllDownload.Event += OnEndAllDownload_Event; ;
 
 
             AppWindowTitleBar m_TitleBar = m_AppWindow.TitleBar;
@@ -108,8 +110,71 @@ namespace VK_UI3
             DownLoadBTNScaleHide.Completed += AnimatedButtonScaleStoryboardShow_Completed;
 
             this.Activated += activated;
+
+
           
         }
+
+        private async void MainWindow_CloseRequested(object sender, WindowEventArgs args)
+        {
+            if (justClose)
+                Application.Current.Exit();
+            else
+            if (PlayListDownload.PlayListDownloads.Count != 0)
+            {
+                args.Handled = true;
+
+
+                var dialog = new ContentDialog
+                {
+                    Title = "Загрузка еще не завершена",
+                    Content = "Вы уверены, что хотите закрыть приложение?",
+                    PrimaryButtonText = "Да",
+                    SecondaryButtonText = "Закрыть по завершению",
+                    CloseButtonText = "Нет"
+                };
+                dialog.Resources["ContentDialogMaxWidth"] = double.PositiveInfinity;
+                dialog.XamlRoot = this.Content.XamlRoot;
+                var result = await dialog.ShowAsync();
+
+                if (result == ContentDialogResult.Primary)
+                {
+                  
+                    justClose = true;
+                    Application.Current.Exit();
+                 
+                }
+                if (result == ContentDialogResult.Secondary)
+                {
+                    if (!addClosed)
+                    {
+                        addClosed = true;
+                        PlayListDownload.OnEndAllDownload.Event += close;
+
+                    }
+                }
+            }
+        }
+        bool addClosed = false;
+        bool justClose = false;
+        private void close(object sender, EventArgs e)
+        {
+            Application.Current.Exit();
+        }
+
+        private void StartDownloadEvent(object sender, EventArgs e)
+        {
+            MainWindow_showDownload();
+            DownLoadBTN.Flyout.ShowAt(DownLoadBTN);
+        }
+
+        private void OnEndAllDownload_Event(object sender, EventArgs e)
+        {
+            MainWindow_hideDownload();
+            DownLoadBTN.Flyout.Hide();
+        }
+
+       
 
         private void AnimatedButtonScaleStoryboardShow_Completed(object sender, object e)
         {
@@ -443,31 +508,30 @@ namespace VK_UI3
         //    AnimatedIcon.SetState(this.SearchAnimatedIcon, "PointerOver");
 
         }
-        public static event EventHandler? onRefreshClicked;
-        public static event EventHandler? onDownloadClicked;
+
+        public static WeakEventManager onRefreshClicked = new WeakEventManager();
+        public static WeakEventManager onDownloadClicked = new WeakEventManager();
+
+     
         public static void onRefreshClickedvoid()
         {
             MainWindow.mainWindow.RotationStoryboard.Begin();
-            onRefreshClicked?.Invoke(null, EventArgs.Empty);
+            onRefreshClicked?.RaiseEvent(null, EventArgs.Empty);
 
         }
 
-        public static void onRefreshClicked_clear()
-        {
-            onRefreshClicked = null;
-
-        }
+     
         private void RefreshClick_Click(object sender, RoutedEventArgs e)
         {
             RotationStoryboard.Begin();
-            onRefreshClicked?.Invoke(this, EventArgs.Empty);
+            onRefreshClicked?.RaiseEvent(this, EventArgs.Empty);
 
         }
 
         private void DownLoadBTN_Click(object sender, RoutedEventArgs e)
         {
             ScaleStoryboard.Begin();
-            onDownloadClicked?.Invoke(this, EventArgs.Empty);
+            onDownloadClicked?.RaiseEvent(this, EventArgs.Empty);
         }
     }
 

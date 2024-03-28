@@ -301,7 +301,7 @@ namespace VK_UI3.Views
                         if (!listened)
                         {
                             listened = true;
-                            _tracksFull.sectionAudio.onListUpdate += SectionAudio_onListUpdate;
+                            _tracksFull.sectionAudio.onListUpdate.Event += SectionAudio_onListUpdate;
                         }
                     }
                 }

@@ -50,7 +50,7 @@ namespace VK_UI3.Views
             NavWiv.BackRequested += NavWiv_BackRequested;
             this.Loaded += MainView_Loaded;
             Accounts.CollectionChanged += Accounts_CollectionChanged;
-            onUpdateAccounts += MainView_onUpdateAccounts;
+            onUpdateAccounts.Event += MainView_onUpdateAccounts;
 
             this.KeyDown += MainView_KeyDown;
 
@@ -86,12 +86,14 @@ namespace VK_UI3.Views
 
         public static void invokeUpdateAccounts()
         {
-            onUpdateAccounts?.Invoke(null, EventArgs.Empty);
+            onUpdateAccounts.RaiseEvent(null, EventArgs.Empty);
         }
+
+
+
+
+        public static WeakEventManager onUpdateAccounts = new WeakEventManager();
      
-
-        public static event EventHandler onUpdateAccounts;
-
         private void NavWiv_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
         {
                 if (ContentFrame.CanGoBack)

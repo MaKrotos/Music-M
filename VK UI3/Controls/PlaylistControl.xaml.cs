@@ -55,12 +55,12 @@ namespace VK_UI3.Controls
 
         private void PlaylistControl_Loaded(object sender, RoutedEventArgs e)
         {
-            AudioPlayer.oniVKUpdate += AudioPlayer_oniVKUpdate;
+            AudioPlayer.oniVKUpdate.Event += AudioPlayer_oniVKUpdate;
         }
 
         private void PlaylistControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            AudioPlayer.oniVKUpdate -= AudioPlayer_oniVKUpdate;
+            AudioPlayer.oniVKUpdate.Event -= AudioPlayer_oniVKUpdate;
         }
 
         private void AudioPlayer_oniVKUpdate(object sender, EventArgs e)
@@ -356,11 +356,11 @@ namespace VK_UI3.Controls
                         AudioPlayer.PlayList(iVKGetAudio);
 
                         //                                                 Navigate
-                        iVKGetAudio.onListUpdate -= handler;
+                        iVKGetAudio.onListUpdate.Event -= handler;
                     });
                 };
            
-            iVKGetAudio.onListUpdate += handler;
+                iVKGetAudio.onListUpdate.Event += handler;
             }
         }
 
@@ -376,7 +376,7 @@ namespace VK_UI3.Controls
             
             dialog.Content = a;
             dialog.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
-            a.cancelPressed += (s, e) =>
+            a.cancelPressed.Event += (s, e) =>
             {
                 if (s != null && s is AudioPlaylist)
                 {

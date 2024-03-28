@@ -3,16 +3,20 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VK_UI3.Controllers;
 using VK_UI3.DB;
+using VK_UI3.DownloadTrack;
 using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
 using VK_UI3.Views.ModalsPages;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
+using Windows.Storage.Pickers;
+using Windows.UI.Core;
 
 
 namespace VK_UI3.Views
@@ -43,11 +47,11 @@ namespace VK_UI3.Views
 
 
 
-            vkGetAudio.onPhotoUpdated += VkGetAudio_onPhotoUpdated;
-            vkGetAudio.onListUpdate += VkGetAudio_onListUpdate;
-            vkGetAudio.onNameUpdated += VkGetAudio_onNameUpdated;
-            vkGetAudio.onCountUpDated += VkGetAudio_onCountUpDated;
-            vkGetAudio.onInfoUpdated += VkGetAudio_onInfoUpdated;
+            vkGetAudio.onPhotoUpdated.Event += VkGetAudio_onPhotoUpdated;
+            vkGetAudio.onListUpdate.Event += VkGetAudio_onListUpdate;
+            vkGetAudio.onNameUpdated.Event += VkGetAudio_onNameUpdated;
+            vkGetAudio.onCountUpDated.Event += VkGetAudio_onCountUpDated;
+            vkGetAudio.onInfoUpdated.Event += VkGetAudio_onInfoUpdated;
 
             updateUI(true);
              animationsChangeText = new(textAdd, this.DispatcherQueue);
@@ -62,11 +66,11 @@ namespace VK_UI3.Views
 
             if (vkGetAudio != null)
             {
-                vkGetAudio.onPhotoUpdated -= VkGetAudio_onPhotoUpdated;
-                vkGetAudio.onListUpdate -= VkGetAudio_onListUpdate;
-                vkGetAudio.onNameUpdated -= VkGetAudio_onNameUpdated;
-                vkGetAudio.onCountUpDated -= VkGetAudio_onCountUpDated;
-                vkGetAudio.onInfoUpdated -= VkGetAudio_onInfoUpdated;
+                vkGetAudio.onPhotoUpdated.Event -= VkGetAudio_onPhotoUpdated;
+                vkGetAudio.onListUpdate.Event -= VkGetAudio_onListUpdate;
+                vkGetAudio.onNameUpdated.Event -= VkGetAudio_onNameUpdated;
+                vkGetAudio.onCountUpDated.Event -= VkGetAudio_onCountUpDated;
+                vkGetAudio.onInfoUpdated.Event -= VkGetAudio_onInfoUpdated;
             }
         }
 
@@ -137,8 +141,13 @@ namespace VK_UI3.Views
 
                     if (load)
                         DescriptionText.Text = playlist.Description;
+
                     else
                         descriptionText.ChangeTextWithAnimation(playlist.Description);
+
+
+                    if (playlist.Description == "" || playlist.Description == null)
+                        DescriptionText.Visibility = Visibility.Collapsed;
 
                     FollowersText.Visibility = Visibility.Visible;
                     FollowersText.Text = $"{playlist.Followers} подписчиков";
@@ -170,6 +179,8 @@ namespace VK_UI3.Views
                     Plays.Text = $"Прослушиваний : {playlist.Plays}";
                     Plays.Visibility = Visibility.Visible;
 
+                    CountTrText.Text = $"Треков: {playlist.Count}";
+
                 }
                 else
                 {
@@ -178,8 +189,14 @@ namespace VK_UI3.Views
 
                    
                     MainText.ChangeTextWithAnimation(vkGetAudio.name);
+                    CountTrText.Text = $"Треков: {vkGetAudio.countTracks}";
+
                 }
+             
                 MainText.ChangeTextWithAnimation(vkGetAudio.name);
+
+                CountTrText.Visibility = Visibility.Visible;
+                
 
             });
 
@@ -322,7 +339,7 @@ namespace VK_UI3.Views
 
             dialog.Content = a;
             dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
-            a.cancelPressed += (s, e) =>
+            a.cancelPressed.Event += (s, e) =>
             {
                 if (s != null && s is AudioPlaylist)
                 {
@@ -345,9 +362,74 @@ namespace VK_UI3.Views
 
         }
 
+
+        private async void choosePath(object sender, RoutedEventArgs e)
+        {
+            pickFolder();
+        }
+
+
+        List<MenuFlyoutItem> menuFlyoutItem = new List<MenuFlyoutItem>();
         private void DownloadPlaylist_Click(object sender, RoutedEventArgs e)
         {
+            foreach (var item in menuFlyoutItem)
+            {
+                this.DispatcherQueue.TryEnqueue(async () =>
+                {
+                    folderFlyOut.Items.Remove(item);
+                });
+            }
+            var paths = PathTable.GetAllPaths();
+            if (paths.Count == 0)
+            {
+                pickFolder();
+                return;
+            }
 
+            foreach (var item in paths)
+            {
+
+                MenuFlyoutItem newItem = new MenuFlyoutItem
+                {
+                    Text = item.path,
+                    Icon = new FontIcon { Glyph = "\uF12B" }
+                };
+
+                newItem.Click += (s, e) =>
+                {
+                    PlayListDownload playListDownload = new PlayListDownload(vkGetAudio, item.path, this.DispatcherQueue);
+                };
+
+                menuFlyoutItem.Add(newItem);
+                this.DispatcherQueue.TryEnqueue(async () =>
+                {
+                    folderFlyOut.Items.Add(newItem);
+                });
+
+            }
+
+        }
+
+        private async void pickFolder()
+        {
+            FolderPicker folderPicker = new();
+            folderPicker.FileTypeFilter.Add("*");
+
+
+            WinRT.Interop.InitializeWithWindow.Initialize(folderPicker, MainWindow.hvn);
+
+            Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+            if (folder != null)
+            {
+                // Директория выбрана, можно продолжить работу с folder
+                PathTable.AddPath(folder.Path);
+                PlayListDownload playListDownload = new PlayListDownload(vkGetAudio, folder.Path, this.DispatcherQueue);
+
+            }
+            else
+            {
+                // Операция была отменена пользователем
+            }
         }
     }
 }

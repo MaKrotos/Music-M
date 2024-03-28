@@ -27,8 +27,7 @@ namespace VK_UI3.Views
    
             this.Loading += WaitView_Loading;
 
-            MainWindow.onRefreshClicked_clear();
-            MainWindow.onRefreshClicked += MainWindow_onRefreshClicked;
+            MainWindow.onRefreshClicked.Event += MainWindow_onRefreshClicked;
         }
 
         private void WaitView_Loading(Microsoft.UI.Xaml.FrameworkElement sender, object args)
@@ -140,7 +139,7 @@ namespace VK_UI3.Views
 
         public async Task LoadAsync()
         {
-            if (iVKGetAudio != null) iVKGetAudio.clearListUpdate();
+            
             var handlerContainer = new HandlerContainer();
             try
             {
@@ -173,7 +172,6 @@ namespace VK_UI3.Views
             userPlayList.LoadedAll = (list.Count != 100);
             userPlayList.openedPlayList = openedPlayList;
 
-
             frameSection.Navigate(typeof(UserPlayList), userPlayList, new DrillInNavigationTransitionInfo());
         }
 
@@ -189,15 +187,15 @@ namespace VK_UI3.Views
 
                 handlerContainer.Handler = (sender, e) =>
                     {
-                        iVKGetAudio.onListUpdate -= handlerContainer.Handler;
+                        iVKGetAudio.onListUpdate.Event -= handlerContainer.Handler;
                         this.DispatcherQueue.TryEnqueue(async () =>
                         {
-                            iVKGetAudio.clearListUpdate();
+                         
                             handlerContainer.Handler = null; // Освободить ссылку на обработчик
                             frameSection.Navigate(typeof(PlayListPage), iVKGetAudio, new DrillInNavigationTransitionInfo());
                         });
                     };
-                iVKGetAudio.onListUpdate += handlerContainer.Handler;
+                iVKGetAudio.onListUpdate.Event += handlerContainer.Handler;
             }
         }
 
@@ -206,16 +204,16 @@ namespace VK_UI3.Views
             iVKGetAudio = new UserAudio(AccountsDB.activeAccount.id, this.DispatcherQueue);
 
             handlerContainer.Handler = (sender, e) => {
-                iVKGetAudio.onListUpdate -= handlerContainer.Handler;
+                iVKGetAudio.onListUpdate.Event -= handlerContainer.Handler;
                 this.DispatcherQueue.TryEnqueue(async () =>
                 {
-                    iVKGetAudio.clearListUpdate();
+                   
                     handlerContainer.Handler = null; // Освободить ссылку на обработчик
                     frameSection.Navigate(typeof(PlayListPage), iVKGetAudio, new DrillInNavigationTransitionInfo());
                 });
             };
          
-            iVKGetAudio.onListUpdate += handlerContainer.Handler;
+            iVKGetAudio.onListUpdate.Event += handlerContainer.Handler;
         }
 
         private async Task loadSection(string sectionID, bool showTitle = false)

@@ -55,28 +55,27 @@ namespace VK_UI3.VKs.IVK
 
         public DispatcherQueue DispatcherQueue;
 
+        public WeakEventManager onListUpdate = new WeakEventManager();
 
-        public event EventHandler onListUpdate;
+      
 
-        public void clearListUpdate()
-        {
-            onListUpdate = null;
-        }
+        public  WeakEventManager onCountUpDated = new WeakEventManager();
 
-        public event EventHandler onCountUpDated;
+        public void countUpdated() { onCountUpDated?.RaiseEvent(this, EventArgs.Empty); }
 
-        public void countUpdated() { onCountUpDated?.Invoke(this, EventArgs.Empty); }
 
-        public event EventHandler onInfoUpdated;
+        public WeakEventManager onInfoUpdated = new WeakEventManager();
 
-        public void InfoUpdated() { onCountUpDated?.Invoke(this, EventArgs.Empty); }
+        public void InfoUpdated() { onCountUpDated?.RaiseEvent(this, EventArgs.Empty); }
 
-        public event EventHandler onNameUpdated;
 
-        public void NameUpdated() { onNameUpdated?.Invoke(this, EventArgs.Empty); }
+        public WeakEventManager onNameUpdated = new WeakEventManager();
+        public void NameUpdated() { onNameUpdated?.RaiseEvent(this, EventArgs.Empty); }
 
-        public event EventHandler onPhotoUpdated;
-        public void PhotoUpdated() { onPhotoUpdated?.Invoke(this, EventArgs.Empty); }
+        public WeakEventManager onPhotoUpdated = new WeakEventManager();
+
+
+        public void PhotoUpdated() { onPhotoUpdated?.RaiseEvent(this, EventArgs.Empty); }
 
         public long? countTracks { get; set; }
 
@@ -154,15 +153,15 @@ namespace VK_UI3.VKs.IVK
             Task.Run(() =>
             {
                 name = getName();
-                onNameUpdated?.Invoke(this, EventArgs.Empty);
+                onNameUpdated?.RaiseEvent(this, EventArgs.Empty);
                 photoUri = getPhoto();
-                onPhotoUpdated?.Invoke(this, EventArgs.Empty);
+                onPhotoUpdated?.RaiseEvent(this, EventArgs.Empty);
             });
 
             Task.Run(() =>
             {
                 countTracks = getCount();
-                onCountUpDated?.Invoke(this, EventArgs.Empty);
+                onCountUpDated?.RaiseEvent(this, EventArgs.Empty);
                 GetTracks();
             });
 
@@ -220,7 +219,7 @@ namespace VK_UI3.VKs.IVK
 
         public void NotifyOnListUpdate()
         {
-            onListUpdate?.Invoke(this, EventArgs.Empty);
+            onListUpdate?.RaiseEvent(this, EventArgs.Empty);
         }
         public void updateNumbers() {
             for (int i = 0; i < listAudio.Count; i++)

@@ -48,7 +48,7 @@ namespace VkNet.Model.Attachments
 		/// </summary>
 		[JsonConverter(typeof(UnixDateTimeConverter))]
 		[JsonProperty("date")]
-		public DateTime Date { get; set; }
+		public DateTime? Date { get; set; }
 
 		/// <summary>
 		/// Ссылка на аудиозапись (привязана к ip-адресу клиентского приложения).

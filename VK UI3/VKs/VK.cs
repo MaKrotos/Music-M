@@ -47,7 +47,9 @@ namespace VK_UI3.VKs
         public static readonly VkService vkService = App._host.Services.GetRequiredService<VkService>();
 
 
-        public event EventHandler? LoggedIn;
+        public WeakEventManager LoggedIn = new WeakEventManager();
+
+  
 
         IVkApiAuthAsync vkApi = App._host.Services.GetRequiredService<IVkApiAuthAsync>();
 

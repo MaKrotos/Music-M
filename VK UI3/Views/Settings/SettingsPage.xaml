@@ -28,6 +28,9 @@
         <Border>
             <local:BackDropSetting></local:BackDropSetting>
         </Border>
+        <Border>
+            <local:DownloadAllSetting></local:DownloadAllSetting>
+        </Border>
 
 
 

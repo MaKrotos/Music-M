@@ -8,8 +8,8 @@
     Title="VK M"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:custom="using:VK_UI3.Controllers"
 
+    xmlns:custom="using:VK_UI3.Views.Download"
     xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     mc:Ignorable="d">
     <Window.SystemBackdrop>
@@ -85,7 +85,12 @@
                 </Button>
 
 
-                <Button x:Name="DownLoadBTN" Padding="0" Margin="5,0,0,0" Width="30" Height="25" Background="Transparent" Click="DownLoadBTN_Click" >
+                <Button x:Name="DownLoadBTN" Padding="0" Margin="5,0,0,0" Width="30" Height="25" Background="Transparent">
+                    <Button.Flyout>
+                        <Flyout>
+                            <custom:DownloadsList />
+                        </Flyout>
+                    </Button.Flyout>
                     <Button.RenderTransform>
                         <ScaleTransform x:Name="DownLoadBTNScale" ScaleX="0" ScaleY="0" />
                     </Button.RenderTransform>

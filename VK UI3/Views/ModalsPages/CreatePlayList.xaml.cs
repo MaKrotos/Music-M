@@ -52,8 +52,9 @@ namespace VK_UI3.Views.ModalsPages
             this.InitializeComponent();
             this.Loaded += CreatePlayList_Loaded;
         }
-        
-        public EventHandler cancelPressed;
+
+        public WeakEventManager cancelPressed = new WeakEventManager();
+     
         public UIElement GetFirstChild()
         {
           
@@ -102,7 +103,7 @@ namespace VK_UI3.Views.ModalsPages
                 await VK.api.Audio.EditPlaylistAsync(AccountsDB.activeAccount.id, Convert.ToInt32(audioPlaylist.Id), this.Title.Text, this.Description.Text, No_discover: HideFromSearch.IsOn);
                 await UploadCoverPlaylist();
                 audioPlaylist = await VK.api.Audio.GetPlaylistByIdAsync(audioPlaylist.OwnerId, audioPlaylist.Id);
-                cancelPressed?.Invoke(audioPlaylist, EventArgs.Empty);
+                cancelPressed?.RaiseEvent(audioPlaylist, EventArgs.Empty);
                 
             }
             catch (Exception ex)
@@ -131,7 +132,7 @@ namespace VK_UI3.Views.ModalsPages
             }
             await UploadCoverPlaylist();
             audioPlaylist = await VK.api.Audio.GetPlaylistByIdAsync(audioPlaylist.OwnerId, audioPlaylist.Id);
-            cancelPressed?.Invoke(audioPlaylist, EventArgs.Empty);
+            cancelPressed?.RaiseEvent(audioPlaylist, EventArgs.Empty);
         }
 
 
@@ -206,7 +207,7 @@ namespace VK_UI3.Views.ModalsPages
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            cancelPressed?.Invoke(this, EventArgs.Empty);
+            cancelPressed?.RaiseEvent(this, EventArgs.Empty);
         }
 
         private async void SaveBTN_Click(object sender, RoutedEventArgs e)

@@ -20,6 +20,14 @@
         <ThemeShadow />
     </UserControl.Shadow>
 
+    <UserControl.ContextFlyout>
+        <MenuFlyout x:Name="flyOutm">
+            <MenuFlyoutItem x:Name="AddRemove" Text="Добавить к себе" Click="AddRemove_Click" Icon="Add" />
+            <MenuFlyoutItem x:Name="editAlbum" Text="Редактировать" Click="editAlbum_Click"  Icon="Edit" />
+            <MenuFlyoutItem x:Name="DeleteAlbum" Text="Удалить" Click="DeleteAlbum_Click"  Icon="Delete" />
+        </MenuFlyout>
+    </UserControl.ContextFlyout>
+
     <Grid   Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" CornerRadius="8">
         <Grid.Resources>
             <!-- Анимация прозрачности от 0 до 1 -->
@@ -34,11 +42,39 @@ To="1" Duration="0:0:0.25"/>
 Storyboard.TargetProperty="Opacity"
 To="0" Duration="0:0:0.25"/>
             </Storyboard>
+
+            <Storyboard x:Name="FadeInAnimationGrid">
+                <DoubleAnimation Storyboard.TargetName="fadeOp"
+Storyboard.TargetProperty="Opacity"
+To="1" Duration="0:0:0.25"/>
+            </Storyboard>
+            <!-- Анимация прозрачности от 1 до 0 -->
+            <Storyboard x:Name="FadeOutAnimationGrid">
+                <DoubleAnimation Storyboard.TargetName="fadeOp"
+Storyboard.TargetProperty="Opacity"
+To="0" Duration="0:0:0.25"/>
+            </Storyboard>
+
+
         </Grid.Resources>
 
 
-        <Image x:Name="Cover" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill" />
+        <Grid >
+            <FontIcon Glyph="&#xE90B;" />
+            <Grid x:Name="fadeOp" Opacity="0" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}">
+                <Grid x:Name="GridThumbs"  >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
 
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                </Grid>
+            </Grid>
+        </Grid>
 
         <Grid Padding="10">
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
