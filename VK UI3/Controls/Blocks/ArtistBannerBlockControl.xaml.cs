@@ -20,11 +20,19 @@ namespace VK_UI3.Controls.Blocks
     
             InitializeComponent();
 
-            this.DataContextChanged += ArtistBannerBlockControl_DataContextChanged;
+      
             animationsChangeImage = new AnimationsChangeImage(ArtistBannerImage, this.DispatcherQueue);
 
 
             this.Loading += ArtistBannerBlockControl_Loading;
+            this.Unloaded += ArtistBannerBlockControl_Unloaded;
+        }
+
+        private void ArtistBannerBlockControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+      
+            this.Loading -= ArtistBannerBlockControl_Loading;
+            this.Unloaded -= ArtistBannerBlockControl_Unloaded;
         }
 
         private void ArtistBannerBlockControl_Loading(FrameworkElement sender, object args)
@@ -67,18 +75,10 @@ namespace VK_UI3.Controls.Blocks
 
                 button.Refresh();
 
-
-
-
-
             }
         }
 
-        private void ArtistBannerBlockControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-        {
-            
-        }
-
+ 
         AnimationsChangeImage animationsChangeImage = null;
 
       

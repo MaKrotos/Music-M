@@ -20,7 +20,15 @@ namespace VK_UI3.Controls.Blocks
             this.DataContextChanged += ListTracks_DataContextChanged;
         
             this.Loaded += ListTracks_Loaded;
+            this.Unloaded += ListTracks_Unloaded;
 
+        }
+
+        private void ListTracks_Unloaded(object sender, RoutedEventArgs e)
+        {
+            this.DataContextChanged -= ListTracks_DataContextChanged;
+            this.Loaded -= ListTracks_Loaded;
+            this.Unloaded -= ListTracks_Unloaded;
         }
 
         private void ListTracks_Loaded(object sender, RoutedEventArgs e)
@@ -55,7 +63,7 @@ namespace VK_UI3.Controls.Blocks
 
                 sectionAudio = new SectionAudio(block, this.DispatcherQueue);
                 sectionAudio.countTracks = block.Audios.Count;
-                sectionAudio.onListUpdate.Event += SectionAudio_onListUpdate;
+                sectionAudio.onListUpdate.AddHandler(SectionAudio_onListUpdate);
             }
             catch (Exception ex)
             {

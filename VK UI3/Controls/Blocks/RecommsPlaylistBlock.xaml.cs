@@ -28,14 +28,16 @@ namespace VK_UI3.Controls.Blocks
         {
             this.InitializeComponent();
 
-            DataContextChanged += RecommsPlaylistBlock_DataContextChanged;
+       
             this.Loading += RecommsPlaylistBlock_Loading;
-            this.Loaded += RecommsPlaylistBlock_Loaded;
+            this.Unloaded += RecommsPlaylistBlock_Unloaded;
         }
 
-        private void RecommsPlaylistBlock_Loaded(object sender, RoutedEventArgs e)
+        private void RecommsPlaylistBlock_Unloaded(object sender, RoutedEventArgs e)
         {
-       
+      
+            this.Loading -= RecommsPlaylistBlock_Loading;
+            this.Unloaded -= RecommsPlaylistBlock_Unloaded;
         }
 
         private void RecommsPlaylistBlock_Loading(FrameworkElement sender, object args)
@@ -63,9 +65,6 @@ namespace VK_UI3.Controls.Blocks
 
         ObservableCollection<Playlist> playlists = new();
 
-        private void RecommsPlaylistBlock_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-        {
-            
-        }
+    
     }
 }

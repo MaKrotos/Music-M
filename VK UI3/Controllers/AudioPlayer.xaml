@@ -10,152 +10,146 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:local1="using:VK_UI3.Converters"
         xmlns:local2="using:VK_UI3.Helpers.Animations"
-  
+
     mc:Ignorable="d"
   >
-  
+
     <Page.Resources>
         <ThemeShadow x:Name="SharedShadow" />
         <local1:SecondsToTimeConverter x:Key="SecondsToTimeConverter"/>
     </Page.Resources>
 
-       
-        <Grid  Padding="0,0,0,0">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Margin="8,4,8,-4">
+    <Grid     Padding="4">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBlock x:Name="textBlock" Grid.Column="0" VerticalAlignment="Center" Text="{x:Bind TrackPosition, Mode=OneWay, Converter={StaticResource SecondsToTimeConverter}}"/>
-            <Slider Grid.Column="1"
-                HorizontalAlignment="Stretch"
-                ThumbToolTipValueConverter="{StaticResource SecondsToTimeConverter}"
-                Value="{x:Bind TrackPosition, Mode=TwoWay}"
-                x:Name="VolumeSlider"
-                VerticalAlignment="Center"
-                Minimum="0"
-              
-                Maximum="{x:Bind TrackDuration, Mode=TwoWay}"
-                ValueChanged="VolumeSlider_ValueChanged"
-                PointerEntered="VolumeSlider_PointerEntered"
-                PointerExited="VolumeSlider_PointerExited"
-                StepFrequency="0.01"
-                Margin="8,0,8,0"
-            />
-            <TextBlock  Grid.Column="2" VerticalAlignment="Center" Text="{x:Bind TrackDuration, Mode=OneWay, Converter={StaticResource SecondsToTimeConverter}}"/>
-        </Grid>
             
         
-        <Grid Margin="4" Grid.Row="1" >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+
+            <StackPanel Padding="0,0,0,-4"  Grid.Column="2"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+                <StackPanel  Orientation="Horizontal"  HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.Column="1" Margin="0,0,0,0" Padding="0" CornerRadius="8"  >
+
+                    <Button Padding="-2,-2,0,0" Background="Transparent" Margin="0,0,8,0" x:Name="TranslatetoStatus" Tapped="TranslatetoStatus_Tapped"  Width="35" Height="35"  >
+                        <FontIcon FontSize="12" x:Name="StatusBTNIcon" Glyph=""  />
+                        <ToolTipService.ToolTip>
+                            <ToolTip Content="Транслировать в статус"  />
+                        </ToolTipService.ToolTip>
+                    </Button>
+                    <Button Padding="0" Background="Transparent"
+            FocusVisualPrimaryBrush="Transparent"
+            FocusVisualSecondaryThickness="0"
+            Margin="0,0,0,0" x:Name="PreviousBTN" Tapped="PreviousBTN_Tapped" Width="35" Height="35" Grid.Column="0">
+                        <FontIcon FontSize="12" Glyph=""/>
+                    </Button>
+
+                    <Button Padding="0" Background="Transparent" Tapped="Button_Play_Tapped"  Margin="8,0,8,0" Width="40" Height="40">
+                        <FontIcon FontSize="14"  x:Name="PlayBTN" Glyph=""/>
+                    </Button>
+
+                    <Button Padding="0" Background="Transparent" Margin="0,0,8,0" x:Name="NextBTN" Tapped="NextBTN_Tapped"  Width="35" Height="35"  >
+                        <FontIcon FontSize="12" Glyph=""/>
+                    </Button>
+
+                 
+
+                    <Button Padding="0" Background="Transparent" Grid.Column="4" x:Name="repeatBTN" Tapped="repeatBTN_Tapped" Width="35" Height="35" >
+                        <FontIcon FontSize="14" x:Name="repeatBTNIcon" Glyph=""  />
+                    </Button>
 
 
-            <Grid HorizontalAlignment="Stretch" 
-                >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition  Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <Grid
-                    Translation="0,0,24"
+
+                </StackPanel>
+                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinWidth="5" Grid.Row="0" Grid.Column="1" Margin="0,-6,0,-3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
                     
-                    CornerRadius="8" Margin="0,0,8,0" Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}" Grid.Column="0">
-                    <FontIcon Glyph="&#xEC4F;" />
-                    <Image x:Name="ImageThumb"
-                         Width="60" Height="60"></Image>
+                    <TextBlock x:Name="textBlock" Grid.Column="0" VerticalAlignment="Center" Text="{x:Bind TrackPosition, Mode=OneWay, Converter={StaticResource SecondsToTimeConverter}}"/>
+                    <Slider Grid.Column="1"
+                          HorizontalAlignment="Stretch"
+                          ThumbToolTipValueConverter="{StaticResource SecondsToTimeConverter}"
+                          Value="{x:Bind TrackPosition, Mode=TwoWay}"
+                          x:Name="VolumeSlider"
+                          VerticalAlignment="Center"
+                          Minimum="0"
+
+                          Maximum="{x:Bind TrackDuration, Mode=TwoWay}"
+                          ValueChanged="VolumeSlider_ValueChanged"
+                          PointerEntered="VolumeSlider_PointerEntered"
+                          PointerExited="VolumeSlider_PointerExited"
+                          StepFrequency="0.01"
+                          Margin="8,0,8,0"
+                        />
+                    <TextBlock  Grid.Column="2" VerticalAlignment="Center" Text="{x:Bind TrackDuration, Mode=OneWay, Converter={StaticResource SecondsToTimeConverter}}"/>
                 </Grid>
-               
-                <Grid Grid.Column="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <TextBlock x:Name="ArtistTextBlock" VerticalAlignment="Bottom"  Grid.Row="0" ></TextBlock>
-                    <TextBlock x:Name="TitleTextBlock" VerticalAlignment="Top" Grid.Row="1" ></TextBlock>
-                </Grid>
+            </StackPanel>
+
+
+            <Grid  Width="60" Height="60" Translation="0,0,24"
+                   CornerRadius="8" Margin="0,0,8,0" Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}" Grid.Column="0">
+                <FontIcon Glyph="&#xEC4F;" />
+                <Image x:Name="ImageThumb"
+                           ></Image>
             </Grid>
-            
-            <Grid   HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" Margin="0,0,8,0" Padding="0" CornerRadius="8"  >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <Button
-                    
-                FocusVisualPrimaryBrush="Transparent"
-                FocusVisualSecondaryThickness="0"
-                    Margin="8,0,0,0" x:Name="PreviousBTN" Tapped="PreviousBTN_Tapped" Width="45" Height="45" Grid.Column="0">
-                    <SymbolIcon Symbol="Previous"/>
-                </Button >
-
-                <Button Tapped="Button_Play_Tapped"  Margin="8,0,8,0" Width="60" Height="60" Grid.Column="1">
-                    <SymbolIcon x:Name="PlayBTN" Symbol="Play"/>
-                </Button>
-
-                <Button Margin="0,0,8,0" x:Name="NextBTN" Tapped="NextBTN_Tapped" Width="45" Height="45" Grid.Column="2" >
-                    <SymbolIcon Symbol="Next"/>
-                </Button>
-
-                <Button Margin="0,0,8,0" x:Name="TranslatetoStatus" Tapped="TranslatetoStatus_Tapped" Width="45" Height="45" Grid.Column="3" >
-                    <FontIcon x:Name="StatusBTNIcon" Glyph="&#xE701;"  />
-                </Button>
-
-                <Button Grid.Column="4" x:Name="repeatBTN" Tapped="repeatBTN_Tapped" Width="45" Height="45" >
-
-                    <FontIcon x:Name="repeatBTNIcon" Glyph="&#xE8B1;"  />
-
-                </Button>
+            <Grid Margin="0,0,8,0" MaxHeight="80" Width="125" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBlock       TextWrapping="Wrap"
+TextTrimming="CharacterEllipsis" x:Name="ArtistTextBlock" VerticalAlignment="Bottom"  Grid.Row="0" ></TextBlock>
+                <TextBlock         TextWrapping="Wrap"
+TextTrimming="CharacterEllipsis" Opacity="0.7" x:Name="TitleTextBlock" VerticalAlignment="Top" Grid.Row="1" ></TextBlock>
             </Grid>
-            <Grid HorizontalAlignment="Right" Grid.Column="2">
+            <Grid HorizontalAlignment="Right" Grid.Column="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Slider  
-    VerticalAlignment="Center"
-    Grid.Column="0"
-    Maximum="100"
-    Minimum="0"
-    Value="{x:Bind simpleAudioBind, Mode=TwoWay}"
-    x:Name="SoundSlider"
-    ValueChanged="SoundSlider_ValueChanged"
-    PointerEntered="SoundSlider_PointerEntered"
-    PointerExited="SoundSlider_PointerExited"
-    StepFrequency="1"
-    MinWidth="75" MaxWidth="200" />
+                <Slider Height="40" Margin="8,0,0,0" Orientation="Vertical"
+                      VerticalAlignment="Center"
+                      Grid.Column="2"
+                      Maximum="100"
+                      Minimum="0"
+                       
+                      Value="{x:Bind simpleAudioBind, Mode=TwoWay}"
+                      x:Name="SoundSlider"
+                      ValueChanged="SoundSlider_ValueChanged"
+                      PointerEntered="SoundSlider_PointerEntered"
+                      PointerExited="SoundSlider_PointerExited"
+                      StepFrequency="1"
+                      MinWidth="10"  />
 
 
 
-                <Button Margin="8,0,8,0" Tapped="goToPlayList_BTN"  Width="45" Height="45" Grid.Column="1">
+                <Button Padding="0" Background="Transparent" Margin="8,0,8,0" Tapped="goToPlayList_BTN"  Width="30" Height="30" Grid.Column="0">
                     <SymbolIcon Symbol="List"/>
                 </Button>
 
-                <Button Width="45" Height="45" Grid.Column="2">
+                <Button Padding="0"  Background="Transparent" Width="30" Height="30" Grid.Column="1">
                     <SymbolIcon Symbol="FullScreen"/>
                 </Button>
-             
+
 
             </Grid>
+
         </Grid>
-        
+
 
     </Grid>
 
-    
-  
+
+
+
 </Page>

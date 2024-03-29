@@ -510,7 +510,6 @@ namespace SetupLib
             {
                 return new Uri("https://github.com/MaKrotos/VKUI3/releases/download/0.1.0.0/Microsoft.WindowsAppRuntimeARM.1.4.msix");
             }
-            
             else if (RuntimeInformation.OSArchitecture == Architecture.X64)
             {
                 return new Uri("https://github.com/MaKrotos/VKUI3/releases/download/0.1.0.0/Microsoft.WindowsAppRuntimeX64.1.4.msix");

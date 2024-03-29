@@ -4,7 +4,9 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using VK_UI3.Controllers;
 using VK_UI3.DB;
@@ -15,8 +17,10 @@ using VK_UI3.Views.ModalsPages;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
+using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI.Core;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 
 
 namespace VK_UI3.Views
@@ -28,11 +32,25 @@ namespace VK_UI3.Views
         {
             this.InitializeComponent();
             this.Loaded += PlayListPage_Loaded;
+            this.Unloaded += PlayListPage_Unloaded;
             MainText = new AnimationsChangeText(textBlock1, this.DispatcherQueue);
             descriptionText = new AnimationsChangeText(DescriptionText, this.DispatcherQueue);
         }
 
-       
+        private void PlayListPage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            this.Loaded -= PlayListPage_Loaded;
+            this.Unloaded -= PlayListPage_Unloaded;
+            if (scrollViewer != null) scrollViewer.ViewChanged -= ScrollViewer_ViewChanged;
+            if (vkGetAudio != null)
+            {
+                vkGetAudio.onPhotoUpdated.RemoveHandler(VkGetAudio_onPhotoUpdated);
+                vkGetAudio.onListUpdate.RemoveHandler(VkGetAudio_onListUpdate);
+                vkGetAudio.onNameUpdated.RemoveHandler(VkGetAudio_onNameUpdated);
+                vkGetAudio.onCountUpDated.RemoveHandler(VkGetAudio_onCountUpDated);
+                vkGetAudio.onInfoUpdated.RemoveHandler(VkGetAudio_onInfoUpdated);
+            }
+        }
 
         public IVKGetAudio vkGetAudio = null;
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -43,15 +61,11 @@ namespace VK_UI3.Views
             {
                 vkGetAudio = new UserAudio(AccountsDB.activeAccount.id, this.DispatcherQueue);
             }
-
-
-
-
-            vkGetAudio.onPhotoUpdated.Event += VkGetAudio_onPhotoUpdated;
-            vkGetAudio.onListUpdate.Event += VkGetAudio_onListUpdate;
-            vkGetAudio.onNameUpdated.Event += VkGetAudio_onNameUpdated;
-            vkGetAudio.onCountUpDated.Event += VkGetAudio_onCountUpDated;
-            vkGetAudio.onInfoUpdated.Event += VkGetAudio_onInfoUpdated;
+            vkGetAudio.onPhotoUpdated.AddHandler(VkGetAudio_onPhotoUpdated);
+            vkGetAudio.onListUpdate.AddHandler(VkGetAudio_onListUpdate);
+            vkGetAudio.onNameUpdated.AddHandler(VkGetAudio_onNameUpdated);
+            vkGetAudio.onCountUpDated.AddHandler(VkGetAudio_onCountUpDated);
+            vkGetAudio.onInfoUpdated.AddHandler(VkGetAudio_onInfoUpdated);
 
             updateUI(true);
              animationsChangeText = new(textAdd, this.DispatcherQueue);
@@ -66,11 +80,11 @@ namespace VK_UI3.Views
 
             if (vkGetAudio != null)
             {
-                vkGetAudio.onPhotoUpdated.Event -= VkGetAudio_onPhotoUpdated;
-                vkGetAudio.onListUpdate.Event -= VkGetAudio_onListUpdate;
-                vkGetAudio.onNameUpdated.Event -= VkGetAudio_onNameUpdated;
-                vkGetAudio.onCountUpDated.Event -= VkGetAudio_onCountUpDated;
-                vkGetAudio.onInfoUpdated.Event -= VkGetAudio_onInfoUpdated;
+                vkGetAudio.onPhotoUpdated.RemoveHandler(VkGetAudio_onPhotoUpdated);
+                vkGetAudio.onListUpdate.RemoveHandler(VkGetAudio_onListUpdate);
+                vkGetAudio.onNameUpdated.RemoveHandler(VkGetAudio_onNameUpdated);
+                vkGetAudio.onCountUpDated.RemoveHandler(VkGetAudio_onCountUpDated);
+                vkGetAudio.onInfoUpdated.RemoveHandler(VkGetAudio_onInfoUpdated);
             }
         }
 
@@ -339,7 +353,7 @@ namespace VK_UI3.Views
 
             dialog.Content = a;
             dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
-            a.cancelPressed.Event += (s, e) =>
+            a.cancelPressed.AddHandler((s, e) =>
             {
                 if (s != null && s is AudioPlaylist)
                 {
@@ -356,7 +370,7 @@ namespace VK_UI3.Views
                 {
 
                 }
-            };
+            });
 
             dialog.ShowAsync();
 
@@ -372,7 +386,16 @@ namespace VK_UI3.Views
         List<MenuFlyoutItem> menuFlyoutItem = new List<MenuFlyoutItem>();
         private void DownloadPlaylist_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var item in menuFlyoutItem)
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            path = Path.Combine(path, "VKMMKZ");
+            path = Path.Combine(path, "FFMPeg.exe");
+
+            if (!File.Exists(path))
+            {
+                downloadFFMPeg();
+                return;
+            }
+                foreach (var item in menuFlyoutItem)
             {
                 this.DispatcherQueue.TryEnqueue(async () =>
                 {
@@ -410,6 +433,47 @@ namespace VK_UI3.Views
 
         }
 
+        private async void downloadFFMPeg()
+        {
+           //var link = getLinnkFFMPEG();
+           /*
+            
+
+            var dialog = new ContentDialog
+            {
+                Title = "Загрузка еще не завершена",
+                Content = "Вы уверены, что хотите закрыть приложение?",
+                PrimaryButtonText = "Да",
+            };
+            if (link != null)
+            {
+                dialog.Title = "❗❗❗";
+                dialog.Content = "Для загрузки треков необходимо скачать расширение (~80 Мб)";
+                dialog.PrimaryButtonText = "Скачать";
+            }else
+            {
+                dialog.Title = "❗❗❗";
+                dialog.Content = "Увы, для вашей разрядности ОС, загрузка не реализована :c";
+                dialog.PrimaryButtonText = "Скачать";
+            }
+            dialog.CloseButtonText = "Закрыть";
+
+
+
+
+            dialog.Resources["ContentDialogMaxWidth"] = double.PositiveInfinity;
+            dialog.XamlRoot = this.Content.XamlRoot;
+            var result = await dialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+
+            }
+            */
+        }
+
+       
+
         private async void pickFolder()
         {
             FolderPicker folderPicker = new();
@@ -422,8 +486,8 @@ namespace VK_UI3.Views
             if (folder != null)
             {
                 // Директория выбрана, можно продолжить работу с folder
-                PathTable.AddPath(folder.Path);
-                PlayListDownload playListDownload = new PlayListDownload(vkGetAudio, folder.Path, this.DispatcherQueue);
+                 PathTable.AddPath(folder.Path);
+                 new PlayListDownload(vkGetAudio, folder.Path, this.DispatcherQueue);
 
             }
             else

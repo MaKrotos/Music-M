@@ -18,7 +18,17 @@ using static VK_UI3.Views.SectionView;
 
 namespace VK_UI3.Views
 {
-    public sealed partial class WaitView : Microsoft.UI.Xaml.Controls.Page
+
+    public class WaitParameters {
+        public SectionType sectionType;
+        public string SectionID;
+        public Section section;
+        public IVKGetAudio iVKGetAudio;
+        public OpenedPlayList openedPlayList;
+        public AudioPlaylist Playlist;
+    }
+
+    public sealed partial class WaitView : Microsoft.UI.Xaml.Controls.Page, IDisposable
     {
         public WaitView()
         {
@@ -26,14 +36,23 @@ namespace VK_UI3.Views
 
    
             this.Loading += WaitView_Loading;
+            this.Unloaded += WaitView_Unloaded;
 
-            MainWindow.onRefreshClicked.Event += MainWindow_onRefreshClicked;
+          
+        }
+        WaitParameters waitParameters;
+        private void WaitView_Unloaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            MainWindow.onRefreshClicked -= MainWindow_onRefreshClicked;
+            this.handlerContainer.Handler = null;
+            this.Loading -= WaitView_Loading;
+            this.Unloaded -= WaitView_Unloaded;
         }
 
         private void WaitView_Loading(Microsoft.UI.Xaml.FrameworkElement sender, object args)
         {
             LoadAsync();
-
+            MainWindow.onRefreshClicked += MainWindow_onRefreshClicked;
         }
 
         private void MainWindow_onRefreshClicked(object sender, EventArgs e)
@@ -42,13 +61,8 @@ namespace VK_UI3.Views
             LoadAsync();
         }
 
-        public SectionType sectionType;
-        public string SectionID;
-        public Section section;
-        internal IVKGetAudio iVKGetAudio;
-        internal OpenedPlayList openedPlayList;
 
-        public AudioPlaylist Playlist { get; internal set; }
+
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -56,14 +70,10 @@ namespace VK_UI3.Views
             frameSection.Navigated += FrameSection_Navigated; 
             frameSection.Navigate(typeof(waitPage), null, new DrillInNavigationTransitionInfo());
 
-                var waitView = e.Parameter as WaitView;
+                var waitView = e.Parameter as WaitParameters;
                 if (waitView == null) return;
-                this.section = waitView.section;
-                this.sectionType = waitView.sectionType;
-                this.SectionID = waitView.SectionID;
-                this.Playlist = waitView.Playlist;
-                this.iVKGetAudio = waitView.iVKGetAudio;
-                this.openedPlayList = waitView.openedPlayList;
+                waitParameters = waitView;
+
 
         }
 
@@ -136,18 +146,18 @@ namespace VK_UI3.Views
         {
             public EventHandler Handler { get; set; }
         }
-
+        HandlerContainer handlerContainer = new HandlerContainer();
         public async Task LoadAsync()
         {
             
-            var handlerContainer = new HandlerContainer();
+            
             try
             {
-                await (sectionType switch
+                await (waitParameters.sectionType switch
                 {
-                    SectionType.None => loadSection(this.SectionID),
-                    SectionType.Artist => LoadArtistSection(this.SectionID),
-                    SectionType.Search => LoadSearchSection(this.SectionID),
+                    SectionType.None => loadSection(waitParameters.SectionID),
+                    SectionType.Artist => LoadArtistSection(waitParameters.SectionID),
+                    SectionType.Search => LoadSearchSection(waitParameters.SectionID),
                     SectionType.PlayList => LoadPlayList(handlerContainer),
                     SectionType.UserPlayListList => UserPlayListList(),
                     SectionType.MyListAudio => LoadMyAudioList(handlerContainer),
@@ -163,67 +173,70 @@ namespace VK_UI3.Views
 
         private async Task UserPlayListList()
         {
-            var id = long.Parse(SectionID);
+            var id = long.Parse(waitParameters.SectionID);
             var list = await VK.api.Audio.GetPlaylistsAsync(id, 100);
-            UserPlayList userPlayList = new UserPlayList();
-            userPlayList.VKaudioPlaylists = list;
-            userPlayList.UserId = id;
-            userPlayList.offset = 100;
-            userPlayList.LoadedAll = (list.Count != 100);
-            userPlayList.openedPlayList = openedPlayList;
-
-            frameSection.Navigate(typeof(UserPlayList), userPlayList, new DrillInNavigationTransitionInfo());
+            UserPlayListParameters userPlayListParameters = new UserPlayListParameters();
+            userPlayListParameters.VKaudioPlaylists = list;
+            userPlayListParameters.UserId = id;
+            userPlayListParameters.offset = 100;
+            userPlayListParameters.LoadedAll = (list.Count != 100);
+            userPlayListParameters.openedPlayList = waitParameters.openedPlayList;
+            frameSection.Navigate(typeof(UserPlayList), userPlayListParameters, new DrillInNavigationTransitionInfo());
         }
 
         private async Task LoadPlayList(HandlerContainer handlerContainer)
         {
      
-            if (iVKGetAudio == null)
-                iVKGetAudio = new PlayListVK(this.Playlist, this.DispatcherQueue);
+            if (waitParameters.iVKGetAudio == null)
+                waitParameters.iVKGetAudio = new PlayListVK(this.waitParameters.Playlist, this.DispatcherQueue);
 
-            if (iVKGetAudio.listAudio.Count != 0) frameSection.Navigate(typeof(PlayListPage), iVKGetAudio, new DrillInNavigationTransitionInfo());
+            if (waitParameters.iVKGetAudio.listAudio.Count != 0) frameSection.Navigate(typeof(PlayListPage), waitParameters.iVKGetAudio, new DrillInNavigationTransitionInfo());
             else
             {
 
                 handlerContainer.Handler = (sender, e) =>
                     {
-                        iVKGetAudio.onListUpdate.Event -= handlerContainer.Handler;
+                    //    iVKGetAudio.onListUpdate.RemoveHandler(handlerContainer.Handler);
                         this.DispatcherQueue.TryEnqueue(async () =>
                         {
-                         
                             handlerContainer.Handler = null; // Освободить ссылку на обработчик
-                            frameSection.Navigate(typeof(PlayListPage), iVKGetAudio, new DrillInNavigationTransitionInfo());
+                            frameSection.Navigate(typeof(PlayListPage), waitParameters.iVKGetAudio, new DrillInNavigationTransitionInfo());
                         });
+                        waitParameters.iVKGetAudio.onListUpdate.RemoveHandler(handlerContainer.Handler);
                     };
-                iVKGetAudio.onListUpdate.Event += handlerContainer.Handler;
+                waitParameters.iVKGetAudio.onListUpdate.AddHandler(handlerContainer.Handler);
             }
         }
 
         private async Task LoadMyAudioList(HandlerContainer handlerContainer)
         {
-            iVKGetAudio = new UserAudio(AccountsDB.activeAccount.id, this.DispatcherQueue);
+            waitParameters.iVKGetAudio = new UserAudio(AccountsDB.activeAccount.id, this.DispatcherQueue);
 
             handlerContainer.Handler = (sender, e) => {
-                iVKGetAudio.onListUpdate.Event -= handlerContainer.Handler;
+            //    iVKGetAudio.onListUpdate.RemoveHandler(handlerContainer.Handler);
                 this.DispatcherQueue.TryEnqueue(async () =>
                 {
                    
                     handlerContainer.Handler = null; // Освободить ссылку на обработчик
-                    frameSection.Navigate(typeof(PlayListPage), iVKGetAudio, new DrillInNavigationTransitionInfo());
+                    frameSection.Navigate(typeof(PlayListPage), waitParameters.iVKGetAudio, new DrillInNavigationTransitionInfo());
                 });
+                waitParameters.iVKGetAudio.onListUpdate.RemoveHandler(handlerContainer.Handler);
             };
-         
-            iVKGetAudio.onListUpdate.Event += handlerContainer.Handler;
+
+            waitParameters.iVKGetAudio.onListUpdate.AddHandler(handlerContainer.Handler);
         }
 
         private async Task loadSection(string sectionID, bool showTitle = false)
         {
             var sectin = await VK.vkService.GetSectionAsync(sectionID);
-            this.section = sectin.Section;
-            frameSection.Navigate(typeof(SectionView), section, new DrillInNavigationTransitionInfo());
+            this.waitParameters.section = sectin.Section;
+            frameSection.Navigate(typeof(SectionView), waitParameters.section, new DrillInNavigationTransitionInfo());
         }
 
-
-
+        public void Dispose()
+        {
+           MainWindow.onRefreshClicked -= MainWindow_onRefreshClicked;
+           this.handlerContainer.Handler = null;
+        }
     }
 }

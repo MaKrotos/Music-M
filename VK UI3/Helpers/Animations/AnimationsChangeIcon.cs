@@ -5,13 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace VK_UI3.Helpers.Animations
 {
     public class AnimationsChangeIcon
     {
         Symbol? symbolNow = null;
-        Storyboard storyboard = null;
+        Storyboard storyboard = new Storyboard();
         SymbolIcon iconControl = null;
 
         public AnimationsChangeIcon(SymbolIcon iconControl)
@@ -22,9 +23,6 @@ namespace VK_UI3.Helpers.Animations
 
         public async void ChangeSymbolIconWithAnimation(Symbol newSymbol)
         {
-
-            if (storyboard == null) storyboard = new Storyboard();
-
             if (symbolNow != null && (symbolNow == newSymbol && iconControl.Symbol == newSymbol)) return;
 
             symbolNow = newSymbol;
@@ -32,7 +30,6 @@ namespace VK_UI3.Helpers.Animations
             if (storyboard.GetCurrentState() == ClockState.Active)
             {
                 storyboard.Pause();
-
             }
 
             // Создаем анимацию прозрачности
@@ -43,17 +40,21 @@ namespace VK_UI3.Helpers.Animations
                 Duration = TimeSpan.FromMilliseconds(100),
             };
 
-            // Создаем объект Storyboard для управления анимацией
-            storyboard = new Storyboard();
+            // Устанавливаем цель анимации
             Storyboard.SetTarget(animation, iconControl);
             Storyboard.SetTargetProperty(animation, "Opacity");
 
-            // Добавляем анимацию в Storyboard
+            // Очищаем Storyboard и добавляем новую анимацию
+            storyboard.Stop();
+            storyboard.Children.Clear();
             storyboard.Children.Add(animation);
 
             // Обрабатываем событие завершения анимации
-            storyboard.Completed += (s, e) =>
+            EventHandler<object> handler = null;
+            handler = (s, e) =>
             {
+                // Отписываемся от события
+                storyboard.Completed -= handler;
                 // Меняем иконку после завершения анимации
                 iconControl.Symbol = newSymbol;
 
@@ -62,20 +63,21 @@ namespace VK_UI3.Helpers.Animations
                     From = iconControl.Opacity,
                     To = 1,
                     Duration = TimeSpan.FromMilliseconds(50),
-
                 };
-                // Создаем объект Storyboard для управления анимацией
-                storyboard = new Storyboard();
+                // Устанавливаем цель анимации
                 Storyboard.SetTarget(animation, iconControl);
                 Storyboard.SetTargetProperty(animation, "Opacity");
-                // Добавляем анимацию в Storyboard
+                // Очищаем Storyboard и добавляем новую анимацию
+                storyboard.Stop();
+                storyboard.Children.Clear();
                 storyboard.Children.Add(animation);
                 storyboard.Begin();
+
+        
             };
-
-            // Запускаем анимацию
+            storyboard.Completed -= handler;
+            storyboard.Completed += handler;
             storyboard.Begin();
-
         }
     }
 }

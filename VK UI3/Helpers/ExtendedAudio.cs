@@ -6,13 +6,8 @@ using VK_UI3.VKs.IVK;
 
 namespace VK_UI3.Helpers
 {
-    public class ExtendedAudio : INotifyPropertyChanged
+    public class ExtendedAudio
     {
-        public ExtendedAudio(Audio audio, IVKGetAudio iVKGetAudio)
-        {
-            this.audio = audio;
-            this.iVKGetAudio = iVKGetAudio;
-        }
         public ExtendedAudio(VkNet.Model.Attachments.Audio audio, IVKGetAudio iVKGetAudio)
         {
             this.audio = audio;
@@ -23,46 +18,31 @@ namespace VK_UI3.Helpers
         {
             get
             {
-
-                //if (NumberInList == null) return false;
-                // return (NumberInList == iVKGetAudio.currentTrack);
                 if (AudioPlayer._TrackDataThis == null) return false;
 
-                if (AudioPlayer._TrackDataThis.audio.AccessKey == this.audio.AccessKey)
-                {
-                    return true;
-                }
-                else
-                    return false;
-
-               // if (AudioPlayer._TrackDataThis.audio.o)
-
+                return AudioPlayer._TrackDataThis.audio.AccessKey == this.audio.AccessKey;
             }
         }
 
-        public VkNet.Model.Attachments.Audio audio { get; set; }
+        public VkNet.Model.Attachments.Audio audio { get; private set; }
 
-        // public int NumberList { get; set; }
-
-        public long? _numberInList;
-        
-
-        public long? NumberInList { get {
+        private long? _numberInList;
+        public long? NumberInList
+        {
+            get
+            {
                 if (_numberInList == null)
                 {
                     iVKGetAudio.updateNumbers();
                 }
                 return _numberInList;
-            
-            } set { _numberInList = value;  }
+            }
+            set
+            {
+                _numberInList = value;
+            }
         }
 
         public IVKGetAudio iVKGetAudio { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

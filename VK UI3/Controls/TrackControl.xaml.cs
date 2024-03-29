@@ -56,10 +56,23 @@ namespace VK_UI3.Controls
 
             this.DataContextChanged += TrackControl_DataContextChanged;
             Loaded += TrackControl_Loaded;
+            Unloaded += TrackControl_Unloaded;
             this.Loading += TrackControl_Loading;
             if (changeImage == null)
-                changeImage = new AnimationsChangeImage(ImageThumb, DispatcherQueue);
+            changeImage = new AnimationsChangeImage(ImageThumb, DispatcherQueue);
             changeIconPlayBTN = new AnimationsChangeIcon(PlayBTN);
+        }
+
+        private void TrackControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            addedHandler = false;
+            if (dataTrack != null)
+            {
+                dataTrack.iVKGetAudio.AudioPlayedChangeEvent -= UserAudio_AudioPlayedChangeEvent;
+            }
+            this.DataContextChanged -= TrackControl_DataContextChanged;
+            Loaded -= TrackControl_Loaded;
+            Unloaded -= TrackControl_Unloaded;
         }
 
         private void TrackControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
@@ -291,26 +304,11 @@ namespace VK_UI3.Controls
         {
 
         }
-
-        public void Title_PointerPressed(object sender, RoutedEventArgs e)
-        {
-            // Ваш код здесь
-        }
-
-        public void Title_PointerExited(object sender, RoutedEventArgs e)
-        {
-            // Ваш код здесь
-        }
-
-        public void Title_PointerEntered(object sender, RoutedEventArgs e)
-        {
-            // Ваш код здесь
-        }
-
         public void RecommendedAudio_Click(object sender, RoutedEventArgs e)
         {
             // Ваш код здесь
         }
+
 
         public void PlayNext_Click(object sender, RoutedEventArgs e)
         {
@@ -403,12 +401,6 @@ namespace VK_UI3.Controls
             Clipboard.SetContent(dataPackage);
         }
 
-
-
-        public void AddToPlaylist_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
 
         public void AddRemove_Click(object sender, RoutedEventArgs e)
         {
@@ -579,7 +571,7 @@ namespace VK_UI3.Controls
             dialog.Content = a;
             dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
 
-            a.cancelPressed.Event += (s, e) =>
+            a.cancelPressed.AddHandler((s, e) =>
             {
                 dialog.Hide();
                 dialog = null;
@@ -588,7 +580,7 @@ namespace VK_UI3.Controls
                 {
                     TempPlayLists.TempPlayLists.updateNextRequest = true;
                 }
-            };
+            });
 
             dialog.ShowAsync();
 
@@ -600,11 +592,11 @@ namespace VK_UI3.Controls
             dialog.XamlRoot = this.XamlRoot;
             var a = new UserPlayList(dataTrack.audio);
             dialog.Content = a;
-            a.selectedPlayList.Event += (s, e) =>
+            a.selectedPlayList.AddHandler((s, e) =>
             {
                 dialog.Hide();
                 dialog = null;
-            };
+            });
 
             dialog.ShowAsync();
 
@@ -645,7 +637,7 @@ namespace VK_UI3.Controls
                   }
                   );
 
-            // Вызываем метод audio.moveToAlbum через метод Call
+       
 
         }
     }

@@ -5,6 +5,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -17,7 +18,7 @@ namespace VK_UI3.Helpers.Animations
     public class AnimationsChangeImage
     {
         string imageSourceNow = null;
-        Storyboard storyboard = null;
+        Storyboard storyboard = new Storyboard();
         Image imageControl = null;
         ImageIcon imageIcon = null;
         ImageBrush imageBrushControl = null;
@@ -66,7 +67,6 @@ namespace VK_UI3.Helpers.Animations
 
             dispatcherQueue.TryEnqueue(async () =>
             {
-                if (storyboard == null) storyboard = new Storyboard();
                 if (storyboard.GetCurrentState() == ClockState.Active)
                 {
                     storyboard.Pause();
@@ -88,14 +88,18 @@ namespace VK_UI3.Helpers.Animations
                     Duration = TimeSpan.FromMilliseconds(250),
                 };
 
-                storyboard = new Storyboard();
                 Storyboard.SetTarget(animation, (element as FrameworkElement));
                 Storyboard.SetTargetProperty(animation, "Opacity");
-
+                storyboard.Stop();
+                storyboard.Children.Clear();
                 storyboard.Children.Add(animation);
 
-                storyboard.Completed += async (s, e) =>
+                EventHandler<object> storyboardCompletedHandler = null;
+                storyboardCompletedHandler = async (s, e) =>
                 {
+                    // Отписка от события после его выполнения
+                    storyboard.Completed -= storyboardCompletedHandler;
+
                     if (newImageSourceUrl == null || newImageSourceUrl == "null") return;
                     var bitmapImage = await GetImageAsync(newImageSourceUrl);
 
@@ -115,7 +119,6 @@ namespace VK_UI3.Helpers.Animations
                     {
                         imageIcon.Source = bitmapImage;
                     }
-                    
 
                     var animation = new DoubleAnimation
                     {
@@ -124,17 +127,23 @@ namespace VK_UI3.Helpers.Animations
                         Duration = TimeSpan.FromMilliseconds(500),
                     };
 
-                    storyboard = new Storyboard();
                     Storyboard.SetTarget(animation, (element as FrameworkElement));
                     Storyboard.SetTargetProperty(animation, "Opacity");
-
+                    storyboard.Stop();
+                    storyboard.Children.Clear();
                     storyboard.Children.Add(animation);
                     storyboard.Begin();
-                };
 
+                  
+                };
+                storyboard.Completed -= storyboardCompletedHandler;
+                storyboard.Completed += storyboardCompletedHandler;
+           
                 storyboard.Begin();
             });
         }
+
+
 
         private async Task<BitmapImage> GetImageAsync(string newImageSourceUrl)
         {

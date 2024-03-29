@@ -30,7 +30,14 @@ namespace VK_UI3
 
 
             this.Loaded += MainMenu_Loaded;
+            this.Unloaded += MainMenu_Unloaded;
+        }
 
+        private void MainMenu_Unloaded(object sender, RoutedEventArgs e)
+        {
+            this.Loaded -= MainMenu_Loaded;
+            this.Unloaded -= MainMenu_Unloaded;
+            scrollViewer.ViewChanged -= ScrollViewer_ViewChanged;
         }
 
         ScrollViewer scrollViewer;
@@ -107,15 +114,6 @@ namespace VK_UI3
             }
 
             return null;
-        }
-
-        private void Timer_Tick(object sender, object e)
-        {
-          //  Tracks.Add(new TrackData { Cover = ("https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/b1/d4/f8/b1d4f882-498c-dfdd-b0c9-1ae511eea612/859715405439_cover.jpg/1200x1200bf-60.jpg"), Author = "Author2", duration = 22 });
-
-
-          //  Shuffle(Tracks);
-            // Добавьте новый элемент в Tracks здесь
         }
 
 

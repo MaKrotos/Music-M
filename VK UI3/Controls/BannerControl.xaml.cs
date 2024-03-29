@@ -29,6 +29,7 @@ namespace VK_UI3.Controls
         {
             this.InitializeComponent();
             this.Unloaded += BannerControl_Unloaded;
+         
         }
 
         private void BannerControl_Unloaded(object sender, RoutedEventArgs e)
@@ -38,6 +39,7 @@ namespace VK_UI3.Controls
 
             this.BannerTitle = null;
             this.BannerText = null;
+            this.Loaded += UserControl_Loaded;
         }
 
         public static readonly DependencyProperty BannerProperty =

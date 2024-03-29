@@ -28,7 +28,6 @@
                 <TextBlock x:Name="pathText" Opacity="0.5"></TextBlock>
             </StackPanel>
             <TextBlock Grid.Column="1" x:Name="dx" Text=""/>
-
         </Grid>
    
     <Grid>

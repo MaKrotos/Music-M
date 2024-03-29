@@ -26,6 +26,13 @@ namespace VK_UI3.Controls
 
             this.InitializeComponent();
             this.DataContextChanged += DefaultControl_DataContextChanged;
+            this.Unloaded += DefaultControl_Unloaded;
+        }
+
+        private void DefaultControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            this.DataContextChanged -= DefaultControl_DataContextChanged;
+            this.Unloaded -= DefaultControl_Unloaded;
         }
 
         private void DefaultControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)

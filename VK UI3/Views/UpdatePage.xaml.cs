@@ -27,6 +27,13 @@ namespace VK_UI3.Views
         public UpdatePage()
         {
             this.InitializeComponent();
+
+            this.Unloaded += UpdatePage_Unloaded;
+        }
+
+        private void UpdatePage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            appUpdater.DownloadProgressChanged -= AppUpdater_DownloadProgressChanged;
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)

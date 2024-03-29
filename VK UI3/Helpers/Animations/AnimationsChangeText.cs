@@ -1,13 +1,14 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
 using System;
+using System.Timers;
 
 namespace VK_UI3.Helpers.Animations
 {
     public class AnimationsChangeText
     {
         string textNow = null;
-        Storyboard storyboard = null;
+        Storyboard storyboard = new Storyboard();
         TextBlock textBlockControl = null;
         double opac;
         Microsoft.UI.Dispatching.DispatcherQueue dispatcherQueue = null;
@@ -27,7 +28,6 @@ namespace VK_UI3.Helpers.Animations
 
             dispatcherQueue.TryEnqueue(async () =>
             {
-                if (storyboard == null) storyboard = new Storyboard();
                 if (storyboard.GetCurrentState() == ClockState.Active)
                 {
                     storyboard.Pause();
@@ -41,39 +41,49 @@ namespace VK_UI3.Helpers.Animations
                     Duration = TimeSpan.FromMilliseconds(50),
                 };
 
-                // Create Storyboard object to control the animation
-                storyboard = new Storyboard();
+                // Set the target of the animation
                 Storyboard.SetTarget(animation, textBlockControl);
                 Storyboard.SetTargetProperty(animation, "Opacity");
 
-                // Add animation to Storyboard
+                // Clear the storyboard and add the new animation
+                storyboard.Stop();
+                storyboard.Children.Clear();
                 storyboard.Children.Add(animation);
 
                 // Handle animation completion event
-                storyboard.Completed += async (s, e) =>
-                {
-                    // Change the text after the animation completes
-                    if (newText == null || newText == "null") return;
-                    textBlockControl.Text = newText;
-
-                    var animation = new DoubleAnimation
-                    {
-                        From = textBlockControl.Opacity,
-                        To = opac,
-                        Duration = TimeSpan.FromMilliseconds(500),
-                    };
-                    // Create Storyboard object to control the animation
-                    storyboard = new Storyboard();
-                    Storyboard.SetTarget(animation, textBlockControl);
-                    Storyboard.SetTargetProperty(animation, "Opacity");
-                    // Add animation to Storyboard
-                    storyboard.Children.Add(animation);
-                    storyboard.Begin();
-                };
+                storyboard.Completed -= AnimationCompleted;
+                storyboard.Completed += AnimationCompleted;
 
                 // Start the animation
                 storyboard.Begin();
+
             });
         }
+
+        private void AnimationCompleted(object sender, object e)
+        {
+            // Unsubscribe from the event
+            storyboard.Completed -= AnimationCompleted;
+
+            // Change the text after the animation completes
+            if (textNow == null || textNow == "null") return;
+            textBlockControl.Text = textNow;
+
+            var animation = new DoubleAnimation
+            {
+                From = textBlockControl.Opacity,
+                To = opac,
+                Duration = TimeSpan.FromMilliseconds(500),
+            };
+            // Set the target of the animation
+            Storyboard.SetTarget(animation, textBlockControl);
+            Storyboard.SetTargetProperty(animation, "Opacity");
+            // Clear the storyboard and add the new animation
+            storyboard.Stop();
+            storyboard.Children.Clear();
+            storyboard.Children.Add(animation);
+            storyboard.Begin();
+        }
     }
+
 }

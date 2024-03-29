@@ -23,15 +23,17 @@ namespace VK_UI3.Controls.Blocks
 
            
             this.DataContextChanged += ListTracks_DataContextChanged;
-            
+
+            this.Unloaded += ListTracksFull_Unloaded;
 
         }
 
-      
+        private void ListTracksFull_Unloaded(object sender, RoutedEventArgs e)
+        {
+            this.DataContextChanged -= ListTracks_DataContextChanged;
 
- 
-
-     
+            this.Unloaded -= ListTracksFull_Unloaded;
+        }
 
         private void ListTracks_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
@@ -44,13 +46,11 @@ namespace VK_UI3.Controls.Blocks
                 sectionAudio.countTracks = block.Audios.Count;
                 OnPropertyChanged(nameof(sectionAudio));
 
-                sectionAudio.onListUpdate.Event += SectionAudio_onListUpdate;
+                sectionAudio.onListUpdate.AddHandler(SectionAudio_onListUpdate);
             }
             catch (Exception ex)
             {
                 AppCenterHelper.SendCrash(ex);
-     
-
             }
         }
 

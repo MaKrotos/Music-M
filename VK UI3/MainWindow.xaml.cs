@@ -57,8 +57,8 @@ namespace VK_UI3
             this.SetTitleBar(AppTitleBar);
             AppTitleBar.Loaded += AppTitleBar_Loaded;
             AppTitleBar.SizeChanged += AppTitleBar_SizeChanged;
-            PlayListDownload.OnStartDownload.Event += StartDownloadEvent;
-            PlayListDownload.OnEndAllDownload.Event += OnEndAllDownload_Event; ;
+            PlayListDownload.OnStartDownload.AddHandler(StartDownloadEvent);
+            PlayListDownload.OnEndAllDownload.AddHandler(OnEndAllDownload_Event); ;
 
 
             AppWindowTitleBar m_TitleBar = m_AppWindow.TitleBar;
@@ -149,7 +149,7 @@ namespace VK_UI3
                     if (!addClosed)
                     {
                         addClosed = true;
-                        PlayListDownload.OnEndAllDownload.Event += close;
+                        PlayListDownload.OnEndAllDownload.AddHandler(close);
 
                     }
                 }
@@ -509,14 +509,14 @@ namespace VK_UI3
 
         }
 
-        public static WeakEventManager onRefreshClicked = new WeakEventManager();
+        public static EventHandler onRefreshClicked;
         public static WeakEventManager onDownloadClicked = new WeakEventManager();
 
      
         public static void onRefreshClickedvoid()
         {
             MainWindow.mainWindow.RotationStoryboard.Begin();
-            onRefreshClicked?.RaiseEvent(null, EventArgs.Empty);
+            onRefreshClicked?.Invoke(null, EventArgs.Empty);
 
         }
 
@@ -524,8 +524,7 @@ namespace VK_UI3
         private void RefreshClick_Click(object sender, RoutedEventArgs e)
         {
             RotationStoryboard.Begin();
-            onRefreshClicked?.RaiseEvent(this, EventArgs.Empty);
-
+            onRefreshClicked?.Invoke(this, EventArgs.Empty);
         }
 
         private void DownLoadBTN_Click(object sender, RoutedEventArgs e)

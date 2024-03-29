@@ -40,19 +40,26 @@ namespace VK_UI3.Views
             this.InitializeComponent();
 
 
-            this.Loading += SectionView_Loading;
+  
             this.Loaded += SectionView_Loaded;
+            this.Unloaded += SectionView_Unloaded;
+        }
+
+        private void SectionView_Unloaded(object sender, RoutedEventArgs e)
+        {
+   
+            this.Loaded -= SectionView_Loaded;
+            this.Unloaded -= SectionView_Unloaded;
+            this.scrollVIew.ViewChanged -= scrollVIew_ViewChanged;
         }
 
         private void SectionView_Loaded(object sender, RoutedEventArgs e)
         {
-        //    scrollViewer = GetScrollViewer(ListBlocks);
-        //    scrollViewer.ViewChanged += Scrollvi_ViewChanged;
+        
             if (this.section != null && this.section.Blocks != null && this.section.Blocks.Count != 0)
             {
                 this.nextLoad = this.section.NextFrom;
                 loadBlocks(this.section.Blocks);
-           
             }
             else
             {
@@ -61,10 +68,7 @@ namespace VK_UI3.Views
             }
         }
 
-        private void SectionView_Loading(FrameworkElement sender, object args)
-        {
-            
-        }
+     
 
         ScrollViewer scrollViewer = null;
       
@@ -78,9 +82,6 @@ namespace VK_UI3.Views
             }
             return false;
         }
-
-
-       
 
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -115,28 +116,11 @@ namespace VK_UI3.Views
 
             var section = e.Parameter as Section;
             if (section == null) return;
-
             this.section = section;
-            //   this.sectionType = section;
-
-          
+   
         }
     
        
-
-        public static ScrollViewer GetScrollViewer(DependencyObject depObj)
-        {
-            if (depObj is ScrollViewer) return depObj as ScrollViewer;
-
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
-            {
-                var child = VisualTreeHelper.GetChild(depObj, i);
-
-                var result = GetScrollViewer(child);
-                if (result != null) return result;
-            }
-            return null;
-        }
 
 
         ResponseData artist = null;
@@ -220,7 +204,7 @@ namespace VK_UI3.Views
             }
             finally
             {
-              //  ContentState = ContentState.Loaded;
+
             }
         }
 
@@ -301,7 +285,7 @@ namespace VK_UI3.Views
                         if (!listened)
                         {
                             listened = true;
-                            _tracksFull.sectionAudio.onListUpdate.Event += SectionAudio_onListUpdate;
+                            _tracksFull.sectionAudio.onListUpdate.AddHandler(SectionAudio_onListUpdate);
                         }
                     }
                 }

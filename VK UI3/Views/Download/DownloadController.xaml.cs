@@ -46,8 +46,8 @@ namespace VK_UI3.Views.Download
             if (DataContext == null) return;
             if (playListDownload != null)
             {
-                playListDownload.OnTrackDownloaded.Event -= OnTrackDownloaded_Event;
-                playListDownload.onStatusUpdate.Event -= OnTrackDownloaded_Event;
+                playListDownload.OnTrackDownloaded.RemoveHandler(OnTrackDownloaded_Event);
+                playListDownload.onStatusUpdate.RemoveHandler(OnTrackDownloaded_Event);
             }
             playListDownload = (DataContext as PlayListDownload);
             DownloadTitle.Text = playListDownload.iVKGetAudio.name;
@@ -58,8 +58,8 @@ namespace VK_UI3.Views.Download
             }
 
 
-            playListDownload.OnTrackDownloaded.Event += OnTrackDownloaded_Event;
-            playListDownload.onStatusUpdate.Event += OnTrackDownloaded_Event;
+            playListDownload.OnTrackDownloaded.AddHandler(OnTrackDownloaded_Event);
+            playListDownload.onStatusUpdate.AddHandler(OnTrackDownloaded_Event);
      
             string original = playListDownload.path;
             if (original.Length > 20)

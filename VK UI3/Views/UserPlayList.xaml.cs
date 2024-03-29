@@ -34,6 +34,13 @@ namespace VK_UI3.Views
         UserPlayList,
         UserAlbums
     }
+    public class UserPlayListParameters {
+        public VkCollection<AudioPlaylist> VKaudioPlaylists;
+        public uint offset = 0;
+        public long? UserId = null;
+        public OpenedPlayList openedPlayList;
+        public bool LoadedAll;
+    }
     public sealed partial class UserPlayList : Microsoft.UI.Xaml.Controls.Page
     {
 
@@ -44,16 +51,31 @@ namespace VK_UI3.Views
             this.InitializeComponent();
             this.Loaded += UserPlayList_Loaded;
             this.Loading += UserPlayList_Loading;
+
+            this.Unloaded += UserPlayList_Unloaded;
             
         }
-
         public UserPlayList(Audio audio)
         {
             this.InitializeComponent();
             this.Loaded += UserPlayList_Loaded;
             this.Loading += UserPlayList_Loading;
+            this.Unloaded += UserPlayList_Unloaded;
             this.audio = audio;
         }
+
+        private void UserPlayList_Unloaded(object sender, RoutedEventArgs e)
+        {
+            this.Loaded -= UserPlayList_Loaded;
+            this.Loading -= UserPlayList_Loading;
+
+            this.Unloaded -= UserPlayList_Unloaded;
+
+            if (scrollViewer != null)
+                this.scrollViewer.ViewChanged -= ScrollViewer_ViewChanged;
+        }
+
+    
 
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -74,24 +96,20 @@ namespace VK_UI3.Views
 
         Audio audio = null;
 
-        public VkCollection<AudioPlaylist> VKaudioPlaylists;
+        UserPlayListParameters parameters;
+
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            var userPlayList = e.Parameter as UserPlayList;
+            var userPlayList = e.Parameter as UserPlayListParameters;
             if (userPlayList == null)
                 return;
+            parameters = userPlayList;
 
-            offset = userPlayList.offset;
-            VKaudioPlaylists = userPlayList.VKaudioPlaylists;
-            UserId = userPlayList.UserId;
-            LoadedAll = userPlayList.LoadedAll;
-            openedPlayList = userPlayList.openedPlayList;
+           
 
         }
+     
 
-        public uint offset = 0;
-        public long? UserId = null;
-        public OpenedPlayList openedPlayList;
 
         private bool CheckIfAllContentIsVisible(ScrollViewer scrollViewer)
         {
@@ -104,11 +122,11 @@ namespace VK_UI3.Views
 
         private void UserPlayList_Loading(FrameworkElement sender, object args)
         {
-            if (LoadedAll)
+            if (parameters.LoadedAll)
             {
                 LoadingIndicator.Visibility = Visibility.Collapsed;
             }
-            if (openedPlayList != OpenedPlayList.UserPlayList)
+            if (parameters.openedPlayList != OpenedPlayList.UserPlayList)
             {
                 CreateButton.Visibility = Visibility.Collapsed;
             }
@@ -127,13 +145,13 @@ namespace VK_UI3.Views
             if (audio != null)
             {
                 gridV.SelectionMode = ListViewSelectionMode.Single;
-                this.openedPlayList = OpenedPlayList.UserPlayList;
+                this.parameters.openedPlayList = OpenedPlayList.UserPlayList;
                 MainGrid.Background = (Brush)Application.Current.Resources["AcrylicBackgroundFillColorDefaultBrush"];
             }
 
-            if (VKaudioPlaylists != null)
+            if (parameters.VKaudioPlaylists != null)
             {
-                addToList(VKaudioPlaylists);
+                addToList(parameters.VKaudioPlaylists);
             }
             else
             { 
@@ -163,7 +181,7 @@ namespace VK_UI3.Views
             audioPlaylists.AddRange(VKaudioPlaylists.Where(item =>
             {
                 bool isUserPlaylist = item.OwnerId == AccountsDB.activeAccount.id && item.Original == null;
-                return openedPlayList switch
+                return parameters.openedPlayList switch
                 {
                     OpenedPlayList.all => true,
                     OpenedPlayList.UserPlayList => isUserPlaylist,
@@ -174,25 +192,24 @@ namespace VK_UI3.Views
         }
 
 
-        public bool LoadedAll;
-    
+      
        
 
          internal WeakEventManager selectedPlayList = new WeakEventManager();
         private async Task loadMoreAsync()
         {
-            if (UserId == null)
-                UserId = AccountsDB.activeAccount.id;
-            if (LoadedAll) return;
+            if (parameters.UserId == null)
+                parameters.UserId = AccountsDB.activeAccount.id;
+            if (parameters.LoadedAll) return;
             LoadingIndicator.IsActive = true;
 
-            var a = await VK.api.Audio.GetPlaylistsAsync((long)UserId, 100, offset);
+            var a = await VK.api.Audio.GetPlaylistsAsync((long)parameters.UserId, 100, parameters.offset);
 
             addToList(a);
             LoadingIndicator.IsActive = false;
             if (a.Count != 100)
             {
-                LoadedAll = true;
+                parameters.LoadedAll = true;
                 LoadingIndicator.Visibility = Visibility.Collapsed;
             }
     
@@ -214,7 +231,7 @@ namespace VK_UI3.Views
             var a = new CreatePlayList();
             dialog.Content = a;
             dialog.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
-            a.cancelPressed.Event += (s, e) =>
+            a.cancelPressed.AddHandler((s, e) =>
             {
                 dialog.Hide();
                 dialog = null;
@@ -224,7 +241,7 @@ namespace VK_UI3.Views
                     var playlist = s as AudioPlaylist;
                     this.audioPlaylists.Insert(0, playlist);
                 }
-            };
+            });
 
             dialog.ShowAsync();
         }

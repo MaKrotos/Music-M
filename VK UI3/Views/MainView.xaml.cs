@@ -50,10 +50,24 @@ namespace VK_UI3.Views
             NavWiv.BackRequested += NavWiv_BackRequested;
             this.Loaded += MainView_Loaded;
             Accounts.CollectionChanged += Accounts_CollectionChanged;
-            onUpdateAccounts.Event += MainView_onUpdateAccounts;
+            onUpdateAccounts.AddHandler(MainView_onUpdateAccounts);
 
             this.KeyDown += MainView_KeyDown;
 
+            this.Unloaded += MainView_Unloaded;
+        }
+
+        private void MainView_Unloaded(object sender, RoutedEventArgs e)
+        {
+            ContentFrame.Navigated -= ContentFrame_Navigated;
+            NavWiv.BackRequested -= NavWiv_BackRequested;
+            this.Loaded -= MainView_Loaded;
+            Accounts.CollectionChanged -= Accounts_CollectionChanged;
+            onUpdateAccounts.RemoveHandler(MainView_onUpdateAccounts);
+
+            this.KeyDown -= MainView_KeyDown;
+
+            this.Unloaded -= MainView_Unloaded;
         }
 
         private void MainView_KeyDown(object sender, KeyRoutedEventArgs e)
@@ -62,7 +76,6 @@ namespace VK_UI3.Views
             {
                MainWindow.onRefreshClickedvoid();
             }
-    
         }
 
         private void Accounts_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -575,7 +588,7 @@ namespace VK_UI3.Views
 
         public static void OpenMyPage(SectionType sectionType)
         {
-            var sectionView = new WaitView();
+            var sectionView = new WaitParameters();
             sectionView.sectionType = sectionType;
             frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
         }
@@ -583,7 +596,7 @@ namespace VK_UI3.Views
 
         public static void OpenPlayListLists(long? id = null, OpenedPlayList openedPlayList= OpenedPlayList.all)
         {
-            var sectionView = new WaitView();
+            var sectionView = new WaitParameters();
             if (id == null)
                 id = activeAccount.id;
             sectionView.sectionType = SectionType.UserPlayListList;
@@ -595,15 +608,15 @@ namespace VK_UI3.Views
 
         public static void OpenPlayList(AudioPlaylist playlist)
         {
-            var sectionView = new WaitView();
-            sectionView.sectionType = SectionType.PlayList;
-            sectionView.Playlist = playlist;
-            frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
+            var waitParameters = new WaitParameters();
+            waitParameters.sectionType = SectionType.PlayList;
+            waitParameters.Playlist = playlist;
+            frame.Navigate(typeof(WaitView), waitParameters, new DrillInNavigationTransitionInfo());
         }
 
         public static void OpenPlayList(IVKGetAudio iVKGetAudio)
         {
-            var sectionView = new WaitView();
+            var sectionView = new WaitParameters();
             sectionView.sectionType = SectionType.PlayList;
             sectionView.iVKGetAudio = iVKGetAudio;
             frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
@@ -611,7 +624,7 @@ namespace VK_UI3.Views
        
         public static void OpenPlayList(long AlbumID, long AlbumOwnerID, string AlbumAccessKey)
         {
-            var sectionView = new WaitView();
+            var sectionView = new WaitParameters();
             sectionView.sectionType = SectionType.PlayList;
             Playlist playlist = new Playlist();
             playlist.Id = AlbumID;
@@ -624,7 +637,7 @@ namespace VK_UI3.Views
 
         public static void OpenSection(string sectionID, SectionType sectionType = SectionType.None)
         {
-            var sectionView = new WaitView();
+            var sectionView = new WaitParameters();
             sectionView.SectionID = sectionID;
             sectionView.sectionType = sectionType;
             

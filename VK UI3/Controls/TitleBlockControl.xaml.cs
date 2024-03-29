@@ -28,8 +28,17 @@ namespace VK_UI3.Controls
         public TitleBlockControl()
         {
             InitializeComponent();
-            this.DataContextChanged += TitleBlockControl_DataContextChanged;
+        
             this.Loading += TitleBlockControl_Loading;
+            this.Unloaded += TitleBlockControl_Unloaded;
+        }
+
+        private void TitleBlockControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+
+            this.Loading -= TitleBlockControl_Loading;
+            this.Unloaded -= TitleBlockControl_Unloaded;
+            Buttons.SelectionChanged -= ButtonsComboBox_SelectionChanged;
         }
 
         private void TitleBlockControl_Loading(FrameworkElement sender, object args)
@@ -133,10 +142,6 @@ namespace VK_UI3.Controls
             }
         }
 
-        private void TitleBlockControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-        {
-            
-        }
 
        
 

@@ -36,12 +36,12 @@ namespace VK_UI3.Controllers
 
         public static Windows.Media.Playback.MediaPlayer mediaPlayer = new MediaPlayer();
 
-        public static WeakEventManager oniVKUpdate = new WeakEventManager();
+        public static event EventHandler oniVKUpdate;
 
       
         public static void NotifyoniVKUpdate()
         {
-            oniVKUpdate.RaiseEvent(null, EventArgs.Empty);
+            oniVKUpdate.Invoke(null, EventArgs.Empty);
         }
 
         public MediaPlayer MediaPlayer
@@ -175,7 +175,7 @@ namespace VK_UI3.Controllers
             this.InitializeComponent();
 
 
-            changeIconPlayBTN = new AnimationsChangeIcon(this.PlayBTN);
+            changeIconPlayBTN = new AnimationsChangeFontIcon(this.PlayBTN, this.DispatcherQueue);
             animateFontIcon = new AnimationsChangeFontIcon(this.repeatBTNIcon, this.DispatcherQueue);
             changeImage = new AnimationsChangeImage(this.ImageThumb, DispatcherQueue);
             changeText = new AnimationsChangeText(ArtistTextBlock, this.DispatcherQueue);
@@ -184,7 +184,7 @@ namespace VK_UI3.Controllers
             setStatusIcon();
 
 
-            oniVKUpdate.Event += AudioPlayer_oniVKUpdate;
+            oniVKUpdate += AudioPlayer_oniVKUpdate;
 
             this.Loaded += AudioPlayer_Loaded;
 
@@ -197,7 +197,7 @@ namespace VK_UI3.Controllers
             TrackDuration = 0;
             TrackPosition = 0;
 
-            TrackDataThisChanged.Event += AudioPlayer_PropertyChanged;
+            TrackDataThisChanged.AddHandler(AudioPlayer_PropertyChanged);
 
             // Привязка к событию MediaOpened
             mediaPlayer.MediaOpened += MediaPlayer_MediaOpened;
@@ -360,7 +360,7 @@ namespace VK_UI3.Controllers
         {
             // Код для выполнения при ошибке воспроизведения медиафайла
         }
-        AnimationsChangeIcon changeIconPlayBTN = null;
+        Helpers.Animations.AnimationsChangeFontIcon changeIconPlayBTN = null;
         private void MediaPlayer_CurrentStateChanged(Windows.Media.Playback.MediaPlayer sender, object args)
         {
             // Код для выполнения при изменении состояния медиаплеера
@@ -370,10 +370,10 @@ namespace VK_UI3.Controllers
                 {
                     case (MediaPlayerState)Windows.Media.Playback.MediaPlaybackState.Playing:
 
-                        changeIconPlayBTN.ChangeSymbolIconWithAnimation(Symbol.Pause);
+                        changeIconPlayBTN.ChangeFontIconWithAnimation("\uE769");
                         break;
                     case (MediaPlayerState)Windows.Media.Playback.MediaPlaybackState.Paused:
-                        changeIconPlayBTN.ChangeSymbolIconWithAnimation(Symbol.Play);
+                        changeIconPlayBTN.ChangeFontIconWithAnimation("\uE768");
 
                         break;
                     case (MediaPlayerState)Windows.Media.Playback.MediaPlaybackState.Buffering:
@@ -383,7 +383,7 @@ namespace VK_UI3.Controllers
                         PlayTrack(iVKGetAudio.currentTrack);
                         break;
                     default:
-                        changeIconPlayBTN.ChangeSymbolIconWithAnimation(Symbol.Sync);
+                        changeIconPlayBTN.ChangeFontIconWithAnimation("\uE895");
                         break;
                 }
             });
