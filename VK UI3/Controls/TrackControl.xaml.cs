@@ -88,11 +88,7 @@ namespace VK_UI3.Controls
                 dataTrack = (DataContext as ExtendedAudio);
 
 
-                if (!addedHandler)
-                {
-                    dataTrack.iVKGetAudio.AudioPlayedChangeEvent += UserAudio_AudioPlayedChangeEvent;
-                    addedHandler = true;
-                }
+              
                 bool isOwner = track.OwnerId == AccountsDB.activeAccount.id;
 
 
@@ -302,7 +298,11 @@ namespace VK_UI3.Controls
         AnimationsChangeImage changeImage = null;
         private void TrackControl_Loaded(object sender, RoutedEventArgs e)
         {
-
+            if (dataTrack != null && !addedHandler)
+            {
+                dataTrack.iVKGetAudio.AudioPlayedChangeEvent += UserAudio_AudioPlayedChangeEvent;
+                addedHandler = true;
+            }
         }
         public void RecommendedAudio_Click(object sender, RoutedEventArgs e)
         {

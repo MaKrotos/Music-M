@@ -101,7 +101,7 @@
                 <Image x:Name="ImageThumb"
                            ></Image>
             </Grid>
-            <Grid Margin="0,0,8,0" MaxHeight="80" Width="125" Grid.Column="1">
+            <Grid Margin="0,0,8,0" MaxHeight="75" Width="125" Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />

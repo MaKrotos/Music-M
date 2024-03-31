@@ -46,8 +46,7 @@ namespace VK_UI3.Controls
 
         private void PlaylistControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            AudioPlayer.oniVKUpdate += AudioPlayer_oniVKUpdate;
-
+            AudioPlayer.oniVKUpdate -= AudioPlayer_oniVKUpdate;
 
             this.Unloaded -= PlaylistControl_Unloaded;
             this.Loaded -= PlaylistControl_Loaded;
@@ -321,8 +320,6 @@ namespace VK_UI3.Controls
         private void Button_Click(object sender, RoutedEventArgs e)
         {
 
-            iVKGetAudio = new PlayListVK(_PlayList, this.DispatcherQueue);
-
             if (isThisPlayList_Now_Play)
             {
                 if (AudioPlayer.mediaPlayer.PlaybackSession.PlaybackState != Windows.Media.Playback.MediaPlaybackState.Paused)
@@ -339,23 +336,9 @@ namespace VK_UI3.Controls
             }
             else
             {
+                iVKGetAudio = new PlayListVK(_PlayList, this.DispatcherQueue);
                 AnimationsChangeFontIcon.ChangeFontIconWithAnimation("\uE916");
-                EventHandler handler = null;
-                handler = (sender, e) =>
-                {
-                    this.DispatcherQueue.TryEnqueue(async () =>
-                    {
-
-
-                        iVKGetAudio.currentTrack = 0;
-                        AudioPlayer.PlayList(iVKGetAudio);
-
-                        //                                                 Navigate
-                        iVKGetAudio.onListUpdate.RemoveHandler(handler);
-                    });
-                };
-
-                iVKGetAudio.onListUpdate.AddHandler(handler);
+                iVKGetAudio.PlayThis();
             }
         }
 

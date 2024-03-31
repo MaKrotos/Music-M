@@ -29,6 +29,11 @@ namespace VK_UI3.Controls.Blocks
             this.DataContextChanged -= ListTracks_DataContextChanged;
             this.Loaded -= ListTracks_Loaded;
             this.Unloaded -= ListTracks_Unloaded;
+            if (connected)
+            {
+                sectionAudio.onListUpdate -= SectionAudio_onListUpdate;
+                connected = false;
+            }
         }
 
         private void ListTracks_Loaded(object sender, RoutedEventArgs e)
@@ -53,7 +58,7 @@ namespace VK_UI3.Controls.Blocks
       
 
         ScrollViewer scrollViewer { get; set; }
-
+        bool connected = false;
         private void ListTracks_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             try
@@ -63,7 +68,11 @@ namespace VK_UI3.Controls.Blocks
 
                 sectionAudio = new SectionAudio(block, this.DispatcherQueue);
                 sectionAudio.countTracks = block.Audios.Count;
-                sectionAudio.onListUpdate.AddHandler(SectionAudio_onListUpdate);
+                if (!connected)
+                {
+                    sectionAudio.onListUpdate += SectionAudio_onListUpdate;
+                    connected = true;
+                }
             }
             catch (Exception ex)
             {

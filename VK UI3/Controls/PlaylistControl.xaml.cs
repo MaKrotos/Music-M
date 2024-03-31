@@ -55,6 +55,7 @@ namespace VK_UI3.Controls
 
         private void PlaylistControl_Loaded(object sender, RoutedEventArgs e)
         {
+            FadeOutAnimationGrid.Completed += FadeOutAnimationGrid_Completed;
             AudioPlayer.oniVKUpdate += AudioPlayer_oniVKUpdate;
         }
 
@@ -64,7 +65,7 @@ namespace VK_UI3.Controls
 
             this.Unloaded -= PlaylistControl_Unloaded;
             this.Loaded -= PlaylistControl_Loaded;
-
+            FadeOutAnimationGrid.Completed -= FadeOutAnimationGrid_Completed;
             DataContextChanged -= RecommsPlaylist_DataContextChanged;
 
         }
@@ -208,7 +209,7 @@ namespace VK_UI3.Controls
         {
             if (DataContext == null) return;
             _PlayList = (DataContext as AudioPlaylist);
-            FadeOutAnimationGrid.Completed += FadeOutAnimationGrid_Completed;
+           
             update();
         }
 
@@ -231,8 +232,6 @@ namespace VK_UI3.Controls
                
             titleAnim.ChangeTextWithAnimation(_PlayList.Title);
          
-
-
       
 
             if (_PlayList.Cover != null)
@@ -332,10 +331,9 @@ namespace VK_UI3.Controls
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-          
-            iVKGetAudio = new PlayListVK(_PlayList, this.DispatcherQueue);
 
-            if (isThisPlayList_Now_Play) {
+            if (isThisPlayList_Now_Play)
+            {
                 if (AudioPlayer.mediaPlayer.PlaybackSession.PlaybackState != Windows.Media.Playback.MediaPlaybackState.Paused)
                 {
                     AudioPlayer.mediaPlayer.Pause();
@@ -346,29 +344,16 @@ namespace VK_UI3.Controls
                     AudioPlayer.mediaPlayer.Play();
                     updatePlayState(true, false);
                 }
-            
+
             }
             else
             {
+                iVKGetAudio = new PlayListVK(_PlayList, this.DispatcherQueue);
                 AnimationsChangeFontIcon.ChangeFontIconWithAnimation("\uE916");
-                EventHandler handler = null;
-                handler = (sender, e) =>
-                {
-                    this.DispatcherQueue.TryEnqueue(async () =>
-                    {
-
-
-                        iVKGetAudio.currentTrack = 0;
-                        AudioPlayer.PlayList(iVKGetAudio);
-
-                        //                                                 Navigate
-                        iVKGetAudio.onListUpdate.RemoveHandler(handler);
-                    });
-                };
-           
-                iVKGetAudio.onListUpdate.AddHandler(handler);
+                iVKGetAudio.PlayThis();
             }
         }
+
 
         private void editAlbum_Click(object sender, RoutedEventArgs e)
         {

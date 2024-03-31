@@ -202,9 +202,9 @@ namespace VK_UI3.Views
                             handlerContainer.Handler = null; // Освободить ссылку на обработчик
                             frameSection.Navigate(typeof(PlayListPage), waitParameters.iVKGetAudio, new DrillInNavigationTransitionInfo());
                         });
-                        waitParameters.iVKGetAudio.onListUpdate.RemoveHandler(handlerContainer.Handler);
+                        waitParameters.iVKGetAudio.onListUpdate -= (handlerContainer.Handler);
                     };
-                waitParameters.iVKGetAudio.onListUpdate.AddHandler(handlerContainer.Handler);
+                waitParameters.iVKGetAudio.onListUpdate += (handlerContainer.Handler);
             }
         }
 
@@ -220,10 +220,10 @@ namespace VK_UI3.Views
                     handlerContainer.Handler = null; // Освободить ссылку на обработчик
                     frameSection.Navigate(typeof(PlayListPage), waitParameters.iVKGetAudio, new DrillInNavigationTransitionInfo());
                 });
-                waitParameters.iVKGetAudio.onListUpdate.RemoveHandler(handlerContainer.Handler);
+                waitParameters.iVKGetAudio.onListUpdate-=(handlerContainer.Handler);
             };
 
-            waitParameters.iVKGetAudio.onListUpdate.AddHandler(handlerContainer.Handler);
+            waitParameters.iVKGetAudio.onListUpdate+=(handlerContainer.Handler);
         }
 
         private async Task loadSection(string sectionID, bool showTitle = false)

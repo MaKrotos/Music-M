@@ -53,7 +53,7 @@
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
 
-                    <NavigationViewItem Content="Альбомы">
+                    <NavigationViewItem Content="Плейлисты">
                         <NavigationViewItem.Icon>
                             <FontIcon Glyph="&#xEB51;" />
                         </NavigationViewItem.Icon>

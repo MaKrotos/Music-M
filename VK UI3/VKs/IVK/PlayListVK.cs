@@ -32,9 +32,10 @@ namespace VK_UI3.VKs.IVK
 
         public PlayListVK(AudioPlaylist _playlist, DispatcherQueue dispatcher) : base(dispatcher)
         {
+            waitCreate = true;
             Task.Run(async () =>
             {
-
+               
                 try {
 
                     var p = await VK.vkService.GetPlaylistAsync(100, _playlist.Id, _playlist.AccessKey, _playlist.OwnerId);
@@ -145,10 +146,18 @@ namespace VK_UI3.VKs.IVK
                 }
                 catch 
                 (Exception e)
-                { }
+                {
 
 
-                NotifyOnListUpdate();
+
+                }
+                finally {
+                    waitCreate = true;
+                    NotifyOnListUpdate();
+                }
+
+
+          
             });
         }
 

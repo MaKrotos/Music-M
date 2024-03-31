@@ -537,7 +537,12 @@ namespace VK_UI3.Controllers
             else
             VK.sendStartEvent((long)_TrackDataThis.audio.Id, (long)_TrackDataThis.audio.OwnerId);
 
+            if (_TrackDataThis.audio.Url == null)
+            {
 
+                PlayNextTrack();
+                return;
+            }
             var mediaSource = Windows.Media.Core.MediaSource.CreateFromUri(new Uri(_TrackDataThis.audio.Url.ToString()));
             var mediaPlaybackItem = new Windows.Media.Playback.MediaPlaybackItem(mediaSource);
 

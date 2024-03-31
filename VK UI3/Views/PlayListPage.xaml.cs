@@ -45,7 +45,7 @@ namespace VK_UI3.Views
             if (vkGetAudio != null)
             {
                 vkGetAudio.onPhotoUpdated.RemoveHandler(VkGetAudio_onPhotoUpdated);
-                vkGetAudio.onListUpdate.RemoveHandler(VkGetAudio_onListUpdate);
+                vkGetAudio.onListUpdate-=(VkGetAudio_onListUpdate);
                 vkGetAudio.onNameUpdated.RemoveHandler(VkGetAudio_onNameUpdated);
                 vkGetAudio.onCountUpDated.RemoveHandler(VkGetAudio_onCountUpDated);
                 vkGetAudio.onInfoUpdated.RemoveHandler(VkGetAudio_onInfoUpdated);
@@ -62,14 +62,14 @@ namespace VK_UI3.Views
                 vkGetAudio = new UserAudio(AccountsDB.activeAccount.id, this.DispatcherQueue);
             }
             vkGetAudio.onPhotoUpdated.AddHandler(VkGetAudio_onPhotoUpdated);
-            vkGetAudio.onListUpdate.AddHandler(VkGetAudio_onListUpdate);
+            vkGetAudio.onListUpdate += (VkGetAudio_onListUpdate);
             vkGetAudio.onNameUpdated.AddHandler(VkGetAudio_onNameUpdated);
             vkGetAudio.onCountUpDated.AddHandler(VkGetAudio_onCountUpDated);
             vkGetAudio.onInfoUpdated.AddHandler(VkGetAudio_onInfoUpdated);
 
             updateUI(true);
-             animationsChangeText = new(textAdd, this.DispatcherQueue);
-             animationsChangeicon = new(iconAdd);
+            animationsChangeText = new(textAdd, this.DispatcherQueue);
+            animationsChangeicon = new(iconAdd);
 
             base.OnNavigatedTo(e);
         }
@@ -81,7 +81,7 @@ namespace VK_UI3.Views
             if (vkGetAudio != null)
             {
                 vkGetAudio.onPhotoUpdated.RemoveHandler(VkGetAudio_onPhotoUpdated);
-                vkGetAudio.onListUpdate.RemoveHandler(VkGetAudio_onListUpdate);
+                vkGetAudio.onListUpdate -=(VkGetAudio_onListUpdate);
                 vkGetAudio.onNameUpdated.RemoveHandler(VkGetAudio_onNameUpdated);
                 vkGetAudio.onCountUpDated.RemoveHandler(VkGetAudio_onCountUpDated);
                 vkGetAudio.onInfoUpdated.RemoveHandler(VkGetAudio_onInfoUpdated);

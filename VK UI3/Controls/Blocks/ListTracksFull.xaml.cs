@@ -31,9 +31,15 @@ namespace VK_UI3.Controls.Blocks
         private void ListTracksFull_Unloaded(object sender, RoutedEventArgs e)
         {
             this.DataContextChanged -= ListTracks_DataContextChanged;
-
+            try
+            {
+                sectionAudio.onListUpdate -= SectionAudio_onListUpdate;
+            }
+            catch { }
             this.Unloaded -= ListTracksFull_Unloaded;
+            connected = false;
         }
+        bool connected = false;
 
         private void ListTracks_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
@@ -46,7 +52,11 @@ namespace VK_UI3.Controls.Blocks
                 sectionAudio.countTracks = block.Audios.Count;
                 OnPropertyChanged(nameof(sectionAudio));
 
-                sectionAudio.onListUpdate.AddHandler(SectionAudio_onListUpdate);
+                if (!connected)
+                {
+                    connected = true;
+                    sectionAudio.onListUpdate += SectionAudio_onListUpdate;
+                }
             }
             catch (Exception ex)
             {

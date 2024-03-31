@@ -15,6 +15,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using VK_UI3.Controllers;
 using VK_UI3.Helpers;
 using VK_UI3.VKs;
 using VkNet.Abstractions;
@@ -32,6 +33,7 @@ namespace VK_UI3.VKs.IVK
         public IVkApi api;
         public string id;
         bool shuffle = false;
+        internal  bool waitCreate = false;
 
 
 
@@ -55,7 +57,7 @@ namespace VK_UI3.VKs.IVK
 
         public DispatcherQueue DispatcherQueue;
 
-        public WeakEventManager onListUpdate = new WeakEventManager();
+        public EventHandler onListUpdate;
 
       
 
@@ -102,7 +104,33 @@ namespace VK_UI3.VKs.IVK
             }
         }
 
+        public void PlayThis() 
+        {
+           
+            if (listAudio.Count == 0)
+            {
+                EventHandler handler = null;
+                handler = (sender, e) =>
+                {
+                    this.DispatcherQueue.TryEnqueue(async () =>
+                    {
 
+
+                        this.currentTrack = 0;
+                        AudioPlayer.PlayList(this);
+                        this.onListUpdate -= (handler);
+                    });
+                };
+                this.onListUpdate += (handler);
+                if (!waitCreate)
+                    GetTracks();
+            }
+            else 
+            {
+                this.currentTrack = 0;
+                AudioPlayer.PlayList(this);
+            }
+        }
 
         // Добавляем делегат и событие
         public delegate void ChangedPlayAudio(object sender, EventArgs e);
@@ -219,7 +247,7 @@ namespace VK_UI3.VKs.IVK
 
         public void NotifyOnListUpdate()
         {
-            onListUpdate?.RaiseEvent(this, EventArgs.Empty);
+            onListUpdate?.Invoke(this, EventArgs.Empty);
         }
         public void updateNumbers() {
             for (int i = 0; i < listAudio.Count; i++)

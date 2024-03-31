@@ -551,7 +551,7 @@ namespace VK_UI3.Views
                         OpenPlayListLists(openedPlayList: OpenedPlayList.UserPlayList);
                         break;
 
-                    case "альбомы":
+                    case "плейлисты":
                         OpenPlayListLists(openedPlayList: OpenedPlayList.UserAlbums);
                         break;
 
