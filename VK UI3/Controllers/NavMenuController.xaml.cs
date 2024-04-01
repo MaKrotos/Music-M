@@ -23,7 +23,7 @@ namespace VK_UI3.Controllers
     public class NavSettings
     {
         public string MyMusicItem { get; set; }
-        public Symbol Icon { get; set; }
+        public string Icon { get; set; }
 
        public Section section { get; set; }
 

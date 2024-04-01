@@ -115,12 +115,11 @@ namespace VK_UI3
        
             m_window.Activate();
 
-
+#if !DEBUG
             AppCenter.Start("4f42c41a-220a-497f-9b87-f2d601a6d674",
                   typeof(Analytics), typeof(Crashes));
+#endif
 
-            // Set the window procedure
-            // Check if the OS is 64-bit
 
 
 

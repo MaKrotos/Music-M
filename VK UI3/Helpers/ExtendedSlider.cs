@@ -1,12 +1,7 @@
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
-using Microsoft.UI.Xaml.Data;
-using System;
-using System.Diagnostics;
 
 namespace VK_UI3.Helpers
 {

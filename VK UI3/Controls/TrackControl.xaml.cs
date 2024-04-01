@@ -1,44 +1,25 @@
-﻿using Microsoft.AppCenter.Crashes;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
-using MusicX.Core.Models;
-using MusicX.Core.Services;
-using MusicX.Shared.Player;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Configuration;
-using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using VK_UI3.Controllers;
 using VK_UI3.Converters;
 using VK_UI3.DB;
 using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
-using VK_UI3.Services;
 using VK_UI3.Views;
 using VK_UI3.Views.ModalsPages;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
-using VkNet.Model;
 using VkNet.Model.Attachments;
-using VkNet.Utils;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Media.Playlists;
-using Windows.Storage;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
+using Windows.Foundation;
 using static VK_UI3.Views.SectionView;
-using Application = Microsoft.UI.Xaml.Application;
-using Image = Microsoft.UI.Xaml.Controls.Image;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -225,6 +206,12 @@ namespace VK_UI3.Controls
                 {
                     AppCenterHelper.SendCrash(ex);
                 }
+
+                if (dataTrack != null && !addedHandler)
+                {
+                    dataTrack.iVKGetAudio.AudioPlayedChangeEvent += UserAudio_AudioPlayedChangeEvent;
+                    addedHandler = true;
+                }
             }
         }
 
@@ -298,11 +285,7 @@ namespace VK_UI3.Controls
         AnimationsChangeImage changeImage = null;
         private void TrackControl_Loaded(object sender, RoutedEventArgs e)
         {
-            if (dataTrack != null && !addedHandler)
-            {
-                dataTrack.iVKGetAudio.AudioPlayedChangeEvent += UserAudio_AudioPlayedChangeEvent;
-                addedHandler = true;
-            }
+         
         }
         public void RecommendedAudio_Click(object sender, RoutedEventArgs e)
         {
@@ -592,11 +575,26 @@ namespace VK_UI3.Controls
             dialog.XamlRoot = this.XamlRoot;
             var a = new UserPlayList(dataTrack.audio);
             dialog.Content = a;
-            a.selectedPlayList.AddHandler((s, e) =>
+
+            EventHandler handler = null;
+            handler = (s, e) =>
             {
                 dialog.Hide();
+               
+            //    a.selectedPlayList -= handler; // Отписка от события
+            };
+
+            a.selectedPlayList += handler;
+
+            TypedEventHandler<ContentDialog, ContentDialogClosedEventArgs> closedHandler = null;
+            closedHandler = (s, e) =>
+            {
+                a.selectedPlayList -= handler;
+                dialog.Closed -= closedHandler;
                 dialog = null;
-            });
+            };
+
+            dialog.Closed += closedHandler;
 
             dialog.ShowAsync();
 

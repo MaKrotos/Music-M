@@ -21,12 +21,9 @@ using Windows.UI.ViewManagement;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Xaml.Media;
 using vkPosterBot.DB;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Collections.Generic;
-using Windows.Graphics.Display;
 using Microsoft.UI.Input;
 using Windows.Foundation;
-using Microsoft.AppCenter.Utils;
 using VK_UI3.DownloadTrack;
 
 

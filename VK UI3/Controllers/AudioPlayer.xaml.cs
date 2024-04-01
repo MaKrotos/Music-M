@@ -528,7 +528,7 @@ namespace VK_UI3.Controllers
         private async static Task PlayTrack(long? v = null)
         {
             if (v != null) iVKGetAudio.currentTrack = (long)v;
-            iVKGetAudio.ChangePlayAudio();
+      
 
             if (iVKGetAudio is PlayListVK)
             {
@@ -579,8 +579,8 @@ namespace VK_UI3.Controllers
             mediaPlayer.Source = mediaPlaybackItem;
             mediaPlayer.Play();
 
+            iVKGetAudio.ChangePlayAudio();
 
-         
         }
 
 

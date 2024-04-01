@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using VK_UI3.Controllers;
 using VK_UI3.DB;
@@ -17,10 +16,7 @@ using VK_UI3.Views.ModalsPages;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
-using Windows.Storage;
 using Windows.Storage.Pickers;
-using Windows.UI.Core;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 
 
 namespace VK_UI3.Views

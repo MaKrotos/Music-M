@@ -31,7 +31,14 @@ public class WeakEventManager
             {
                 if (_eventHandlers[i].TryGetTarget(out var handler))
                 {
-                    handler.Invoke(sender, e);
+                    try
+                    {
+                        handler.Invoke(sender, e);
+                    }
+                    catch (Exception)
+                    {
+                        // Обработка исключения
+                    }
                 }
                 else
                 {

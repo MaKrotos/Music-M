@@ -1,34 +1,17 @@
-using Microsoft.AppCenter.Crashes;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
-using MusicX.Core.Models;
-using MusicX.Core.Models.Genius;
-using MusicX.Core.Services;
-using NAudio.Gui;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using VK_UI3.Controllers;
 using VK_UI3.DB;
 using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
-using VK_UI3.Services;
 using VK_UI3.Views;
 using VK_UI3.Views.ModalsPages;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
-using VkNet.AudioBypassService.Models.Auth;
-using VkNet.AudioBypassService.Models.Ecosystem;
 using VkNet.Model.Attachments;
-using Windows.Media.Playlists;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
-using Image = Microsoft.UI.Xaml.Controls.Image;
-using Playlist = MusicX.Core.Models.Playlist;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.

@@ -75,6 +75,7 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Certificate.pfx" />
     <Content Include="Images\BadgeLogo.scale-100.png" />
     <Content Include="Images\BadgeLogo.scale-125.png" />
     <Content Include="Images\BadgeLogo.scale-150.png" />
@@ -136,7 +137,6 @@
     <ProjectReference Include="..\VK UI3\VK UI3.csproj">
       <SkipGetTargetFrameworkProperties>True</SkipGetTargetFrameworkProperties>
       <PublishProfile>Properties\PublishProfiles\win10-$(Platform).pubxml</PublishProfile>
-      <TrustLevel>Partial</TrustLevel>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

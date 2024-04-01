@@ -167,7 +167,7 @@ namespace VK_UI3.Views
                         catalogs.Catalog.Sections.Insert(catalogs.Catalog.Sections.Count - 1, section);
                     }
 
-                  
+
 
                     var sectionsService = StaticService.Container.GetRequiredService<ICustomSectionsService>();
                     catalogs.Catalog.Sections.AddRange(await sectionsService.GetSectionsAsync().ToArrayAsync());
@@ -193,13 +193,13 @@ namespace VK_UI3.Views
                     foreach (var setting in navSettings)
                     {
                         token.ThrowIfCancellationRequested();
-                        this.DispatcherQueue.TryEnqueue(async() =>
+                        this.DispatcherQueue.TryEnqueue(async () =>
                         {
                             var navViewItem = new NavMenuController
                             {
                                 navSettings = setting,
                                 Content = setting.MyMusicItem,
-                                Icon = new SymbolIcon(setting.Icon)
+                                Icon = new FontIcon { Glyph = setting.Icon }
                             };
                             NavWiv.MenuItems.Insert(index, navViewItem);
                             navMenuControllers.Add(navViewItem);
@@ -208,10 +208,15 @@ namespace VK_UI3.Views
                     }
 
 
+
                 }
                 catch (OperationCanceledException)
                 {
                     // Задача была отменена
+                }
+                catch (Exception e)
+                {
+                
                 }
 
 
@@ -227,59 +232,67 @@ namespace VK_UI3.Views
             navMenuControllers.Clear();
         }
 
-        private List<Symbol> GetIcons()
+        private List<string> GetIcons()
         {
-            return new List<Symbol>
-    {
-        Symbol.MusicInfo,
-        Symbol.Audio,
-        Symbol.Play,
-        Symbol.Pause,
-        Symbol.Stop,
-        Symbol.Forward,
-        Symbol.Back,
-        Symbol.Previous,
-        Symbol.Next,
-        Symbol.Volume,
-        Symbol.Mute,
-        Symbol.More,
-        Symbol.Pictures,
-        Symbol.Map,
-        Symbol.CalendarDay,
-        Symbol.Bookmarks,
+            try
+            {
+                return new List<string>
+        {
+            "\uE142", // MusicInfo
+            "\uE189", // Audio
+            "\uE102", // Play
+            "\uE103", // Pause
+            "\uE101", // Stop
+            "\uE100", // Forward
+            "\uE106", // Back
+            "\uE108", // Previous
+            "\uE107", // Next
+            "\uE767", // Volume
+            "\uE74F", // Mute
+            "\uE10C", // More
+            "\uE158", // Pictures
+            "\uE707", // Map
+            "\uE787", // CalendarDay
+            "\uE141", // Bookmarks
         };
             }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
 
-        private NavSettings CreateNavSettings(Section section, List<Symbol> icons)
+
+        private NavSettings CreateNavSettings(Section section, List<string> icons)
         {
-            Symbol icon;
+            string icon;
 
             switch (section.Title.ToLower())
             {
                 case "главная":
-                    icon = Symbol.Home;
+                    icon = "\uE10F"; // Home
                     break;
                 case "моя музыка":
-                    icon = Symbol.Audio;
+                    icon = "\uE189"; // Audio
                     section.Title = "Музыка";
                     break;
                 case "обзор":
-                    icon = Symbol.PreviewLink;
+                    icon = "\uECA5"; // PreviewLink
                     break;
                 case "подкасты":
-                    icon = Symbol.Microphone;
+                    icon = "\uE1D6"; // Microphone
                     break;
                 case "подписки":
-                    icon = Symbol.Favorite;
+                    icon = "\uE734"; // Favorite
                     break;
                 case "каталоги":
-                    icon = Symbol.Library;
+                    icon = "\uE1D3"; // Library
                     break;
                 case "поиск":
-                    icon = Symbol.Find;
+                    icon = "\uE11A"; // Find
                     break;
                 case "книги и шоу":
-                    icon = Symbol.Bookmarks;
+                    icon = "\uE82D"; // Bookmarks
                     break;
                 default:
                     icon = icons[0];
@@ -289,7 +302,6 @@ namespace VK_UI3.Views
 
             return new NavSettings() { Icon = icon, MyMusicItem = section.Title, section = section };
         }
-
 
 
 

@@ -122,6 +122,7 @@ namespace VK_UI3.Views
 
         private void UserPlayList_Loading(FrameworkElement sender, object args)
         {
+            if (parameters == null) parameters = new UserPlayListParameters();
             if (parameters.LoadedAll)
             {
                 LoadingIndicator.Visibility = Visibility.Collapsed;
@@ -192,10 +193,10 @@ namespace VK_UI3.Views
         }
 
 
-      
-       
 
-         internal WeakEventManager selectedPlayList = new WeakEventManager();
+
+
+        internal EventHandler selectedPlayList;
         private async Task loadMoreAsync()
         {
             if (parameters.UserId == null)
@@ -270,7 +271,7 @@ namespace VK_UI3.Views
             VK.api.Audio.AddToPlaylistAsync((long)audioPlaylists[selectedIndex].OwnerId, playlistId, new List<string> { $"{audio.OwnerId}_{audio.Id}" });
 
             // ֲûחמג סמבûעטÿ
-            selectedPlayList?.RaiseEvent(playlistId, EventArgs.Empty);
+            selectedPlayList?.Invoke(playlistId, EventArgs.Empty);
         }
 
         private void gridV_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
@@ -285,7 +286,7 @@ namespace VK_UI3.Views
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            selectedPlayList?.RaiseEvent(null, EventArgs.Empty);
+            selectedPlayList?.Invoke(null, EventArgs.Empty);
         }
     }
 }
