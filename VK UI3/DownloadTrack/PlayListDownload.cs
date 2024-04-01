@@ -165,7 +165,7 @@ namespace VK_UI3.DownloadTrack
                         var startInfo = new ProcessStartInfo
                         {
                             FileName = ffmpegPath, // Путь к исполняемому файлу ffmpeg
-                            Arguments = $"-n -i \"{input}\" \"{output}\"",
+                            Arguments = $"-http_persistent 0 -n -i \"{input}\" \"{output}\"",
                             RedirectStandardOutput = false,
                             RedirectStandardError = false,
                             UseShellExecute = false,

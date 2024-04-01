@@ -435,28 +435,38 @@ namespace VK_UI3.Views
 
         private async void pickFolder()
         {
-            FolderPicker folderPicker = new();
-            folderPicker.FileTypeFilter.Add("*");
-
-
-            WinRT.Interop.InitializeWithWindow.Initialize(folderPicker, MainWindow.hvn);
-
-            Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
-            if (folder != null)
+            try
             {
-                // Директория выбрана, можно продолжить работу с folder
-                 PathTable.AddPath(folder.Path);
-           
-               
-                _ = Task.Run(
-                               async () =>
-                               {
-                                   new PlayListDownload(vkGetAudio, folder.Path, this.DispatcherQueue);
-                               });
-            }
-            else
+                FolderPicker folderPicker = new();
+                folderPicker.FileTypeFilter.Add("*");
+
+
+                WinRT.Interop.InitializeWithWindow.Initialize(folderPicker, MainWindow.hvn);
+
+                Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+                if (folder != null)
+                {
+                    // Директория выбрана, можно продолжить работу с folder
+                    PathTable.AddPath(folder.Path);
+
+
+                    _ = Task.Run(
+                                   async () =>
+                                   {
+                                       new PlayListDownload(vkGetAudio, folder.Path, this.DispatcherQueue);
+                                   });
+                }
+                else
+                {
+                    // Операция была отменена пользователем
+                }
+            }catch (Exception ex)
             {
-                // Операция была отменена пользователем
+
+
+
+
+
             }
         }
     }

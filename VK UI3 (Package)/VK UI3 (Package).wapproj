@@ -136,7 +136,7 @@
     <ProjectReference Include="..\VK UI3\VK UI3.csproj">
       <SkipGetTargetFrameworkProperties>True</SkipGetTargetFrameworkProperties>
       <PublishProfile>Properties\PublishProfiles\win10-$(Platform).pubxml</PublishProfile>
-      <TrustLevel>Partial</TrustLevel>
+      <TrustLevel>Full</TrustLevel>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
