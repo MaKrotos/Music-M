@@ -120,7 +120,7 @@ namespace VK_UI3.DownloadTrack
 
                     string ffmpegPath = new CheckFFmpeg().getPathFfmpeg();
 
-                    var i = 0;
+                 
                     while (iVKGetAudio.countTracks > downloaded)
                     {
                         pauseEvent.WaitOne();
@@ -129,25 +129,25 @@ namespace VK_UI3.DownloadTrack
                             break;
                         }
 
-                        while (i > iVKGetAudio.listAudioTrue.Count)
+                        while (downloaded >= iVKGetAudio.listAudioTrue.Count)
                         {
                             if (iVKGetAudio.itsAll) return;
                             if (iVKGetAudio.getLoadedTracks)
                             {
-                                i++;
+                           
                                 continue;
                             }
                                 iVKGetAudio.GetTracks();
                         }
 
 
-                        var a = iVKGetAudio.listAudioTrue[i].audio;
-
-
+                        var a = iVKGetAudio.listAudioTrue[downloaded].audio;
 
                         if (a.Url == null)
                         {
-                            i++;
+                            downloaded++;
+                            error = true;
+                            StatusUpdate();
                             continue;
                         }
                             string input = a.Url.ToString();
@@ -185,12 +185,10 @@ namespace VK_UI3.DownloadTrack
 
                         dispatcherQueue.TryEnqueue(async () =>
                         {
-                           
                                 OnTrackDownloaded?.Invoke(this, new TrackDownloadedEventArgs { Downloaded = downloaded, Total = (int)iVKGetAudio.countTracks });
-                     
                         });
 
-                        i++;
+                  
                     }
                     if (SettingsTable.GetSetting("downloadALL") == null)
                     {
