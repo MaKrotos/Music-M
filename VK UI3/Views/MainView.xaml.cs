@@ -46,27 +46,21 @@ namespace VK_UI3.Views
             frame = ContentFrame;
 
             //OpenMyPage(SectionType.MyListAudio);
-            ContentFrame.Navigated += ContentFrame_Navigated;
-            NavWiv.BackRequested += NavWiv_BackRequested;
+         
             this.Loaded += MainView_Loaded;
-            Accounts.CollectionChanged += Accounts_CollectionChanged;
-            onUpdateAccounts.AddHandler(MainView_onUpdateAccounts);
-
-            this.KeyDown += MainView_KeyDown;
-
-            this.Unloaded += MainView_Unloaded;
+         
         }
 
         private void MainView_Unloaded(object sender, RoutedEventArgs e)
         {
             ContentFrame.Navigated -= ContentFrame_Navigated;
             NavWiv.BackRequested -= NavWiv_BackRequested;
-            this.Loaded -= MainView_Loaded;
+
             Accounts.CollectionChanged -= Accounts_CollectionChanged;
             onUpdateAccounts.RemoveHandler(MainView_onUpdateAccounts);
 
             this.KeyDown -= MainView_KeyDown;
-
+            
             this.Unloaded -= MainView_Unloaded;
         }
 
@@ -86,6 +80,17 @@ namespace VK_UI3.Views
         private static DispatcherQueue dispatcherQueue = null;
         private void MainView_Loaded(object sender, RoutedEventArgs e)
         {
+            //OpenMyPage(SectionType.MyListAudio);
+            ContentFrame.Navigated += ContentFrame_Navigated;
+            NavWiv.BackRequested += NavWiv_BackRequested;
+           
+            Accounts.CollectionChanged += Accounts_CollectionChanged;
+            onUpdateAccounts.AddHandler(MainView_onUpdateAccounts);
+
+            this.KeyDown += MainView_KeyDown;
+
+            this.Unloaded += MainView_Unloaded;
+
             _ = CreateNavigation();
             dispatcherQueue = this.DispatcherQueue;
 
@@ -377,10 +382,8 @@ namespace VK_UI3.Views
             {
 
                 Accounts.Add(item);
-                if (item.Active)
-                {
+                if (item.id == AccountsDB.activeAccount.id)
                     AccountsList.SelectedIndex = i;
-                }
                 i++;
             }
             Accounts.Add(new Accounts { });
@@ -656,22 +659,43 @@ namespace VK_UI3.Views
             frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
         }
 
-        private void AccountsList_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
+        private async void AccountsList_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
         {
-            Task.Run(async () =>
-            {
-                var i = 0;
-                foreach (var item in Accounts)
-                {
-                    if (item.Token == null) continue;
-                    item.sortID = i++;
-                    item.Update();
+            var itemsToMove = new List<Accounts>(); // Create a list to store items for reordering
+            var i = 0;
 
-                    if (item.Active)
-                        AccountsList.SelectedIndex = i;
+            foreach (var item in Accounts)
+            {
+                if (item.Token == null && i != Accounts.Count()-1)
+                {
+                    // Mark items for reordering
+                    itemsToMove.Add(item);
+                    
                 }
-            });
+            }
+
+            foreach (var itemToMove in itemsToMove)
+            {
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    Accounts.Move(Accounts.IndexOf(itemToMove), Accounts.Count()-1);
+                });
+            }
+
+            foreach (var item in Accounts)
+            {
+                if (item.Token != null)
+                {
+                 
+                        item.sortID = i++;
+                        item.Update();
+
+                    
+                }
+            }
         }
+
+
 
         private void AccountsList_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
         {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI.Dispatching;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using VK_UI3.Views.Download;
 using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
 using vkPosterBot.DB;
@@ -17,6 +19,7 @@ namespace VK_UI3.DownloadTrack
     public class PlayListDownload
     {
         public static ObservableCollection<PlayListDownload> PlayListDownloads = new ObservableCollection<PlayListDownload>();
+        public static List<IVKGetAudio> PlayListDownloadsList = new List<IVKGetAudio>();
 
 
         CancellationTokenSource cts = new CancellationTokenSource();
@@ -27,21 +30,19 @@ namespace VK_UI3.DownloadTrack
         private bool pause;
         public IVKGetAudio iVKGetAudio;
 
-        public WeakEventManager OnTrackDownloaded = new WeakEventManager();
-        public void TrackDownloaded() { OnTrackDownloaded?.RaiseEvent(this, EventArgs.Empty); }
+        public EventHandler OnTrackDownloaded;
+        public void TrackDownloaded() { OnTrackDownloaded?.Invoke(this, EventArgs.Empty); }
 
 
 
-        public WeakEventManager onStatusUpdate = new WeakEventManager();
-        public void StatusUpdate() { onStatusUpdate?.RaiseEvent(this, EventArgs.Empty); }
+        public EventHandler onStatusUpdate;
+        public void StatusUpdate() { onStatusUpdate?.Invoke(this, EventArgs.Empty); }
 
 
-        public static WeakEventManager OnStartDownload = new WeakEventManager();
-        public void StartDownload() { OnStartDownload?.RaiseEvent(this, EventArgs.Empty); }
 
 
-        public static WeakEventManager OnEndAllDownload = new WeakEventManager();
-        public void EndAllDownload() { OnEndAllDownload?.RaiseEvent(this, EventArgs.Empty); }
+        public static EventHandler OnEndAllDownload;
+        public void EndAllDownload() { OnEndAllDownload?.Invoke(this, EventArgs.Empty); }
 
         public string location;
 
@@ -63,7 +64,9 @@ namespace VK_UI3.DownloadTrack
             this.iVKGetAudio = iVKGetAudio;
             this.dispatcherQueue = dispatcherQueue;
             if (iVKGetAudio is SectionAudio) return;
-            PlayListDownloads.Add(this);
+            if (PlayListDownloadsList.Contains(iVKGetAudio)) return;
+          
+
 
             foreach (char c in Path.GetInvalidPathChars())
             {
@@ -82,14 +85,32 @@ namespace VK_UI3.DownloadTrack
            
             this.location = path + "\\" + name;
 
-            if (SettingsTable.GetSetting("downloadALL") == null && PlayListDownloads.IndexOf(this) != 0) Pause(); 
-            PlayListDownloadAsync();
+        
+
+            if (!new CheckFFmpeg().isExist())
+            {
+                new DownloadFileWithProgress();
+                this.Pause();
+            }else
+            {
+                MainWindow.mainWindow.MainWindow_showDownload();
+            }
+
+            dispatcherQueue.TryEnqueue(() =>
+            {
+                PlayListDownloads.Add(this);
+
+                PlayListDownloadsList.Add(iVKGetAudio);
+                if (SettingsTable.GetSetting("downloadALL") == null && PlayListDownloads.IndexOf(this) != 0)
+                    Pause();
+                PlayListDownloadAsync();
+            });
         }
 
         public async Task PlayListDownloadAsync()
         {
-            if (PlayListDownloads.Count() == 1)
-                StartDownload();
+            
+              
             _ = Task.Run(() =>
             {
                 try
@@ -97,7 +118,7 @@ namespace VK_UI3.DownloadTrack
                     string appPath = AppDomain.CurrentDomain.BaseDirectory;
 
 
-                    string ffmpegPath = Path.Combine(appPath, "DownloadTrack", "ffmpeg.exe");
+                    string ffmpegPath = new CheckFFmpeg().getPathFfmpeg();
 
                     var i = 0;
                     while (iVKGetAudio.countTracks > downloaded)
@@ -164,7 +185,9 @@ namespace VK_UI3.DownloadTrack
 
                         dispatcherQueue.TryEnqueue(async () =>
                         {
-                            OnTrackDownloaded.RaiseEvent(this, new TrackDownloadedEventArgs { Downloaded = downloaded, Total = (int)iVKGetAudio.countTracks });
+                           
+                                OnTrackDownloaded?.Invoke(this, new TrackDownloadedEventArgs { Downloaded = downloaded, Total = (int)iVKGetAudio.countTracks });
+                     
                         });
 
                         i++;
@@ -182,6 +205,7 @@ namespace VK_UI3.DownloadTrack
                     dispatcherQueue.TryEnqueue(async () =>
                     {
                         PlayListDownloads.Remove(this);
+                        PlayListDownloadsList.Remove(iVKGetAudio);
                         if (PlayListDownloads.Count() == 0) EndAllDownload();
                     });
 
@@ -190,7 +214,10 @@ namespace VK_UI3.DownloadTrack
                 {
 
                     this.error = true;
-                    StatusUpdate();
+                    dispatcherQueue.TryEnqueue(async () =>
+                    {
+                        StatusUpdate();
+                    });
                 }
             }, cts.Token);
         }
@@ -201,8 +228,8 @@ namespace VK_UI3.DownloadTrack
             {
                 item.Pause();
             }
-
-            PlayListDownloads.FirstOrDefault()?.Resume();
+            if (PlayListDownloads.Count != 0)
+                PlayListDownloads[0].Resume();
         }
 
         public static void ResumeAll()
@@ -253,25 +280,42 @@ namespace VK_UI3.DownloadTrack
         { 
             pauseEvent.Reset();
             pause = true;
-            StatusUpdate();
+
+            dispatcherQueue.TryEnqueue(async () =>
+            {
+                StatusUpdate();
+            });
         }
 
         public void Resume()
         {
+            if (MainWindow.downloadFileWithProgress != null) return;
             pauseEvent.Set();
             pause = false;
-            StatusUpdate();
+
+            dispatcherQueue.TryEnqueue(async () =>
+            {
+                StatusUpdate();
+            });
+            
         }
 
         public void Cancel() {
             if (error)
             {
                 PlayListDownloads.Remove(this);
+                PlayListDownloadsList.Remove(iVKGetAudio);
                 return;
             }
-            Resume();
+         
             cts.Cancel();
-            
+            pause = true;
+            pauseEvent.Set();
+
+            dispatcherQueue.TryEnqueue(async () =>
+            {
+                StatusUpdate();
+            });
         }
 
 

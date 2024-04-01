@@ -75,7 +75,7 @@ namespace VK_UI3.Controls
 
 
                 AddRemove.Visibility = Visibility.Visible;
-                AddRemove.Text = isOwner ? "Удалить" : "Добавть";
+                AddRemove.Text = isOwner ? "Удалить" : "Добавить";
                 AddRemove.Icon = new SymbolIcon(isOwner ? Symbol.Delete : Symbol.Add);
 
                 if (dataTrack.iVKGetAudio is PlayListVK aplaylist && aplaylist.playlist.Permissions.Edit)

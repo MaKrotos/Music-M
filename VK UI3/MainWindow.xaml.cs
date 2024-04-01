@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using Microsoft.UI.Input;
 using Windows.Foundation;
 using VK_UI3.DownloadTrack;
+using VK_UI3.Views.Download;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -54,8 +55,8 @@ namespace VK_UI3
             this.SetTitleBar(AppTitleBar);
             AppTitleBar.Loaded += AppTitleBar_Loaded;
             AppTitleBar.SizeChanged += AppTitleBar_SizeChanged;
-            PlayListDownload.OnStartDownload.AddHandler(StartDownloadEvent);
-            PlayListDownload.OnEndAllDownload.AddHandler(OnEndAllDownload_Event); ;
+  
+            PlayListDownload.OnEndAllDownload +=(OnEndAllDownload_Event); ;
 
 
             AppWindowTitleBar m_TitleBar = m_AppWindow.TitleBar;
@@ -146,7 +147,7 @@ namespace VK_UI3
                     if (!addClosed)
                     {
                         addClosed = true;
-                        PlayListDownload.OnEndAllDownload.AddHandler(close);
+                        PlayListDownload.OnEndAllDownload += (close);
 
                     }
                 }
@@ -162,13 +163,13 @@ namespace VK_UI3
         private void StartDownloadEvent(object sender, EventArgs e)
         {
             MainWindow_showDownload();
-            DownLoadBTN.Flyout.ShowAt(DownLoadBTN);
+         
         }
 
         private void OnEndAllDownload_Event(object sender, EventArgs e)
         {
-            MainWindow_hideDownload();
             DownLoadBTN.Flyout.Hide();
+            MainWindow_hideDownload();
         }
 
        
@@ -208,16 +209,17 @@ namespace VK_UI3
 
         public void MainWindow_showDownload()
         {
-            DownLoadBTNScaleHide.Pause();
-            DownLoadBTNScaleShow.Begin();
+            this.DispatcherQueue.TryEnqueue((() => { 
+                DownLoadBTNScaleHide.Pause();
+                DownLoadBTNScaleShow.Begin();
+                DownLoadBTN.Flyout.ShowAt(DownLoadBTN);
 
-
-            if (ExtendsContentIntoTitleBar == true)
-            {
-                // Update interactive regions if the size of the window changes.
-                SetRegionsForCustomTitleBar();
-            }
-
+                if (ExtendsContentIntoTitleBar == true)
+                {
+                    // Update interactive regions if the size of the window changes.
+                    SetRegionsForCustomTitleBar();
+                }
+            }));
         }
 
         public void MainWindow_hideDownload()
@@ -529,6 +531,47 @@ namespace VK_UI3
             ScaleStoryboard.Begin();
             onDownloadClicked?.RaiseEvent(this, EventArgs.Empty);
         }
+
+        internal async Task requstDownloadFFMpegAsync()
+        {
+            try
+            {
+
+                this.DispatcherQueue.TryEnqueue(async () =>
+                {
+                    var dialog = new ContentDialog
+                    {
+                        Title = "Необходимо загрузить расширение",
+                        Content = "Для загрузки треков необходимо скачать расширение (≈80 мб)",
+                        PrimaryButtonText = "Скачать",
+                        CloseButtonText = "Отмента"
+                    };
+                    dialog.Resources["ContentDialogMaxWidth"] = double.PositiveInfinity;
+                    dialog.XamlRoot = this.Content.XamlRoot;
+                    var result = await dialog.ShowAsync();
+
+                    if (result == ContentDialogResult.Primary)
+                    {
+
+                        if (downloadFileWithProgress != null)
+                            downloadFileWithProgress.DownloadFile();
+                        MainWindow_showDownload();
+                    }
+                    else
+                    {
+                        downloadFileWithProgress = null;
+
+
+                    }
+                });
+            
+            }catch (Exception e)
+            {
+            }
+
+        }
+
+        public static DownloadFileWithProgress downloadFileWithProgress = null;
     }
 
 }

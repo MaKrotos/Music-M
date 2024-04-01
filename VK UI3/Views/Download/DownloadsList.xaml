@@ -19,7 +19,7 @@
         <ListView.Shadow>
             <ThemeShadow />
         </ListView.Shadow>
-       
+
 
         <ListView.ItemTemplate>
         <DataTemplate>

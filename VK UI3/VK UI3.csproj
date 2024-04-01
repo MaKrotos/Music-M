@@ -47,6 +47,7 @@
 	  <None Remove="Fonts\VKSansDisplay-Regular.ttf" />
 	  <None Remove="Views\Controls\BlockButtonView.xaml" />
 	  <None Remove="Views\Download\DownloadController.xaml" />
+	  <None Remove="Views\Download\DownloadFFmpegController.xaml" />
 	  <None Remove="Views\Download\DOwnloadsList.xaml" />
 	  <None Remove="Views\ModalsPages\CreatePlayList.xaml" />
 	  <None Remove="Views\ModalsPages\DownLoadFFMpeg.xaml" />
@@ -159,6 +160,10 @@
     <None Update="DownloadTrack\ffmpeg.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\Download\DownloadFFmpegController.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\ModalsPages\DownLoadFFMpeg.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

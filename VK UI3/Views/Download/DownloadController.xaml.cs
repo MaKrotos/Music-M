@@ -30,8 +30,20 @@ namespace VK_UI3.Views.Download
 
             this.DataContextChanged += DownloadController_DataContextChanged;
             this.Loaded += DownloadController_Loaded;
+            this.Unloaded += DownloadController_Unloaded;
            
         }
+
+        private void DownloadController_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (playListDownload != null)
+            {
+                playListDownload.OnTrackDownloaded -= (OnTrackDownloaded_Event);
+                playListDownload.onStatusUpdate -= (OnTrackDownloaded_Event);
+
+            }
+        }
+
         Helpers.Animations.AnimationsChangeFontIcon animationsChangeFontIcon = null;
 
         private void DownloadController_Loaded(object sender, RoutedEventArgs e)
@@ -46,8 +58,8 @@ namespace VK_UI3.Views.Download
             if (DataContext == null) return;
             if (playListDownload != null)
             {
-                playListDownload.OnTrackDownloaded.RemoveHandler(OnTrackDownloaded_Event);
-                playListDownload.onStatusUpdate.RemoveHandler(OnTrackDownloaded_Event);
+                playListDownload.OnTrackDownloaded -=(OnTrackDownloaded_Event);
+                playListDownload.onStatusUpdate-=(OnTrackDownloaded_Event);
             }
             playListDownload = (DataContext as PlayListDownload);
             DownloadTitle.Text = playListDownload.iVKGetAudio.name;
@@ -58,8 +70,8 @@ namespace VK_UI3.Views.Download
             }
 
 
-            playListDownload.OnTrackDownloaded.AddHandler(OnTrackDownloaded_Event);
-            playListDownload.onStatusUpdate.AddHandler(OnTrackDownloaded_Event);
+            playListDownload.OnTrackDownloaded +=(OnTrackDownloaded_Event);
+            playListDownload.onStatusUpdate +=(OnTrackDownloaded_Event);
      
             string original = playListDownload.path;
             if (original.Length > 20)

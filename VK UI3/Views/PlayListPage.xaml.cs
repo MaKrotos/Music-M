@@ -386,12 +386,8 @@ namespace VK_UI3.Views
             path = Path.Combine(path, "VKMMKZ");
             path = Path.Combine(path, "FFMPeg.exe");
 
-            if (!File.Exists(path))
-            {
-                downloadFFMPeg();
-                return;
-            }
-                foreach (var item in menuFlyoutItem)
+
+            foreach (var item in menuFlyoutItem)
             {
                 this.DispatcherQueue.TryEnqueue(async () =>
                 {
@@ -416,7 +412,12 @@ namespace VK_UI3.Views
 
                 newItem.Click += (s, e) =>
                 {
-                    PlayListDownload playListDownload = new PlayListDownload(vkGetAudio, item.path, this.DispatcherQueue);
+
+                    _ = Task.Run(
+                                   async () =>
+                                   {
+                                       PlayListDownload playListDownload = new PlayListDownload(vkGetAudio, item.path, this.DispatcherQueue);
+                                   });
                 };
 
                 menuFlyoutItem.Add(newItem);
@@ -429,45 +430,7 @@ namespace VK_UI3.Views
 
         }
 
-        private async void downloadFFMPeg()
-        {
-           //var link = getLinnkFFMPEG();
-           /*
-            
-
-            var dialog = new ContentDialog
-            {
-                Title = "Загрузка еще не завершена",
-                Content = "Вы уверены, что хотите закрыть приложение?",
-                PrimaryButtonText = "Да",
-            };
-            if (link != null)
-            {
-                dialog.Title = "❗❗❗";
-                dialog.Content = "Для загрузки треков необходимо скачать расширение (~80 Мб)";
-                dialog.PrimaryButtonText = "Скачать";
-            }else
-            {
-                dialog.Title = "❗❗❗";
-                dialog.Content = "Увы, для вашей разрядности ОС, загрузка не реализована :c";
-                dialog.PrimaryButtonText = "Скачать";
-            }
-            dialog.CloseButtonText = "Закрыть";
-
-
-
-
-            dialog.Resources["ContentDialogMaxWidth"] = double.PositiveInfinity;
-            dialog.XamlRoot = this.Content.XamlRoot;
-            var result = await dialog.ShowAsync();
-
-            if (result == ContentDialogResult.Primary)
-            {
-
-            }
-            */
-        }
-
+      
        
 
         private async void pickFolder()
@@ -483,8 +446,13 @@ namespace VK_UI3.Views
             {
                 // Директория выбрана, можно продолжить работу с folder
                  PathTable.AddPath(folder.Path);
-                 new PlayListDownload(vkGetAudio, folder.Path, this.DispatcherQueue);
-
+           
+               
+                _ = Task.Run(
+                               async () =>
+                               {
+                                   new PlayListDownload(vkGetAudio, folder.Path, this.DispatcherQueue);
+                               });
             }
             else
             {
