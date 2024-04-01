@@ -93,25 +93,26 @@ namespace VK_UI3.Views.Download
             {
                 try
                 {
-                    if (playListDownload.error)
-                    {
-                        DownloadProgressBar.ShowError = true;
-                    }
+                   
 
                     if (playListDownload.isPause())
                     {
                         {
                             animationsChangeFontIcon.ChangeFontIconWithAnimation("\uF5B0");
-                            DownloadProgressBar.ShowPaused = true;
+                            if (!playListDownload.error)
+                                DownloadProgressBar.ShowPaused = true;
                         }
                     }
                     else
                     {
                         animationsChangeFontIcon.ChangeFontIconWithAnimation("\uE769");
                     
-                        DownloadProgressBar.ShowPaused = false;
+                        if (!playListDownload.error)
+                            DownloadProgressBar.ShowPaused = false;
                     }
                     dx.Text = $"{playListDownload.downloaded} из {playListDownload.iVKGetAudio.countTracks}";
+
+                
 
 
                     double totalTracks = (double)playListDownload.iVKGetAudio.countTracks;
@@ -119,6 +120,12 @@ namespace VK_UI3.Views.Download
                     double percentageDownloaded = (downloadedTracks / totalTracks) * 100;
 
                     DownloadProgressBar.Value = Math.Round(percentageDownloaded);
+
+                    if (playListDownload.error)
+                    {
+                        DownloadProgressBar.ShowError = true;
+                    }
+
                 }
                 catch { }
             });
