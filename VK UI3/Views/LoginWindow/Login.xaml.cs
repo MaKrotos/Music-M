@@ -7,6 +7,7 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 using VK_UI3.DB;
+using VK_UI3.Views.ModalsPages;
 using VK_UI3.VKs;
 using Windows.Foundation;
 using Windows.Storage.Streams;
@@ -86,7 +87,16 @@ namespace VK_UI3.Views.LoginWindow
 
                 if (inputTextBox != null)
                 {
-                    ContentDialog _currentDialog  = new ContentDialog();
+
+                    ContentDialog _currentDialog = new CustomDialog();
+
+                    _currentDialog.Transitions = new TransitionCollection
+                        {
+                            new PopupThemeTransition()
+                        };
+
+
+
                     inputTextBox.AcceptsReturn = false;
                     inputTextBox.Height = 32;
                     inputTextBox.KeyDown += (sender, e) =>
@@ -140,7 +150,16 @@ namespace VK_UI3.Views.LoginWindow
             inputTextBox.AcceptsReturn = false;
             inputTextBox.Height = 32;
             // Добавьте обработчик событий KeyDown
-            ContentDialog dialog = new ContentDialog();
+            ContentDialog dialog = new CustomDialog();
+
+            dialog.Transitions = new TransitionCollection
+            {
+                new PopupThemeTransition()
+            };
+
+
+
+
             inputTextBox.KeyDown += (sender, e) =>
             {
                 if (e.Key == VirtualKey.Enter)
@@ -177,7 +196,13 @@ namespace VK_UI3.Views.LoginWindow
         {
             string result = "";
 
-                ContentDialog dialog = new ContentDialog();
+            ContentDialog dialog = new CustomDialog();
+
+            dialog.Transitions = new TransitionCollection
+            {
+                new PopupThemeTransition()
+            };
+
 
             this.DispatcherQueue.TryEnqueue(async () =>
             {

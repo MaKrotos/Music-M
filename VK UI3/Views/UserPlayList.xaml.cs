@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using VK_UI3.Controls;
 using VK_UI3.DB;
@@ -223,26 +224,42 @@ namespace VK_UI3.Views
 
         private async void CreateButton_Click(object sender, RoutedEventArgs e)
         {
-            ContentDialog dialog = new ContentDialog();
+            ContentDialog dialog = new CustomDialog();
+
+            dialog.Transitions = new TransitionCollection
+                {
+                    new PopupThemeTransition()
+                };
 
             // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
             dialog.XamlRoot = this.XamlRoot;
-    
 
             var a = new CreatePlayList();
             dialog.Content = a;
             dialog.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
-            a.cancelPressed.AddHandler((s, e) =>
+
+            void CancelPressedHandler(object s, EventArgs e)
             {
                 dialog.Hide();
                 dialog = null;
 
                 if (s != null && s is AudioPlaylist)
-                { 
+                {
                     var playlist = s as AudioPlaylist;
                     this.audioPlaylists.Insert(0, playlist);
                 }
-            });
+            }
+
+            a.cancelPressed += CancelPressedHandler;
+
+
+            void CloseHandler(ContentDialog sender, ContentDialogClosedEventArgs args)
+            {
+                
+                a.cancelPressed -= CancelPressedHandler;
+            }
+
+            dialog.Closed += CloseHandler;
 
             dialog.ShowAsync();
         }

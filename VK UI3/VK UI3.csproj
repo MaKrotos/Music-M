@@ -50,6 +50,7 @@
 	  <None Remove="Views\Download\DownloadFFmpegController.xaml" />
 	  <None Remove="Views\Download\DOwnloadsList.xaml" />
 	  <None Remove="Views\ModalsPages\CreatePlayList.xaml" />
+	  <None Remove="Views\ModalsPages\CustomDialog.xaml" />
 	  <None Remove="Views\ModalsPages\DownLoadFFMpeg.xaml" />
 	  <None Remove="Views\SectionView.xaml" />
 	  <None Remove="Views\Settings\SettingsPage.xaml" />
@@ -160,6 +161,9 @@
     <None Update="DownloadTrack\ffmpeg.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\ModalsPages\CustomDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\Download\DownloadFFmpegController.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>

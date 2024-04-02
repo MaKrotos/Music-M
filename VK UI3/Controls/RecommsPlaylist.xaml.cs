@@ -1,9 +1,11 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media.Animation;
 using MusicX.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 using VK_UI3.Controllers;
 using VK_UI3.DB;
 using VK_UI3.Helpers;
@@ -344,17 +346,21 @@ namespace VK_UI3.Controls
 
         private void editAlbum_Click(object sender, RoutedEventArgs e)
         {
-            ContentDialog dialog = new ContentDialog();
+            ContentDialog dialog = new CustomDialog();
 
             // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
             dialog.XamlRoot = this.XamlRoot;
-
+            // Add transitions (e.g., PopupThemeTransition)
+            dialog.Transitions = new TransitionCollection
+                {
+                    new PopupThemeTransition()
+                };
 
             var a = new CreatePlayList(_PlayList);
 
             dialog.Content = a;
             dialog.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
-            a.cancelPressed.AddHandler((s, e) =>
+            a.cancelPressed+=((s, e) =>
             {
                 if (s != null && s is AudioPlaylist)
                 {

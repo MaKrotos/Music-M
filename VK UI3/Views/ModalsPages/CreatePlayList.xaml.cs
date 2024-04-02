@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using VK_UI3.Services;
 
 // To learn more about WinUI, the WinUI project structure,
+// To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace VK_UI3.Views.ModalsPages
@@ -53,7 +54,7 @@ namespace VK_UI3.Views.ModalsPages
             this.Loaded += CreatePlayList_Loaded;
         }
 
-        public WeakEventManager cancelPressed = new WeakEventManager();
+        public EventHandler cancelPressed;
      
         public UIElement GetFirstChild()
         {
@@ -103,7 +104,7 @@ namespace VK_UI3.Views.ModalsPages
                 await VK.api.Audio.EditPlaylistAsync(AccountsDB.activeAccount.id, Convert.ToInt32(audioPlaylist.Id), this.Title.Text, this.Description.Text, No_discover: HideFromSearch.IsOn);
                 await UploadCoverPlaylist();
                 audioPlaylist = await VK.api.Audio.GetPlaylistByIdAsync(audioPlaylist.OwnerId, audioPlaylist.Id);
-                cancelPressed?.RaiseEvent(audioPlaylist, EventArgs.Empty);
+                cancelPressed?.Invoke(audioPlaylist, EventArgs.Empty);
                 
             }
             catch (Exception ex)
@@ -132,7 +133,7 @@ namespace VK_UI3.Views.ModalsPages
             }
             await UploadCoverPlaylist();
             audioPlaylist = await VK.api.Audio.GetPlaylistByIdAsync(audioPlaylist.OwnerId, audioPlaylist.Id);
-            cancelPressed?.RaiseEvent(audioPlaylist, EventArgs.Empty);
+            cancelPressed?.Invoke(audioPlaylist, EventArgs.Empty);
         }
 
 
@@ -207,7 +208,7 @@ namespace VK_UI3.Views.ModalsPages
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            cancelPressed?.RaiseEvent(this, EventArgs.Empty);
+            cancelPressed?.Invoke(this, EventArgs.Empty);
         }
 
         private async void SaveBTN_Click(object sender, RoutedEventArgs e)

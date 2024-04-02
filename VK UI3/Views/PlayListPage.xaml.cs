@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
@@ -339,7 +340,13 @@ namespace VK_UI3.Views
 
         private void EditPlaylist_Click(object sender, RoutedEventArgs e)
         {
-            ContentDialog dialog = new ContentDialog();
+            ContentDialog dialog = new CustomDialog();
+
+            dialog.Transitions = new TransitionCollection
+            {
+                new PopupThemeTransition()
+            };
+
 
             // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
             dialog.XamlRoot = this.XamlRoot;
@@ -349,7 +356,7 @@ namespace VK_UI3.Views
 
             dialog.Content = a;
             dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
-            a.cancelPressed.AddHandler((s, e) =>
+            a.cancelPressed+=((s, e) =>
             {
                 if (s != null && s is AudioPlaylist)
                 {

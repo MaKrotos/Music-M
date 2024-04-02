@@ -2,6 +2,7 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -544,7 +545,12 @@ namespace VK_UI3.Controls
 
         private void CreatePlayListBTN_Click(object sender, RoutedEventArgs e)
         {
-            ContentDialog dialog = new ContentDialog();
+            ContentDialog dialog = new CustomDialog();
+
+            dialog.Transitions = new TransitionCollection
+                {
+                    new PopupThemeTransition()
+                };
 
             // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
             dialog.XamlRoot = this.XamlRoot;
@@ -554,7 +560,7 @@ namespace VK_UI3.Controls
             dialog.Content = a;
             dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
 
-            a.cancelPressed.AddHandler((s, e) =>
+            a.cancelPressed+=((s, e) =>
             {
                 dialog.Hide();
                 dialog = null;
@@ -571,7 +577,16 @@ namespace VK_UI3.Controls
 
         private void addToPlayListMore_Click(object sender, RoutedEventArgs e)
         {
-            ContentDialog dialog = new ContentDialog();
+            ContentDialog dialog = new CustomDialog();
+
+            dialog.Transitions = new TransitionCollection
+                {
+                    new PopupThemeTransition()
+                };
+
+
+
+
             dialog.XamlRoot = this.XamlRoot;
             var a = new UserPlayList(dataTrack.audio);
             dialog.Content = a;

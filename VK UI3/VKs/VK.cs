@@ -912,6 +912,37 @@ namespace VK_UI3.VKs
               
             }
         }
+
+
+        internal static async Task getUploadServerAsync()
+        {
+            try
+            {
+                var parameters = new VkParameters
+                {
+
+
+                };
+                try
+                {
+
+                    var response = await api.CallAsync("audio.getUploadServer", parameters);
+
+                    Console.WriteLine(response.ToString());
+                }
+                catch
+                (Exception e)
+                {
+
+                }
+
+
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
     }
 
 

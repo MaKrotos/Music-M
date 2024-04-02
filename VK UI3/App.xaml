@@ -14,7 +14,7 @@
             </ResourceDictionary.MergedDictionaries>
 
 
-
+            <Thickness x:Key="ContentDialogPadding">0,0,0,0</Thickness>
 
             <!-- Other app resources here -->
             <AcrylicBrush x:Key="CustomAcrylicInAppBrush" 

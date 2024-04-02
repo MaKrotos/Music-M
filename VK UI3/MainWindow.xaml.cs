@@ -26,6 +26,7 @@ using Microsoft.UI.Input;
 using Windows.Foundation;
 using VK_UI3.DownloadTrack;
 using VK_UI3.Views.Download;
+using VK_UI3.Views.ModalsPages;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -123,7 +124,7 @@ namespace VK_UI3
                 args.Handled = true;
 
 
-                var dialog = new ContentDialog
+                var dialog = new CustomDialog
                 {
                     Title = "Загрузка еще не завершена",
                     Content = "Вы уверены, что хотите закрыть приложение?",
@@ -131,6 +132,11 @@ namespace VK_UI3
                     SecondaryButtonText = "Закрыть по завершению",
                     CloseButtonText = "Нет"
                 };
+
+
+
+
+
                 dialog.Resources["ContentDialogMaxWidth"] = double.PositiveInfinity;
                 dialog.XamlRoot = this.Content.XamlRoot;
                 var result = await dialog.ShowAsync();
@@ -539,13 +545,16 @@ namespace VK_UI3
 
                 this.DispatcherQueue.TryEnqueue(async () =>
                 {
-                    var dialog = new ContentDialog
+                    var dialog = new CustomDialog
                     {
                         Title = "Необходимо загрузить расширение",
                         Content = "Для загрузки треков необходимо скачать расширение (≈80 мб)",
                         PrimaryButtonText = "Скачать",
                         CloseButtonText = "Отмента"
                     };
+
+
+
                     dialog.Resources["ContentDialogMaxWidth"] = double.PositiveInfinity;
                     dialog.XamlRoot = this.Content.XamlRoot;
                     var result = await dialog.ShowAsync();
