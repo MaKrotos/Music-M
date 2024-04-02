@@ -35,26 +35,30 @@ namespace VK_UI3.Views
             this.InitializeComponent();
 
    
-            this.Loading += WaitView_Loading;
+            this.Loaded += WaitView_Loaded;
             this.Unloaded += WaitView_Unloaded;
 
           
         }
-        WaitParameters waitParameters;
-        private void WaitView_Unloaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
-        {
-            MainWindow.onRefreshClicked -= MainWindow_onRefreshClicked;
-            this.handlerContainer.Handler = null;
-            this.Loading -= WaitView_Loading;
-            this.Unloaded -= WaitView_Unloaded;
-        }
 
-        private void WaitView_Loading(Microsoft.UI.Xaml.FrameworkElement sender, object args)
+        private void WaitView_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
+            
             LoadAsync();
             MainWindow.onRefreshClicked += MainWindow_onRefreshClicked;
         }
 
+        WaitParameters waitParameters;
+        
+        private void WaitView_Unloaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            MainWindow.onRefreshClicked -= MainWindow_onRefreshClicked;
+            this.handlerContainer.Handler = null;
+            this.Loaded -= WaitView_Loaded;
+            this.Unloaded -= WaitView_Unloaded;
+        }
+
+    
         private void MainWindow_onRefreshClicked(object sender, EventArgs e)
         {
             frameSection.Navigate(typeof(waitPage), null, new DrillInNavigationTransitionInfo());

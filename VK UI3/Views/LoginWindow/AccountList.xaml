@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="VK_UI3.Views.LoginWindow.AccountList"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VK_UI3.Views.LoginWindow"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:custom="using:VK_UI3.Controllers"
+    mc:Ignorable="d">
+
+    <ListView 
+     SelectionMode="Single"
+     CanDragItems="True"
+     DragItemsCompleted="AccountsList_DragItemsCompleted"
+     DragItemsStarting="AccountsList_DragItemsStarting"
+     AllowDrop="True" CanReorderItems="True"  
+     ItemsSource="{x:Bind accounts, Mode=TwoWay}"  
+     SelectionChanged="ListView_SelectionChanged" 
+     x:Name="AccountsListed">
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <custom:AccountController Margin="0,0,0,0" accounts="{Binding }"></custom:AccountController>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
+</UserControl>

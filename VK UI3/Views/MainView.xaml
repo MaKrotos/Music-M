@@ -29,10 +29,12 @@
             </Grid.RowDefinitions>
 
             <NavigationView HorizontalAlignment="Stretch"  Margin="0,0,0,0" Name="NavWiv"
-                     Grid.RowSpan="2"
+             Grid.RowSpan="2"
              PaneDisplayMode="Auto" 
              SelectionChanged="NavWiv_SelectionChanged"
-             CompactPaneLength="80"
+ 
+             IsBackEnabled="False"
+                            IsBackButtonVisible="Collapsed"
              IsSettingsVisible="True"
              IsPaneOpen="False">
 
@@ -60,28 +62,9 @@
                     </NavigationViewItem>
 
                     <NavigationViewItemSeparator/>
-                    <NavigationViewItemHeader Content="Аккаунты"/>
-                    <NavigationViewItemSeparator/>
-                    <NavigationViewItem   Padding="-10,0,-20,0" SelectsOnInvoked="False" >
-                        <Grid Translation="0,0,24" Margin="-1,10,10,10" Padding="0,-5,-10,-5" >
-                            <ListView 
-                                SelectionMode="Single"
-                                CanDragItems="True"
-                                DragItemsCompleted="AccountsList_DragItemsCompleted"
-                                DragItemsStarting="AccountsList_DragItemsStarting"
-                                AllowDrop="True" CanReorderItems="True"  
-                                ItemsSource="{x:Bind AccList, Mode=TwoWay}"  
-                                SelectionChanged="ListView_SelectionChanged" 
-                                x:Name="AccountsList">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <custom:AccountController Margin="-1,0,0,0" accounts="{Binding }"></custom:AccountController>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                        </Grid>
-
-                    </NavigationViewItem>
+                    <NavigationViewItemHeader Visibility="Collapsed"/>
+                 
+                   
 
                 </NavigationView.MenuItems>
                 <Grid Margin="0"  PointerEntered="ListViewItem_PointerEntered">

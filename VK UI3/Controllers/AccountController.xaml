@@ -20,6 +20,6 @@
             </PersonPicture>
             <SymbolIcon Visibility="Collapsed" Width="50" x:Name="iconPic" Symbol="AddFriend"/>
         </Grid>
-        <TextBlock  Text="{x:Bind accounts.Name}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,0"/>
+        <TextBlock  Text="{x:Bind accounts.Name}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0,10,0"/>
     </StackPanel>
 </UserControl>

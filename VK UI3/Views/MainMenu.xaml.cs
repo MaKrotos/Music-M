@@ -44,7 +44,8 @@ namespace VK_UI3
         private void MainMenu_Loaded(object sender, RoutedEventArgs e)
         {
             // Находим ScrollViewer внутри ListView
-             scrollViewer = FindScrollViewer(TrackListView);
+           
+            scrollViewer = FindScrollViewer(TrackListView);
             if (scrollViewer != null)
             {
                 // Подписываемся на событие изменения прокрутки

@@ -181,6 +181,12 @@ namespace VK_UI3.Controllers
             changeText = new AnimationsChangeText(ArtistTextBlock, this.DispatcherQueue);
             changeText2 = new AnimationsChangeText(TitleTextBlock, this.DispatcherQueue);
             statusAnimate = new AnimationsChangeFontIcon(StatusBTNIcon, this.DispatcherQueue);
+
+            var setting =  SettingsTable.GetSetting("Volume");
+            if (setting != null)
+            {
+                mediaPlayer.Volume = double.Parse(setting.settingValue);
+            }
             setStatusIcon();
 
 
@@ -189,9 +195,6 @@ namespace VK_UI3.Controllers
             this.Loaded += AudioPlayer_Loaded;
 
 
-
-            VolumeSlider.Value = 100;
-            mediaPlayer.Volume = 1f;
 
 
             TrackDuration = 0;
@@ -235,7 +238,12 @@ namespace VK_UI3.Controllers
                 if (mediaPlayer == null) return 100;
                 return mediaPlayer.Volume * 100;
             }
-            set { mediaPlayer.Volume = value / 100; }
+            set {
+                var a = value / 100;
+                SettingsTable.SetSetting("Volume", a.ToString());
+                mediaPlayer.Volume = a;
+                
+            }
         }
 
 

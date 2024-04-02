@@ -41,7 +41,7 @@ namespace VK_UI3.DB
         }
 
         private static Accounts? _activeAccount;
-
+        public static EventHandler ChanhgeActiveAccount;
         public static Accounts activeAccount
         {
             get
@@ -60,6 +60,10 @@ namespace VK_UI3.DB
             }
             set
             {
+                if (_activeAccount == value) return;
+                if (_activeAccount != null && value != null && value.Token != null)
+                ChanhgeActiveAccount?.Invoke(null, null);
+                
                 _activeAccount = value;
             }
         }

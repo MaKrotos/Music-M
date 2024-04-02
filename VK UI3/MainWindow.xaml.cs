@@ -27,6 +27,9 @@ using Windows.Foundation;
 using VK_UI3.DownloadTrack;
 using VK_UI3.Views.Download;
 using VK_UI3.Views.ModalsPages;
+using Microsoft.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml.Hosting;
+using System.Diagnostics;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -42,6 +45,7 @@ namespace VK_UI3
         internal static HWND hvn;
         AppWindow m_AppWindow = null;
        public static  MainWindow mainWindow;
+
         public MainWindow()
         {
             
@@ -62,6 +66,7 @@ namespace VK_UI3
 
             AppWindowTitleBar m_TitleBar = m_AppWindow.TitleBar;
 
+     
 
 
             CheckMica();
@@ -102,17 +107,104 @@ namespace VK_UI3
 
             hvn = (HWND)WinRT.Interop.WindowNative.GetWindowHandle(this);
 
-            AnimatedButtonScaleStoryboardShow.Completed += AnimatedButtonScaleStoryboardShow_Completed;
-            AnimatedButtonScaleStoryboardDisShow.Completed += AnimatedButtonScaleStoryboardShow_Completed;
+          
 
-            DownLoadBTNScaleShow.Completed += AnimatedButtonScaleStoryboardShow_Completed;
-            DownLoadBTNScaleHide.Completed += AnimatedButtonScaleStoryboardShow_Completed;
+            AnimatedButton.AnimationCompleted += ResizeTabBar;
+            DownLoadBTN.AnimationCompleted += ResizeTabBar;
+            BackBTN.AnimationCompleted += ResizeTabBar;
+            ProfilesBTN.AnimationCompleted += ResizeTabBar;
 
             this.Activated += activated;
 
 
           
         }
+
+        private void ResizeTabBar()
+        {
+            SetRegionsForCustomTitleBar();
+        }
+
+        public void AnimateButtonShow(Button button)
+        {
+            DoubleAnimation widthAnimation = new DoubleAnimation
+            {
+                From = 0,
+                To = 35,
+                Duration = new Duration(TimeSpan.FromSeconds(0.1))
+            };
+
+            DoubleAnimation heightAnimation = new DoubleAnimation
+            {
+                From = 0,
+                To = 35,
+                Duration = new Duration(TimeSpan.FromSeconds(0.1))
+            };
+
+            Storyboard.SetTarget(widthAnimation, button);
+            Storyboard.SetTargetProperty(widthAnimation, "Width");
+
+            Storyboard.SetTarget(heightAnimation, button);
+            Storyboard.SetTargetProperty(heightAnimation, "Height");
+
+            Storyboard storyboard = new Storyboard();
+            storyboard.Children.Add(widthAnimation);
+            storyboard.Children.Add(heightAnimation);
+
+            storyboard.Begin();
+        }
+
+        public void AnimateButtonHide(Button button)
+        {
+            DoubleAnimation widthAnimation = new DoubleAnimation
+            {
+                From = 0,
+                To = button.ActualWidth,
+                Duration = new Duration(TimeSpan.FromSeconds(0.1))
+            };
+
+            DoubleAnimation heightAnimation = new DoubleAnimation
+            {
+                From = 0,
+                To = button.ActualHeight,
+                Duration = new Duration(TimeSpan.FromSeconds(0.1))
+            };
+
+            Storyboard.SetTarget(widthAnimation, button);
+            Storyboard.SetTargetProperty(widthAnimation, "Width");
+
+            Storyboard.SetTarget(heightAnimation, button);
+            Storyboard.SetTargetProperty(heightAnimation, "Height");
+
+            Storyboard storyboard = new Storyboard();
+            storyboard.Children.Add(widthAnimation);
+            storyboard.Children.Add(heightAnimation);
+
+            storyboard.Begin();
+        }
+
+
+
+
+
+
+        public void  backBTNShow() {
+
+            BackBTN.ShowButton();
+  
+
+        }
+        public void backBTNHide()
+        {
+            BackBTN.HideButton();
+
+
+        }
+        private void ContentFrame_Navigated(object sender, NavigationEventArgs e)
+        {
+            backBTNHide();
+        }
+
 
         private async void MainWindow_CloseRequested(object sender, WindowEventArgs args)
         {
@@ -169,7 +261,6 @@ namespace VK_UI3
         private void StartDownloadEvent(object sender, EventArgs e)
         {
             MainWindow_showDownload();
-         
         }
 
         private void OnEndAllDownload_Event(object sender, EventArgs e)
@@ -180,16 +271,11 @@ namespace VK_UI3
 
        
 
-        private void AnimatedButtonScaleStoryboardShow_Completed(object sender, object e)
-        {
-            SetRegionsForCustomTitleBar();
-        }
 
         public void MainWindow_showRefresh()
         {
-   
-                AnimatedButtonScaleStoryboardDisShow.Pause();
-                AnimatedButtonScaleStoryboardShow.Begin();
+
+            AnimatedButton.ShowButton();
 
             if (ExtendsContentIntoTitleBar == true)
             {
@@ -201,8 +287,8 @@ namespace VK_UI3
 
         public void MainWindow_hideRefresh()
         {
-            AnimatedButtonScaleStoryboardShow.Pause();
-            AnimatedButtonScaleStoryboardDisShow.Begin();
+
+            AnimatedButton.HideButton();
 
             if (ExtendsContentIntoTitleBar == true)
             {
@@ -215,9 +301,10 @@ namespace VK_UI3
 
         public void MainWindow_showDownload()
         {
-            this.DispatcherQueue.TryEnqueue((() => { 
-                DownLoadBTNScaleHide.Pause();
-                DownLoadBTNScaleShow.Begin();
+            this.DispatcherQueue.TryEnqueue((() => {
+
+                DownLoadBTN.ShowButton();
+
                 DownLoadBTN.Flyout.ShowAt(DownLoadBTN);
 
                 if (ExtendsContentIntoTitleBar == true)
@@ -230,8 +317,7 @@ namespace VK_UI3
 
         public void MainWindow_hideDownload()
         {
-            DownLoadBTNScaleShow.Pause();
-            DownLoadBTNScaleHide.Begin();
+            DownLoadBTN.HideButton();
 
             if (ExtendsContentIntoTitleBar == true)
             {
@@ -295,6 +381,37 @@ namespace VK_UI3
         }
 
 
+        public async Task AnimateButtonSize(Button button, double newWidth, double newHeight, TimeSpan duration)
+        {
+            // Сохраните исходные размеры кнопки
+            double originalWidth = button.Width;
+            double originalHeight = button.Height;
+
+            // Вычислите шаги изменения размера
+            double widthStep = (newWidth - originalWidth) / duration.TotalMilliseconds;
+            double heightStep = (newHeight - originalHeight) / duration.TotalMilliseconds;
+
+            // Создайте таймер для анимации
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            while (stopwatch.Elapsed < duration)
+            {
+                // Вычислите новые размеры
+                double elapsedMilliseconds = stopwatch.Elapsed.TotalMilliseconds;
+                button.Width = originalWidth + widthStep * elapsedMilliseconds;
+                button.Height = originalHeight + heightStep * elapsedMilliseconds;
+
+                // Обновите интерфейс
+                await Task.Delay(1);
+            }
+
+            // Установите окончательные размеры
+            button.Width = newWidth;
+            button.Height = newHeight;
+
+            stopwatch.Stop();
+        }
 
         private Windows.Graphics.RectInt32 GetRect(Rect bounds, double scale)
         {
@@ -319,6 +436,7 @@ namespace VK_UI3
         {
 
             checkUpdate();
+     
         }
 
         private void OnUpdateMica(object sender, EventArgs e)
@@ -364,7 +482,6 @@ namespace VK_UI3
 
         public void GoLogin()
         {
-
             ContentFrame.Navigate(typeof(Login), this, new DrillInNavigationTransitionInfo());
         }
 
@@ -515,6 +632,7 @@ namespace VK_UI3
         }
 
         public static EventHandler onRefreshClicked;
+        public EventHandler onBackClicked;
         public static WeakEventManager onDownloadClicked = new WeakEventManager();
 
      
@@ -524,8 +642,13 @@ namespace VK_UI3
             onRefreshClicked?.Invoke(null, EventArgs.Empty);
 
         }
+        private void BackClick(object sender, RoutedEventArgs e)
+        {
+            ScaleStoryboardBackBTN.Begin();
+            onBackClicked?.Invoke(this, EventArgs.Empty);
+        }
 
-     
+
         private void RefreshClick_Click(object sender, RoutedEventArgs e)
         {
             RotationStoryboard.Begin();

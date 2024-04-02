@@ -51,14 +51,26 @@ namespace VK_UI3.Views
          
         }
 
+
+        public void updateAllWithReacreate() {
+
+  
+            TempPlayLists.TempPlayLists.updateNextRequest = true;
+            if (ContentFrame.Content != null)
+            {
+                _ = CreateNavigation();
+            }
+            else
+            {
+                OpenMyPage(SectionType.MyListAudio);
+            }
+        }
+
         private void MainView_Unloaded(object sender, RoutedEventArgs e)
         {
             ContentFrame.Navigated -= ContentFrame_Navigated;
             NavWiv.BackRequested -= NavWiv_BackRequested;
-
-            Accounts.CollectionChanged -= Accounts_CollectionChanged;
-            onUpdateAccounts.RemoveHandler(MainView_onUpdateAccounts);
-
+            AccountsDB.ChanhgeActiveAccount -= ChangeAccount;
             this.KeyDown -= MainView_KeyDown;
             
             this.Unloaded -= MainView_Unloaded;
@@ -72,20 +84,21 @@ namespace VK_UI3.Views
             }
         }
 
-        private void Accounts_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-          //  throw new NotImplementedException();
-        }
+
 
         private static DispatcherQueue dispatcherQueue = null;
         private void MainView_Loaded(object sender, RoutedEventArgs e)
         {
+            MainWindow.mainWindow.MainWindow_hideDownload();
             //OpenMyPage(SectionType.MyListAudio);
             ContentFrame.Navigated += ContentFrame_Navigated;
+      
             NavWiv.BackRequested += NavWiv_BackRequested;
-           
-            Accounts.CollectionChanged += Accounts_CollectionChanged;
-            onUpdateAccounts.AddHandler(MainView_onUpdateAccounts);
+
+            MainWindow.mainWindow.onBackClicked += back;
+
+            AccountsDB.ChanhgeActiveAccount += ChangeAccount;
+
 
             this.KeyDown += MainView_KeyDown;
 
@@ -97,24 +110,24 @@ namespace VK_UI3.Views
            MainWindow.mainWindow.MainWindow_showRefresh();
         }
 
-        private void MainView_onUpdateAccounts(object sender, EventArgs e)
+        private async void back(object sender, EventArgs e)
         {
-            updateAccounts();
+            this.DispatcherQueue.TryEnqueue(async() =>
+            {
+                ContentFrame.GoBack();
+            });
         }
 
-        public static void invokeUpdateAccounts()
+        private void ChangeAccount(object sender, EventArgs e)
         {
-            onUpdateAccounts.RaiseEvent(null, EventArgs.Empty);
+            updateAllWithReacreate();
         }
 
+        
 
-
-
-        public static WeakEventManager onUpdateAccounts = new WeakEventManager();
-     
         private void NavWiv_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
         {
-                if (ContentFrame.CanGoBack)
+            if (ContentFrame.CanGoBack)
                 {
                     ContentFrame.GoBack();
                 }
@@ -122,7 +135,16 @@ namespace VK_UI3.Views
 
         private void ContentFrame_Navigated(object sender, NavigationEventArgs e)
         {
-            NavWiv.IsBackEnabled = ContentFrame.CanGoBack;
+            if (ContentFrame.CanGoBack && !navToAnotherPage)
+            {
+              MainWindow.mainWindow.backBTNShow();
+        
+            }
+            else
+            {
+                MainWindow.mainWindow.backBTNHide();
+            }
+            navToAnotherPage = false;
         }
 
         protected void OnPropertyChanged(string propertyName)
@@ -328,35 +350,7 @@ namespace VK_UI3.Views
         }
 
 
-        public static ObservableCollection<Accounts> Accounts { get; set; } = new ObservableCollection<Accounts>();
-        
-
-        ObservableCollection<Accounts> AccList
-        {
-            get { return Accounts; }
-            set
-            {
-                Accounts = value;
-            }
-        }
-
-        int getSelectedNumber
-        {
-            get
-            {
-                int a = -1;
-                foreach (var item in Accounts)
-                {
-                    a++;
-                    if (item.Active) return a;
-
-                }
-                return -1;
-            }
-        }
-
-
-     
+      
 
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -370,77 +364,10 @@ namespace VK_UI3.Views
                 // ((MainWindow) navigationInfo.SourcePageType).GoLogin();
                 MainWindow.mainWindow = (MainWindow)navigationInfo.SourcePageType;
             }
-            updateAccounts();
+ 
         }
 
-        public void updateAccounts()
-        {
-            Accounts.Clear();
-            var accounts = AccountsDB.GetAllAccountsSorted();
-            int i = 0;
-            foreach (var item in accounts)
-            {
-
-                Accounts.Add(item);
-                if (item.id == AccountsDB.activeAccount.id)
-                    AccountsList.SelectedIndex = i;
-                i++;
-            }
-            Accounts.Add(new Accounts { });
-        }
-
-
-        private int previousSelectedAccount = -1;
-
-
-        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            this.DispatcherQueue.TryEnqueue(async () =>
-            {
-
-                var selectedAccount = (Accounts)AccountsList.SelectedItem;
-
-                if (selectedAccount == null) return;
-                if (selectedAccount.Token == null)
-                {
-                    if (previousSelectedAccount != -1)
-                    {
-                        AccountsList.SelectedItem = previousSelectedAccount;
-                    }
-                    else
-                    {
-                        AccountsList.SelectedIndex = -1;
-                    }
-                    AccountsDB.activeAccount = new AccountsDB.Accounts();
-                    this.Frame.Navigate(typeof(Login), this, new DrillInNavigationTransitionInfo());
-                    previousSelectedAccount = AccountsList.SelectedIndex;
-                }
-                else
-                {
-
-                    if (Accounts[AccountsList.SelectedIndex].id == AccountsDB.activeAccount.id) 
-                        return;
-
-                    AccountsDB.ActivateAccount(selectedAccount.id);
-                    activeAccount = selectedAccount;
-                    TempPlayLists.TempPlayLists.updateNextRequest = true;
-                    if (ContentFrame.Content != null)
-                    {
-                        _ = CreateNavigation();
-                    }
-                    else
-                    {
-                        OpenMyPage(SectionType.MyListAudio);
-                    }
-
-
-                }
-             
-                
-            });
-        }
-
-
+        
 
 
 
@@ -458,89 +385,10 @@ namespace VK_UI3.Views
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public void LowerFrame()
-        {
-            // Остановить текущую анимацию, если она выполняется
-            if (sb.GetCurrentState() == ClockState.Active)
-            {
-                sb.Stop();
-            }
-            sb = new Storyboard();
-
-            // Создайте новый объект DoubleAnimation
-            DoubleAnimation da = new DoubleAnimation();
-
-            // Установите начальное и конечное значения
-            da.From = trans.Y; // начальное положение
-                               //  da.To = FramePlayer.ActualHeight - 50; // конечное положение
-
-            // Установите продолжительность анимации
-            da.Duration = new Duration(TimeSpan.FromMilliseconds(250)); // продолжительность в секундах
 
 
 
-            // Добавьте анимацию в Storyboard
-            sb.Children.Add(da);
-
-            // Установите целевой объект и свойство для анимации
-            Storyboard.SetTarget(da, trans);
-            Storyboard.SetTargetProperty(da, "Y");
-
-            // Запустите анимацию
-            sb.Begin();
-        }
-
-
-        public void RaiseFrame()
-        {
-            // Остановить текущую анимацию, если она выполняется
-            if (sb.GetCurrentState() == ClockState.Active)
-            {
-                sb.Stop();
-
-            }
-            sb = new Storyboard();
-
-            // Создайте новый объект DoubleAnimation
-            DoubleAnimation da = new DoubleAnimation();
-
-            // Установите начальное и конечное значения
-            da.From = trans.Y; // начальное положение
-            da.To = 0; // конечное положение (вернуться обратно)
-
-            // Установите продолжительность анимации
-            da.Duration = new Duration(TimeSpan.FromMilliseconds(250)); // продолжительность в секундах
-
-            // Добавьте анимацию в Storyboard
-            sb.Children.Add(da);
-
-            // Установите целевой объект и свойство для анимации
-            Storyboard.SetTarget(da, trans);
-            Storyboard.SetTargetProperty(da, "Y");
-           
-            // Запустите анимацию
-            sb.Begin();
-        }
-
-
-
-
-
-        private void FramePlayer_PointerEntered(object sender, PointerRoutedEventArgs e)
-        {
-            // RaiseFrame();
-
-        }
-
-        private void FramePlayer_PointerExited(object sender, PointerRoutedEventArgs e)
-        {
-
-            //  LowerFrame();
-
-
-
-        }
-
+        bool navToAnotherPage = false;
         private void NavWiv_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
             var invokedItem = sender.SelectedItem as NavigationViewItem;
@@ -553,7 +401,8 @@ namespace VK_UI3.Views
 
             if (invokedItem != null && invokedItem.Content != null)
             {
-            
+
+                navToAnotherPage = true;
                 switch (invokedItem.Content.ToString().ToLower())
                 {
                     case "моя музыка":
@@ -586,8 +435,9 @@ namespace VK_UI3.Views
                       
                 }
 
+       
                 ContentFrame.BackStack.Clear();
-                NavWiv.IsBackEnabled = false;
+                MainWindow.mainWindow.backBTNHide();
 
             }
             else
@@ -597,8 +447,9 @@ namespace VK_UI3.Views
 
 
             }
+
            
-          //  NavWiv.IsBackEnabled = ContentFrame.CanGoBack;
+            //  NavWiv.IsBackEnabled = ContentFrame.CanGoBack;
         }
 
         public static void OpenMyPage(SectionType sectionType)
@@ -659,52 +510,7 @@ namespace VK_UI3.Views
             frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
         }
 
-        private async void AccountsList_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
-        {
-            var itemsToMove = new List<Accounts>(); // Create a list to store items for reordering
-            var i = 0;
-
-            foreach (var item in Accounts)
-            {
-                if (item.Token == null && i != Accounts.Count()-1)
-                {
-                    // Mark items for reordering
-                    itemsToMove.Add(item);
-                    
-                }
-            }
-
-            foreach (var itemToMove in itemsToMove)
-            {
-                DispatcherQueue.TryEnqueue(() =>
-                {
-                    Accounts.Move(Accounts.IndexOf(itemToMove), Accounts.Count()-1);
-                });
-            }
-
-            foreach (var item in Accounts)
-            {
-                if (item.Token != null)
-                {
-                 
-                        item.sortID = i++;
-                        item.Update();
-
-                    
-                }
-            }
-        }
-
-
-
-        private void AccountsList_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
-        {
-            var items = (sender as ListView).Items;
-            if (e.Items.Contains(items[items.Count - 1]))
-            {
-                e.Cancel = true;
-            }
-        }
+        
     }
 
 

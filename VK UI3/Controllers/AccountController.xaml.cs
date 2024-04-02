@@ -68,7 +68,7 @@ namespace VK_UI3.Controllers
         {
             // Здесь добавьте код для удаления элемента
             DatabaseHandler.getConnect().Delete<Accounts>(this.accounts.id);
-            MainView.invokeUpdateAccounts();
+           // MainView.invokeUpdateAccounts();
         
         }
     }
