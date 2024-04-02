@@ -21,15 +21,13 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Grid Height="35">
+        <Grid Height="30">
            
-            <StackPanel  Orientation="Horizontal" Height="35" Padding="0,0,0,0"  x:Name="AppTitleBar" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+            <StackPanel  Orientation="Horizontal" Height="30" Padding="0,0,0,0"  x:Name="AppTitleBar" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Top">
 
             
-                <ImageIcon x:Name="TitIcon" Width="25" Height="25" Margin="5" Grid.Column="0" Source="ms-appx:///Assets/StoreLogo.scale-400.png" />
+                <ImageIcon x:Name="TitIcon" Width="20" Height="20" Margin="5" Grid.Column="0" Source="ms-appx:///Assets/StoreLogo.scale-400.png" />
                 <TextBlock Grid.Column="1" Text="VK M" x:Name="AppTitle"  VerticalAlignment="Center" HorizontalAlignment="Left"  />
-
-
                 
                 <Button  x:Name="AnimatedButton" Padding="0" Margin="15,0,0,0" Width="30" Height="25" Background="Transparent" Click="RefreshClick_Click">
                     <Button.RenderTransform>

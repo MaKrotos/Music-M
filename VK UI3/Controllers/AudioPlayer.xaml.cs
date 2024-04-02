@@ -527,8 +527,10 @@ namespace VK_UI3.Controllers
 
         private async static Task PlayTrack(long? v = null)
         {
+
             if (v != null) iVKGetAudio.currentTrack = (long)v;
-      
+
+            
 
             if (iVKGetAudio is PlayListVK)
             {

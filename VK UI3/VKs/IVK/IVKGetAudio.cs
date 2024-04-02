@@ -348,6 +348,14 @@ namespace VK_UI3.VKs.IVK
         public bool getLoadedTracks = false;
         public ExtendedAudio GetTrackPlay(long tracI)
         {
+            while (tracI > listAudioTrue.Count() - 1)
+            {   if (!getLoadedTracks)
+                {   if (itsAll) return null;
+                    else
+                        GetTracks();
+                }
+                
+            }
             return listAudio[(int)tracI];
         }
 

@@ -61,32 +61,35 @@ namespace VK_UI3.Controls
     
         private void updatePlayState(bool prin = false, bool pause = false)
         {
-            string icon = "\uE768"; // default icon
+            this.DispatcherQueue.TryEnqueue(() =>
+            {
+                string icon = "\uE768"; // default icon
 
-            if (prin)
-            {
-                icon = pause ? "\uE768" : "\uE769";
-            }
-            else if (isThisPlayList_Now_Play && AudioPlayer.mediaPlayer.PlaybackSession.PlaybackState != Windows.Media.Playback.MediaPlaybackState.Paused)
-            {
-                icon = "\uE769";
-            }
-
-            if (!isThisPlayList_Now_Play)
-            {
-                if (!entered)
+                if (prin)
                 {
-                    FadeInAnimationGridPlayIcon.Pause();
-                    FadeOutAnimationGridPlayIcon.Begin();
+                    icon = pause ? "\uE768" : "\uE769";
                 }
-            }
-            else
-            {
-                FadeOutAnimationGridPlayIcon.Pause();
-                FadeInAnimationGridPlayIcon.Begin();
-            }
+                else if (isThisPlayList_Now_Play && AudioPlayer.mediaPlayer.PlaybackSession.PlaybackState != Windows.Media.Playback.MediaPlaybackState.Paused)
+                {
+                    icon = "\uE769";
+                }
 
-            AnimationsChangeFontIcon.ChangeFontIconWithAnimation(icon);
+                if (!isThisPlayList_Now_Play)
+                {
+                    if (!entered)
+                    {
+                        FadeInAnimationGridPlayIcon.Pause();
+                        FadeOutAnimationGridPlayIcon.Begin();
+                    }
+                }
+                else
+                {
+                    FadeOutAnimationGridPlayIcon.Pause();
+                    FadeInAnimationGridPlayIcon.Begin();
+                }
+
+                AnimationsChangeFontIcon.ChangeFontIconWithAnimation(icon);
+            });
         }
 
         public bool isThisPlayList_Now_Play

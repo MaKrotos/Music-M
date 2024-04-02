@@ -116,8 +116,6 @@ namespace VK_UI3.Views.Controls
                             else
                                 await vkService.FollowArtist(Action.ArtistId, blockBTN.ParentBlock.Id);
 
-
-
                             blockBTN.Artist.IsFollowed = !blockBTN.Artist.IsFollowed;
                             Refresh();
                             break;
