@@ -211,6 +211,26 @@
                                     <TextBlock Text="Скачать" Margin="10,0,0,0"/>
                                 </StackPanel>
                             </Button.Content>
+                            
+                            
+                        </Button>
+
+                        <Button
+                            Visibility="Collapsed"
+                              x:Name="UploadTrack"
+                              HorizontalAlignment="Left"
+                              Margin="0,5,0,0"
+                              Width="170"
+                              Click="UploadTrackClick">
+                     
+                            <Button.Content>
+                                <StackPanel  Orientation="Horizontal">
+                                    <SymbolIcon Symbol="Upload"/>
+                                    <TextBlock Text="Загрузить свою" Margin="10,0,0,0"/>
+                                </StackPanel>
+                            </Button.Content>
+
+
                         </Button>
                     </GridView>
 

@@ -47,6 +47,7 @@
 	  <None Remove="Fonts\VKSansDisplay-DemiBold.ttf" />
 	  <None Remove="Fonts\VKSansDisplay-Medium.ttf" />
 	  <None Remove="Fonts\VKSansDisplay-Regular.ttf" />
+	  <None Remove="Helpers\Animations\AnimatedNavMenuController.xaml" />
 	  <None Remove="Views\Controls\BlockButtonView.xaml" />
 	  <None Remove="Views\Download\DownloadController.xaml" />
 	  <None Remove="Views\Download\DownloadFFmpegController.xaml" />
@@ -76,6 +77,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.3" />
     <PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.3" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
@@ -170,6 +172,9 @@
     <None Update="DownloadTrack\ffmpeg.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Update="Helpers\Animations\AnimatedNavMenuController.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\LoginWindow\AccountList.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -41,8 +41,6 @@
                 <NavigationView.MenuItems >
 
 
-               
-
                     <NavigationViewItem Content="Моя музыка">
                         <NavigationViewItem.Icon>
                             <FontIcon Glyph="&#xEC4F;" />
@@ -63,8 +61,7 @@
 
                     <NavigationViewItemSeparator/>
                     <NavigationViewItemHeader />
-                 
-                   
+           
 
                 </NavigationView.MenuItems>
                 <Grid Margin="0"  PointerEntered="ListViewItem_PointerEntered">

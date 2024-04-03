@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Net.Http;
 using System.Threading.Tasks;
 using VK_UI3.Controllers;
 using VK_UI3.DB;
@@ -18,6 +20,9 @@ using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
 using Windows.Storage.Pickers;
+using Newtonsoft.Json;
+using VkNet.Utils;
+using VK_UI3.Views.Upload;
 
 
 namespace VK_UI3.Views
@@ -202,7 +207,16 @@ namespace VK_UI3.Views
                     MainText.ChangeTextWithAnimation(vkGetAudio.name);
                     CountTrText.Text = $"Треков: {vkGetAudio.countTracks}";
 
+                    
                 }
+                if (vkGetAudio is UserAudio userAudio && long.Parse(userAudio.id) == AccountsDB.activeAccount.id)
+                {
+
+                    UploadTrack.Visibility = Visibility.Visible;
+
+           
+                }
+
              
                 MainText.ChangeTextWithAnimation(vkGetAudio.name);
 
@@ -437,8 +451,29 @@ namespace VK_UI3.Views
 
         }
 
-      
-       
+        private async void UploadTrackClick(object sender, RoutedEventArgs e)
+        {
+            // Create a file picker
+            var openPicker = new Windows.Storage.Pickers.FileOpenPicker();
+
+            // See the sample code below for how to make the window accessible from the App class.
+            var window = App.m_window;
+
+            // Retrieve the window handle (HWND) of the current WinUI 3 window.
+            var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
+
+            // Initialize the file picker with the window handle (HWND).
+            WinRT.Interop.InitializeWithWindow.Initialize(openPicker, hWnd);
+
+            // Set options for your file picker
+            openPicker.ViewMode = PickerViewMode.Thumbnail;
+            openPicker.FileTypeFilter.Add(".mp3");
+            openPicker.FileTypeFilter.Add(".wav");
+
+            var file = await openPicker.PickSingleFileAsync();
+            if (file != null)
+                new UploadTrack(file.Path);
+        }
 
         private async void pickFolder()
         {

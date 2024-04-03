@@ -39,9 +39,13 @@ namespace VK_UI3.Views.LoginWindow
         public Password()
         {
             this.InitializeComponent();
-            
+            this.Loaded += Password_Loaded;
         }
-        
+
+        private void Password_Loaded(object sender, RoutedEventArgs e)
+        {
+            passText.Focus(FocusState.Pointer);
+        }
 
         private async void BackButton(object sender, RoutedEventArgs e)
         {

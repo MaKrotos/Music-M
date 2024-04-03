@@ -35,8 +35,13 @@ namespace VK_UI3.Views.LoginWindow
         public OtpCode()
         {
             this.InitializeComponent();
+            this.Loaded += OtpCode_Loaded;
         }
 
+        private void OtpCode_Loaded(object sender, RoutedEventArgs e)
+        {
+            passpey.Focus(FocusState.Pointer);
+        }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {

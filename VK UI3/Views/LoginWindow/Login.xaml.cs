@@ -48,7 +48,7 @@ namespace VK_UI3.Views.LoginWindow
             var accounts = AccountsDB.GetAllAccounts();
             if (accounts.Count < 0 || !Frame.CanGoBack) BackBTN.Visibility = Visibility.Collapsed;
             // BackBTN.IsEnabled = this.Frame.CanGoBack;
-
+            LoginTextBox.Focus(FocusState.Pointer);
             MainWindow.mainWindow.MainWindow_hideRefresh();
         }
 

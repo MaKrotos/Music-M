@@ -17,11 +17,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.Controllers;
 using VK_UI3.DB;
+using VK_UI3.Helpers.Animations;
 using VK_UI3.Services;
 using VK_UI3.Views.LoginWindow;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
+using Windows.Foundation;
 using static VK_UI3.DB.AccountsDB;
 using static VK_UI3.Views.SectionView;
 
@@ -158,7 +160,7 @@ namespace VK_UI3.Views
 
 
     
-        public List<NavMenuController> navMenuControllers = new();
+        public List<AnimatedNavMenuController> navMenuControllers = new();
         private CancellationTokenSource _cts = new CancellationTokenSource();
         //   private CancellationTokenSource cts = null;
         private async Task CreateNavigation()
@@ -218,24 +220,24 @@ namespace VK_UI3.Views
 
                     token.ThrowIfCancellationRequested();
 
-
-                    foreach (var setting in navSettings)
+                    this.DispatcherQueue.TryEnqueue(async () =>
                     {
-                        token.ThrowIfCancellationRequested();
-                        this.DispatcherQueue.TryEnqueue(async () =>
+                        foreach (var setting in navSettings)
                         {
-                            var navViewItem = new NavMenuController
-                            {
-                                navSettings = setting,
-                                Content = setting.MyMusicItem,
-                                Icon = new FontIcon { Glyph = setting.Icon }
-                            };
-                            NavWiv.MenuItems.Insert(index, navViewItem);
-                            navMenuControllers.Add(navViewItem);
-                            index++;
-                        });
-                    }
-
+                            token.ThrowIfCancellationRequested();
+                        
+                                var navViewItem = new AnimatedNavMenuController
+                                {
+                                    navSettings = setting,
+                                    Content = setting.MyMusicItem,
+                                    Icon = new FontIcon { Glyph = setting.Icon }
+                                };
+                                NavWiv.MenuItems.Insert(index, navViewItem);
+                                navMenuControllers.Add(navViewItem);
+                                index++;
+                      
+                        }
+                    });
 
 
                 }
@@ -256,9 +258,21 @@ namespace VK_UI3.Views
         {
             foreach (var item in navMenuControllers)
             {
-                NavWiv.MenuItems.Remove(item);
+
+                item.deleted += OnItemDeleted;
+
+
+                item.delete();
             }
             navMenuControllers.Clear();
+        }
+
+
+        private void OnItemDeleted(object sender, EventArgs e)
+        {
+            // Отписываемся от события
+            ((AnimatedNavMenuController)sender).deleted -= OnItemDeleted;
+            NavWiv.MenuItems.Remove(sender);
         }
 
         private List<string> GetIcons()

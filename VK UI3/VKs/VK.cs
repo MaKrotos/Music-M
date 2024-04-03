@@ -914,10 +914,9 @@ namespace VK_UI3.VKs
         }
 
 
-        internal static async Task getUploadServerAsync()
+        internal static async Task<string> getUploadServerAsync()
         {
-            try
-            {
+           
                 var parameters = new VkParameters
                 {
 
@@ -927,7 +926,8 @@ namespace VK_UI3.VKs
                 {
 
                     var response = await api.CallAsync("audio.getUploadServer", parameters);
-
+                    var js = JsonObject.Parse(response.RawJson);
+                    return js["upload_url"].ToString();
                     Console.WriteLine(response.ToString());
                 }
                 catch
@@ -936,12 +936,8 @@ namespace VK_UI3.VKs
 
                 }
 
-
-            }
-            catch (Exception e)
-            {
-
-            }
+                return null;
+          
         }
     }
 
