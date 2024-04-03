@@ -19,6 +19,10 @@ namespace MusicX.Core.Models
         [JsonProperty("blocks")]
         public List<Block> Blocks { get; set; } = new List<Block>();
 
+
+        [JsonExtensionData]
+        public Dictionary<string, object> AdditionalData { get; set; }
+
         [JsonProperty("next_from")]
         public string NextFrom { get; set; }
     }

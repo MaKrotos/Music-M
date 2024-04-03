@@ -14,7 +14,7 @@ namespace VkNet.AudioBypassService.Utils
 	{
 		private static readonly IDictionary<string, string> VkHeaders = new Dictionary<string, string>
 		{
-			{ "User-Agent", "VKAndroidApp/8.50-17564 (Android 12; SDK 32; arm64-v8a; VK M; ru; 2960x1440)" },
+			{ "User-Agent", "VKAndroidApp/8.79-99999 (Android 12; SDK 32; arm64-v8a; VK M; ru; 2960x1440)" },
 			{ "X-VK-Android-Client", "new" },
 			// { "User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36" },
 			// { "Referer", "https://id.vk.com/" },

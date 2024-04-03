@@ -155,8 +155,13 @@ namespace VkNet.Model.Attachments
 		[JsonProperty("is_explicit")]
 		public bool IsExplicit { get; set; }
 
+        [JsonProperty("exclusive")]
+        public bool Exclusive { get; set; }
 
-        [JsonProperty("id")]
+
+
+
+		[JsonProperty("id")]
         public long Id { get; set; }
 
         [JsonProperty("owner_id")]
@@ -177,6 +182,9 @@ namespace VkNet.Model.Attachments
 
         [JsonProperty("access_key")]
         public string AccessKey { get; set; }
+
+        [JsonProperty("meta")]
+        public Meta meta { get; set; }
 
 		[JsonProperty("audios")]
 		public ReadOnlyCollection<Audio> Audios { get; set; }
@@ -271,7 +279,13 @@ namespace VkNet.Model.Attachments
 
 	#endregion
 	}
+    [Serializable]
+    public class Meta {
+        [JsonProperty("view")]
+        public string View { get; set; }
+    }
 
+    [Serializable]
     public class Permissions
     {
         [JsonProperty("play")]

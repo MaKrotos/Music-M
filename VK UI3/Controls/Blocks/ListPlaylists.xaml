@@ -10,29 +10,21 @@
     Margin="10"
     mc:Ignorable="d">
     <UserControl.Resources>
-
+        <local:PlayListTemplateSelector x:Key="PlayListTemplateSelector"/>
     </UserControl.Resources>
     <UserControl.Shadow>
         <ThemeShadow />
     </UserControl.Shadow>
 
-    <Grid CornerRadius="8" Height="Auto" x:Name="gridCh">
 
-        <GridView ScrollViewer.HorizontalScrollMode="Enabled" ScrollViewer.IsScrollInertiaEnabled="False"  ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Visible" x:Name="gridV"  SelectionMode="None" ItemsSource="{x:Bind playlists, Mode=OneWay}">
+    <Grid CornerRadius="8" Height="Auto" x:Name="gridCh">
+        <GridView ScrollViewer.HorizontalScrollMode="Enabled" ItemTemplateSelector="{StaticResource PlayListTemplateSelector}" ScrollViewer.IsScrollInertiaEnabled="False"  ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Visible" x:Name="gridV"  SelectionMode="None" ItemsSource="{x:Bind playlists, Mode=OneWay}">
             <GridView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <ItemsWrapGrid Orientation="Vertical" MaximumRowsOrColumns="1" />
                 </ItemsPanelTemplate>
             </GridView.ItemsPanel>
-            <GridView.ItemTemplate>
-                <DataTemplate>
-                    <custom:PlaylistControl
-                 x:Name="trControl"
-                 FocusVisualPrimaryBrush="Transparent"
-                 FocusVisualSecondaryThickness="0"
-             ></custom:PlaylistControl>
-                </DataTemplate>
-            </GridView.ItemTemplate>
+           
         </GridView>
     </Grid>
 </UserControl>

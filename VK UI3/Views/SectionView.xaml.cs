@@ -426,7 +426,6 @@ namespace VK_UI3.Views
 
     public class BlockTemplateSelector : DataTemplateSelector
     {
-
         protected override DataTemplate? SelectTemplateCore(object? item, DependencyObject container)
         {
             if (item is Block block)
@@ -442,8 +441,5 @@ namespace VK_UI3.Views
 
             return null;
         }
-
-
-   
     }
 }

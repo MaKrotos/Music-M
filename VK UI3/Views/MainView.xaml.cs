@@ -173,6 +173,8 @@ namespace VK_UI3.Views
             {
                 try
                 {
+
+
                     ObservableCollection<NavSettings> navSettings = new ObservableCollection<NavSettings>();
 
                     this.DispatcherQueue.TryEnqueue(async () =>

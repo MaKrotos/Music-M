@@ -62,7 +62,7 @@
                     </NavigationViewItem>
 
                     <NavigationViewItemSeparator/>
-                    <NavigationViewItemHeader Visibility="Collapsed"/>
+                    <NavigationViewItemHeader />
                  
                    
 

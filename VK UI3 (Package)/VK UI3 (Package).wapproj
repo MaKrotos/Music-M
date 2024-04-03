@@ -50,6 +50,7 @@
     <PackageCertificateThumbprint>235554A939D15E2A8C77BA2F5A0A5CE0EFA6B878</PackageCertificateThumbprint>
     <WinUISDKReferences>false</WinUISDKReferences>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
+    <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <AppxBundle>Never</AppxBundle>

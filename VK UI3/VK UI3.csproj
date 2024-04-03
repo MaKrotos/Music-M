@@ -34,6 +34,7 @@
 	  <None Remove="Controls\Blocks\ArtistBannerBlockControl.xaml" />
 	  <None Remove="Controls\Blocks\Ext\ListTracksFull.xaml" />
 	  <None Remove="Controls\Blocks\ListPlaylists.xaml" />
+	  <None Remove="Controls\Blocks\PlayListTemplate.xaml" />
 	  <None Remove="Controls\Blocks\RecommsPlaylistBlock.xaml" />
 	  <None Remove="Controls\DefaultControl.xaml" />
 	  <None Remove="Controls\ListTracks.xaml" />
@@ -41,6 +42,7 @@
 	  <None Remove="Controls\RecommsPlaylist.xaml" />
 	  <None Remove="Controls\TitleBlockControl.xaml" />
 	  <None Remove="Controls\TrackControl.xaml" />
+	  <None Remove="Controls\VibeControl.xaml" />
 	  <None Remove="Fonts\VKSansDisplay-Bold.ttf" />
 	  <None Remove="Fonts\VKSansDisplay-DemiBold.ttf" />
 	  <None Remove="Fonts\VKSansDisplay-Medium.ttf" />
@@ -119,6 +121,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Controls\Blocks\PlayListTemplate.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
     <Page Update="Controls\Blocks\Ext\ListTracksFull.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
@@ -131,6 +136,9 @@
     </Page>
     <Page Update="Controls\BlockControl.xaml">
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\VibeControl.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
     <Page Update="Controls\TitleBlockControl.xaml">
       <Generator>MSBuild:Compile</Generator>
