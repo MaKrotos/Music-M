@@ -47,9 +47,9 @@ namespace VK_UI3.Views.Download
         {
             this.DispatcherQueue.TryEnqueue(() =>
             {
-                int progressPercentage = e.ProgressPercentage; // Прогресс в процентах
+                int progressPercentage = e.ProgressPercentage; // РџСЂРѕРіСЂРµСЃСЃ РІ РїСЂРѕС†РµРЅС‚Р°С…
                 DownloadProgressBar.Value = progressPercentage;
-                pathText.Text = $"Загружено: {Math.Round((double)e.BytesReceived / (1024 * 1024))} Мб  из  {Math.Round((double)(sender as DownloadFileWithProgress).mb)} Мб ";
+                pathText.Text = $"Р—Р°РіСЂСѓР¶РµРЅРѕ: {Math.Round((double)e.BytesReceived / (1024 * 1024))} РњР±  РёР·  {Math.Round((double)(sender as DownloadFileWithProgress).mb)} РњР± ";
             });
          }
 
