@@ -37,7 +37,7 @@ namespace VK_UI3.Views.ModalsPages
             this.Loaded += EditTrack_Loaded;
             this.Unloaded += EditTrack_Unloaded;
 
-            Save.Content = "Загрузить";
+            Save.Content = "Р—Р°РіСЂСѓР·РёС‚СЊ";
         }
 
         public EditTrack(Audio audio)
@@ -89,7 +89,7 @@ namespace VK_UI3.Views.ModalsPages
                 {
                     artist.Text = file.Tag.Artists[0];
                 }
-                else artist.Text = "Исполнитель не указан";
+                else artist.Text = "РСЃРїРѕР»РЅРёС‚РµР»СЊ РЅРµ СѓРєР°Р·Р°РЅ";
                 if (file.Tag.Title != null || file.Tag.Title != "")
                 {
 
