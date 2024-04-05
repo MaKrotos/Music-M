@@ -24,7 +24,7 @@ namespace VK_UI3.Helpers
             }
         }
 
-        public VkNet.Model.Attachments.Audio audio { get; private set; }
+        public VkNet.Model.Attachments.Audio audio { get; set; }
 
         private long? _numberInList;
         public long? NumberInList

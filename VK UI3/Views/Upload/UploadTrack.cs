@@ -1,39 +1,60 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.UI.Dispatching;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using TagLib.Ape;
 using VK_UI3.VKs;
+using VkNet.Model.Attachments;
+using VkNet.Model.RequestParams;
 using VkNet.Utils;
 
 namespace VK_UI3.Views.Upload
 {
-    class UploadTrack
+    public class UploadTrack
     {
         public event Action<int> OnProgressChanged;
-        public event Action OnDownloadCompleted;
+        public EventHandler OnDownloadCompleted;
         private WebClient client;
         private string artist;
-        private string name;
+        public string name;
+        private string? text;
+        private int? genreID;
+        private bool? scope;
+        private DispatcherQueue dispatcherQueue;
+        public float percent = 0;
 
-        public static ObservableCollection<UploadTrack> Tracks = new ObservableCollection<UploadTrack>();
 
-        public UploadTrack(string pathFile, string name = "Без названия", string artist = "Не указан")
+        public static ObservableCollection<UploadTrack> UploadsTracks = new ObservableCollection<UploadTrack>();
+        public static EventHandler addedTrack;
+
+        public UploadTrack(DispatcherQueue dispatcherQueue, string pathFile, string name = "Без названия", string artist = "Не указан", string text = null, int? genreID = null, bool? scope = null)
         {
             client = new WebClient();
             this.name = name;
             this.artist = artist;
             client.UploadProgressChanged += Client_UploadProgressChanged;
             client.UploadFileCompleted += Client_UploadFileCompleted;
+
+
+            this.text = text;
+            this.genreID = genreID;
+            this.scope = scope;
+            this.dispatcherQueue = dispatcherQueue;
+
+
             _ = startDownloadAsync(pathFile, name, artist);
+          
         }
 
-        private void Client_UploadFileCompleted(object sender, UploadFileCompletedEventArgs e)
+        private async void Client_UploadFileCompleted(object sender, UploadFileCompletedEventArgs e)
         {
             if (e.Error == null)
             {
@@ -50,11 +71,38 @@ namespace VK_UI3.Views.Upload
                         {"artist", artist},
                         {"title", name}
                     };
-                VK.api.CallAsync("audio.save", saveParams);
-                Console.Write(saveParams);
+                var resp = await VK.api.CallAsync("audio.save", saveParams);
+                Audio audio = JsonConvert.DeserializeObject<Audio>(resp.RawJson);
 
-                // Вызовите событие завершения загрузки
-                OnDownloadCompleted?.Invoke();
+
+                if (text != null || genreID != null || scope != null)
+                {
+                    var param = new AudioEditParams()
+                    {
+                        OwnerId = (long)audio.OwnerId,
+                        AudioId = (long)audio.Id,
+                    };
+                    if (text != null)
+                    {
+                        param.Text = text;
+                    }
+                    if (genreID != null)
+                        param.GenreId = (VkNet.Enums.AudioGenre)genreID;
+                    if (scope != null)
+                        param.NoSearch = scope;
+
+                    VK.api.Audio.EditAsync(param);
+                    var ids = new string[] { audio.OwnerId + "_" + audio.Id };
+                    audio = (await VK.api.Audio.GetByIdAsync(ids)).ToList()[0];
+
+                }
+
+                dispatcherQueue.TryEnqueue(async () =>
+                {
+                    UploadsTracks.Remove(this);
+                });
+                addedTrack?.Invoke(audio, null);
+                OnDownloadCompleted?.Invoke(audio, null);
             }
             else
             {
@@ -65,11 +113,18 @@ namespace VK_UI3.Views.Upload
 
         private void Client_UploadProgressChanged(object sender, UploadProgressChangedEventArgs e)
         {
+            percent = e.ProgressPercentage;
             OnProgressChanged?.Invoke(e.ProgressPercentage);
         }
 
         public async Task startDownloadAsync(string pathFile, string name, string artist)
         {
+            dispatcherQueue.TryEnqueue(async () =>
+            {
+                UploadsTracks.Add(this);
+            });
+        
+        
             var uploadUrl = await VK.getUploadServerAsync();
 
             if (pathFile != null && uploadUrl != null)

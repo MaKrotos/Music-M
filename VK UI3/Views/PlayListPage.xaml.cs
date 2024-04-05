@@ -23,6 +23,7 @@ using Windows.Storage.Pickers;
 using Newtonsoft.Json;
 using VkNet.Utils;
 using VK_UI3.Views.Upload;
+using Windows.Foundation;
 
 
 namespace VK_UI3.Views
@@ -43,9 +44,11 @@ namespace VK_UI3.Views
         {
             this.Loaded -= PlayListPage_Loaded;
             this.Unloaded -= PlayListPage_Unloaded;
+            VK_UI3.Views.Upload.UploadTrack.addedTrack -= addedTrack;
             if (scrollViewer != null) scrollViewer.ViewChanged -= ScrollViewer_ViewChanged;
             if (vkGetAudio != null)
             {
+               
                 vkGetAudio.onPhotoUpdated.RemoveHandler(VkGetAudio_onPhotoUpdated);
                 vkGetAudio.onListUpdate-=(VkGetAudio_onListUpdate);
                 vkGetAudio.onNameUpdated.RemoveHandler(VkGetAudio_onNameUpdated);
@@ -213,7 +216,7 @@ namespace VK_UI3.Views
                 {
 
                     UploadTrack.Visibility = Visibility.Visible;
-
+                    VK_UI3.Views.Upload.UploadTrack.addedTrack += addedTrack;
            
                 }
 
@@ -225,6 +228,15 @@ namespace VK_UI3.Views
 
             });
 
+        }
+
+        private void addedTrack(object sender, EventArgs e)
+        {
+            if (sender is Audio audio)
+            {
+                vkGetAudio.listAudio.Insert(0, new ExtendedAudio(audio, vkGetAudio));
+                vkGetAudio.NotifyOnListUpdate();
+            }
         }
 
         private void VkGetAudio_onInfoUpdated(object sender, EventArgs e)
@@ -403,11 +415,7 @@ namespace VK_UI3.Views
         List<MenuFlyoutItem> menuFlyoutItem = new List<MenuFlyoutItem>();
         private void DownloadPlaylist_Click(object sender, RoutedEventArgs e)
         {
-            var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            path = Path.Combine(path, "VKMMKZ");
-            path = Path.Combine(path, "FFMPeg.exe");
-
-
+         
             foreach (var item in menuFlyoutItem)
             {
                 this.DispatcherQueue.TryEnqueue(async () =>
@@ -416,6 +424,7 @@ namespace VK_UI3.Views
                 });
             }
             var paths = PathTable.GetAllPaths();
+
             if (paths.Count == 0)
             {
                 pickFolder();
@@ -472,7 +481,43 @@ namespace VK_UI3.Views
 
             var file = await openPicker.PickSingleFileAsync();
             if (file != null)
-                new UploadTrack(file.Path);
+            {
+                ContentDialog dialog = new CustomDialog();
+                dialog.XamlRoot = this.XamlRoot;
+                var a = new EditTrack(file.Path);
+                dialog.Content = a;
+
+                EventHandler handler = null;
+                handler = (s, e) =>
+                {
+                    dialog.Hide();
+                    //    a.selectedPlayList -= handler; // Отписка от события
+                };
+
+                a.cancelPressed += handler;
+
+                TypedEventHandler<ContentDialog, ContentDialogClosedEventArgs> closedHandler = null;
+                closedHandler = (s, e) =>
+                {
+                    a.cancelPressed -= handler;
+                    dialog.Closed -= closedHandler;
+                    dialog = null;
+                };
+
+                dialog.Closed += closedHandler;
+
+                dialog.ShowAsync();
+
+                dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+                dialog.Resources["ContentDialogMaxWidth"] = double.PositiveInfinity;
+                dialog.Resources["ContentDialogMaxHeight"] = double.PositiveInfinity;
+                dialog.BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+                dialog.Translation = new System.Numerics.Vector3(0, 0, 0);
+                dialog.Resources.Remove("BackgroundElement");
+
+                dialog.Shadow = null;
+                dialog.BorderThickness = new Thickness(0);
+            }
         }
 
         private async void pickFolder()
@@ -504,11 +549,6 @@ namespace VK_UI3.Views
                 }
             }catch (Exception ex)
             {
-
-
-
-
-
             }
         }
     }

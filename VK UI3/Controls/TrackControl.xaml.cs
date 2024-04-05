@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using VK_UI3.Controllers;
 using VK_UI3.Converters;
 using VK_UI3.DB;
+using VK_UI3.DownloadTrack;
 using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
 using VK_UI3.Views;
@@ -20,6 +21,7 @@ using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
+using Windows.Storage.Pickers;
 using static VK_UI3.Views.SectionView;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -69,12 +71,23 @@ namespace VK_UI3.Controls
 
                 dataTrack = (DataContext as ExtendedAudio);
 
-
+                updateUI();
               
-                bool isOwner = track.OwnerId == AccountsDB.activeAccount.id;
+           
+            }
+        }
 
+        private void updateUI()
+        {
+            this.DispatcherQueue.TryEnqueue(() => {
+                bool isOwner = dataTrack.audio.OwnerId == AccountsDB.activeAccount.id;
 
+                if (dataTrack.audio.Release_audio_id == null && dataTrack.audio.OwnerId == AccountsDB.activeAccount.id)
+                {
 
+                    EditTrack.Visibility = Visibility.Visible;
+                }
+                else EditTrack.Visibility = Visibility.Collapsed;
                 AddRemove.Visibility = Visibility.Visible;
                 AddRemove.Text = isOwner ? "Удалить" : "Добавить";
                 AddRemove.Icon = new SymbolIcon(isOwner ? Symbol.Delete : Symbol.Add);
@@ -92,18 +105,18 @@ namespace VK_UI3.Controls
                     RemovePlayList.Visibility = Visibility.Collapsed;
                 }
 
-                Title.Text = track.Title;
-                Subtitle.Text = track.Subtitle;
-                Artists.Text = track.Artist;
-             
+                Title.Text = dataTrack.audio.Title;
+                Subtitle.Text = dataTrack.audio.Subtitle;
+                Artists.Text = dataTrack.audio.Artist;
 
 
-                if (track.Album != null && track.Album.Thumb != null)
+
+                if (dataTrack.audio.Album != null && dataTrack.audio.Album.Thumb != null)
                 {
-                    photouri = track.Album.Thumb.Photo270 ??
-                    track.Album.Thumb.Photo300 ??
-                    track.Album.Thumb.Photo600 ??
-                    track.Album.Thumb.Photo34 ??
+                    photouri = dataTrack.audio.Album.Thumb.Photo270 ??
+                    dataTrack.audio.Album.Thumb.Photo300 ??
+                    dataTrack.audio.Album.Thumb.Photo600 ??
+                    dataTrack.audio.Album.Thumb.Photo34 ??
                     null;
                     if (photouri == null || photouri == "")
                     {
@@ -125,9 +138,9 @@ namespace VK_UI3.Controls
 
 
 
-                if ((track.MainArtists == null) || (!track.MainArtists.Any()))
+                if ((dataTrack.audio.MainArtists == null) || (!dataTrack.audio.MainArtists.Any()))
                 {
-                    Artists.Text = track.Artist;
+                    Artists.Text = dataTrack.audio.Artist;
                     // Artists.MouseEnter += Artists_MouseEnter;
                     // Artists.MouseLeave += Artists_MouseLeave;
                     // Artists.MouseLeftButtonDown += Artists_MouseLeftButtonDown;
@@ -145,7 +158,7 @@ namespace VK_UI3.Controls
                     if (goArtistItem != null)
                     {
                         goArtistItem.Items.Clear();
-                        foreach (var artist in track.MainArtists)
+                        foreach (var artist in dataTrack.audio.MainArtists)
                         {
                             var menuItem = new MenuFlyoutItem
                             {
@@ -178,15 +191,15 @@ namespace VK_UI3.Controls
                 SecondsToTimeConverter converter = new SecondsToTimeConverter();
 
                 // Преобразование секунд в строку времени
-                object timeString = converter.Convert(track.Duration, null, null, null);
+                object timeString = converter.Convert(dataTrack.audio.Duration, null, null, null);
                 Console.WriteLine(timeString);
                 Time.Text = (string)timeString;
 
 
- 
 
 
-                if (this.dataTrack.audio.Album != null) 
+
+                if (this.dataTrack.audio.Album != null)
                 {
                     FlyGoAlbum.Visibility = Visibility.Visible;
                 }
@@ -213,10 +226,8 @@ namespace VK_UI3.Controls
                     dataTrack.iVKGetAudio.AudioPlayedChangeEvent += UserAudio_AudioPlayedChangeEvent;
                     addedHandler = true;
                 }
-            }
+            });
         }
-
-        
 
         private void SetIconDislike()
         {
@@ -388,12 +399,12 @@ namespace VK_UI3.Controls
 
         public void AddRemove_Click(object sender, RoutedEventArgs e)
         {
-
             var vkService = VK.vkService;
 
             if (dataTrack.audio.OwnerId == AccountsDB.activeAccount.id)
             {
                 vkService.AudioDeleteAsync((long)dataTrack.audio.Id, (long)dataTrack.audio.OwnerId);
+                dataTrack.iVKGetAudio.listAudioTrue.Remove(dataTrack);
             }
             else
             {
@@ -486,6 +497,7 @@ namespace VK_UI3.Controls
                 dataTrack.audio.Album.AccessKey);
         }
         List<MenuFlyoutItem> menuFlyoutItems = new List<MenuFlyoutItem>();
+        List<MenuFlyoutItem> menuFlyoutItemsUploads = new List<MenuFlyoutItem>();
         private void UCcontrol_RightTapped(object sender, RightTappedRoutedEventArgs e)
         {
           
@@ -538,9 +550,50 @@ namespace VK_UI3.Controls
                                 AddPlayList.Items.Insert(i++, menuItem);
                             }
                         });
-                       
-                   });
 
+                       var j = 0;
+                       var paths = PathTable.GetAllPaths();
+
+
+                       DispatcherQueue.TryEnqueue(async () =>
+                       {
+
+                           foreach (var item in menuFlyoutItemsUploads)
+                           {
+                               DownloadFlyOut.Items.Remove(item);
+                           }
+
+                           menuFlyoutItemsUploads.Clear();
+
+                           foreach (var path in paths)
+                           {
+                               var menuItem = new MenuFlyoutItem
+                               {
+                                   Text = path.path,
+                                   Icon = new FontIcon { Glyph = "\uF12B" }
+                               };
+
+
+                               menuItem.Click += (s, e) =>
+                               {
+                                   IVKGetAudio iVKGetAudio = new SimpleAudio(this.DispatcherQueue);
+                                   iVKGetAudio.name = dataTrack.audio.Title;
+                                   iVKGetAudio.itsAll = true;
+                                   iVKGetAudio.countTracks = 1;
+                                   iVKGetAudio.listAudio.Add(dataTrack);
+
+                                   _ = Task.Run(
+                                                  async () =>
+                                                  {
+                                                      PlayListDownload playListDownload = new PlayListDownload(iVKGetAudio, path.path, this.DispatcherQueue, true);
+                                                  });
+                               };
+                               menuFlyoutItemsUploads.Add(menuItem);
+                               DownloadFlyOut.Items.Insert(j++, menuItem);
+                           }
+                       });
+
+                   });
         }
 
         private void CreatePlayListBTN_Click(object sender, RoutedEventArgs e)
@@ -575,7 +628,54 @@ namespace VK_UI3.Controls
 
         }
 
-        private void addToPlayListMore_Click(object sender, RoutedEventArgs e)
+        private async void pickFolder()
+        {
+            try
+            {
+                FolderPicker folderPicker = new();
+                folderPicker.FileTypeFilter.Add("*");
+
+
+                WinRT.Interop.InitializeWithWindow.Initialize(folderPicker, MainWindow.hvn);
+
+                Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+                if (folder != null)
+                {
+                    // Директория выбрана, можно продолжить работу с folder
+                    PathTable.AddPath(folder.Path);
+
+                    IVKGetAudio iVKGetAudio = new SimpleAudio(this.DispatcherQueue);
+                    iVKGetAudio.name = dataTrack.audio.Title;
+                    iVKGetAudio.itsAll = true;
+                    iVKGetAudio.countTracks = 1;
+                    iVKGetAudio.listAudio.Add(dataTrack);
+
+                    _ = Task.Run(
+                                   async () =>
+                                   {
+                                       new PlayListDownload(iVKGetAudio, folder.Path, this.DispatcherQueue, true);
+                                   });
+                }
+                else
+                {
+                    // Операция была отменена пользователем
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        private void PickFolderDownload_Click(object sender, RoutedEventArgs e)
+        {
+
+            pickFolder();
+
+
+        }
+
+
+            private void addToPlayListMore_Click(object sender, RoutedEventArgs e)
         {
             ContentDialog dialog = new CustomDialog();
 
@@ -652,6 +752,50 @@ namespace VK_UI3.Controls
 
        
 
+        }
+
+        private void EditTrack_Click(object sender, RoutedEventArgs e)
+        {
+            ContentDialog dialog = new CustomDialog();
+            dialog.XamlRoot = this.XamlRoot;
+            var a = new EditTrack(dataTrack.audio);
+            dialog.Content = a;
+
+            EventHandler handler = null;
+            handler = (s, e) =>
+            {
+                dialog.Hide();
+                if (s is Audio ss)
+                {
+                    dataTrack.audio = ss;
+                    updateUI();
+                }
+                //    a.selectedPlayList -= handler; // Отписка от события
+            };
+
+            a.cancelPressed += handler;
+
+            TypedEventHandler<ContentDialog, ContentDialogClosedEventArgs> closedHandler = null;
+            closedHandler = (s, e) =>
+            {
+                a.cancelPressed -= handler;
+                dialog.Closed -= closedHandler;
+                dialog = null;
+            };
+
+            dialog.Closed += closedHandler;
+
+            dialog.ShowAsync();
+
+            dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+            dialog.Resources["ContentDialogMaxWidth"] = double.PositiveInfinity;
+            dialog.Resources["ContentDialogMaxHeight"] = double.PositiveInfinity;
+            dialog.BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+            dialog.Translation = new System.Numerics.Vector3(0, 0, 0);
+            dialog.Resources.Remove("BackgroundElement");
+
+            dialog.Shadow = null;
+            dialog.BorderThickness = new Thickness(0);
         }
     }
 }

@@ -25,26 +25,40 @@ namespace VK_UI3.Views.LoginWindow
 {
     public sealed partial class AccountList : UserControl
     {
-
-
-
-
-     
-        public static WeakEventManager onUpdateAccounts = new WeakEventManager();
-
+  
         public AccountList()
         {
             this.InitializeComponent();
             this.Loading += AccountList_Loading;
             this.Loaded += AccountList_Loaded;
+            this.Unloaded += AccountList_Unloaded;
+           
         }
+
+        private void AccountList_Unloaded(object sender, RoutedEventArgs e)
+        {
+            this.Loading -= AccountList_Loading;
+            this.Loaded -= AccountList_Loaded;
+            this.Unloaded -= AccountList_Unloaded;
+            AccountsDB.DeletedAccount -= delaccount;
+        }
+
         public ObservableCollection<Accounts> accounts { get; set; } = new ObservableCollection<Accounts>();
 
         private void AccountList_Loaded(object sender, RoutedEventArgs e)
         {
-
+            AccountsDB.DeletedAccount += delaccount;
             updateAccounts();
+            
 
+        }
+
+        private void delaccount(object sender, EventArgs e)
+        {
+            if (sender is Accounts account)
+            {
+                accounts.Remove(account);
+            }
         }
 
         private void AccountList_Loading(FrameworkElement sender, object args)

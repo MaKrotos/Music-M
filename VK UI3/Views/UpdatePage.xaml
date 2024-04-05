@@ -12,8 +12,8 @@
     <Grid>
 
         <Grid 
-        
-        CornerRadius="8" Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}" Margin="50" VerticalAlignment="Center" HorizontalAlignment="Center" >
+         Padding="8"
+           CornerRadius="8" Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}" Margin="50" VerticalAlignment="Center" HorizontalAlignment="Center" >
             <Grid.Resources>
                 <ThemeShadow x:Name="SharedShadow" />
             </Grid.Resources>

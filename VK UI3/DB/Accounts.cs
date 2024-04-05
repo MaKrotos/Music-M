@@ -42,6 +42,7 @@ namespace VK_UI3.DB
 
         private static Accounts? _activeAccount;
         public static EventHandler ChanhgeActiveAccount;
+        public static EventHandler DeletedAccount;
         public static Accounts activeAccount
         {
             get
@@ -163,7 +164,11 @@ namespace VK_UI3.DB
             }
         }
 
-       
+        internal static void DeleteAccount(Accounts accounts)
+        {
+            DatabaseHandler.getConnect().Delete<Accounts>(accounts.id);
+            DeletedAccount.Invoke(accounts, null);
+        }
     }
 
 }

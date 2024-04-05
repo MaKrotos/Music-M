@@ -59,7 +59,7 @@ namespace VK_UI3.DownloadTrack
         /// </summary>
         /// <param name="iVKGetAudio">iVKGetAudio отвечающий за логику скачиваний плэйлсита</param>
         /// <param name="path">Путь куда качать плейлист</param>
-        public PlayListDownload(IVKGetAudio iVKGetAudio, string path, DispatcherQueue dispatcherQueue)
+        public PlayListDownload(IVKGetAudio iVKGetAudio, string path, DispatcherQueue dispatcherQueue, bool disabeLoc = false)
         {
             this.iVKGetAudio = iVKGetAudio;
             this.dispatcherQueue = dispatcherQueue;
@@ -74,17 +74,21 @@ namespace VK_UI3.DownloadTrack
             }
             this.path = path;
 
-            var name = iVKGetAudio.name;
+            string? name = iVKGetAudio.name;
 
-            string invalidChars = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
-            foreach (char c in invalidChars)
+            if (name != null)
             {
-                name = name.Replace(c.ToString(), "");
+                string invalidChars = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
+                foreach (char c in invalidChars)
+                {
+                    name = name.Replace(c.ToString(), "");
 
+                }
             }
-           
-            this.location = path + "\\" + name;
-
+            if (!disabeLoc && name != null)
+                this.location = path + "\\" + name;
+            else
+                this.location = path;
         
 
             if (!new CheckFFmpeg().isExist())
@@ -153,19 +157,34 @@ namespace VK_UI3.DownloadTrack
                             string input = a.Url.ToString();
 
                         var invalidChars = Path.GetInvalidFileNameChars();
-                        var titl = $"{a.Title}.mp3";
+                        var titl = $"{a.Title}-{a.Artist}.mp3";
                         titl = new string(titl.Where(ch => !invalidChars.Contains(ch)).ToArray());
 
                         //iVKGetAudio.name
 
                         string output = Path.Combine(location, titl);
+
+                        if (File.Exists(output))
+                        {
+                            downloaded++;
+                            StatusUpdate();
+                            continue;
+                        }
+
+
+                        var titlTemp = $"{a.OwnerId}_{a.Id}.mp3";
+                        string outputTemp = Path.Combine(location, titlTemp);
+                        if (File.Exists(outputTemp))
+                        {
+                            File.Delete(outputTemp);
+                        }
                         if (!Directory.Exists(location)) Directory.CreateDirectory(location);
 
 
                         var startInfo = new ProcessStartInfo
                         {
                             FileName = ffmpegPath, // Путь к исполняемому файлу ffmpeg
-                            Arguments = $"-http_persistent 0 -n -i \"{input}\" \"{output}\"",
+                            Arguments = $"-http_persistent 0 -n -i \"{input}\" \"{outputTemp}\"",
                             RedirectStandardOutput = false,
                             RedirectStandardError = false,
                             UseShellExecute = false,
@@ -176,10 +195,10 @@ namespace VK_UI3.DownloadTrack
                         process.Start();
                         process.WaitForExit();
 
+                 
 
-
-                        MakeTags(output, a);
-
+                        MakeTags(outputTemp, a);
+                        File.Move(outputTemp, output);
 
                         downloaded++;
 

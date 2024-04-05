@@ -56,8 +56,11 @@
 	  <None Remove="Views\ModalsPages\CreatePlayList.xaml" />
 	  <None Remove="Views\ModalsPages\CustomDialog.xaml" />
 	  <None Remove="Views\ModalsPages\DownLoadFFMpeg.xaml" />
+	  <None Remove="Views\ModalsPages\EditTrack.xaml" />
 	  <None Remove="Views\SectionView.xaml" />
 	  <None Remove="Views\Settings\SettingsPage.xaml" />
+	  <None Remove="Views\Upload\UploadController.xaml" />
+	  <None Remove="Views\Upload\UploadList.xaml" />
 	  <None Remove="Views\UserPlayList.xaml" />
 	  <None Remove="Views\WaitView.xaml" />
 	</ItemGroup>
@@ -172,6 +175,9 @@
     <None Update="DownloadTrack\ffmpeg.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\ModalsPages\EditTrack.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Helpers\Animations\AnimatedNavMenuController.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -197,6 +203,13 @@
     </Page>
     <Page Update="Views\ModalsPages\CreatePlayList.xaml">
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Upload\UploadController.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Upload\UploadList.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
     <Page Update="Views\UserPlayList.xaml">
       <Generator>MSBuild:Compile</Generator>

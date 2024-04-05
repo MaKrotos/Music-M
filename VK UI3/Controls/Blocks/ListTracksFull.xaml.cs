@@ -33,6 +33,7 @@ namespace VK_UI3.Controls.Blocks
             this.DataContextChanged -= ListTracks_DataContextChanged;
             try
             {
+                if (sectionAudio != null)
                 sectionAudio.onListUpdate -= SectionAudio_onListUpdate;
             }
             catch { }

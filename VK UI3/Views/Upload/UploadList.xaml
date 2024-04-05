@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="VK_UI3.Views.Upload.UploadList"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VK_UI3.Views.Download"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:custom="using:VK_UI3.Views.Upload"
+    Padding="0"
+    MaxHeight="500"
+
+    Margin="-25,-10, -22, -10"
+    MinWidth="300"
+    mc:Ignorable="d">
+
+
+    <ListView  Padding="0,0,0,-10"  CanReorderItems="false" x:Name="TrackListView" ItemsSource="{x:Bind uploadTracks, Mode=OneWay}"   IsItemClickEnabled="False" SelectionMode="None">
+        <ListView.Shadow>
+            <ThemeShadow />
+        </ListView.Shadow>
+
+
+        <ListView.ItemTemplate>
+        <DataTemplate>
+            <custom:UploadController
+            FocusVisualPrimaryBrush="Transparent"
+            FocusVisualSecondaryThickness="0"
+              Margin="0,0,0,10"
+         ></custom:UploadController>
+        </DataTemplate>
+    </ListView.ItemTemplate>
+    
+    </ListView>
+</UserControl>

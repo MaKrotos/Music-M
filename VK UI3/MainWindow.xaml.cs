@@ -30,6 +30,8 @@ using VK_UI3.Views.ModalsPages;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Hosting;
 using System.Diagnostics;
+using VK_UI3.Views.Upload;
+using System.Collections.ObjectModel;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -113,11 +115,33 @@ namespace VK_UI3
             DownLoadBTN.AnimationCompleted += ResizeTabBar;
             BackBTN.AnimationCompleted += ResizeTabBar;
             ProfilesBTN.AnimationCompleted += ResizeTabBar;
+            UploadBTN.AnimationCompleted += ResizeTabBar;
+
+            UploadTrack.UploadsTracks.CollectionChanged += UploadsTracks_CollectionChanged;
 
             this.Activated += activated;
 
 
           
+        }
+
+        private void UploadsTracks_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (sender is ObservableCollection<UploadTrack> traks)
+            {
+                if (traks.Count > 0)
+                {
+                    UploadBTN.ShowButton();
+                    UploadBTN.Flyout.ShowAt(UploadBTN);
+                }
+
+                else
+                {
+                    UploadBTN.HideButton();
+                    UploadBTN.Flyout.Hide();
+                }
+            
+            }
         }
 
         private void ResizeTabBar()
@@ -339,7 +363,7 @@ namespace VK_UI3
         private void SetRegionsForCustomTitleBar()
         {
             // Specify the interactive regions of the title bar.
-
+            if (AppTitleBar.XamlRoot == null) return;
             double scaleAdjustment = AppTitleBar.XamlRoot.RasterizationScale;
             var nonClientInputSrc = InputNonClientPointerSource.GetForWindowId(m_AppWindow.Id);
 
@@ -427,6 +451,10 @@ namespace VK_UI3
         {
             if (ExtendsContentIntoTitleBar == true)
             {
+                this.MainWindow_hideDownload();
+                this.MainWindow_hideRefresh();
+                this.backBTNHide();
+                this.UploadBTN.HideButton();
                 // Set the initial interactive regions.
                 SetRegionsForCustomTitleBar();
             }
@@ -657,7 +685,7 @@ namespace VK_UI3
 
         private void DownLoadBTN_Click(object sender, RoutedEventArgs e)
         {
-            ScaleStoryboard.Begin();
+          
             onDownloadClicked?.RaiseEvent(this, EventArgs.Empty);
         }
 

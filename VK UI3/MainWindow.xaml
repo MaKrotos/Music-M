@@ -12,6 +12,7 @@
     xmlns:custom="using:VK_UI3.Views.Download"
     xmlns:customLogin="using:VK_UI3.Views.LoginWindow"
     xmlns:customBTN="using:VK_UI3.Helpers.Animations"
+    xmlns:upload="using:VK_UI3.Views.Upload"
     xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     mc:Ignorable="d">
     <Window.SystemBackdrop>
@@ -32,6 +33,7 @@
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
+
                 </Grid.ColumnDefinitions>
                 <customBTN:AnimatedButton Grid.Column="0" CornerRadius="5" BorderThickness="0" Click="BackClick" x:Name="BackBTN" Padding="0" Margin="6,0,0,0" Width="35" Height="25" Background="Transparent">
                     <Button.RenderTransform>
@@ -105,27 +107,19 @@
                             <custom:DownloadsList />
                         </Flyout>
                     </Button.Flyout>
-                    <Button.RenderTransformOrigin>
-                        0.5,0.5
-                    </Button.RenderTransformOrigin>
-                    <FontIcon  FontSize="16" Glyph="&#xE896;">
-                        <FontIcon.RenderTransform>
-                            <ScaleTransform x:Name="IconScaleTransform" ScaleX="1" ScaleY="1" />
-                        </FontIcon.RenderTransform>
-                        <FontIcon.RenderTransformOrigin>
-                            0.5,0.5
-                        </FontIcon.RenderTransformOrigin>
-                        <FontIcon.Resources>
-                            <Storyboard x:Name="ProfilesBTNScaleStoryboard">
-                                <DoubleAnimation Storyboard.TargetName="IconScaleTransform"
-                                 Storyboard.TargetProperty="ScaleX"
-                                 From="1" To="0.8" AutoReverse="True" Duration="0:0:0.1" />
-                                <DoubleAnimation Storyboard.TargetName="IconScaleTransform"
-                                 Storyboard.TargetProperty="ScaleY"
-                                 From="1" To="0.8" AutoReverse="True" Duration="0:0:0.1" />
-                            </Storyboard>
-                        </FontIcon.Resources>
-                    </FontIcon>
+                    <FontIcon  FontSize="16" Glyph="&#xE896;"></FontIcon>
+                </customBTN:AnimatedButton>
+
+
+
+                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Column="5" >
+                <customBTN:AnimatedButton CornerRadius="5" Grid.Column="4" x:Name="UploadBTN" VerticalAlignment="Center" HorizontalAlignment="Right" Padding="0" Margin="5,0,0,0" Width="30" Height="25" Background="Transparent">
+                    <Button.Flyout>
+                        <Flyout>
+                            <upload:UploadList />
+                        </Flyout>
+                    </Button.Flyout>
+                        <FontIcon  FontSize="16" Glyph="&#xE898;"></FontIcon>
                 </customBTN:AnimatedButton>
 
                 <customBTN:AnimatedButton CornerRadius="5" Grid.Column="5" HorizontalAlignment="Right" x:Name="ProfilesBTN" Padding="0" Margin="5,0,0,0" Width="30" Height="25" Background="Transparent">
@@ -134,32 +128,9 @@
                             <customLogin:AccountList Margin="-15,-13,-15,-15" Padding="0"/>
                         </Flyout>
                     </Button.Flyout>
-                    <Button.RenderTransform>
-                        <ScaleTransform x:Name="ProfilesBTNScale" ScaleX="1" ScaleY="1" />
-                    </Button.RenderTransform>
-                    <Button.RenderTransformOrigin>
-                        0.5,0.5
-                    </Button.RenderTransformOrigin>
-                    <FontIcon  FontSize="16" Glyph="&#xE77B;">
-                        <FontIcon.RenderTransform>
-                            <ScaleTransform x:Name="ProfilesBTNIconScaleTransform" ScaleX="1" ScaleY="1" />
-                        </FontIcon.RenderTransform>
-                        <FontIcon.RenderTransformOrigin>
-                            0.5,0.5
-                        </FontIcon.RenderTransformOrigin>
-                        <FontIcon.Resources>
-                            <Storyboard x:Name="ScaleStoryboard">
-                                <DoubleAnimation Storyboard.TargetName="ProfilesBTNIconScaleTransform"
-                    Storyboard.TargetProperty="ScaleX"
-                    From="1" To="0.8" AutoReverse="True" Duration="0:0:0.1" />
-                                <DoubleAnimation Storyboard.TargetName="ProfilesBTNIconScaleTransform"
-                    Storyboard.TargetProperty="ScaleY"
-                    From="1" To="0.8" AutoReverse="True" Duration="0:0:0.1" />
-                            </Storyboard>
-                        </FontIcon.Resources>
-                    </FontIcon>
+                    <FontIcon  FontSize="16" Glyph="&#xE77B;"></FontIcon>
                 </customBTN:AnimatedButton>
-                
+                </StackPanel>
             </Grid>
   
         </Grid>

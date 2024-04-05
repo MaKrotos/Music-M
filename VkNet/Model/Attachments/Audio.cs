@@ -28,8 +28,18 @@ namespace VkNet.Model.Attachments
 		[JsonExtensionData]
 		public Dictionary<string, object> AdditionalData { get; set; }
 
+		/// <summary>
+		/// Поиск трека выключен
+		/// </summary>
+        [JsonProperty("no_search")]
+        public bool No_search { get; set; } = false;
 
-		[JsonProperty("dislike")]
+
+
+		/// <summary>
+		/// Посталвен ли дизлайе
+		/// </summary>
+        [JsonProperty("dislike")]
 		public	bool Dislike { get; set; } = false;
         /// <summary>
         /// Название композиции.
@@ -134,10 +144,19 @@ namespace VkNet.Model.Attachments
 		[JsonProperty("featured_artists")]
 		public IEnumerable<AudioArtist> FeaturedArtists { get; set; }
 
-		/// <summary>
-		/// Подзаголовок(?)  композиции.
-		/// </summary>
-		[JsonProperty("subtitle")]
+        //		Key	"release_audio_id"	string
+
+        /// <summary>
+        /// ID оригинала
+        /// </summary>
+		[JsonProperty("release_audio_id")]
+        public string? Release_audio_id { get; set; }
+
+
+        /// <summary>
+        /// Подзаголовок(?)  композиции.
+        /// </summary>
+        [JsonProperty("subtitle")]
 		public string Subtitle { get; set; }
 
 		/// <summary>

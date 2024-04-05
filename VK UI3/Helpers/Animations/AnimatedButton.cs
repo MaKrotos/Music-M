@@ -59,7 +59,6 @@ namespace VK_UI3.Helpers.Animations
             this.Height = (double)newHeight;
 
             stopwatch.Stop();
-            AnimationCompleted?.Invoke();
         }
         public async Task AnimateMargin(Thickness newMargin, TimeSpan duration)
         {
@@ -106,6 +105,7 @@ namespace VK_UI3.Helpers.Animations
             this.Margin = newMargin;
 
             stopwatch.Stop();
+
         }
 
         public async Task HideButton()
@@ -118,12 +118,14 @@ namespace VK_UI3.Helpers.Animations
             }
             await AnimateSize(0, 0, TimeSpan.FromSeconds(0.25));
             await AnimateMargin(new Thickness(0), TimeSpan.FromSeconds(0.25));
+            AnimationCompleted?.Invoke();
         }
 
         public async Task ShowButton()
         {
             await AnimateSize(originalWidth, originalHeight, TimeSpan.FromSeconds(0.25));
             await AnimateMargin(originalMargin.Value, TimeSpan.FromSeconds(0.25));
+            AnimationCompleted?.Invoke();
         }
     }
 }

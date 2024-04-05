@@ -91,7 +91,7 @@ namespace VK_UI3.Views
         private static DispatcherQueue dispatcherQueue = null;
         private void MainView_Loaded(object sender, RoutedEventArgs e)
         {
-            MainWindow.mainWindow.MainWindow_hideDownload();
+         
             //OpenMyPage(SectionType.MyListAudio);
             ContentFrame.Navigated += ContentFrame_Navigated;
       
@@ -108,8 +108,8 @@ namespace VK_UI3.Views
 
             _ = CreateNavigation();
             dispatcherQueue = this.DispatcherQueue;
-
-           MainWindow.mainWindow.MainWindow_showRefresh();
+     
+            MainWindow.mainWindow.MainWindow_showRefresh();
         }
 
         private async void back(object sender, EventArgs e)

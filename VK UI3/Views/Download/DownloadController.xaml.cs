@@ -93,7 +93,9 @@ namespace VK_UI3.Views.Download
             {
                 try
                 {
-                   
+                    if (animationsChangeFontIcon == null) { animationsChangeFontIcon = new AnimationsChangeFontIcon(PlayIcon, this.DispatcherQueue); }
+
+
 
                     if (playListDownload.isPause())
                     {
@@ -105,7 +107,8 @@ namespace VK_UI3.Views.Download
                     }
                     else
                     {
-                        animationsChangeFontIcon.ChangeFontIconWithAnimation("\uE769");
+                      
+                            animationsChangeFontIcon.ChangeFontIconWithAnimation("\uE769");
                     
                         if (!playListDownload.error)
                             DownloadProgressBar.ShowPaused = false;
