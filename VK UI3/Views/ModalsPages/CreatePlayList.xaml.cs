@@ -80,7 +80,7 @@ namespace VK_UI3.Views.ModalsPages
             else
             {
 
-                SaveBTN.Content = "Создать";
+                SaveBTN.Content = "РЎРѕР·РґР°С‚СЊ";
             }
         }
 
@@ -149,7 +149,7 @@ namespace VK_UI3.Views.ModalsPages
                     var storageFile = items[0] as StorageFile;
                     var fileExtension = Path.GetExtension(storageFile.Name).ToLower();
 
-                    // Проверка, является ли файл изображением
+                    // РџСЂРѕРІРµСЂРєР°, СЏРІР»СЏРµС‚СЃСЏ Р»Рё С„Р°Р№Р» РёР·РѕР±СЂР°Р¶РµРЅРёРµРј
                     if (fileExtension == ".jpg" || fileExtension == ".jpeg" || fileExtension == ".png")
                     {
                         animationsChangeImage.ChangeImageWithAnimation(storageFile.Path);
@@ -158,7 +158,7 @@ namespace VK_UI3.Views.ModalsPages
                     }
                     else
                     {
-                        // Обработка случая, когда файл не является изображением
+                        // РћР±СЂР°Р±РѕС‚РєР° СЃР»СѓС‡Р°СЏ, РєРѕРіРґР° С„Р°Р№Р» РЅРµ СЏРІР»СЏРµС‚СЃСЏ РёР·РѕР±СЂР°Р¶РµРЅРёРµРј
                     }
                 }
             }

@@ -113,7 +113,7 @@ namespace VK_UI3.Views.Download
                         if (!playListDownload.error)
                             DownloadProgressBar.ShowPaused = false;
                     }
-                    dx.Text = $"{playListDownload.downloaded} èç {playListDownload.iVKGetAudio.countTracks}";
+                    dx.Text = $"{playListDownload.downloaded} Ð¸Ð· {playListDownload.iVKGetAudio.countTracks}";
 
                 
 
