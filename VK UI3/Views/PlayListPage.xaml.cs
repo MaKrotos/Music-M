@@ -117,11 +117,11 @@ namespace VK_UI3.Views
 
                     if (playlist.Follower != null)
                     {
-                        _ = Task.Run(
-                                 async () =>
-                                 {
-                                     (this.vkGetAudio as PlayListVK).playlist = VK.api.Audio.GetPlaylistById(playlist.Follower.OwnerId, playlist.Follower.PlaylistId);
-                                 });
+                            _ = Task.Run(
+                                async () =>
+                                {
+                                    (this.vkGetAudio as PlayListVK).playlist = VK.api.Audio.GetPlaylistById(playlist.Follower.OwnerId, playlist.Follower.PlaylistId);
+                                });
                     }
 
                     if (!playlist.Permissions.Follow && (playlist.OwnerId != AccountsDB.activeAccount.id || (playlist.Original == null)))
@@ -202,7 +202,7 @@ namespace VK_UI3.Views
 
                 }
                 else
-                {
+                {                       
                     stackPanel.Items.Remove(AddPlaylist);
                     stackPanel.Items.Remove(EditPlaylist);
 
@@ -218,6 +218,12 @@ namespace VK_UI3.Views
                     UploadTrack.Visibility = Visibility.Visible;
                     VK_UI3.Views.Upload.UploadTrack.addedTrack += addedTrack;
            
+                }
+                else 
+                {
+                    stackPanel.Items.Remove(UploadTrack);
+
+
                 }
 
              
@@ -345,10 +351,10 @@ namespace VK_UI3.Views
                              }
                              else
                              {
-                                  var js = await VK.vkService.AddPlaylistAsync(playlist.Id, playlist.OwnerId, playlist.AccessKey);
+                                 var js = await VK.vkService.AddPlaylistAsync(playlist.Id, playlist.OwnerId, playlist.AccessKey);
                                  (vkGetAudio as PlayListVK).playlist = await VK.api.Audio.GetPlaylistByIdAsync((long)js["owner_id"], (long)js["playlist_id"]);
                              }
-                            
+
                          }
                          updateUI();
 

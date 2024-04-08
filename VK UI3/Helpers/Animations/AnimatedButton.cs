@@ -67,10 +67,8 @@ namespace VK_UI3.Helpers.Animations
 
             cts?.Cancel();
             cts = new CancellationTokenSource();
-            var left = Margin.Left;
-            var top = Margin.Top;
-            var right = Margin.Right;
-            var bottom = Margin.Bottom;
+      
+
 
             double leftStep = (newMargin.Left - Margin.Left) / duration.TotalMilliseconds;
             double topStep = (newMargin.Top - Margin.Top) / duration.TotalMilliseconds;
@@ -92,10 +90,10 @@ namespace VK_UI3.Helpers.Animations
 
                 double elapsedMilliseconds = stopwatch.Elapsed.TotalMilliseconds;
                 this.Margin = new Thickness(
-                    left + leftStep * elapsedMilliseconds,
-                    top + topStep * elapsedMilliseconds,
-                    right + rightStep * elapsedMilliseconds,
-                    bottom + bottomStep * elapsedMilliseconds
+                    Margin.Left + leftStep * elapsedMilliseconds,
+                    Margin.Top + topStep * elapsedMilliseconds,
+                    Margin.Right + rightStep * elapsedMilliseconds,
+                    Margin.Bottom + bottomStep * elapsedMilliseconds
                 );
 
 
