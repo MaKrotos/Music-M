@@ -28,8 +28,7 @@
 
                         <!-- Квадратный элемент в первом столбце -->
                         <Grid  Width="250" Height="250"
-  
-    
+ 
     CornerRadius="8" Margin="5" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" Grid.Column="0">
                             <FontIcon Glyph="&#xE90B;" />
                     <Grid   Translation="0,0,24"  x:Name="GridThumbs" Width="250" Height="250">

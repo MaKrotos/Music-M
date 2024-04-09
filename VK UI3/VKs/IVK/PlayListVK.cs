@@ -161,6 +161,24 @@ namespace VK_UI3.VKs.IVK
             });
         }
 
+        public PlayListVK(RecommendedPlaylist _playlist, DispatcherQueue dispatcher) : base(dispatcher)
+        {
+            waitCreate = true;
+            playlist = _playlist.Playlist;
+            foreach (var audio in _playlist.Audios)
+            {
+                listAudioTrue.Add(new ExtendedAudio(audio, this));
+            }
+            countTracks = playlist.Count;
+         
+            _Description = playlist.Description;
+      
+        }
+
+
+
+
+
         public override long? getCount()
         {
             return null;

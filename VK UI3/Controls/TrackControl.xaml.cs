@@ -72,14 +72,12 @@ namespace VK_UI3.Controls
                 dataTrack = (DataContext as ExtendedAudio);
 
                 updateUI();
-              
-           
             }
         }
 
         private void updateUI()
         {
-            this.DispatcherQueue.TryEnqueue(() => {
+          
                 bool isOwner = dataTrack.audio.OwnerId == AccountsDB.activeAccount.id;
 
                 if (dataTrack.audio.Release_audio_id == null && dataTrack.audio.OwnerId == AccountsDB.activeAccount.id)
@@ -226,7 +224,7 @@ namespace VK_UI3.Controls
                     dataTrack.iVKGetAudio.AudioPlayedChangeEvent += UserAudio_AudioPlayedChangeEvent;
                     addedHandler = true;
                 }
-            });
+   
         }
 
         private void SetIconDislike()

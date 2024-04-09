@@ -59,7 +59,14 @@
         <DataTemplate x:Key="music_playlists_list">
             <blocks:ListPlaylists/>
         </DataTemplate>
-       
+
+        <DataTemplate x:Key="music_recommended_playlists">
+            <blocks:RemomendedUsersPlaylist/>
+        </DataTemplate>
+        <DataTemplate x:Key="music_recommended_playlists_list">
+            <blocks:RemomendedUsersPlaylist/>
+        </DataTemplate>
+
 
     </UserControl.Resources>
 

@@ -151,8 +151,6 @@ namespace VK_UI3.Views.Controls
                         }
                     case "open_section":
                         {
-
-
                             MainView.OpenSection(Action.SectionId);
                             break;
                         }
