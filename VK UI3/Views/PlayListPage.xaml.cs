@@ -102,9 +102,7 @@ namespace VK_UI3.Views
 
         private void updateUI(bool load = false)
         {
-            this.DispatcherQueue.TryEnqueue(async () =>
-            {
-               
+           
 
                 SmallHelpers.AddImagesToGrid(GridThumbs, vkGetAudio.getPhotosList(), DispatcherQueue);
                 if (vkGetAudio is (PlayListVK))
@@ -157,6 +155,24 @@ namespace VK_UI3.Views
                             }
                         }
                     }
+                    if (playlist.userOwner != null)
+                    {
+                        ownerGrid.Visibility = Visibility.Visible;
+                        var a= new Helpers.Animations.AnimationsChangeImage(ownerPictire, DispatcherQueue);
+                        a.ChangeImageWithAnimation(playlist.userOwner.Photo100);
+                    }
+                    if (playlist.groupOwner != null)
+                    {
+                        ownerGrid.Visibility = Visibility.Visible;
+                        var a = new Helpers.Animations.AnimationsChangeImage(ownerPictire, DispatcherQueue);
+                        a.ChangeImageWithAnimation(playlist.groupOwner.Photo100);
+                    }
+                    if (playlist.OwnerName != null)
+                    { 
+                        ownerName.Text = playlist.OwnerName;
+                    }
+
+
 
                     if (load)
                         DescriptionText.Text = playlist.Description;
@@ -232,8 +248,7 @@ namespace VK_UI3.Views
                 CountTrText.Visibility = Visibility.Visible;
                 
 
-            });
-
+           
         }
 
         private void addedTrack(object sender, EventArgs e)

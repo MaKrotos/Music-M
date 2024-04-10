@@ -27,14 +27,14 @@ namespace MusicX.Core.Helpers
                             {
                                 var value = response.Groups.SingleOrDefault(g => g.Id == id);
                                 playlist.OwnerName = value?.Name;
-
+                                playlist.groupOwner = value;
                             }
 
                         }
                         else
                         {
                             var value = response.Profiles.SingleOrDefault(p => p.Id == playlist.Original?.OwnerId);
-
+                            playlist.userOwner = value;
                             playlist.OwnerName = value?.FirstName + " " + value?.LastName;
                         }
                     }
@@ -46,14 +46,14 @@ namespace MusicX.Core.Helpers
                             if(response.Groups != null)
                             {
                                 var value = response.Groups.SingleOrDefault(g => g.Id == id);
-
+                                playlist.groupOwner = value;
                                 playlist.OwnerName = value?.Name;
                             }
                         }
                         else
                         {
                             var value = response.Profiles.SingleOrDefault(p => p.Id == playlist?.OwnerId);
-
+                            playlist.userOwner = value;
                             playlist.OwnerName = value?.FirstName + " " + value?.LastName;
                         }
                     }

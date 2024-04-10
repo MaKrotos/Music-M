@@ -9,13 +9,20 @@
     xmlns:local="using:VK_UI3.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Translation="0,0,24"
+    Translation="0,0,8"
 
     RightTapped="UCcontrol_RightTapped"
     Width="Auto"
-    
+
+
+             
     mc:Ignorable="d">
-  
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="SystemControlFocusVisualPrimaryBrush" Color="#FFFFFFFF" />
+        <SolidColorBrush x:Key="SystemControlFocusVisualSecondaryBrush" Color="#FF000000" />
+    </UserControl.Resources>
+
+
     <UserControl.ContextFlyout>
         <MenuFlyout x:Name="flyOutm">
             <MenuFlyoutItem Visibility="Collapsed" x:Name="EditTrack" Text="Редактировать" Click="EditTrack_Click"  Icon="Edit" />
@@ -76,6 +83,8 @@
 
 
     <Grid
+        
+        
         
        Width="Auto"
         x:Name="Card"

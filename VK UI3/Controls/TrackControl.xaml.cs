@@ -224,7 +224,6 @@ namespace VK_UI3.Controls
                     dataTrack.iVKGetAudio.AudioPlayedChangeEvent += UserAudio_AudioPlayedChangeEvent;
                     addedHandler = true;
                 }
-   
         }
 
         private void SetIconDislike()

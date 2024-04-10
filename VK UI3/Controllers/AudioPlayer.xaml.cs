@@ -106,13 +106,6 @@ namespace VK_UI3.Controllers
             get { return _TrackDataThis; }
         }
 
-        /// <summary>
-        /// ///////////////////////
-        /// </summary>
-
-       
-
-
 
 
 
@@ -193,8 +186,6 @@ namespace VK_UI3.Controllers
             oniVKUpdate += AudioPlayer_oniVKUpdate;
 
             this.Loaded += AudioPlayer_Loaded;
-
-
 
 
             TrackDuration = 0;

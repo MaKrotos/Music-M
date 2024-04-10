@@ -37,9 +37,7 @@ namespace VK_UI3.Views.LoginWindow
 
         private void AccountList_Unloaded(object sender, RoutedEventArgs e)
         {
-            this.Loading -= AccountList_Loading;
-            this.Loaded -= AccountList_Loaded;
-            this.Unloaded -= AccountList_Unloaded;
+
             AccountsDB.DeletedAccount -= delaccount;
         }
 
@@ -49,8 +47,6 @@ namespace VK_UI3.Views.LoginWindow
         {
             AccountsDB.DeletedAccount += delaccount;
             updateAccounts();
-            
-
         }
 
         private void delaccount(object sender, EventArgs e)

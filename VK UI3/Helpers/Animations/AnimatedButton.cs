@@ -75,7 +75,13 @@ namespace VK_UI3.Helpers.Animations
             double rightStep = (newMargin.Right - Margin.Right) / duration.TotalMilliseconds;
             double bottomStep = (newMargin.Bottom - Margin.Bottom) / duration.TotalMilliseconds;
 
-        
+
+            var left = Margin.Left;
+            var top = Margin.Top;
+            var right = Margin.Right;
+            var bottom = Margin.Bottom;
+
+
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
@@ -90,10 +96,10 @@ namespace VK_UI3.Helpers.Animations
 
                 double elapsedMilliseconds = stopwatch.Elapsed.TotalMilliseconds;
                 this.Margin = new Thickness(
-                    Margin.Left + leftStep * elapsedMilliseconds,
-                    Margin.Top + topStep * elapsedMilliseconds,
-                    Margin.Right + rightStep * elapsedMilliseconds,
-                    Margin.Bottom + bottomStep * elapsedMilliseconds
+                    left + leftStep * elapsedMilliseconds,
+                    top + topStep * elapsedMilliseconds,
+                    right + rightStep * elapsedMilliseconds,
+                    bottom + bottomStep * elapsedMilliseconds
                 );
 
 

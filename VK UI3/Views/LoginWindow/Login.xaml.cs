@@ -58,7 +58,6 @@ namespace VK_UI3.Views.LoginWindow
             Task task = new Task(() =>
             {
                 loginInvike();
-
             });
              task.RunSynchronously();
             Frame.Navigate(typeof(waitPage), this, new DrillInNavigationTransitionInfo());

@@ -24,7 +24,7 @@
         <!-- Добавляем кнопку "Назад" -->
 
         <StackPanel ScrollViewer.VerticalScrollMode="Enabled" Orientation="Vertical" HorizontalAlignment="Center">
-            <Grid  Width="300" Height="300" DragOver="Grid_DragOver" Drop="PlaylistImage_Drop"  AllowDrop="True" Translation="0,0,24" PointerPressed="PlaylistImage_PointerPressed"  CornerRadius="10" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}">
+            <Grid  Width="300" Height="300" DragOver="Grid_DragOver" Drop="PlaylistImage_Drop"  AllowDrop="True" Translation="0,0,8" PointerPressed="PlaylistImage_PointerPressed"  CornerRadius="10" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}">
                 <Image VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill"   x:Name="PlaylistImage" />
                 <SymbolIcon  Symbol="Edit"/>
             </Grid>

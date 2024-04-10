@@ -22,6 +22,7 @@
             <ListView.Footer>
                 <ProgressRing Width="50" Height="50" Margin="20" x:Name="LoadingIndicator" IsActive="True" />
             </ListView.Footer>
+           
         </ListView>
 
     </ScrollView>

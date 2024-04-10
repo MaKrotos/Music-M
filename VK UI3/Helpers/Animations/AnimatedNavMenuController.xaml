@@ -19,24 +19,24 @@
 
     <controllers:NavMenuController.Resources>
         <Storyboard x:Name="ShowAnimation">
-            <DoubleAnimation Storyboard.TargetName="NavMenuAnim" Storyboard.TargetProperty="ScaleX" From="0" To="1" Duration="0:0:0.15">
+            <DoubleAnimation Storyboard.TargetName="NavMenuAnim" Storyboard.TargetProperty="ScaleX"  To="1" Duration="0:0:0.30">
                 <DoubleAnimation.EasingFunction>
                     <BackEase EasingMode="EaseOut"/>
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
-            <DoubleAnimation Storyboard.TargetName="NavMenuAnim" Storyboard.TargetProperty="ScaleY" From="0" To="1" Duration="0:0:0.15">
+            <DoubleAnimation Storyboard.TargetName="NavMenuAnim" Storyboard.TargetProperty="ScaleY"  To="1" Duration="0:0:0.30">
                 <DoubleAnimation.EasingFunction>
                     <BackEase EasingMode="EaseOut"/>
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
         </Storyboard>
         <Storyboard x:Name="HideAnimation">
-            <DoubleAnimation Storyboard.TargetName="NavMenuAnim" Storyboard.TargetProperty="ScaleX" From="1" To="0" Duration="0:0:0.15">
+            <DoubleAnimation Storyboard.TargetName="NavMenuAnim" Storyboard.TargetProperty="ScaleX"  To="0" Duration="0:0:0.30">
                 <DoubleAnimation.EasingFunction>
                     <BackEase EasingMode="EaseIn"/>
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
-            <DoubleAnimation Storyboard.TargetName="NavMenuAnim" Storyboard.TargetProperty="ScaleY" From="1" To="0" Duration="0:0:0.15">
+            <DoubleAnimation Storyboard.TargetName="NavMenuAnim" Storyboard.TargetProperty="ScaleY"  To="0" Duration="0:0:0.30">
                 <DoubleAnimation.EasingFunction>
                     <BackEase EasingMode="EaseIn"/>
                 </DoubleAnimation.EasingFunction>

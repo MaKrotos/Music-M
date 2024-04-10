@@ -29,5 +29,8 @@ namespace MusicX.Core.Models
         public Playlist Playlist { get; set; }
 
         public List<Audio> Audios { get; set; } = new List<Audio>();
+
+        [JsonExtensionData]
+        public Dictionary<string, object> AdditionalData { get; set; }
     }
 }

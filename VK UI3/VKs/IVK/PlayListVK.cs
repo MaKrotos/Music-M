@@ -51,7 +51,12 @@ namespace VK_UI3.VKs.IVK
                             }
                         }
                     }
+
+               
                     playlist = p.Playlist;
+                    playlist.groupOwner = _playlist.groupOwner;
+                    playlist.userOwner = _playlist.userOwner;
+                    playlist.OwnerName = _playlist.OwnerName;
                     playlist.Audios = new ReadOnlyCollection<VkNet.Model.Attachments.Audio>(p.Audios.Cast<VkNet.Model.Attachments.Audio>().ToList());
 
                     DispatcherQueue.TryEnqueue(() =>
@@ -217,7 +222,7 @@ namespace VK_UI3.VKs.IVK
 
                 if (countTracks > listAudio.Count)
                 {
-                    var response = await VK.vkService.AudioGetAsync(playlist.Id, playlist.OwnerId, playlist.AccessKey, playlist.Count, count);
+                    var response = await VK.vkService.AudioGetAsync(playlist.Id, playlist.OwnerId, playlist.AccessKey, listAudioTrue.Count, count);
 
 
                     foreach (var item in response.Items)
@@ -227,7 +232,7 @@ namespace VK_UI3.VKs.IVK
 
                         DispatcherQueue.TryEnqueue(() =>
                         {
-                            listAudio.Add(extendedAudio);
+                            listAudioTrue.Add(extendedAudio);
                             resetEvent.Set();
                         });
 

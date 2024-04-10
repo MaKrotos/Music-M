@@ -22,6 +22,7 @@ using VK_UI3.Services;
 using VK_UI3.Views.LoginWindow;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
+using VkNet.Model;
 using VkNet.Model.Attachments;
 using Windows.Foundation;
 using static VK_UI3.DB.AccountsDB;
@@ -114,9 +115,10 @@ namespace VK_UI3.Views
 
         private async void back(object sender, EventArgs e)
         {
-            this.DispatcherQueue.TryEnqueue(async() =>
+            this.DispatcherQueue.TryEnqueue(() =>
             {
-                ContentFrame.GoBack();
+                if (ContentFrame.CanGoBack)
+                    ContentFrame.GoBack();
             });
         }
 

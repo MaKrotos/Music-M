@@ -62,10 +62,10 @@ namespace VK_UI3.DB
             set
             {
                 if (_activeAccount == value) return;
-                if (_activeAccount != null && value != null && value.Token != null)
-                ChanhgeActiveAccount?.Invoke(null, null);
-                
+                var old = _activeAccount;
                 _activeAccount = value;
+                if (_activeAccount != null && value != null && value.Token != null)
+                    ChanhgeActiveAccount?.Invoke(null, null);
             }
         }
 

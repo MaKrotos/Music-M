@@ -302,8 +302,6 @@ namespace VK_UI3.VKs
 
                     if (nextStep == null)
                     {
-
-
                         login.Frame.GoBack();
                         return;
                     }

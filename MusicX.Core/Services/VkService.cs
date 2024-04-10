@@ -185,7 +185,7 @@ namespace MusicX.Core.Services
                 logger.Debug("RESULT OF 'catalog.getSection'" + json);
 
 
-                model = JsonConvert.DeserializeObject<ResponseData>(json);
+                    model = JsonConvert.DeserializeObject<ResponseData>(json);
 
                  logger.Info("Successful invoke 'catalog.getSection' ");
 

@@ -9,10 +9,10 @@ using VkNet.Utils.JsonConverter;
 
 namespace VkNet.Model.Attachments
 {
-    /// <summary>
-    /// Плейлист.
-    /// </summary>
-    [Serializable]
+	/// <summary>
+	/// Плейлист.
+	/// </summary>
+	[Serializable]
 	public class AudioPlaylist : MediaAttachment
 	{
 		/// <inheritdoc />
@@ -155,21 +155,24 @@ namespace VkNet.Model.Attachments
 		[JsonProperty("is_explicit")]
 		public bool IsExplicit { get; set; }
 
-        [JsonProperty("exclusive")]
-        public bool Exclusive { get; set; }
+		[JsonProperty("exclusive")]
+		public bool Exclusive { get; set; }
 
 
 
 
 		[JsonProperty("id")]
-        public long Id { get; set; }
+		public long Id { get; set; }
 
-        [JsonProperty("owner_id")]
-        public long OwnerId { get; set; }
+		[JsonProperty("owner_id")]
+		public long OwnerId { get; set; }
 
-        public string? OwnerName { get; set; }
+		public string? OwnerName { get; set; }
 
-      
+		public User? userOwner {get; set;}
+
+		public Group groupOwner { get; set; }
+
 
         [JsonProperty("subtitle_badge")]
         public bool SubtitleBadge { get; set; }
@@ -281,6 +284,10 @@ namespace VkNet.Model.Attachments
 	}
     [Serializable]
     public class Meta {
+
+        [JsonExtensionData]
+        public Dictionary<string, object> AdditionalData { get; set; }
+
         [JsonProperty("view")]
         public string View { get; set; }
     }
@@ -288,6 +295,10 @@ namespace VkNet.Model.Attachments
     [Serializable]
     public class Permissions
     {
+
+        [JsonExtensionData]
+        public Dictionary<string, object> AdditionalData { get; set; }
+
         [JsonProperty("play")]
         public bool Play { get; set; }
 

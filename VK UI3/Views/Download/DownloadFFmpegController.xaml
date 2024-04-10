@@ -8,10 +8,10 @@
     mc:Ignorable="d"
     
     Margin=" 15,5,13,10"
-        Translation="0,0,24"
+        Translation="0,0,8"
     >
 
-    <StackPanel Padding="10" CornerRadius="5"  Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"   Translation="0,0,24" Orientation="Vertical">
+    <StackPanel Padding="10" CornerRadius="5"  Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"   Translation="0,0,8" Orientation="Vertical">
            
         <Grid>
             <Grid.ColumnDefinitions>

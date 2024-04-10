@@ -95,7 +95,7 @@
             </StackPanel>
 
 
-            <Grid  Width="60" Height="60" Translation="0,0,24"
+            <Grid  Width="60" Height="60" Translation="0,0,8"
                    CornerRadius="8" Margin="0,0,8,0" Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}" Grid.Column="0">
                 <FontIcon Glyph="&#xEC4F;" />
                 <Image x:Name="ImageThumb"

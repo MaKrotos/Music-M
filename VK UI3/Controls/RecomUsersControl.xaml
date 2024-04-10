@@ -7,37 +7,89 @@
     xmlns:local="using:VK_UI3.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Width="300"
+    Width="275"
 
-    Margin="3,0,4,6"
-    Translation="0,0,24"
-    Height="325"
+    Margin="3,0,4,0"
+    
+   
+   
+
     mc:Ignorable="d">
     <UserControl.Shadow>
         <ThemeShadow />
     </UserControl.Shadow>
-    <StackPanel Padding="0">
-        <StackPanel  CornerRadius="10" Margin="10" Padding="10" Translation="0,0,24" Background="SeaGreen" VerticalAlignment="Top">
-            <TextBlock FontFamily="{StaticResource VKSansDemiBold}" FontSize="14" FontWeight="Bold">97%</TextBlock>
-            <TextBlock Margin="0,0,0,10" Opacity="0.6" FontFamily="{StaticResource VKSansRegular}" TextWrapping="Wrap" FontSize="12">Совпадение с Вашим вкусом</TextBlock>
-            <TextBlock FontWeight="Bold" Margin="0,0,0,5"  Opacity="1" FontFamily="{StaticResource VKSansDemiBold}" TextWrapping="Wrap" FontSize="12">Название</TextBlock>
-            <StackPanel Orientation="Horizontal">
-                <Grid Background="Red" Width="20" Height="20" CornerRadius="10">
-                    <Image></Image>
+    <StackPanel
+        Margin="0"
+        Height="320"
+   
+       
+        Padding="0">
+
+        <StackPanel 
+            PointerEntered="StackPanel_PointerEntered"
+            PointerExited="StackPanel_PointerExited"
+            PointerPressed="StackPanel_PointerPressed"
+            Translation="0,0,8"  CornerRadius="5" Margin="0,0,0,10" Padding="10"  VerticalAlignment="Top">
+            <StackPanel.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop x:Name="gradStart"  Offset="0.0"/>
+                    <GradientStop  x:Name="gradStop"  Offset="1.0"/>
+                </LinearGradientBrush>
+            </StackPanel.Background>
+
+            <StackPanel.RenderTransform>
+                <ScaleTransform x:Name="scaleTransform" ScaleX="1" ScaleY="1"/>
+            </StackPanel.RenderTransform>
+            <StackPanel.RenderTransformOrigin>
+                0.5,0.5
+            </StackPanel.RenderTransformOrigin>
+            <StackPanel.Resources>
+                <Storyboard x:Name="ShowAnimation">
+                    <DoubleAnimation Storyboard.TargetName="scaleTransform" Storyboard.TargetProperty="ScaleX"  To="0.95" Duration="0:0:0.15">
+                        <DoubleAnimation.EasingFunction>
+                            <ExponentialEase EasingMode="EaseOut"/>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                    <DoubleAnimation Storyboard.TargetName="scaleTransform" Storyboard.TargetProperty="ScaleY"  To="0.95" Duration="0:0:0.15">
+                        <DoubleAnimation.EasingFunction>
+                            <ExponentialEase EasingMode="EaseOut"/>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                </Storyboard>
+                <Storyboard x:Name="HideAnimation">
+                    <DoubleAnimation Storyboard.TargetName="scaleTransform" Storyboard.TargetProperty="ScaleX"  To="1" Duration="0:0:0.15">
+                        <DoubleAnimation.EasingFunction>
+                            <ExponentialEase EasingMode="EaseIn"/>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                    <DoubleAnimation Storyboard.TargetName="scaleTransform" Storyboard.TargetProperty="ScaleY"  To="1" Duration="0:0:0.15">
+                        <DoubleAnimation.EasingFunction>
+                            <ExponentialEase EasingMode="EaseIn"/>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                </Storyboard>
+            </StackPanel.Resources>
+
+                <TextBlock Foreground="White" x:Name="PercentsTXT" FontFamily="{StaticResource VKSansDemiBold}" FontSize="14" FontWeight="Bold">97%</TextBlock>
+            <TextBlock Foreground="White" x:Name="PercentsDescrTXT" Margin="0,0,0,10" Opacity="0.6" FontFamily="{StaticResource VKSansRegular}" TextWrapping="Wrap" FontSize="12">Совпадение с Вашим вкусом</TextBlock>
+            <TextBlock Foreground="White" x:Name="PlayListNameTXT" FontWeight="Bold" Margin="0,0,0,5"  Opacity="1" FontFamily="{StaticResource VKSansDemiBold}" TextWrapping="Wrap" FontSize="12">Название</TextBlock>
+            <StackPanel  Orientation="Horizontal">
+                <Grid Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" Width="20" Height="20" CornerRadius="100">
+                    <Image x:Name="AvatarImage"></Image>
                 </Grid>
-                <TextBlock Margin="5,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"   Opacity="0.7" FontFamily="{StaticResource VKSansRegular}" TextWrapping="Wrap" FontSize="12">Дмитрий Куков</TextBlock>
+                <TextBlock x:Name="UserNameTXT" Margin="5,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"   Opacity="0.7" FontFamily="{StaticResource VKSansRegular}" TextWrapping="Wrap" FontSize="12">Дмитрий Куков</TextBlock>
             </StackPanel>
-          
         </StackPanel>
 
-        <ListView  Padding="0"  CanReorderItems="false" x:Name="TrackListView" ItemsSource="{x:Bind extendedAudios, Mode=OneWay}"   IsItemClickEnabled="False" SelectionMode="None">
+        <ListView  Margin="0,0,0,-10" Padding="0"  CanReorderItems="false" x:Name="TrackListView" ItemsSource="{x:Bind extendedAudios, Mode=OneWay}"   IsItemClickEnabled="False" SelectionMode="None">
 
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <local:TrackControl
+                    <local:TrackControl 
             FocusVisualPrimaryBrush="Transparent"
             FocusVisualSecondaryThickness="0"
-            Margin="-6,0,0,8"
+            Margin="-16,0,-12,8"
+                        
         ></local:TrackControl>
                 </DataTemplate>
             </ListView.ItemTemplate>

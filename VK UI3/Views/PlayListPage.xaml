@@ -31,7 +31,7 @@
  
     CornerRadius="8" Margin="5" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" Grid.Column="0">
                             <FontIcon Glyph="&#xE90B;" />
-                    <Grid   Translation="0,0,24"  x:Name="GridThumbs" Width="250" Height="250">
+                    <Grid   Translation="0,0,8"  x:Name="GridThumbs" Width="250" Height="250">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
@@ -43,9 +43,14 @@
                         </Grid.ColumnDefinitions>
 
                     </Grid>
+
+                    <StackPanel  Background="{ThemeResource CustomAcrylicInAppBrush}"  Visibility="Collapsed" CornerRadius="10" x:Name="ownerGrid" Orientation="Horizontal" VerticalAlignment="Bottom" Margin="10" Padding="10" >
+                        <Grid  Width="30" Height="30"  Margin="0,0,5,0" CornerRadius="100" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}">
+                            <Image  VerticalAlignment="Center" Width="30" Height="30" x:Name="ownerPictire"></Image></Grid>
+                        <TextBlock MaxWidth="170" MaxHeight="40" Foreground="White"  FontFamily="{StaticResource VKSansMedium}"    TextWrapping="Wrap" TextTrimming="CharacterEllipsis" x:Name="ownerName" VerticalAlignment="Center"></TextBlock>
+                    </StackPanel>
                 </Grid>
 
-                        <!-- Элемент, заполняющий оставшееся пространство во втором столбце -->
                         <StackPanel Grid.Column="1" Margin="20,0,0,0">
                             <ScrollViewer Margin="0,30,20,0"
                   HorizontalAlignment="Left"

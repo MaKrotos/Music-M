@@ -47,8 +47,5 @@ namespace VK_UI3.Views.Download
                 TrackListView.Header = header;
             }
         }
-
-
-        
     }
 }

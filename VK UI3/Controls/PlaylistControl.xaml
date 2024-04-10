@@ -13,7 +13,7 @@
     CornerRadius="8"   
     
   
-    Translation="0,0,24"
+    Translation="0,0,8"
     Height="260"
     Margin="3,0,4,6"
 
@@ -87,7 +87,7 @@ To="0" Duration="0:0:0.25"/>
 
                 <Grid    Padding="10">
                     <Grid Opacity="0" x:Name="btnGrid" Width="50" CornerRadius="100" Height="50" Background="{ThemeResource SystemControlBackgroundAltMediumHighBrush}"  VerticalAlignment="Bottom" HorizontalAlignment="Right">
-                        <Button Click="Button_Click"  Translation="0,0,24" Opacity="1" Width="50" CornerRadius="50" Height="50"  HorizontalAlignment="Center" VerticalAlignment="Center" >
+                        <Button Click="Button_Click"  Translation="0,0,8" Opacity="1" Width="50" CornerRadius="50" Height="50"  HorizontalAlignment="Center" VerticalAlignment="Center" >
                             <FontIcon x:Name="PlayPause"  Glyph="&#xF5B0;"
                         HorizontalAlignment="Center" VerticalAlignment="Center"
                    />
