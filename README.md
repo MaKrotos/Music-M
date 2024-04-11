@@ -15,5 +15,6 @@
 ![image](https://github.com/MaKrotos/Music-M/assets/43302537/5582b44b-0c42-4cf7-bb0c-955e8c69bbb7)
 
 
+
 Отдельная благодарность [Fooxboy/MusicX-WPF](https://github.com/Fooxboy/MusicX-WPF)https://github.com/Fooxboy/MusicX-WPF
 Много чего скопипасчено именно от сюда.
