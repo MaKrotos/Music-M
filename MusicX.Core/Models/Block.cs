@@ -95,7 +95,11 @@ namespace MusicX.Core.Models
         public List<Curator> Curators { get; set; } = new List<Curator>();
         public List<Text> Texts { get; set; } = new List<Text>();
         public List<Audio> Audios { get; set; } = new List<Audio>();
+
+        [JsonProperty("Playlists")]
         public List<Playlist> Playlists { get; set; } = new List<Playlist>();
+
+        [JsonProperty("Banners")]
         public List<CatalogBanner> Banners { get; set; } = new List<CatalogBanner>();
         public List<Link> Links { get; set; } = new List<Link>();
         public List<Suggestion> Suggestions { get; set; } = new List<Suggestion>();

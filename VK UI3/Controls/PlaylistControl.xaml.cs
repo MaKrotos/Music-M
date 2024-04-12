@@ -223,7 +223,7 @@ namespace VK_UI3.Controls
 
             if (_PlayList.Cover != null)
             {
-                SmallHelpers.AddImagesToGrid(GridThumbs, _PlayList.Cover, this.DispatcherQueue);
+                GridThumbs.AddImagesToGrid(_PlayList.Cover);
             }
             else if (_PlayList.Thumbs != null)
             {
@@ -236,7 +236,7 @@ namespace VK_UI3.Controls
                     list.Add(photo);
                     index++;
                 }
-                SmallHelpers.AddImagesToGrid(GridThumbs, list, this.DispatcherQueue);
+                GridThumbs.AddImagesToGrid(list);
             }
            
 
@@ -367,6 +367,7 @@ namespace VK_UI3.Controls
 
                 try
                 {
+                    if (dialog != null)
                     dialog.Hide();
                     dialog = null;
                 }

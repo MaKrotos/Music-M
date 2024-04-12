@@ -9,6 +9,7 @@ using Windows.UI;
 using System.Drawing;
 using Microsoft.UI.Xaml.Input;
 using VK_UI3.Views;
+using TagLib.Ape;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -72,7 +73,7 @@ namespace VK_UI3.Controls
                 animationsChangeImage.ChangeImageWithAnimation(_PlayList.Playlist.groupOwner.Photo100);
             }
             UserNameTXT.Text = _PlayList.Playlist.OwnerName;
-
+            extendedAudios.Clear();
             foreach (var item in playListVK.listAudioTrue)
             {
                 extendedAudios.Add(item);

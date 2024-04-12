@@ -24,7 +24,7 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Grid Height="30">
+        <Grid Padding="6.5,2.5,2.5,2.5" Height="30">
             <Grid Margin="0,0,140,0" Height="30" Padding="0,0,0,0"  x:Name="AppTitleBar" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Top">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -35,7 +35,18 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
 
                 </Grid.ColumnDefinitions>
-                <customBTN:AnimatedButton Grid.Column="0" CornerRadius="5" BorderThickness="0" Click="BackClick" x:Name="BackBTN" Padding="0" Margin="6,0,0,0" Width="35" Height="25" Background="Transparent">
+                <customBTN:AnimatedButton 
+                    Grid.Column="0" 
+                    CornerRadius="5" 
+                    BorderThickness="0" 
+                    Click="BackClick" 
+                    x:Name="BackBTN" 
+                    Padding="0" 
+                    Margin="0,0,0,0" 
+                    OriginalMargin="0,0,0,5"
+                    Width="0" Height="0" 
+                    OriginalWidth="35" OriginalHeight="25" 
+                    Background="Transparent">
                     <Button.RenderTransform>
                         <TransformGroup>
                             <ScaleTransform x:Name="BackBTNScale" ScaleX="1" ScaleY="1" />
@@ -67,7 +78,17 @@
                         </FontIcon.Resources>
                     </FontIcon>
                 </customBTN:AnimatedButton>
-                <customBTN:AnimatedButton Grid.Column="1" CornerRadius="5" BorderThickness="0"  x:Name="AnimatedButton" Padding="0" Margin="5,0,0,0" Width="35" Height="25" Background="Transparent" Click="RefreshClick_Click">
+                <customBTN:AnimatedButton 
+                    Grid.Column="1" 
+                    CornerRadius="5" 
+                    BorderThickness="0"  
+                    x:Name="AnimatedButton" 
+                    Padding="0" 
+                    Margin="0,0,0,0" 
+                    OriginalMargin="0,0,0,5"
+                    Width="0" Height="0" 
+                    OriginalWidth="35" OriginalHeight="25" 
+                    Background="Transparent" Click="RefreshClick_Click">
                     <Button.RenderTransform>
                         <ScaleTransform x:Name="AnimatedButtonScaleTransform" ScaleX="1" ScaleY="1" />
                     </Button.RenderTransform>
@@ -101,7 +122,18 @@
                 <ImageIcon Grid.Column="2" x:Name="TitIcon" Width="20" Height="20" Margin="5"  Source="ms-appx:///Assets/StoreLogo.scale-400.png" />
                 <TextBlock Grid.Column="3" Text="VK M" x:Name="AppTitle"  VerticalAlignment="Center" HorizontalAlignment="Left"  />
 
-                <customBTN:AnimatedButton CornerRadius="5" Grid.Column="4" x:Name="DownLoadBTN" VerticalAlignment="Center" HorizontalAlignment="Right" Padding="0" Margin="5,0,0,0" Width="30" Height="25" Background="Transparent">
+                <customBTN:AnimatedButton 
+                    CornerRadius="5" 
+                    Grid.Column="4" 
+                    x:Name="DownLoadBTN" 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Right" 
+                    Padding="0" 
+                    Margin="0,0,0,0" 
+                    OriginalMargin="5,0,0,5"
+                    Width="0" Height="0" 
+                    OriginalWidth="35" OriginalHeight="25" 
+                    Background="Transparent">
                     <Button.Flyout>
                         <Flyout>
                             <custom:DownloadsList />
@@ -113,7 +145,18 @@
 
 
                 <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Column="5" >
-                <customBTN:AnimatedButton CornerRadius="5" Grid.Column="4" x:Name="UploadBTN" VerticalAlignment="Center" HorizontalAlignment="Right" Padding="0" Margin="5,0,0,0" Width="30" Height="25" Background="Transparent">
+                <customBTN:AnimatedButton 
+                    CornerRadius="5" 
+                    Grid.Column="4" 
+                    x:Name="UploadBTN" 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Right" 
+                    Padding="0" 
+                    Margin="0,0,0,0" 
+                    OriginalMargin="0,0,0,5"
+                    Width="0" Height="0" 
+                    OriginalWidth="35" OriginalHeight="25" 
+                    Background="Transparent">
                     <Button.Flyout>
                         <Flyout>
                             <upload:UploadList />
@@ -122,7 +165,15 @@
                         <FontIcon  FontSize="16" Glyph="&#xE898;"></FontIcon>
                 </customBTN:AnimatedButton>
 
-                <customBTN:AnimatedButton CornerRadius="5" Grid.Column="5" HorizontalAlignment="Right" x:Name="ProfilesBTN" Padding="0" Margin="5,0,0,0" Width="30" Height="25" Background="Transparent">
+                <customBTN:AnimatedButton 
+                    CornerRadius="5" 
+                    Grid.Column="5" 
+                    HorizontalAlignment="Right" 
+                    x:Name="ProfilesBTN" 
+                    Padding="0" 
+                    Margin="0,0,0,5" 
+                    Width="30" Height="25" 
+                    Background="Transparent">
                     <Button.Flyout>
                         <Flyout>
                             <customLogin:AccountList Margin="-15,-13,-15,-15" Padding="0"/>

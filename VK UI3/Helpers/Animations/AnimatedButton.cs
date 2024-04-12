@@ -12,12 +12,40 @@ namespace VK_UI3.Helpers.Animations
 {
     public class AnimatedButton : Button
     {
-        private double? originalWidth = null;
-        private double? originalHeight = null;
-        private Thickness? originalMargin = null;
+      
+     
         private CancellationTokenSource cts;
 
-      
+        public static readonly DependencyProperty OriginalWidthProperty = DependencyProperty.Register(
+          "OriginalWidth", typeof(double), typeof(AnimatedButton), new PropertyMetadata(default(double)));
+
+        public double? OriginalWidth
+        {
+            get { return (double)GetValue(OriginalWidthProperty); }
+            set { SetValue(OriginalWidthProperty, value); }
+        }
+
+        public static readonly DependencyProperty OriginalHeightProperty = DependencyProperty.Register(
+            "OriginalHeight", typeof(double), typeof(AnimatedButton), new PropertyMetadata(default(double)));
+
+        public double? OriginalHeight
+        {
+            get { return (double)GetValue(OriginalHeightProperty); }
+            set { SetValue(OriginalHeightProperty, value); }
+        }
+
+        public static readonly DependencyProperty OriginalMarginProperty = DependencyProperty.Register(
+    "OriginalMargin", typeof(Thickness), typeof(AnimatedButton), new PropertyMetadata(default(Thickness)));
+
+        public Thickness? OriginalMargin
+        {
+            get { return (Thickness)GetValue(OriginalMarginProperty); }
+            set { SetValue(OriginalMarginProperty, value); }
+        }
+
+
+
+
         public event Action AnimationCompleted;
         public async Task AnimateSize(double? newWidth, double? newHeight, TimeSpan duration)
         {
@@ -114,11 +142,11 @@ namespace VK_UI3.Helpers.Animations
 
         public async Task HideButton()
         {
-            if (originalHeight == null && originalWidth == null && originalMargin == null)
+            if (OriginalHeight == null && OriginalWidth == null && OriginalMargin == null)
             {
-                originalWidth = this.Width;
-                originalHeight = this.Height;
-                originalMargin = this.Margin;
+                OriginalWidth = this.Width;
+                OriginalHeight = this.Height;
+                OriginalMargin = this.Margin;
             }
             await AnimateSize(0, 0, TimeSpan.FromSeconds(0.25));
             await AnimateMargin(new Thickness(0), TimeSpan.FromSeconds(0.25));
@@ -127,8 +155,8 @@ namespace VK_UI3.Helpers.Animations
 
         public async Task ShowButton()
         {
-            await AnimateSize(originalWidth, originalHeight, TimeSpan.FromSeconds(0.25));
-            await AnimateMargin(originalMargin.Value, TimeSpan.FromSeconds(0.25));
+            await AnimateSize(OriginalWidth, OriginalHeight, TimeSpan.FromSeconds(0.25));
+            await AnimateMargin(OriginalMargin.Value, TimeSpan.FromSeconds(0.25));
             AnimationCompleted?.Invoke();
         }
     }

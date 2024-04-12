@@ -185,12 +185,15 @@ namespace MusicX.Core.Services
                 logger.Debug("RESULT OF 'catalog.getSection'" + json);
 
 
-                    model = JsonConvert.DeserializeObject<ResponseData>(json);
-
-                 logger.Info("Successful invoke 'catalog.getSection' ");
 
 
-                return model.Proccess();
+
+                model = JsonConvert.DeserializeObject<ResponseData>(json);
+
+                logger.Info("Successful invoke 'catalog.getSection' ");
+                var a = model.Proccess();
+
+                return a;
             }catch (Exception ex)
             {
                 logger.Error("VK API ERROR:");
@@ -304,6 +307,44 @@ namespace MusicX.Core.Services
                 throw;
             }
         }
+
+
+
+
+        public async Task<ResponseData> GetAudioUser(string userId)
+        {
+            try
+            {
+                logger.Info($"Invoke 'catalog.getAudio' with artistId = '{userId}' ");
+
+                var parameters = new VkParameters
+                {
+                    {"extended", "1"},
+                    {"device_id", await _deviceIdStore.GetDeviceIdAsync()},
+                    {"owner_id", userId}
+                };
+
+
+                var json = await apiInvoke.InvokeAsync("catalog.getAudio", parameters);
+                logger.Debug("RESULT OF 'catalog.getAudio'" + json);
+
+
+                var model = JsonConvert.DeserializeObject<ResponseData>(json);
+
+                logger.Info("Successful invoke 'catalog.getAudio' ");
+
+
+                return model.Proccess();
+            }
+            catch (Exception ex)
+            {
+                logger.Error("VK API ERROR:");
+                logger.Error(ex, ex.Message);
+                throw;
+            }
+        }
+
+
 
         public async Task<ResponseData> GetAudioCuratorAsync(string curatorId, string url)
         {

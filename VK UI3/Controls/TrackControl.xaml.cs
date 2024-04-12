@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Threading.Tasks;
 using VK_UI3.Controllers;
 using VK_UI3.Converters;
@@ -58,19 +59,32 @@ namespace VK_UI3.Controls
             Loaded -= TrackControl_Loaded;
             Unloaded -= TrackControl_Unloaded;
         }
-
+        string? berImageLink = "";
+        
         private void TrackControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
-            ImageThumb.Opacity = 0;
             if ((DataContext as ExtendedAudio) != null)
             {
-
+             
+            
                 var track = (DataContext as ExtendedAudio).audio;
                 if (track == null)
                     return;
 
-                dataTrack = (DataContext as ExtendedAudio);
+              
 
+                dataTrack = (DataContext as ExtendedAudio);
+                string? newLink = "";
+                if (dataTrack.audio.Album != null)
+                 newLink = dataTrack.audio.Album.Thumb.Photo270 ??
+                  dataTrack.audio.Album.Thumb.Photo300 ??
+                  dataTrack.audio.Album.Thumb.Photo600 ??
+                  dataTrack.audio.Album.Thumb.Photo34 ??
+                  null;
+                if (berImageLink != newLink) {
+                    ImageThumb.Opacity = 0;
+                }
+                berImageLink = newLink;
                 updateUI();
             }
         }
@@ -87,7 +101,7 @@ namespace VK_UI3.Controls
                 }
                 else EditTrack.Visibility = Visibility.Collapsed;
                 AddRemove.Visibility = Visibility.Visible;
-                AddRemove.Text = isOwner ? "Удалить" : "Добавить";
+                AddRemove.Text = isOwner ? "Удалить" : "Добавить к себе";
                 AddRemove.Icon = new SymbolIcon(isOwner ? Symbol.Delete : Symbol.Add);
 
                 if (dataTrack.iVKGetAudio is PlayListVK aplaylist && aplaylist.playlist.Permissions.Edit)
@@ -110,13 +124,9 @@ namespace VK_UI3.Controls
 
 
                 if (dataTrack.audio.Album != null && dataTrack.audio.Album.Thumb != null)
-                {
-                    photouri = dataTrack.audio.Album.Thumb.Photo270 ??
-                    dataTrack.audio.Album.Thumb.Photo300 ??
-                    dataTrack.audio.Album.Thumb.Photo600 ??
-                    dataTrack.audio.Album.Thumb.Photo34 ??
-                    null;
-                    if (photouri == null || photouri == "")
+            {
+               
+                    if (berImageLink == null || berImageLink == "")
                     {
                         ImageThumbGrid.Opacity = 0;
                     }
@@ -125,7 +135,7 @@ namespace VK_UI3.Controls
                         ImageThumbGrid.Opacity = 1;
 
                         changeImage.ChangeImageWithAnimation(
-                            photouri, true
+                            berImageLink, true
                          );
                     }
                 }
@@ -283,12 +293,6 @@ namespace VK_UI3.Controls
 
         ExtendedAudio dataTrack = null;
         bool addedHandler = false;
-
-
-
-
-
-        string photouri = null;
 
       
         AnimationsChangeImage changeImage = null;
@@ -612,6 +616,7 @@ namespace VK_UI3.Controls
 
             a.cancelPressed+=((s, e) =>
             {
+                if (dialog != null)
                 dialog.Hide();
                 dialog = null;
 
@@ -691,6 +696,7 @@ namespace VK_UI3.Controls
             EventHandler handler = null;
             handler = (s, e) =>
             {
+                if (dialog != null)
                 dialog.Hide();
                
             //    a.selectedPlayList -= handler; // Отписка от события
@@ -761,6 +767,7 @@ namespace VK_UI3.Controls
             EventHandler handler = null;
             handler = (s, e) =>
             {
+                if (dialog != null)
                 dialog.Hide();
                 if (s is Audio ss)
                 {

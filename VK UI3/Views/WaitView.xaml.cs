@@ -106,6 +106,21 @@ namespace VK_UI3.Views
             }
         }
 
+
+        private async Task LoadUserCestion(string ownerID)
+        {
+            try
+            {
+                var artist = await VK.vkService.GetAudioUser(ownerID);
+                loadSection(artist.Catalog.DefaultSection);
+            }
+            catch (Exception ex)
+            {
+                AppCenterHelper.SendCrash(ex);
+
+            }
+        }
+
         private async Task LoadSearchSection(string query)
         {
             try
@@ -161,6 +176,7 @@ namespace VK_UI3.Views
                 {
                     SectionType.None => loadSection(waitParameters.SectionID),
                     SectionType.Artist => LoadArtistSection(waitParameters.SectionID),
+                    SectionType.UserSection => LoadUserCestion(waitParameters.SectionID),
                     SectionType.Search => LoadSearchSection(waitParameters.SectionID),
                     SectionType.PlayList => LoadPlayList(handlerContainer),
                     SectionType.UserPlayListList => UserPlayListList(),

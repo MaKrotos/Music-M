@@ -165,6 +165,7 @@ namespace VK_UI3.Views.LoginWindow
                 {
                     // Выполните действие, которое вы хотите выполнить при нажатии Enter
                     result = inputTextBox.Text;
+                    if (dialog != null)
                     dialog.Hide();
                 }
             };

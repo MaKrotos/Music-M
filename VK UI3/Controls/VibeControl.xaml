@@ -11,7 +11,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Width="200"
     CornerRadius="8"   
-    
+    xmlns:custom="using:VK_UI3.Helpers.Animations"
   
     Translation="0,0,8"
     Height="60"
@@ -62,7 +62,7 @@ To="0" Duration="0:0:0.25"/>
                 <Grid >
                     <FontIcon Glyph="&#xE90B;" />
                     <Grid x:Name="fadeOp" Opacity="0" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}">
-                        <Grid VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="GridThumbs"  >
+                        <custom:GridImagesCustom VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="GridThumbs"  >
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="*"/>
@@ -72,7 +72,7 @@ To="0" Duration="0:0:0.25"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                        </Grid>
+                        </custom:GridImagesCustom>
                     </Grid>
                 </Grid>
 

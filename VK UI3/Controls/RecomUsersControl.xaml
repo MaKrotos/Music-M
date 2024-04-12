@@ -20,7 +20,7 @@
     </UserControl.Shadow>
     <StackPanel
         Margin="0"
-        Height="320"
+        Height="310"
    
        
         Padding="0">
@@ -45,12 +45,12 @@
             </StackPanel.RenderTransformOrigin>
             <StackPanel.Resources>
                 <Storyboard x:Name="ShowAnimation">
-                    <DoubleAnimation Storyboard.TargetName="scaleTransform" Storyboard.TargetProperty="ScaleX"  To="0.95" Duration="0:0:0.15">
+                    <DoubleAnimation Storyboard.TargetName="scaleTransform" Storyboard.TargetProperty="ScaleX"  To="0.975" Duration="0:0:0.15">
                         <DoubleAnimation.EasingFunction>
                             <ExponentialEase EasingMode="EaseOut"/>
                         </DoubleAnimation.EasingFunction>
                     </DoubleAnimation>
-                    <DoubleAnimation Storyboard.TargetName="scaleTransform" Storyboard.TargetProperty="ScaleY"  To="0.95" Duration="0:0:0.15">
+                    <DoubleAnimation Storyboard.TargetName="scaleTransform" Storyboard.TargetProperty="ScaleY"  To="0.975" Duration="0:0:0.15">
                         <DoubleAnimation.EasingFunction>
                             <ExponentialEase EasingMode="EaseOut"/>
                         </DoubleAnimation.EasingFunction>

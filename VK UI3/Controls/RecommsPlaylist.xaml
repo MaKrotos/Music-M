@@ -10,6 +10,7 @@
     xmlns:local="using:VK_UI3.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:custom="using:VK_UI3.Helpers.Animations"
     Width="198"
     Margin="3,0,4,6"
     Translation="0,0,8"
@@ -62,7 +63,7 @@ To="0" Duration="0:0:0.25"/>
         <Grid >
             <FontIcon Glyph="&#xE90B;" />
             <Grid x:Name="fadeOp" Opacity="0" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}">
-                <Grid x:Name="GridThumbs"  >
+                <custom:GridImagesCustom x:Name="GridThumbs"  >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
@@ -72,7 +73,7 @@ To="0" Duration="0:0:0.25"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                </Grid>
+                </custom:GridImagesCustom>
             </Grid>
         </Grid>
 

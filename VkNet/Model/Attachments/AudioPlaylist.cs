@@ -169,9 +169,11 @@ namespace VkNet.Model.Attachments
 
 		public string? OwnerName { get; set; }
 
-		public User? userOwner {get; set;}
+        [JsonProperty("userOwner")]
+        public User? userOwner {get; set;}
 
-		public Group groupOwner { get; set; }
+        [JsonProperty("groupOwner")]
+        public Group groupOwner { get; set; }
 
 
         [JsonProperty("subtitle_badge")]

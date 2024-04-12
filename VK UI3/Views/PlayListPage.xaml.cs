@@ -48,7 +48,6 @@ namespace VK_UI3.Views
             if (scrollViewer != null) scrollViewer.ViewChanged -= ScrollViewer_ViewChanged;
             if (vkGetAudio != null)
             {
-               
                 vkGetAudio.onPhotoUpdated.RemoveHandler(VkGetAudio_onPhotoUpdated);
                 vkGetAudio.onListUpdate-=(VkGetAudio_onListUpdate);
                 vkGetAudio.onNameUpdated.RemoveHandler(VkGetAudio_onNameUpdated);
@@ -104,7 +103,7 @@ namespace VK_UI3.Views
         {
            
 
-                SmallHelpers.AddImagesToGrid(GridThumbs, vkGetAudio.getPhotosList(), DispatcherQueue);
+                GridThumbs.AddImagesToGrid(vkGetAudio.getPhotosList());
                 if (vkGetAudio is (PlayListVK))
                 {
                     var playlist = (vkGetAudio as PlayListVK).playlist;
@@ -155,22 +154,24 @@ namespace VK_UI3.Views
                             }
                         }
                     }
+
+                string qownerName = "";
                     if (playlist.userOwner != null)
                     {
                         ownerGrid.Visibility = Visibility.Visible;
                         var a= new Helpers.Animations.AnimationsChangeImage(ownerPictire, DispatcherQueue);
                         a.ChangeImageWithAnimation(playlist.userOwner.Photo100);
+                    qownerName = playlist.userOwner.FirstName + " " + playlist.userOwner.LastName;
                     }
                     if (playlist.groupOwner != null)
                     {
                         ownerGrid.Visibility = Visibility.Visible;
                         var a = new Helpers.Animations.AnimationsChangeImage(ownerPictire, DispatcherQueue);
                         a.ChangeImageWithAnimation(playlist.groupOwner.Photo100);
+                    qownerName = playlist.groupOwner.Name;
                     }
-                    if (playlist.OwnerName != null)
-                    { 
-                        ownerName.Text = playlist.OwnerName;
-                    }
+                ownerName.Text = qownerName;
+               
 
 
 
@@ -285,7 +286,7 @@ namespace VK_UI3.Views
     
         private void VkGetAudio_onPhotoUpdated(object sender, EventArgs e)
         {
-            SmallHelpers.AddImagesToGrid(GridThumbs, vkGetAudio.getPhotosList(), DispatcherQueue);
+            GridThumbs.AddImagesToGrid(vkGetAudio.getPhotosList());
         }
 
       
@@ -413,6 +414,7 @@ namespace VK_UI3.Views
                 }
                 try
                 {
+                    if (dialog != null)
                     dialog.Hide();
                     dialog = null;
                 }
@@ -511,6 +513,7 @@ namespace VK_UI3.Views
                 EventHandler handler = null;
                 handler = (s, e) =>
                 {
+                    if (dialog != null)
                     dialog.Hide();
                     //    a.selectedPlayList -= handler; // Отписка от события
                 };
@@ -559,10 +562,10 @@ namespace VK_UI3.Views
 
 
                     _ = Task.Run(
-                                   async () =>
-                                   {
-                                       new PlayListDownload(vkGetAudio, folder.Path, this.DispatcherQueue);
-                                   });
+                        async () =>
+                        {
+                            new PlayListDownload(vkGetAudio, folder.Path, this.DispatcherQueue);
+                        });
                 }
                 else
                 {
@@ -571,6 +574,23 @@ namespace VK_UI3.Views
             }catch (Exception ex)
             {
             }
+        }
+
+        private void ownerGrid_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            HideAnimation.Pause();
+            ShowAnimation.Begin();
+        }
+
+        private void ownerGrid_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            ShowAnimation.Pause();
+            HideAnimation.Begin();
+        }
+
+        private void ownerGrid_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            MainView.OpenSection((vkGetAudio as PlayListVK).playlist.OwnerId.ToString(), SectionView.SectionType.UserSection);
         }
     }
 }

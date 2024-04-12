@@ -240,6 +240,7 @@ namespace VK_UI3.Views
 
             void CancelPressedHandler(object s, EventArgs e)
             {
+                if (dialog != null)
                 dialog.Hide();
                 dialog = null;
 

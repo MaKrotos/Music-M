@@ -26,11 +26,15 @@ namespace VkNet.Model.Attachments
 		[JsonProperty("owner_id")]
 		public long? OwnerId { get; set; }
 
+
 		/// <summary>
 		/// Ключ доступа
 		/// </summary>
 		[JsonProperty("access_key")]
 		public string AccessKey { get; set; }
+
+
+		public string FullId { get { return $"{OwnerId}_{Id}"; } }
 
 		/// <summary>
 		/// Преобразовать вложение в строку.
