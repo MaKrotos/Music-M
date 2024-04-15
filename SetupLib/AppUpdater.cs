@@ -40,8 +40,6 @@ namespace SetupLib
 
         public async Task<bool> CheckForUpdates()
         {
-            
-
             var releases = await client.Repository.Release.GetAll("MaKrotos", "Music-M");
        
             foreach (var release in releases)

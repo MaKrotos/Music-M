@@ -65,8 +65,10 @@ namespace VK_UI3.Controls
         {
             if ((DataContext as ExtendedAudio) != null)
             {
-             
-            
+
+                if (dataTrack != null)
+                    dataTrack.iVKGetAudio.AudioPlayedChangeEvent -= UserAudio_AudioPlayedChangeEvent;
+
                 var track = (DataContext as ExtendedAudio).audio;
                 if (track == null)
                     return;
@@ -76,11 +78,11 @@ namespace VK_UI3.Controls
                 dataTrack = (DataContext as ExtendedAudio);
                 string? newLink = "";
                 if (dataTrack.audio.Album != null)
-                 newLink = dataTrack.audio.Album.Thumb.Photo270 ??
-                  dataTrack.audio.Album.Thumb.Photo300 ??
-                  dataTrack.audio.Album.Thumb.Photo600 ??
-                  dataTrack.audio.Album.Thumb.Photo34 ??
-                  null;
+                    newLink = dataTrack.audio.Album.Thumb.Photo270 ??
+                    dataTrack.audio.Album.Thumb.Photo300 ??
+                    dataTrack.audio.Album.Thumb.Photo600 ??
+                    dataTrack.audio.Album.Thumb.Photo34 ??
+                    null;
                 if (berImageLink != newLink) {
                     ImageThumb.Opacity = 0;
                 }

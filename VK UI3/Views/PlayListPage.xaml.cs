@@ -101,7 +101,8 @@ namespace VK_UI3.Views
 
         private void updateUI(bool load = false)
         {
-           
+            this.DispatcherQueue.TryEnqueue(async () =>
+            {
 
                 GridThumbs.AddImagesToGrid(vkGetAudio.getPhotosList());
                 if (vkGetAudio is (PlayListVK))
@@ -114,11 +115,11 @@ namespace VK_UI3.Views
 
                     if (playlist.Follower != null)
                     {
-                            _ = Task.Run(
-                                async () =>
-                                {
-                                    (this.vkGetAudio as PlayListVK).playlist = VK.api.Audio.GetPlaylistById(playlist.Follower.OwnerId, playlist.Follower.PlaylistId);
-                                });
+                        _ = Task.Run(
+                            async () =>
+                            {
+                                (this.vkGetAudio as PlayListVK).playlist = VK.api.Audio.GetPlaylistById(playlist.Follower.OwnerId, playlist.Follower.PlaylistId);
+                            });
                     }
 
                     if (!playlist.Permissions.Follow && (playlist.OwnerId != AccountsDB.activeAccount.id || (playlist.Original == null)))
@@ -146,32 +147,39 @@ namespace VK_UI3.Views
                                 iconAdd.Symbol = Symbol.Add;
                                 textAdd.Text = "Добавить к себе";
                             }
-                            else 
+                            else
                             {
-                             
+
                                 animationsChangeText.ChangeTextWithAnimation("Добавить к себе");
                                 animationsChangeicon.ChangeSymbolIconWithAnimation(Symbol.Add);
                             }
                         }
                     }
 
-                string qownerName = "";
+                    string qownerName = "";
+                    bool hasOwner = false;
                     if (playlist.userOwner != null)
                     {
+                        hasOwner = true;
                         ownerGrid.Visibility = Visibility.Visible;
-                        var a= new Helpers.Animations.AnimationsChangeImage(ownerPictire, DispatcherQueue);
+                        var a = new Helpers.Animations.AnimationsChangeImage(ownerPictire, DispatcherQueue);
                         a.ChangeImageWithAnimation(playlist.userOwner.Photo100);
-                    qownerName = playlist.userOwner.FirstName + " " + playlist.userOwner.LastName;
+                        qownerName = playlist.userOwner.FirstName + " " + playlist.userOwner.LastName;
                     }
                     if (playlist.groupOwner != null)
                     {
+                        hasOwner = true;
                         ownerGrid.Visibility = Visibility.Visible;
                         var a = new Helpers.Animations.AnimationsChangeImage(ownerPictire, DispatcherQueue);
                         a.ChangeImageWithAnimation(playlist.groupOwner.Photo100);
-                    qownerName = playlist.groupOwner.Name;
+                        qownerName = playlist.groupOwner.Name;
                     }
-                ownerName.Text = qownerName;
-               
+                    if (!hasOwner)
+                    {
+                        stackPanel.Items.Remove(ownerGrid);
+                    }
+                    ownerName.Text = qownerName;
+
 
 
 
@@ -184,6 +192,7 @@ namespace VK_UI3.Views
 
                     if (playlist.Description == "" || playlist.Description == null)
                         DescriptionText.Visibility = Visibility.Collapsed;
+
 
                     FollowersText.Visibility = Visibility.Visible;
                     FollowersText.Text = $"{playlist.Followers} подписчиков";
@@ -219,37 +228,45 @@ namespace VK_UI3.Views
 
                 }
                 else
-                {                       
+                {
                     stackPanel.Items.Remove(AddPlaylist);
                     stackPanel.Items.Remove(EditPlaylist);
 
-                   
+
                     MainText.ChangeTextWithAnimation(vkGetAudio.name);
                     CountTrText.Text = $"Треков: {vkGetAudio.countTracks}";
 
-                    
+
                 }
-                if (vkGetAudio is UserAudio userAudio && long.Parse(userAudio.id) == AccountsDB.activeAccount.id)
+                if (vkGetAudio is UserAudio userAudio)
                 {
 
-                    UploadTrack.Visibility = Visibility.Visible;
-                    VK_UI3.Views.Upload.UploadTrack.addedTrack += addedTrack;
-           
+                    if (long.Parse(userAudio.id) == AccountsDB.activeAccount.id)
+                    {
+                        UploadTrack.Visibility = Visibility.Visible;
+                        VK_UI3.Views.Upload.UploadTrack.addedTrack += addedTrack;
+                    }
+                    DescriptionText.Text = userAudio.user.Status;
+
+
+                    if (userAudio.user.Status.Equals("") || DescriptionText.Text == null)
+                        DescriptionText.Visibility = Visibility.Collapsed;
+
                 }
-                else 
+                else
                 {
                     stackPanel.Items.Remove(UploadTrack);
 
 
                 }
 
-             
+
+
                 MainText.ChangeTextWithAnimation(vkGetAudio.name);
-
                 CountTrText.Visibility = Visibility.Visible;
-                
 
-           
+
+            });
         }
 
         private void addedTrack(object sender, EventArgs e)

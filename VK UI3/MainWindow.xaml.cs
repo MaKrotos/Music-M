@@ -462,9 +462,9 @@ namespace VK_UI3
 
         private void activated(object sender, WindowActivatedEventArgs args)
         {
-
+#if !DEBUG
             checkUpdate();
-     
+#endif
         }
 
         private void OnUpdateMica(object sender, EventArgs e)

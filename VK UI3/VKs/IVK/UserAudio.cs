@@ -27,7 +27,7 @@ namespace VK_UI3.VKs.IVK
             return api.Audio.GetCountAsync(long.Parse(id)).Result;
         }
 
-        User user;
+        public User user;
         public override string getName()
         {
             try
@@ -38,7 +38,7 @@ namespace VK_UI3.VKs.IVK
                 var request = new VkParameters
                 {
                     {"user_ids", string.Join(",", ids)},
-                    {"fields", string.Join(",", "photo_max_orig")}
+                    {"fields", string.Join(",", "photo_max_orig", "status")}
                 };
 
                 var response = api.Call("users.get", request);

@@ -48,13 +48,28 @@ public partial class AuthCategory : IAuthCategory
 
     private async ValueTask<string> GetAnonTokenAsync()
     {
+
+        try
+        {
+            var a = await _apiInvoke.CallAsync("auth.getAnonymToken", new()
+            {
+                  { "client_id", 7913379 },
+            });
+        }
+        catch (System.Exception ex)
+        {
+        
+        }
+
         const string url =
             "https://id.vk.com/qr_auth?scheme=vkcom_dark&app_id=7913379&origin=https%3A%2F%2Fvk.com&initial_stats_info=eyJzb3VyY2UiOiJtYWluIiwic2NyZWVuIjoic3RhcnQifQ%3D%3D";
 
         var response = await _restClient.GetAsync(new(url), ImmutableDictionary<string, string>.Empty, Encoding.UTF8);
 
         _authVerifyHash = AuthVerifyHashRegex().Match(response.Value).Groups["hash"].Value;
-        
+
+
+
         return _anonToken = AnonTokenRegex().Match(response.Value).Groups["token"].Value;
     }
 
@@ -85,15 +100,30 @@ public partial class AuthCategory : IAuthCategory
 
     public async Task<AuthCodeResponse> GetAuthCodeAsync(string deviceName, bool forceRegenerate = true)
     {
-        return await _apiInvoke.CallAsync<AuthCodeResponse>("auth.getAuthCode", new()
+        try { 
+     
+                var a = await _apiInvoke.CallAsync<AuthCodeResponse>("auth.getAuthCode", new()
+            {
+                { "device_name", "Windows NT 10.0; Win64; x64" },
+                { "force_regenerate", forceRegenerate },
+                { "auth_code_flow", false },
+                { "client_id", 7913379 },
+
+                { "anonymous_token", _anonToken ?? await GetAnonTokenAsync() },
+                { "verification_hash", _authVerifyHash },
+
+                { "is_switcher_flow", "" },
+                {"access_token", "" }
+            });
+
+
+            return a;
+        }
+        catch (System.Exception ex)
         {
-            { "device_name", deviceName },
-            { "force_regenerate", forceRegenerate },
-            { "auth_code_flow", false },
-            { "client_id", 7913379 },
-            { "anonymous_token", _anonToken ?? await GetAnonTokenAsync() },
-            { "verification_hash", _authVerifyHash }
-        }, true);
+
+            return null;
+        }
     }
 
     public async Task<AuthCheckResponse> CheckAuthCodeAsync(string authHash)

@@ -37,7 +37,7 @@
   <PropertyGroup>
     <ProjectGuid>3074ce09-1e1f-4a30-a782-0d2641345e9d</ProjectGuid>
     <TargetPlatformVersion>10.0.22621.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
     <AssetTargetFallback>net6.0-windows$(TargetPlatformVersion);$(AssetTargetFallback)</AssetTargetFallback>
     <DefaultLanguage>ru-RU</DefaultLanguage>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>

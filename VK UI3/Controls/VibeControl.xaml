@@ -15,7 +15,7 @@
   
     Translation="0,0,8"
     Height="60"
-    Margin="3,0,4,6"
+    Margin="3,0,0,0"
 
     mc:Ignorable="d">
 

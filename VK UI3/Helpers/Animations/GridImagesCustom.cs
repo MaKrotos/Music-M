@@ -67,13 +67,5 @@ namespace VK_UI3.Helpers.Animations
             this.Children.Add(image);
             animationsChangeImage.ChangeImageWithAnimation(photo);
         }
-
-
-
-
     }
-
-
-
-
 }

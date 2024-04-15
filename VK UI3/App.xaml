@@ -18,10 +18,17 @@
 
             <!-- Other app resources here -->
             <AcrylicBrush x:Key="CustomAcrylicInAppBrush" 
-     TintOpacity="0.1" 
-     Opacity="0.9" 
-     TintColor="{ThemeResource SystemColorWindowTextColor}" 
-     FallbackColor="{ThemeResource SystemColorWindowTextColor}" />
+                TintOpacity="0.1" 
+                Opacity="0.9" 
+                TintColor="{ThemeResource SystemColorWindowTextColor}" 
+                FallbackColor="{ThemeResource SystemColorWindowTextColor}" />
+
+            <AcrylicBrush x:Key="CustomAlternativeAcrylicInAppBrush" 
+                TintOpacity="0.001" 
+                TintColor="{ThemeResource SystemAltHighColor}" 
+                FallbackColor="{ThemeResource SystemAltHighColor}"
+            />
+
             <FontFamily x:Key="SegoeFluentIcons">pack://application:,,,/;component/Fonts/#Segoe Fluent Icons</FontFamily>
             <FontFamily x:Key="VKSansDemiBold">pack://application:,,,/;component/Fonts/VKSansDisplay-DemiBold.ttf#VK Sans Display DemiBold</FontFamily>
             <FontFamily x:Key="VKSansMedium">pack://application:,,,/;component/Fonts/VKSansDisplay-Medium.ttf#VK Sans Display Medium</FontFamily>
