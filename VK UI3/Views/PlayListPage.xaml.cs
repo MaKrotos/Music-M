@@ -240,7 +240,6 @@ namespace VK_UI3.Views
                 }
                 if (vkGetAudio is UserAudio userAudio)
                 {
-
                     if (long.Parse(userAudio.id) == AccountsDB.activeAccount.id)
                     {
                         UploadTrack.Visibility = Visibility.Visible;

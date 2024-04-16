@@ -23,6 +23,7 @@ using VkNet.Model.Attachments;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Storage.Pickers;
+using WinUI3.Common;
 using static VK_UI3.Views.SectionView;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -170,29 +171,25 @@ namespace VK_UI3.Controls
                         goArtistItem.Items.Clear();
                         foreach (var artist in dataTrack.audio.MainArtists)
                         {
-                            var menuItem = new MenuFlyoutItem
+                        var menuItem = new MenuFlyoutItem
+                        {
+                            Text = artist.Name,
+                            Icon = new SymbolIcon(Symbol.ContactInfo),
+                            Command = new RelayCommand(_ =>
                             {
-                                Text = artist.Name,
-                                Icon = new SymbolIcon(Symbol.ContactInfo)
-                            };
-
-                            menuItem.Click += (s, e) =>
-                            {
-
-
                                 try
                                 {
                                     MainView.OpenSection(artist.Id, SectionType.Artist);
-
                                 }
                                 catch (Exception ex)
                                 {
                                     AppCenterHelper.SendCrash(ex);
                                 }
+                            })
+                        };
 
-                            };
-                            goArtistItem.Items.Add(menuItem);
-                        }
+                        goArtistItem.Items.Add(menuItem);
+                    }
                     }
 
 

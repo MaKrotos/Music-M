@@ -29,6 +29,7 @@
                 FallbackColor="{ThemeResource SystemAltHighColor}"
             />
 
+     
             <FontFamily x:Key="SegoeFluentIcons">pack://application:,,,/;component/Fonts/#Segoe Fluent Icons</FontFamily>
             <FontFamily x:Key="VKSansDemiBold">pack://application:,,,/;component/Fonts/VKSansDisplay-DemiBold.ttf#VK Sans Display DemiBold</FontFamily>
             <FontFamily x:Key="VKSansMedium">pack://application:,,,/;component/Fonts/VKSansDisplay-Medium.ttf#VK Sans Display Medium</FontFamily>
