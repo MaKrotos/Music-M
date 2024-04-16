@@ -27,70 +27,74 @@
 
 
                         <!-- Квадратный элемент в первом столбце -->
-                <StackPanel CornerRadius="8" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}" VerticalAlignment="Stretch">
-                <Grid  Translation="0,0,8160" Width="200" Height="200" 
+                <Grid>
+                    <StackPanel CornerRadius="8" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}" VerticalAlignment="Top">
+                        <Grid  Translation="0,0,8160" Width="200" Height="200" 
  
-    CornerRadius="8" Margin="5" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" Grid.Column="0">
+CornerRadius="8" Margin="5" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" Grid.Column="0">
                             <FontIcon Glyph="&#xE90B;" />
-                    <customs:GridImagesCustom  x:Name="GridThumbs" Width="200" Height="200">
-                        <customs:GridImagesCustom.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
+                            <customs:GridImagesCustom  x:Name="GridThumbs" Width="200" Height="200">
+                                <customs:GridImagesCustom.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
 
-                        </customs:GridImagesCustom.RowDefinitions>
-                        <customs:GridImagesCustom.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </customs:GridImagesCustom.ColumnDefinitions>
+                                </customs:GridImagesCustom.RowDefinitions>
+                                <customs:GridImagesCustom.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </customs:GridImagesCustom.ColumnDefinitions>
 
-                    </customs:GridImagesCustom>
+                            </customs:GridImagesCustom>
 
-                    
-                </Grid>
-                    <StackPanel
-    PointerEntered="ownerGrid_PointerEntered"
-    PointerExited="ownerGrid_PointerExited"
-    PointerPressed="ownerGrid_PointerPressed"
-    Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"  Visibility="Collapsed" CornerRadius="10" x:Name="ownerGrid" Orientation="Horizontal" VerticalAlignment="Bottom" Margin="5" Padding="10" >
-                        <StackPanel.RenderTransform>
-                            <ScaleTransform x:Name="scaleTransform" ScaleX="1" ScaleY="1"/>
-                        </StackPanel.RenderTransform>
-                        <StackPanel.RenderTransformOrigin>
-                            0.5,0.5
-                        </StackPanel.RenderTransformOrigin>
-                        <StackPanel.Resources>
-                            <Storyboard x:Name="ShowAnimation">
-                                <DoubleAnimation Storyboard.TargetName="scaleTransform" Storyboard.TargetProperty="ScaleX"  To="0.975" Duration="0:0:0.15">
-                                    <DoubleAnimation.EasingFunction>
-                                        <ExponentialEase EasingMode="EaseOut"/>
-                                    </DoubleAnimation.EasingFunction>
-                                </DoubleAnimation>
-                                <DoubleAnimation Storyboard.TargetName="scaleTransform" Storyboard.TargetProperty="ScaleY"  To="0.975" Duration="0:0:0.15">
-                                    <DoubleAnimation.EasingFunction>
-                                        <ExponentialEase EasingMode="EaseOut"/>
-                                    </DoubleAnimation.EasingFunction>
-                                </DoubleAnimation>
-                            </Storyboard>
-                            <Storyboard x:Name="HideAnimation">
-                                <DoubleAnimation Storyboard.TargetName="scaleTransform" Storyboard.TargetProperty="ScaleX"  To="1" Duration="0:0:0.15">
-                                    <DoubleAnimation.EasingFunction>
-                                        <ExponentialEase EasingMode="EaseIn"/>
-                                    </DoubleAnimation.EasingFunction>
-                                </DoubleAnimation>
-                                <DoubleAnimation Storyboard.TargetName="scaleTransform" Storyboard.TargetProperty="ScaleY"  To="1" Duration="0:0:0.15">
-                                    <DoubleAnimation.EasingFunction>
-                                        <ExponentialEase EasingMode="EaseIn"/>
-                                    </DoubleAnimation.EasingFunction>
-                                </DoubleAnimation>
-                            </Storyboard>
-                        </StackPanel.Resources>
 
-                        <Grid  Width="30" Height="30"  Margin="0,0,5,0" CornerRadius="100" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}">
-                            <Image  VerticalAlignment="Center" Width="30" Height="30" x:Name="ownerPictire"></Image>
                         </Grid>
-                        <TextBlock MaxWidth="170" MaxHeight="40" FontFamily="{StaticResource VKSansMedium}"    TextWrapping="Wrap" TextTrimming="CharacterEllipsis" x:Name="ownerName" VerticalAlignment="Center"></TextBlock>
+                        <StackPanel
+PointerEntered="ownerGrid_PointerEntered"
+PointerExited="ownerGrid_PointerExited"
+PointerPressed="ownerGrid_PointerPressed"
+Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"  Visibility="Collapsed" CornerRadius="10" x:Name="ownerGrid" Orientation="Horizontal" VerticalAlignment="Bottom" Margin="5" Padding="10" >
+                            <StackPanel.RenderTransform>
+                                <ScaleTransform x:Name="scaleTransform" ScaleX="1" ScaleY="1"/>
+                            </StackPanel.RenderTransform>
+                            <StackPanel.RenderTransformOrigin>
+                                0.5,0.5
+                            </StackPanel.RenderTransformOrigin>
+                            <StackPanel.Resources>
+                                <Storyboard x:Name="ShowAnimation">
+                                    <DoubleAnimation Storyboard.TargetName="scaleTransform" Storyboard.TargetProperty="ScaleX"  To="0.975" Duration="0:0:0.15">
+                                        <DoubleAnimation.EasingFunction>
+                                            <ExponentialEase EasingMode="EaseOut"/>
+                                        </DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                    <DoubleAnimation Storyboard.TargetName="scaleTransform" Storyboard.TargetProperty="ScaleY"  To="0.975" Duration="0:0:0.15">
+                                        <DoubleAnimation.EasingFunction>
+                                            <ExponentialEase EasingMode="EaseOut"/>
+                                        </DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                                <Storyboard x:Name="HideAnimation">
+                                    <DoubleAnimation Storyboard.TargetName="scaleTransform" Storyboard.TargetProperty="ScaleX"  To="1" Duration="0:0:0.15">
+                                        <DoubleAnimation.EasingFunction>
+                                            <ExponentialEase EasingMode="EaseIn"/>
+                                        </DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                    <DoubleAnimation Storyboard.TargetName="scaleTransform" Storyboard.TargetProperty="ScaleY"  To="1" Duration="0:0:0.15">
+                                        <DoubleAnimation.EasingFunction>
+                                            <ExponentialEase EasingMode="EaseIn"/>
+                                        </DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </StackPanel.Resources>
+
+                            <Grid  Width="30" Height="30"  Margin="0,0,5,0" CornerRadius="100" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}">
+                                <Image  VerticalAlignment="Center" Width="30" Height="30" x:Name="ownerPictire"></Image>
+                            </Grid>
+                            <TextBlock MaxWidth="170" MaxHeight="40" FontFamily="{StaticResource VKSansMedium}"    TextWrapping="Wrap" TextTrimming="CharacterEllipsis" x:Name="ownerName" VerticalAlignment="Center"></TextBlock>
+                        </StackPanel>
                     </StackPanel>
-                </StackPanel>
+                </Grid>
+
+                   
                 <StackPanel  Grid.Column="1" Margin="10,0,0,0">
 
                     <StackPanel  Translation="0,0,16" Padding="10" CornerRadius="4" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}">
@@ -125,7 +129,7 @@
 
                         <StackPanel Grid.Column="1"
         x:Name="AddInfo"
-        Margin="0,10,0,0"
+        Margin="0,0,0,0"
         Opacity="0.5"
         Orientation="Vertical"
         Visibility="{Binding Path=VisibileAddInfo}">
@@ -174,7 +178,7 @@
                     </StackPanel>
                     <GridView Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
         x:Name="stackPanel"
-        Margin="0,10,0,0" Padding="10"
+        Margin="0,10,0,0" Padding="10,5,5,2"
         CornerRadius="4"       
         SelectionMode="None"
         RenderTransformOrigin="0.5,0.5">

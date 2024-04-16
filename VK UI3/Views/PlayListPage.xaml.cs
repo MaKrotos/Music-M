@@ -249,7 +249,10 @@ namespace VK_UI3.Views
                     DescriptionText.Text = userAudio.user.Status;
 
 
-                    if (userAudio.user.Status.Equals("") || DescriptionText.Text == null)
+                    if (
+                        userAudio.user.Status!= null && 
+                        (userAudio.user.Status.Equals("") || DescriptionText.Text == null)
+                        )
                         DescriptionText.Visibility = Visibility.Collapsed;
 
                 }
