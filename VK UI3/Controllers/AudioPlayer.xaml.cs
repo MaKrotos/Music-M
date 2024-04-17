@@ -128,7 +128,7 @@ namespace VK_UI3.Controllers
         {
             get
             {
-                if (TrackDataThis.audio == null) return "null";
+                if (TrackDataThis.audio == null || _TrackDataThis.audio.Album.Thumb == null) return "null";
                 if (TrackDataThis.audio.Album == null) return "null";
                 return TrackDataThis.audio.Album.Thumb.Photo600
                      ?? TrackDataThis.audio.Album.Thumb.Photo300
@@ -556,7 +556,7 @@ namespace VK_UI3.Controllers
             props.MusicProperties.AlbumArtist = _TrackDataThis.audio.Artist;
 
 
-            if (_TrackDataThis.audio.Album != null)
+            if (_TrackDataThis.audio.Album != null && _TrackDataThis.audio.Album.Thumb != null)
             {
                 RandomAccessStreamReference imageStreamRef = RandomAccessStreamReference.CreateFromUri(new Uri(
                     _TrackDataThis.audio.Album.Thumb.Photo600 ??
