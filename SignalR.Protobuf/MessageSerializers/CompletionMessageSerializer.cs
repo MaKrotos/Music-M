@@ -12,8 +12,8 @@ internal class CompletionMessageSerializer : BaseMessageSerializer
 
     protected override IEnumerable<object> CreateItems(HubMessage message)
     {
-        var completionMessage = (CompletionMessage) message;
-            
+        var completionMessage = (CompletionMessage)message;
+
         yield return new CompletionMessageProtobuf
         {
             InvocationId = completionMessage.InvocationId,
@@ -27,13 +27,13 @@ internal class CompletionMessageSerializer : BaseMessageSerializer
 
     protected override HubMessage CreateHubMessage(IReadOnlyList<object> items)
     {
-        var protobuf = (CompletionMessageProtobuf) items[0];
+        var protobuf = (CompletionMessageProtobuf)items[0];
         var resultProtobuf = items[1];
 
         return new CompletionMessage(
-            protobuf.InvocationId, 
-            protobuf.Error, 
-            resultProtobuf, 
+            protobuf.InvocationId,
+            protobuf.Error,
+            resultProtobuf,
             protobuf.HasResult
         );
     }

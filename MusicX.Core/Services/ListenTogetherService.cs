@@ -1,11 +1,11 @@
-﻿using System.Net.Http.Json;
-using Microsoft.AspNetCore.SignalR.Client;
+﻿using Microsoft.AspNetCore.SignalR.Client;
 using MusicX.Core.Models;
 using MusicX.Shared.Extensions;
 using MusicX.Shared.ListenTogether;
 using MusicX.Shared.Player;
 using Newtonsoft.Json;
 using NLog;
+using System.Net.Http.Json;
 
 namespace MusicX.Core.Services
 {
@@ -89,7 +89,7 @@ namespace MusicX.Core.Services
 
             var result = await _connection.InvokeAsync<SessionId>(ListenTogetherMethods.StartPlaySession);
 
-            if(result is null)
+            if (result is null)
             {
                 throw new Exception("Произошла ошибка при создании сессии");
             }
@@ -97,7 +97,7 @@ namespace MusicX.Core.Services
             PlayerMode = PlayerMode.Owner;
 
             SessionId = result.Id;
-            
+
             _logger.Info($"Сессия {SessionId} запущена");
             StartedSession?.Invoke(SessionId);
 
@@ -115,7 +115,7 @@ namespace MusicX.Core.Services
 
             var (result, _) = await _connection.InvokeAsync<ErrorState>(ListenTogetherMethods.JoinPlaySession, new SessionId(session));
 
-            if(!result)
+            if (!result)
             {
                 throw new Exception("Ошибка при подключении к сессии.");
             }
@@ -126,7 +126,7 @@ namespace MusicX.Core.Services
 
             PlaylistTrack currentTrack = null;
 
-            while(currentTrack is null)
+            while (currentTrack is null)
             {
                 currentTrack = await GetCurrentTrackInSession();
             }
@@ -242,7 +242,7 @@ namespace MusicX.Core.Services
         }
 
         public async Task<PlaylistTrack> GetCurrentTrackInSession()
-            {
+        {
             _logger.Info("Получение текущего трека в сессии");
 
             if (_connection is null) throw new Exception("Сначала необходимо подключится к серверу");
@@ -315,11 +315,11 @@ namespace MusicX.Core.Services
 #endif
                 }
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return "http://212.192.40.71:5000";
             }
-            
+
         }
 
         private async Task SessionUserStoped()

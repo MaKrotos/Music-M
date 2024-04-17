@@ -1,5 +1,5 @@
-﻿using System.Text.Json.Serialization;
-using ProtoBuf;
+﻿using ProtoBuf;
+using System.Text.Json.Serialization;
 
 namespace MusicX.Shared.Player;
 
@@ -53,12 +53,12 @@ public sealed record VkTrackData(string Url, bool IsLiked, bool IsExplicit, bool
             return false;
         if (ReferenceEquals(this, other))
             return true;
-        
+
         return Info == other.Info;
     }
     public override int GetHashCode() => Info.GetHashCode();
 }
-                          
+
 [ProtoContract(ImplicitFields = ImplicitFields.AllPublic, SkipConstructor = true)]
 public record DownloaderData
     (string Url, bool IsLiked, bool IsExplicit, TimeSpan Duration, string PlaylistName) : TrackData(

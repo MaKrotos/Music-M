@@ -16,7 +16,7 @@ public static class ServiceCollectionExtensions
         {
             throw new ArgumentNullException(nameof(collection));
         }
-        
+
         collection.TryAddSingleton<IVkApiInvoke, VkApiInvoke>();
         collection.TryAddSingleton<ICaptchaHandler, AsyncCaptchaHandler>();
         collection.TryAddSingleton<IVkApiAuthAsync, VkApiAuth>();
@@ -27,16 +27,16 @@ public static class ServiceCollectionExtensions
         collection.TryAddTransient<IVkApiAuth>(s => s.GetRequiredService<IVkApiAuthAsync>());
         collection.TryAddTransient<IVkInvoke>(s => s.GetRequiredService<IVkApi>());
         collection.TryAddSingleton<IAsyncRateLimiter>(_ => new AsyncRateLimiter(TimeSpan.FromSeconds(1), 3));
-        
+
         collection.RegisterDefaultDependencies();
-        
+
         AddCategories(collection);
     }
 
     private static void AddCategories(IServiceCollection collection)
     {
         collection.TryAddSingleton<IVkApiCategories, VkApiCategories>();
-        
+
         collection.TryAddSingleton<IUsersCategory, UsersCategory>();
         collection.TryAddSingleton<IFriendsCategory, FriendsCategory>();
         collection.TryAddSingleton<IStatsCategory, StatsCategory>();

@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using VkNet.Abstractions;
 using VkNet.Abstractions.Core;
 using VkNet.Abstractions.Utils;
@@ -56,10 +56,10 @@ public class VkApiInvoke : IVkApiInvoke
     {
         parameters.TryAdd("v", _versionManager.Version);
         parameters.TryAdd("lang", _languageService.GetLanguage()?.ToString() ?? "ru");
-        
+
         if (await _deviceIdStore.GetDeviceIdAsync() is { } deviceId)
             parameters.TryAdd("device_id", deviceId);
-        
+
         if (!skipAuthorization)
             parameters.TryAdd("access_token", _tokenStore.Token);
     }
@@ -68,7 +68,7 @@ public class VkApiInvoke : IVkApiInvoke
     {
         var converters = _defaultConverters.ToList(); // i actually wanna clone the array here
         converters.AddRange(userConverters);
-        
+
         return new()
         {
             Converters = converters,
@@ -80,7 +80,7 @@ public class VkApiInvoke : IVkApiInvoke
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
         };
     }
-    
+
     public VkResponse Call(string methodName, VkParameters parameters, bool skipAuthorization = false)
     {
         return CallAsync(methodName, parameters, skipAuthorization).GetAwaiter().GetResult();
@@ -130,7 +130,7 @@ public class VkApiInvoke : IVkApiInvoke
     private async Task<JToken> InvokeInternalAsync(string methodName, IDictionary<string, string> parameters, bool skipAuthorization)
     {
         await TryAddRequiredParameters(parameters, skipAuthorization);
-        
+
         return await _handler.Perform(async (sid, key) =>
         {
             if (sid is { } captchaSid)
@@ -152,13 +152,13 @@ public class VkApiInvoke : IVkApiInvoke
             {
                 if (await _tokenRefreshHandler.RefreshTokenAsync(_tokenStore.Token) is not { } newToken)
                     throw;
-                
+
                 parameters["access_token"] = newToken;
                 return await InvokeInternalAsync(methodName, parameters, skipAuthorization);
             }
         });
     }
 
-    public DateTimeOffset? LastInvokeTime { get; private set;}
+    public DateTimeOffset? LastInvokeTime { get; private set; }
     public TimeSpan? LastInvokeTimeSpan => DateTimeOffset.Now - LastInvokeTime;
 }

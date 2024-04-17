@@ -1,15 +1,7 @@
-﻿using MusicX.Core.Models;
-using MusicX.Shared.ListenTogether.Radio;
-using Newtonsoft.Json;
+﻿using MusicX.Shared.ListenTogether.Radio;
 using NLog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
 using VkNet.Abstractions;
-using VkNet.Model.Attachments;
 
 namespace MusicX.Core.Services
 {
@@ -100,13 +92,13 @@ namespace MusicX.Core.Services
 
                 return await httpClient.GetFromJsonAsync<TResponse>("/radio/" + method + "?" + string.Join("&", p));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.Info($"Произошла ошибка при запросе: {ex}");
                 _logger.Error(ex);
                 throw;
             }
-           
+
         }
 
         private async ValueTask<HttpClient> GetHttpClientAsync()

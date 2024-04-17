@@ -1,13 +1,8 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MusicX.Core.Models
 {
-    public class StopTrackEvent: TrackEvent
+    public class StopTrackEvent : TrackEvent
     {
         [JsonProperty("audio_id")]
         public string AudioId { get; set; }

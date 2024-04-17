@@ -1,8 +1,8 @@
-﻿using System.Text;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
+using System.Text;
 using VkNet.Abstractions;
 using VkNet.Abstractions.Core;
 using VkNet.Abstractions.Utils;
@@ -52,7 +52,7 @@ public class VkApiInvoke : IVkApiInvoke
     {
         var converters = _defaultConverters.ToList(); // i actually wanna clone the array here
         converters.AddRange(userConverters);
-        
+
         return new()
         {
             Converters = converters,
@@ -64,7 +64,7 @@ public class VkApiInvoke : IVkApiInvoke
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
         };
     }
-    
+
     public VkResponse Call(string methodName, VkParameters parameters, bool skipAuthorization = false)
     {
         return CallAsync(methodName, parameters, skipAuthorization).GetAwaiter().GetResult();
@@ -112,7 +112,7 @@ public class VkApiInvoke : IVkApiInvoke
     private Task<JToken> InvokeInternalAsync(string methodName, IDictionary<string, string> parameters, bool skipAuthorization)
     {
         TryAddRequiredParameters(parameters, skipAuthorization);
-        
+
         return _handler.Perform(async (sid, key) =>
         {
             if (sid is { } captchaSid)
@@ -130,6 +130,6 @@ public class VkApiInvoke : IVkApiInvoke
         });
     }
 
-    public DateTimeOffset? LastInvokeTime { get; private set;}
+    public DateTimeOffset? LastInvokeTime { get; private set; }
     public TimeSpan? LastInvokeTimeSpan => DateTimeOffset.Now - LastInvokeTime;
 }

@@ -8,7 +8,7 @@ namespace SignalR.Protobuf;
 public static class SignalRBuilderExtensions
 {
     public static TBuilder AddProtobufProtocol<TBuilder>(
-        this TBuilder builder, 
+        this TBuilder builder,
         IReadOnlyDictionary<int, Type> protobufTypes
     ) where TBuilder : ISignalRBuilder
     {

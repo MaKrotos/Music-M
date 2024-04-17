@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using VkNet.Model;
+﻿using VkNet.Model;
 using Image = MusicX.Core.Models.Image;
 
 namespace VK_UI3.Helpers;

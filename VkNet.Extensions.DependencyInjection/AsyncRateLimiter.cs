@@ -4,7 +4,7 @@ public class AsyncRateLimiter : IAsyncRateLimiter
 {
     private readonly SemaphoreSlim _semaphore;
     private readonly CancellationTokenSource _tokenSource = new();
-    
+
     public AsyncRateLimiter(TimeSpan window, int maxRequestsPerWindow)
     {
         Window = window;
@@ -14,7 +14,7 @@ public class AsyncRateLimiter : IAsyncRateLimiter
 
     public TimeSpan Window { get; }
     public int MaxRequestsPerWindow { get; }
-    
+
     public async ValueTask WaitNextAsync(CancellationToken cancellationToken = default)
     {
         try
@@ -53,7 +53,7 @@ public class AsyncRateLimiter : IAsyncRateLimiter
     public bool TryGetNext()
     {
         if (_semaphore.CurrentCount == 0) return false;
-        
+
         _semaphore.Wait();
         return true;
     }

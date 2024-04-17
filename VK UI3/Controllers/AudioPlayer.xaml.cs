@@ -38,7 +38,7 @@ namespace VK_UI3.Controllers
 
         public static event EventHandler oniVKUpdate;
 
-      
+
         public static void NotifyoniVKUpdate()
         {
             oniVKUpdate.Invoke(null, EventArgs.Empty);
@@ -69,9 +69,6 @@ namespace VK_UI3.Controllers
 
 
         private int _trackPosition2;
-
-
-
         public static WeakEventManager TrackDataThisChanged = new WeakEventManager();
 
 
@@ -175,7 +172,7 @@ namespace VK_UI3.Controllers
             changeText2 = new AnimationsChangeText(TitleTextBlock, this.DispatcherQueue);
             statusAnimate = new AnimationsChangeFontIcon(StatusBTNIcon, this.DispatcherQueue);
 
-            var setting =  SettingsTable.GetSetting("Volume");
+            var setting = SettingsTable.GetSetting("Volume");
             if (setting != null)
             {
                 mediaPlayer.Volume = double.Parse(setting.settingValue);
@@ -229,11 +226,12 @@ namespace VK_UI3.Controllers
                 if (mediaPlayer == null) return 100;
                 return mediaPlayer.Volume * 100;
             }
-            set {
+            set
+            {
                 var a = value / 100;
                 SettingsTable.SetSetting("Volume", a.ToString());
                 mediaPlayer.Volume = a;
-                
+
             }
         }
 
@@ -353,7 +351,7 @@ namespace VK_UI3.Controllers
         private void MediaPlayer_MediaOpened(Windows.Media.Playback.MediaPlayer sender, object args)
         {
             // Код для выполнения при открытии медиафайла
-            TrackDuration = (int) TrackDataThis.audio.Duration;
+            TrackDuration = (int)TrackDataThis.audio.Duration;
         }
         private void MediaPlayer_MediaFailed(Windows.Media.Playback.MediaPlayer sender, Windows.Media.Playback.MediaPlayerFailedEventArgs args)
         {
@@ -407,7 +405,7 @@ namespace VK_UI3.Controllers
 
             var source = sender.Source as Windows.Media.Playback.MediaPlaybackItem;
 
-            TrackDuration = (int) TrackDataThis.audio.Duration;
+            TrackDuration = (int)TrackDataThis.audio.Duration;
 
 
             OnPropertyChanged(nameof(TrackDuration));
@@ -529,14 +527,14 @@ namespace VK_UI3.Controllers
 
             if (v != null) iVKGetAudio.currentTrack = (long)v;
 
-            
+
 
             if (iVKGetAudio is PlayListVK)
             {
                 VK.sendStartEvent((long)_TrackDataThis.audio.Id, (long)_TrackDataThis.audio.OwnerId, (iVKGetAudio as PlayListVK).playlist.Id);
             }
             else
-            VK.sendStartEvent((long)_TrackDataThis.audio.Id, (long)_TrackDataThis.audio.OwnerId);
+                VK.sendStartEvent((long)_TrackDataThis.audio.Id, (long)_TrackDataThis.audio.OwnerId);
 
             if (_TrackDataThis.audio.Url == null)
             {
@@ -641,7 +639,8 @@ namespace VK_UI3.Controllers
             //manualSoundVolume = false;
         }
 
-        private void setButtonPlayNext() {
+        private void setButtonPlayNext()
+        {
             if (SettingsTable.GetSetting("playNext") == null)
             {
                 SettingsTable.SetSetting("playNext", "RepeatAll");
@@ -766,11 +765,11 @@ namespace VK_UI3.Controllers
 
         internal static async void PlayList(IVKGetAudio userAudio)
         {
-           
+
             iVKGetAudio = userAudio;
             AudioPlayer.PlayTrack();
             NotifyoniVKUpdate();
         }
-      
+
     }
 }

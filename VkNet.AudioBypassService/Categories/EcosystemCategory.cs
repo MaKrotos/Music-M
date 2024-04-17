@@ -23,7 +23,7 @@ public class EcosystemCategory : IEcosystemCategory
             { "api_id", 2274003 }
         });
     }
-    
+
     public Task<EcosystemSendOtpResponse> SendOtpPushAsync(string sid)
     {
         return _invoke.CallAsync<EcosystemSendOtpResponse>("ecosystem.sendOtpPush", new()
@@ -32,7 +32,7 @@ public class EcosystemCategory : IEcosystemCategory
             { "api_id", 2274003 }
         });
     }
-    
+
     public Task<EcosystemSendOtpResponse> SendOtpCallResetAsync(string sid)
     {
         return _invoke.CallAsync<EcosystemSendOtpResponse>("ecosystem.sendOtpCallReset", new()

@@ -2,15 +2,12 @@ using Microsoft.UI.Dispatching;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.Helpers;
-using VkNet.Enums.Filters;
 using VkNet.Model;
 using VkNet.Model.Attachments;
 using VkNet.Model.RequestParams;
-using VkNet.Model.RequestParams.Leads;
 using VkNet.Utils;
 
 namespace VK_UI3.VKs.IVK
@@ -85,7 +82,7 @@ namespace VK_UI3.VKs.IVK
                 {
                     VkCollection<Audio> audios;
 
-                    
+
                     audios = api.Audio.GetAsync(new AudioGetParams
                     {
                         OwnerId = int.Parse(id),

@@ -12,7 +12,7 @@ internal class InvocationMessageSerializer : BaseMessageSerializer
 
     protected override IEnumerable<object> CreateItems(HubMessage message)
     {
-        var invocationMessage = (InvocationMessage) message;
+        var invocationMessage = (InvocationMessage)message;
 
         yield return new InvocationMessageProtobuf
         {
@@ -30,12 +30,12 @@ internal class InvocationMessageSerializer : BaseMessageSerializer
 
     protected override HubMessage CreateHubMessage(IReadOnlyList<object> items)
     {
-        var protobuf = (InvocationMessageProtobuf) items.First();
+        var protobuf = (InvocationMessageProtobuf)items.First();
         var argumentProtobufs = items.Skip(1).ToArray();
 
         return new InvocationMessage(
-            protobuf.InvocationId, 
-            protobuf.Target, 
+            protobuf.InvocationId,
+            protobuf.Target,
             argumentProtobufs,
             protobuf.StreamIds.ToArray()
         )

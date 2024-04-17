@@ -8,20 +8,20 @@ using ProtoBuf;
 
 namespace VkNet.AudioBypassService.Models.Google
 {
-	[ProtoContract]
-	public class GservicesSetting : IExtensible
-	{
-		private IExtension __pbn__extensionData;
+    [ProtoContract]
+    public class GservicesSetting : IExtensible
+    {
+        private IExtension __pbn__extensionData;
 
-		[ProtoMember(1, Name = @"name", IsRequired = true)]
-		public byte[] Name { get; set; }
+        [ProtoMember(1, Name = @"name", IsRequired = true)]
+        public byte[] Name { get; set; }
 
-		[ProtoMember(2, Name = @"value", IsRequired = true)]
-		public byte[] Value { get; set; }
+        [ProtoMember(2, Name = @"value", IsRequired = true)]
+        public byte[] Value { get; set; }
 
-		IExtension IExtensible.GetExtensionObject(bool createIfMissing)
-		{
-			return Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
-		}
-	}
+        IExtension IExtensible.GetExtensionObject(bool createIfMissing)
+        {
+            return Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+        }
+    }
 }

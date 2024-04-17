@@ -1,20 +1,17 @@
-
-using Microsoft.UI.Xaml;
 using SQLite;
 using System;
 using System.IO;
-using VkNet.Enums.Filters;
-using vkPosterBot.DB;
-using static VK_UI3.DB.AccountsDB;
 using System.Management;
 using VK_UI3.Helpers;
+using vkPosterBot.DB;
+using static VK_UI3.DB.AccountsDB;
 
 namespace VK_UI3.DB
 {
     public class DatabaseHandler
     {
 
-        static SQLiteConnection _db= null;
+        static SQLiteConnection _db = null;
 
 
 
@@ -23,7 +20,7 @@ namespace VK_UI3.DB
         {
             // Получаем имя пользователя и номер материнской платы
             var userName = Environment.UserName;
-           // var motherboardSerialNumber = GetMotherboardSerialNumber();
+            // var motherboardSerialNumber = GetMotherboardSerialNumber();
 
             // Путь к папке AppData текущего пользователя
             var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -74,7 +71,7 @@ namespace VK_UI3.DB
                 }
             }
 
-          
+
 
             return _db;
         }

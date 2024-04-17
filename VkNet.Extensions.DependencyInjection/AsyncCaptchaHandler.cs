@@ -1,5 +1,5 @@
-﻿using System.Reflection;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using System.Reflection;
 using VkNet.Abstractions.Core;
 using VkNet.Exception;
 using VkNet.Utils;
@@ -10,7 +10,7 @@ namespace VkNet.Extensions.DependencyInjection;
 public class AsyncCaptchaHandler : ICaptchaHandler
 {
     private static readonly MethodInfo PerformAsyncMethod = typeof(AsyncCaptchaHandler).GetMethod(nameof(PerformAsync), BindingFlags.Instance | BindingFlags.NonPublic)!;
-    
+
     private readonly IAsyncCaptchaSolver? _captchaSolver;
     private readonly ILogger<CaptchaHandler>? _logger;
 
@@ -30,12 +30,12 @@ public class AsyncCaptchaHandler : ICaptchaHandler
         if (typeof(T).IsAssignableTo(typeof(Task)))
         {
             return (T?)PerformAsyncMethod.MakeGenericMethod(typeof(T).GenericTypeArguments[0], typeof(T))
-                .Invoke(this, new object[] {action});
+                .Invoke(this, new object[] { action });
         }
-        
+
         var context = new CaptchaSolveContext(MaxCaptchaRecognitionCount);
         var flag = false;
-        var obj = default (T);
+        var obj = default(T);
         do
         {
             try
@@ -63,7 +63,7 @@ public class AsyncCaptchaHandler : ICaptchaHandler
     {
         var context = new CaptchaSolveContext(MaxCaptchaRecognitionCount);
         var flag = false;
-        var obj = default (T);
+        var obj = default(T);
         do
         {
             try
@@ -86,7 +86,7 @@ public class AsyncCaptchaHandler : ICaptchaHandler
             CaptchaSid = context.CaptchaSidTemp.Value
         });
     }
-    
+
     private async Task<bool> RepeatSolveCaptchaAsync(
         CaptchaNeededException captchaNeededException,
         CaptchaSolveContext context)
@@ -98,7 +98,7 @@ public class AsyncCaptchaHandler : ICaptchaHandler
             return false;
         context.CaptchaSidTemp = captchaNeededException.Sid;
         var task = _captchaSolver?.SolveAsync(captchaNeededException.Img!.AbsoluteUri);
-        context.CaptchaKeyTemp =  task.HasValue ? await task.Value : null;
+        context.CaptchaKeyTemp = task.HasValue ? await task.Value : null;
         context.RemainingSolveAttempts--;
         return context.CaptchaKeyTemp is not null;
     }

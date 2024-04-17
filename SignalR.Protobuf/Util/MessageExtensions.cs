@@ -1,5 +1,4 @@
 ﻿using ProtoBuf;
-using ProtoBuf.Meta;
 
 namespace SignalR.Protobuf.Util;
 

@@ -1,6 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using MusicX.Core.Models.Genius;
 using System.Net.Http.Json;
-using MusicX.Core.Models.Genius;
 
 namespace MusicX.Core.Services;
 

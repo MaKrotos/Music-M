@@ -1,17 +1,15 @@
-using System;
-using System.IO;
-using System.Net.Http;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media.Imaging;
+using System;
+using System.IO;
+using System.Net.Http;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace VK_UI3.Helpers.Animations
 {
@@ -53,7 +51,7 @@ namespace VK_UI3.Helpers.Animations
         }
         public void ChangeImageWithAnimation(Uri newImageSourceUrl)
         {
-            if (newImageSourceUrl == null) 
+            if (newImageSourceUrl == null)
                 ChangeImageWithAnimation((string)null);
             else
                 ChangeImageWithAnimation(newImageSourceUrl.ToString());
@@ -134,11 +132,11 @@ namespace VK_UI3.Helpers.Animations
                     storyboard.Children.Add(animation);
                     storyboard.Begin();
 
-                  
+
                 };
                 storyboard.Completed -= storyboardCompletedHandler;
                 storyboard.Completed += storyboardCompletedHandler;
-           
+
                 storyboard.Begin();
             });
         }

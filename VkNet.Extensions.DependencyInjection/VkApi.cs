@@ -72,7 +72,7 @@ public class VkApi : IVkApi
     public IStatusCategory Status => _categories.Status;
     public IMessagesCategory Messages => _categories.Messages;
     public IGroupsCategory Groups => _categories.Groups;
-    public IAudioCategory Audio =>  _categories.Audio;
+    public IAudioCategory Audio => _categories.Audio;
     public IDatabaseCategory Database => _categories.Database;
     public IUtilsCategory Utils => _categories.Utils;
     public IWallCategory Wall => _categories.Wall;
@@ -140,7 +140,7 @@ public class VkApi : IVkApi
 
     public DateTimeOffset? LastInvokeTime => _invoke.LastInvokeTime;
     public TimeSpan? LastInvokeTimeSpan => _invoke.LastInvokeTimeSpan;
-    
+
     public VkResponse CallLongPoll(string server, VkParameters parameters)
     {
         throw new NotImplementedException();

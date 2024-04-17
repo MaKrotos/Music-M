@@ -1,17 +1,16 @@
 using Microsoft.UI.Xaml.Controls;
 using MusicX.Core.Models;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using System;
 using System.Windows.Input;
-using VK_UI3.VKs;
-using Windows.Win32;
-using WinUI3.Common;
-using Button = MusicX.Core.Models.Button;
 using VK_UI3.Controllers;
 using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
+using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
+using WinUI3.Common;
+using Button = MusicX.Core.Models.Button;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -30,7 +29,7 @@ namespace VK_UI3.Views.Controls
 
         AnimationsChangeIcon changeIcon;
         AnimationsChangeText changeText;
-       
+
 
         public Button Action
         {
@@ -99,7 +98,7 @@ namespace VK_UI3.Views.Controls
                     break;
             }
 
-        
+
         }
         private async void Invoke()
         {

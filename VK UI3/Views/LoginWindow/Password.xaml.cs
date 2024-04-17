@@ -5,7 +5,6 @@ using System;
 using System.Threading.Tasks;
 using VK_UI3.DB;
 using VK_UI3.VKs;
-using VkNet.AudioBypassService.Models.Auth;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -15,22 +14,22 @@ namespace VK_UI3.Views.LoginWindow
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public  partial class Password : Page
+    public partial class Password : Page
     {
         internal VK vk;
 
         public int CodeLength { get; set; }
         public string? Info { get; set; }
-     
 
 
-        public string FirstName { get; set;  } = "Незнакомец";
+
+        public string FirstName { get; set; } = "Незнакомец";
         public string Photo200 { get; set; } = "null";
         public string Phone { get; set; } = "***********";
-       
 
 
-       Helpers.Animations.AnimationsChangeImage AnimationsChangeImage { get; set; }
+
+        Helpers.Animations.AnimationsChangeImage AnimationsChangeImage { get; set; }
 
 
 
@@ -64,19 +63,19 @@ namespace VK_UI3.Views.LoginWindow
 
             if (viewModel != null)
             {
-              
+
 
                 CodeLength = (int)viewModel.CodeLength;
-                Info =  viewModel.Info;
+                Info = viewModel.Info;
 
                 this.FirstName = viewModel.FirstName;
                 this.Photo200 = viewModel.Photo200;
                 this.Phone = viewModel.Phone;
-              
-                
-     
 
-                Submitted =   viewModel.Submitted;
+
+
+
+                Submitted = viewModel.Submitted;
 
                 this.vk = viewModel.vk;
 
@@ -89,7 +88,7 @@ namespace VK_UI3.Views.LoginWindow
                 }
                 if (Phone == "***********") phoneText.Visibility = Visibility.Collapsed;
             }
-           
+
         }
 
         private void SubmitButton_Click(object sender, RoutedEventArgs e)

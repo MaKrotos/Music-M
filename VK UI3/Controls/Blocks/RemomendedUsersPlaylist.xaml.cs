@@ -16,14 +16,14 @@ namespace VK_UI3.Controls.Blocks
         {
             this.InitializeComponent();
 
-       
+
             this.Loading += RecommsPlaylistBlock_Loading;
             this.Unloaded += RecommsPlaylistBlock_Unloaded;
         }
 
         private void RecommsPlaylistBlock_Unloaded(object sender, RoutedEventArgs e)
         {
-      
+
             this.Loading -= RecommsPlaylistBlock_Loading;
             this.Unloaded -= RecommsPlaylistBlock_Unloaded;
         }
@@ -53,6 +53,6 @@ namespace VK_UI3.Controls.Blocks
 
         ObservableCollection<RecommendedPlaylist> playlists = new();
 
-    
+
     }
 }

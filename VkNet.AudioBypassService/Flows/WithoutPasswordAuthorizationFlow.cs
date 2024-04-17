@@ -28,12 +28,12 @@ internal class WithoutPasswordAuthorizationFlow : VkAndroidAuthorizationBase
     protected override async ValueTask<VkParameters> BuildParameters(AndroidApiAuthParams authParams)
     {
         var parameters = await base.BuildParameters(authParams);
-        
+
         parameters.Add("username", authParams.Login);
         parameters.Add("flow_type", "auth_without_password");
         parameters.Add("2fa_supported", true);
         parameters.Add("vk_connect_auth", true);
-        
+
         return parameters;
     }
 }

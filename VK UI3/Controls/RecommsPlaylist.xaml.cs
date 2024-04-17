@@ -2,10 +2,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
-using MusicX.Core.Models;
 using System;
 using System.Collections.Generic;
-using System.Reflection.Metadata;
 using VK_UI3.Controllers;
 using VK_UI3.DB;
 using VK_UI3.Helpers;
@@ -15,8 +13,6 @@ using VK_UI3.Views.ModalsPages;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
-using Windows.Media.Playlists;
-using Playlist = MusicX.Core.Models.Playlist;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -360,7 +356,7 @@ namespace VK_UI3.Controls
 
             dialog.Content = a;
             dialog.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
-            a.cancelPressed+=((s, e) =>
+            a.cancelPressed += ((s, e) =>
             {
                 if (s != null && s is AudioPlaylist)
                 {
@@ -374,7 +370,7 @@ namespace VK_UI3.Controls
                 {
                     if (dialog != null)
                         dialog.Hide();
-                        dialog = null;
+                    dialog = null;
                 }
                 catch
                 {
