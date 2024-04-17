@@ -47,27 +47,29 @@ namespace VK_UI3.Helpers.Animations
             this.RenderTransform = scaleTransform;
             this.RenderTransformOrigin = new Point(0.5, 0.5);
         }
-
+        bool enable = false;
 
 
         private void Storyboard_Completed(object sender, object e)
         {
-
             // Устанавливаем случайный размер высоты
             scaleYAnimation.To = random.NextDouble() * (Max - Min) + Min;
             scaleYAnimation.Duration = new Duration(TimeSpan.FromSeconds(Seconds));
             // Запускаем анимацию снова
-            storyboard.Begin();
+            if (enable)
+                storyboard.Begin();
         }
 
         public void StartAnimation()
         {
+            enable = true;
             storyboard.Begin();
         }
         public void StopAnimation()
         {
             storyboard.Pause();
             scaleYAnimation.To = 1;
+            enable = false;
             storyboard.Begin();
         }
     }
