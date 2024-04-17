@@ -1,21 +1,16 @@
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Windows.Storage.Pickers;
-using Windows.Storage;
-using Windows.ApplicationModel.DataTransfer;
-using VkNet.Model.Attachments;
-using MusicX.Core.Services;
 using System.Threading.Tasks;
-using VK_UI3.VKs;
 using VK_UI3.DB;
-using Microsoft.AppCenter.Crashes;
-using ProtoBuf.Meta;
-using System.Collections.Generic;
-using VK_UI3.Services;
+using VK_UI3.VKs;
+using VkNet.Model.Attachments;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage;
+using Windows.Storage.Pickers;
 
 // To learn more about WinUI, the WinUI project structure,
 // To learn more about WinUI, the WinUI project structure,
@@ -55,14 +50,14 @@ namespace VK_UI3.Views.ModalsPages
         }
 
         public EventHandler cancelPressed;
-     
+
         public UIElement GetFirstChild()
         {
-          
+
             return MainGrid;
         }
         AudioPlaylist audioPlaylist { get; set; } = null;
-        Audio audio { get; set; } = null;   
+        Audio audio { get; set; } = null;
 
         private void CreatePlayList_Loaded(object sender, RoutedEventArgs e)
         {
@@ -105,7 +100,7 @@ namespace VK_UI3.Views.ModalsPages
                 await UploadCoverPlaylist();
                 audioPlaylist = await VK.api.Audio.GetPlaylistByIdAsync(audioPlaylist.OwnerId, audioPlaylist.Id);
                 cancelPressed?.Invoke(audioPlaylist, EventArgs.Empty);
-                
+
             }
             catch (Exception ex)
             {
@@ -116,11 +111,11 @@ namespace VK_UI3.Views.ModalsPages
         {
             if (string.IsNullOrEmpty(Title.Text) || string.IsNullOrWhiteSpace(Title.Text))
             {
-              
+
                 return;
             }
 
-             
+
             if (audio == null)
             {
                 audioPlaylist = await VK.api.Audio.CreatePlaylistAsync(AccountsDB.activeAccount.id, this.Title.Text, this.Description.Text, No_discover: HideFromSearch.IsOn);
@@ -138,7 +133,7 @@ namespace VK_UI3.Views.ModalsPages
 
 
         Helpers.Animations.AnimationsChangeImage animationsChangeImage;
-      
+
         private async void PlaylistImage_Drop(object sender, DragEventArgs e)
         {
             if (e.DataView.Contains(StandardDataFormats.StorageItems))
@@ -153,7 +148,7 @@ namespace VK_UI3.Views.ModalsPages
                     if (fileExtension == ".jpg" || fileExtension == ".jpeg" || fileExtension == ".png")
                     {
                         animationsChangeImage.ChangeImageWithAnimation(storageFile.Path);
-                        CoverPath = storageFile.Path; 
+                        CoverPath = storageFile.Path;
                         // PlaylistImage.Source = bitmapImage;
                     }
                     else
@@ -200,7 +195,7 @@ namespace VK_UI3.Views.ModalsPages
                 animationsChangeImage.ChangeImageWithAnimation(file.Path);
                 CoverPath = file.Path;
             }
-  
+
 
 
 
@@ -216,12 +211,12 @@ namespace VK_UI3.Views.ModalsPages
             if (audioPlaylist == null)
             {
 
-              await  create();
+                await create();
 
             }
             else
             {
-              await  EditAsync();
+                await EditAsync();
             }
             TempPlayLists.TempPlayLists.updateNextRequest = true;
         }

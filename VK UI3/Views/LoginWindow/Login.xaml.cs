@@ -4,13 +4,11 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System;
-using System.Text;
 using System.Threading.Tasks;
 using VK_UI3.DB;
 using VK_UI3.Views.ModalsPages;
 using VK_UI3.VKs;
 using Windows.Foundation;
-using Windows.Storage.Streams;
 using Windows.System;
 using static VK_UI3.DB.AccountsDB;
 
@@ -31,12 +29,12 @@ namespace VK_UI3.Views.LoginWindow
             this.InitializeComponent();
 
 
-            
+
             //BackBTN.IsEnabled = this.Frame.CanGoBack;
             this.Loaded += Login_Loaded;
-            
 
-         
+
+
 
         }
         private void BackButton_Click(object sender, RoutedEventArgs e)
@@ -59,14 +57,14 @@ namespace VK_UI3.Views.LoginWindow
             {
                 loginInvike();
             });
-             task.RunSynchronously();
+            task.RunSynchronously();
             Frame.Navigate(typeof(waitPage), this, new DrillInNavigationTransitionInfo());
 
         }
 
         private void loginInvike()
         {
-                new VK(this).LoginAsync(LoginTextBox.Text);
+            new VK(this).LoginAsync(LoginTextBox.Text);
         }
 
         public Task<string> InputTextDialogAsyncCapthca(Uri imageUrl)
@@ -76,7 +74,7 @@ namespace VK_UI3.Views.LoginWindow
 
             this.DispatcherQueue.TryEnqueue(() =>
             {
-                
+
 
                 TextBox inputTextBox = new TextBox();
                 Image captchaImage = new Image();
@@ -166,7 +164,7 @@ namespace VK_UI3.Views.LoginWindow
                     // Выполните действие, которое вы хотите выполнить при нажатии Enter
                     result = inputTextBox.Text;
                     if (dialog != null)
-                    dialog.Hide();
+                        dialog.Hide();
                 }
             };
 
@@ -227,7 +225,8 @@ namespace VK_UI3.Views.LoginWindow
         {
             // _ = await InputTextDialogAsync("hello!", this.XamlRoot);
             activeAccount = GetActiveAccount();
-            if (activeAccount == null) {
+            if (activeAccount == null)
+            {
                 var actacc = AccountsDB.GetAllAccounts();
                 actacc[0].Active = true;
                 actacc[0].Update();
@@ -249,6 +248,6 @@ namespace VK_UI3.Views.LoginWindow
             }
         }
 
-       
+
     }
 }

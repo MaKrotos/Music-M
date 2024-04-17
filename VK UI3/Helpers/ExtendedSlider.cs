@@ -1,6 +1,6 @@
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 
 namespace VK_UI3.Helpers
@@ -32,9 +32,9 @@ namespace VK_UI3.Helpers
                         toolTip.Content = ThumbToolTipValueConverter.Convert(SecondValue, null, null, null);
                         ToolTipService.SetToolTip(thumb, toolTip);
                     }
-                    thumb.Margin = new Thickness((SecondValue /Minimum - Maximum), 0, 0, 0);
+                    thumb.Margin = new Thickness((SecondValue / Minimum - Maximum), 0, 0, 0);
                 }
-               
+
             }
         }
         Microsoft.UI.Xaml.Controls.Primitives.Thumb thumb;
@@ -50,13 +50,13 @@ namespace VK_UI3.Helpers
                 var newThumb = new Microsoft.UI.Xaml.Controls.Primitives.Thumb();
                 thumb = FindChild<Microsoft.UI.Xaml.Controls.Primitives.Thumb>(this);
                 // Копировать все доступные свойства
-              
+
 
                 var toolTip = ToolTipService.GetToolTip(thumb) as ToolTip;
-                toolTip.Content = ThumbToolTipValueConverter.Convert(SecondValue, null, null ,null);
+                toolTip.Content = ThumbToolTipValueConverter.Convert(SecondValue, null, null, null);
                 ToolTipService.SetToolTip(thumb, toolTip);
 
-              
+
             };
         }
 
@@ -78,7 +78,7 @@ namespace VK_UI3.Helpers
             }
             return null;
         }
-      
+
 
 
         private void OnValueChanged(object sender, RangeBaseValueChangedEventArgs e)

@@ -1,52 +1,64 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <UserControl
-    
-
     x:Class="VK_UI3.Views.Upload.UploadController"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:VK_UI3.Views.Download"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    
-    
-        Translation="0,0,8"
-    >
+    Translation="0,0,8"
+    mc:Ignorable="d">
 
-    <StackPanel Padding="10" CornerRadius="5"  Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"   Translation="0,0,8" Orientation="Vertical">
-           
+    <StackPanel
+        Padding="10"
+        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
+        CornerRadius="5"
+        Orientation="Vertical"
+        Translation="0,0,8">
+
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
 
             </Grid.ColumnDefinitions>
 
             <StackPanel>
-                <TextBlock Grid.Column="0" x:Name="DownloadTitle" Text=""/>
-              
+                <TextBlock
+                    x:Name="DownloadTitle"
+                    Grid.Column="0"
+                    Text="" />
+
             </StackPanel>
 
         </Grid>
-   
-    <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            
-            <ProgressBar Grid.Column="0" Value="0" x:Name="DownloadProgressBar"  Margin="0,10,10,10"/>
 
-           
-            <Button Padding="0" Click="Cancel_clicked"  Width="25" Height="25" Background="Transparent" Grid.Column="2">
-                <FontIcon FontSize="16" Glyph="&#xE711;">
-                </FontIcon>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <ProgressBar
+                x:Name="DownloadProgressBar"
+                Grid.Column="0"
+                Margin="0,10,10,10"
+                Value="0" />
+
+
+            <Button
+                Grid.Column="2"
+                Width="25"
+                Height="25"
+                Padding="0"
+                Background="Transparent"
+                Click="Cancel_clicked">
+                <FontIcon FontSize="16" Glyph="&#xE711;" />
             </Button>
-          
-          
+
+
         </Grid>
     </StackPanel>
 

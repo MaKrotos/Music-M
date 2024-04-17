@@ -1,37 +1,35 @@
 ﻿#define SKIP_ERROR_PRONE_CODE
+using Microsoft.UI;
+using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Input;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Navigation;
 using SetupLib;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using VK_UI3.DB;
+using VK_UI3.DownloadTrack;
 using VK_UI3.Views;
 using VK_UI3.Views.LoginWindow;
-using Windows.ApplicationModel;
-using Windows.Win32;
-using Windows.Win32.UI.WindowsAndMessaging;
-using Windows.Win32.Foundation;
-using System.IO;
-using Microsoft.UI.Windowing;
-using Microsoft.UI;
-using Windows.UI.ViewManagement;
-using Microsoft.UI.Composition.SystemBackdrops;
-using Microsoft.UI.Xaml.Media;
-using vkPosterBot.DB;
-using System.Collections.Generic;
-using Microsoft.UI.Input;
-using Windows.Foundation;
-using VK_UI3.DownloadTrack;
-using VK_UI3.Views.Download;
 using VK_UI3.Views.ModalsPages;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Hosting;
-using System.Diagnostics;
 using VK_UI3.Views.Upload;
-using System.Collections.ObjectModel;
+using vkPosterBot.DB;
+using Windows.ApplicationModel;
+using Windows.Foundation;
+using Windows.UI.ViewManagement;
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.UI.WindowsAndMessaging;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -46,11 +44,11 @@ namespace VK_UI3
     {
         internal static HWND hvn;
         AppWindow m_AppWindow = null;
-       public static  MainWindow mainWindow;
+        public static MainWindow mainWindow;
 
         public MainWindow()
         {
-            
+
             this.InitializeComponent();
             this.Closed += MainWindow_CloseRequested;
             m_AppWindow = this.AppWindow;
@@ -62,13 +60,13 @@ namespace VK_UI3
             this.SetTitleBar(AppTitleBar);
             AppTitleBar.Loaded += AppTitleBar_Loaded;
             AppTitleBar.SizeChanged += AppTitleBar_SizeChanged;
-  
-            PlayListDownload.OnEndAllDownload +=(OnEndAllDownload_Event); ;
+
+            PlayListDownload.OnEndAllDownload += (OnEndAllDownload_Event); ;
 
 
             AppWindowTitleBar m_TitleBar = m_AppWindow.TitleBar;
 
-     
+
 
 
             CheckMica();
@@ -76,31 +74,33 @@ namespace VK_UI3
 
 
 
-            m_TitleBar.ButtonForegroundColor = (Application.Current.RequestedTheme == ApplicationTheme.Dark) 
+            m_TitleBar.ButtonForegroundColor = (Application.Current.RequestedTheme == ApplicationTheme.Dark)
                 ? Colors.White : Colors.Black;
             UISettings uI = new();
             uI.ColorValuesChanged += UI_ColorValuesChanged; ;
 
 
-            
+
 
 
 
             var navigationInfo = new NavigationInfo { SourcePageType = this };
 
-             if (AccountsDB.GetAllAccounts().Count == 0) {
+            if (AccountsDB.GetAllAccounts().Count == 0)
+            {
 
                 GoLogin();
-             }else
+            }
+            else
                 ContentFrame.Navigate(typeof(MainView), navigationInfo, new DrillInNavigationTransitionInfo());
-       
+
 
             dispatcherQueue = this.DispatcherQueue;
 
-             SubClassing();
+            SubClassing();
 
             string assetsPath = Windows.ApplicationModel.Package.Current.InstalledLocation.Path;
-            
+
             // Составить путь к иконке
             string iconPath = Path.Combine(assetsPath, "icon.ico");
             LoadIcon(iconPath);
@@ -109,7 +109,7 @@ namespace VK_UI3
 
             hvn = (HWND)WinRT.Interop.WindowNative.GetWindowHandle(this);
 
-          
+
 
             AnimatedButton.AnimationCompleted += ResizeTabBar;
             DownLoadBTN.AnimationCompleted += ResizeTabBar;
@@ -122,7 +122,7 @@ namespace VK_UI3
             this.Activated += activated;
 
 
-          
+
         }
 
         private void UploadsTracks_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -140,7 +140,7 @@ namespace VK_UI3
                     UploadBTN.HideButton();
                     UploadBTN.Flyout.Hide();
                 }
-            
+
             }
         }
 
@@ -212,10 +212,11 @@ namespace VK_UI3
 
 
 
-        public void  backBTNShow() {
+        public void backBTNShow()
+        {
 
             BackBTN.ShowButton();
-  
+
 
         }
         public void backBTNHide()
@@ -259,10 +260,10 @@ namespace VK_UI3
 
                 if (result == ContentDialogResult.Primary)
                 {
-                  
+
                     justClose = true;
                     Application.Current.Exit();
-                 
+
                 }
                 if (result == ContentDialogResult.Secondary)
                 {
@@ -293,7 +294,7 @@ namespace VK_UI3
             MainWindow_hideDownload();
         }
 
-       
+
 
 
         public void MainWindow_showRefresh()
@@ -325,7 +326,8 @@ namespace VK_UI3
 
         public void MainWindow_showDownload()
         {
-            this.DispatcherQueue.TryEnqueue((() => {
+            this.DispatcherQueue.TryEnqueue((() =>
+            {
 
                 DownLoadBTN.ShowButton();
 
@@ -386,7 +388,7 @@ namespace VK_UI3
                 var bounds = transform.TransformBounds(new Rect(0, 0, frameworkElement.ActualWidth, frameworkElement.ActualHeight));
 
                 // Преобразуйте координаты DPI
-             
+
                 var rect = new Windows.Graphics.RectInt32(
                     _X: (int)Math.Round(bounds.X * scaleAdjustment),
                     _Y: (int)Math.Round(bounds.Y * scaleAdjustment),
@@ -480,14 +482,14 @@ namespace VK_UI3
             if (set != null)
             {
                 if (!(SystemBackdrop is MicaBackdrop))
-                SystemBackdrop = new MicaBackdrop()
-                { Kind = MicaKind.BaseAlt };
+                    SystemBackdrop = new MicaBackdrop()
+                    { Kind = MicaKind.BaseAlt };
             }
             else
             {
                 if (!(SystemBackdrop is DesktopAcrylicBackdrop))
                     SystemBackdrop = new DesktopAcrylicBackdrop()
-                    {  };
+                    { };
             }
         }
 
@@ -531,7 +533,7 @@ namespace VK_UI3
 
         private void checkUpdate()
         {
-            
+
 
             Task.Run(async () =>
             {
@@ -550,15 +552,16 @@ namespace VK_UI3
 
                 if (updateAvailable)
                 {
-                 
+
                     // Создайте новое окно
-                    dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () => {
+                    dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+                    {
                         ContentFrame.Navigate(typeof(UpdatePage), appUpdater, new DrillInNavigationTransitionInfo());
                     });
-                    
+
                 }
             });
-      
+
         }
 
 
@@ -567,7 +570,7 @@ namespace VK_UI3
         private WinProc newWndProc = null;
         private IntPtr oldWndProc = IntPtr.Zero;
 
-      
+
         private void SubClassing()
         {
             var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
@@ -581,8 +584,8 @@ namespace VK_UI3
             newWndProc = new(NewWindowProc);
 
 
-            oldWndProc = SetWindowLong((HWND)hwnd, WINDOW_LONG_PTR_INDEX.GWL_WNDPROC, Marshal.GetFunctionPointerForDelegate(newWndProc)); 
-            
+            oldWndProc = SetWindowLong((HWND)hwnd, WINDOW_LONG_PTR_INDEX.GWL_WNDPROC, Marshal.GetFunctionPointerForDelegate(newWndProc));
+
             if (oldWndProc == IntPtr.Zero)
             {
                 int error = Marshal.GetLastWin32Error();
@@ -655,7 +658,7 @@ namespace VK_UI3
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-        //    AnimatedIcon.SetState(this.SearchAnimatedIcon, "PointerOver");
+            //    AnimatedIcon.SetState(this.SearchAnimatedIcon, "PointerOver");
 
         }
 
@@ -663,7 +666,7 @@ namespace VK_UI3
         public EventHandler onBackClicked;
         public static WeakEventManager onDownloadClicked = new WeakEventManager();
 
-     
+
         public static void onRefreshClickedvoid()
         {
             MainWindow.mainWindow.RotationStoryboard.Begin();
@@ -685,7 +688,7 @@ namespace VK_UI3
 
         private void DownLoadBTN_Click(object sender, RoutedEventArgs e)
         {
-          
+
             onDownloadClicked?.RaiseEvent(this, EventArgs.Empty);
         }
 
@@ -724,8 +727,9 @@ namespace VK_UI3
 
                     }
                 });
-            
-            }catch (Exception e)
+
+            }
+            catch (Exception e)
             {
             }
 

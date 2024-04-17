@@ -1,24 +1,12 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using SharpCompress.Common;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
 using VK_UI3.Views.Upload;
 using VK_UI3.VKs;
 using VkNet.Model.Attachments;
 using VkNet.Model.RequestParams;
-using VkNet.Utils;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -44,7 +32,7 @@ namespace VK_UI3.Views.ModalsPages
         {
             this.InitializeComponent();
 
-           this.audio = audio;
+            this.audio = audio;
             artist.Text = audio.Artist;
             name.Text = audio.Title;
 
@@ -52,34 +40,34 @@ namespace VK_UI3.Views.ModalsPages
 
             this.Loaded += EditTrack_Loaded;
             this.Unloaded += EditTrack_Unloaded;
-            
-        
+
+
         }
 
         private void EditTrack_Unloaded(object sender, RoutedEventArgs e)
         {
-          this.Unloaded -= EditTrack_Unloaded; 
-          this.Loaded -= EditTrack_Loaded;
+            this.Unloaded -= EditTrack_Unloaded;
+            this.Loaded -= EditTrack_Loaded;
         }
 
         private void EditTrack_Loaded(object sender, RoutedEventArgs e)
         {
             if (audio != null)
-            if (audio.Genre != null)
-            {
-                int tag = (int)audio.Genre;
-
-                ComboBoxItem itemToSelect = Genres.Items
-                    .OfType<ComboBoxItem>()
-                    .FirstOrDefault(item => int.Parse((string)item.Tag) == tag);
-
-                if (itemToSelect != null)
+                if (audio.Genre != null)
                 {
-                    ancyItem.IsSelected = false;
-                    Genres.SelectedItem = itemToSelect;
+                    int tag = (int)audio.Genre;
+
+                    ComboBoxItem itemToSelect = Genres.Items
+                        .OfType<ComboBoxItem>()
+                        .FirstOrDefault(item => int.Parse((string)item.Tag) == tag);
+
+                    if (itemToSelect != null)
+                    {
+                        ancyItem.IsSelected = false;
+                        Genres.SelectedItem = itemToSelect;
+                    }
+                    Vivod.IsChecked = audio.No_search;
                 }
-                Vivod.IsChecked = audio.No_search;
-            }
             if (path != null)
             {
                 var file = TagLib.File.Create(path);
@@ -103,9 +91,9 @@ namespace VK_UI3.Views.ModalsPages
                 }
 
 
-            
-            
-            
+
+
+
             }
         }
 
@@ -114,7 +102,7 @@ namespace VK_UI3.Views.ModalsPages
         {
             if (path != null)
             {
-                new UploadTrack(this.DispatcherQueue ,path, name.Text, artist.Text, null, int.Parse((string)(Genres.SelectedItem as ComboBoxItem).Tag), Vivod.IsChecked); ;
+                new UploadTrack(this.DispatcherQueue, path, name.Text, artist.Text, null, int.Parse((string)(Genres.SelectedItem as ComboBoxItem).Tag), Vivod.IsChecked); ;
                 cancelPressed.Invoke(null, System.EventArgs.Empty);
                 return;
             }
@@ -132,7 +120,7 @@ namespace VK_UI3.Views.ModalsPages
                 };
 
                 await VK.api.Audio.EditAsync(param);
-                var ids = new string[] { audio.OwnerId +"_"+ audio.Id };
+                var ids = new string[] { audio.OwnerId + "_" + audio.Id };
                 audio = (await VK.api.Audio.GetByIdAsync(ids)).ToList()[0];
                 cancelPressed.Invoke(audio, System.EventArgs.Empty);
             }

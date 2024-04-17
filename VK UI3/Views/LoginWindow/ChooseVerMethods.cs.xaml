@@ -2,38 +2,46 @@
     x:Class="VK_UI3.Views.LoginWindow.ChooseVerMethods"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:VK_UI3.Views.LoginWindow"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:converters="using:VK_UI3.Converters"
-    mc:Ignorable="d"
     xmlns:custom="using:VK_UI3.Controllers"
-    VerticalAlignment="Center" HorizontalAlignment="Center"
-   >
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:VK_UI3.Views.LoginWindow"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    HorizontalAlignment="Center"
+    VerticalAlignment="Center"
+    mc:Ignorable="d">
 
     <Grid
-        Translation="0,0,8"
-            CornerRadius="8" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" Margin="50" VerticalAlignment="Center" HorizontalAlignment="Center"
-        >
+        Margin="50"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
+        CornerRadius="8"
+        Translation="0,0,8">
         <Grid.Shadow>
             <ThemeShadow />
         </Grid.Shadow>
 
-        <ListView Padding="0,3,0,3" CanReorderItems="false" x:Name="LoginsListView" SelectionChanged="LoginsListView_SelectionChanged" ItemsSource="{x:Bind VerificationMethods, Mode=OneWay}"    SelectionMode="Single">
-            
-            
-            
-            <ListView.ItemTemplate>
-             
+        <ListView
+            x:Name="LoginsListView"
+            Padding="0,3,0,3"
+            CanReorderItems="false"
+            ItemsSource="{x:Bind VerificationMethods, Mode=OneWay}"
+            SelectionChanged="LoginsListView_SelectionChanged"
+            SelectionMode="Single">
 
-                        <DataTemplate >
-                   
+
+
+            <ListView.ItemTemplate>
+
+
+                <DataTemplate>
+
                     <custom:ChooseLoginWayControl
-               
                         Margin="10"
                         FocusVisualPrimaryBrush="Transparent"
-                     FocusVisualSecondaryThickness="0"
-                     loginWay="{Binding }">
+                        FocusVisualSecondaryThickness="0"
+                        loginWay="{Binding}">
 
                         <custom:ChooseLoginWayControl.Shadow>
                             <ThemeShadow x:Name="SharedShadow" />

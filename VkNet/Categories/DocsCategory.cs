@@ -32,6 +32,8 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+
 
 /* Необъединенное слияние из проекта "VkNet (netstandard2.0)"
 До:

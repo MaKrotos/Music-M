@@ -1,7 +1,5 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using MusicX.Core.Models;
 using MusicX.Core.Models.General;
@@ -10,7 +8,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using VK_UI3.Controls;
 using VK_UI3.Controls.Blocks;
@@ -32,22 +29,22 @@ namespace VK_UI3.Views
 
 
         string nextLoad = null;
-   
+
         public SectionType sectionType;
-       
+
         public SectionView()
         {
             this.InitializeComponent();
 
 
-  
+
             this.Loaded += SectionView_Loaded;
             this.Unloaded += SectionView_Unloaded;
         }
 
         private void SectionView_Unloaded(object sender, RoutedEventArgs e)
         {
-   
+
             this.Loaded -= SectionView_Loaded;
             this.Unloaded -= SectionView_Unloaded;
             this.scrollVIew.ViewChanged -= scrollVIew_ViewChanged;
@@ -55,7 +52,7 @@ namespace VK_UI3.Views
 
         private void SectionView_Loaded(object sender, RoutedEventArgs e)
         {
-        
+
             if (this.section != null && this.section.Blocks != null && this.section.Blocks.Count != 0)
             {
                 this.nextLoad = this.section.NextFrom;
@@ -68,10 +65,10 @@ namespace VK_UI3.Views
             }
         }
 
-     
+
 
         ScrollViewer scrollViewer = null;
-      
+
         bool loadedAll = false;
 
         private bool CheckIfAllContentIsVisible(ScrollViewer scrollViewer)
@@ -118,10 +115,10 @@ namespace VK_UI3.Views
             var section = e.Parameter as Section;
             if (section == null) return;
             this.section = section;
-   
+
         }
-    
-       
+
+
 
 
         ResponseData artist = null;
@@ -130,7 +127,7 @@ namespace VK_UI3.Views
             try
             {
                 if (artist == null)
-                 artist = await VK.vkService.GetAudioArtistAsync(artistId);
+                    artist = await VK.vkService.GetAudioArtistAsync(artistId);
                 loadSection(artist.Catalog.DefaultSection);
             }
             catch (Exception ex)
@@ -178,7 +175,7 @@ namespace VK_UI3.Views
 
             }
         }
-        
+
 
         public async Task LoadAsync()
         {
@@ -255,7 +252,7 @@ namespace VK_UI3.Views
             }
             catch (Exception e)
             {
-                
+
                 blockLoad = false;
                 throw e;
             }
@@ -286,7 +283,7 @@ namespace VK_UI3.Views
                         if (!listened)
                         {
                             listened = true;
-                            _tracksFull.sectionAudio.onListUpdate +=(SectionAudio_onListUpdate);
+                            _tracksFull.sectionAudio.onListUpdate += (SectionAudio_onListUpdate);
                         }
                     }
                 }
@@ -307,10 +304,10 @@ namespace VK_UI3.Views
             foreach (var item in block)
             {
 
-                if (tracksFull != null) 
+                if (tracksFull != null)
                 {
 
-         
+
                     foreach (var audio in item.Audios)
                     {
                         this.DispatcherQueue.TryEnqueue(() =>
@@ -319,7 +316,7 @@ namespace VK_UI3.Views
                             tracksFull.sectionAudio.Next = item.NextFrom;
                             if (item.NextFrom == null) tracksFull.sectionAudio.itsAll = true;
                             tracksFull.sectionAudio.NotifyOnListUpdate();
-              
+
                         });
                     }
                     continue;
@@ -330,8 +327,8 @@ namespace VK_UI3.Views
                             blocks.Add(item);
                         });
 
-               
-               
+
+
             }
             if (CheckIfAllContentIsVisible(scrollViewer))
             {
@@ -344,7 +341,7 @@ namespace VK_UI3.Views
                 HideLoad();
             }
 
-           
+
         }
 
 

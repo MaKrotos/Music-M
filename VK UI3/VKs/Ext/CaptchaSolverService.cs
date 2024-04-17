@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 using VK_UI3.Views.ModalsPages;
 using VkNet.Extensions.DependencyInjection;
 
@@ -9,13 +8,13 @@ namespace VK_UI3.VKs.Ext;
 
 public class CaptchaSolverService : IAsyncCaptchaSolver
 {
-   
+
     private readonly IServiceProvider _serviceProvider;
 
     public CaptchaSolverService(
         IServiceProvider serviceProvider)
     {
-    
+
         _serviceProvider = serviceProvider;
     }
 
@@ -28,12 +27,12 @@ public class CaptchaSolverService : IAsyncCaptchaSolver
 
         MainWindow.contentFrame.Navigate(typeof(CaptchaEnter), captchaEnter);
 
-        return new (await Submitted.Task);
+        return new(await Submitted.Task);
     }
 
     public ValueTask SolveFailedAsync()
     {
-     // _snackbarService.Show("Ошибка!", "Вы ввели неправильную капчу");
+        // _snackbarService.Show("Ошибка!", "Вы ввели неправильную капчу");
         return ValueTask.CompletedTask;
     }
 }

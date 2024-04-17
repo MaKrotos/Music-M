@@ -1,9 +1,6 @@
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
-using Octokit;
 using System;
-using System.Threading.Tasks;
 using VK_UI3.DB;
 using VK_UI3.VKs;
 using VkNet.AudioBypassService.Models.Auth;
@@ -17,7 +14,7 @@ namespace VK_UI3.Views.LoginWindow
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public  partial class OtpCode : Page
+    public partial class OtpCode : Page
     {
         internal VK vk;
 
@@ -26,11 +23,11 @@ namespace VK_UI3.Views.LoginWindow
         public LoginWay loginWay { get; set; } = LoginWay.None;
         public bool HasAnotherVerificationMethods { get; set; }
 
-    
 
-      
-     
-     
+
+
+
+
 
         public OtpCode()
         {
@@ -52,16 +49,16 @@ namespace VK_UI3.Views.LoginWindow
 
             if (viewModel != null)
             {
-              
+
 
                 CodeLength = (int)viewModel.CodeLength;
-                Info =  viewModel.Info;
+                Info = viewModel.Info;
                 loginWay = viewModel.loginWay;
                 var txt = "Вам был отправлен код авторизации.";
 
                 if (loginWay == LoginWay.Codegen)
                     txt = "Ваш код был сгенерирован приложением для генерации";
-               
+
                 if (loginWay == LoginWay.CallReset)
                     txt = "Вам сейчас позвонят и продиктуют код авторизации";
 
@@ -78,7 +75,7 @@ namespace VK_UI3.Views.LoginWindow
                     txt = "Используйте резервный код из сохранённого Вами списка.";
 
                 CodeBox.MaxLength = CodeLength;
-           
+
 
                 passpey.Text = txt;
 
@@ -86,11 +83,11 @@ namespace VK_UI3.Views.LoginWindow
 
                 if (!HasAnotherVerificationMethods) goAnotherBTN.Visibility = Visibility.Collapsed;
 
-               
+
 
                 this.vk = viewModel.vk;
-                
-            
+
+
             }
 
 
@@ -107,7 +104,7 @@ namespace VK_UI3.Views.LoginWindow
             sumbit();
         }
 
-        private void sumbit() 
+        private void sumbit()
         {
             vk.Vk2FaCompleteAsync(CodeBox.Text);
 
@@ -125,7 +122,7 @@ namespace VK_UI3.Views.LoginWindow
 
                 sumbit();
             }
-            
+
         }
     }
 }

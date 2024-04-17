@@ -1,47 +1,63 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Page
     x:Class="VK_UI3.Views.PlayListPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:VK_UI3.Views"
     xmlns:custom="using:VK_UI3.Controls"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
     xmlns:customs="using:VK_UI3.Helpers.Animations"
->
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:VK_UI3.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
     <Page.Shadow>
         <ThemeShadow />
     </Page.Shadow>
-   
-    <ListView  Padding="0"  CanReorderItems="false" x:Name="TrackListView" ItemsSource="{x:Bind vkGetAudio.listAudio, Mode=OneWay}"   IsItemClickEnabled="False" SelectionMode="None">
+
+    <ListView
+        x:Name="TrackListView"
+        Padding="0"
+        CanReorderItems="false"
+        IsItemClickEnabled="False"
+        ItemsSource="{x:Bind vkGetAudio.listAudio, Mode=OneWay}"
+        SelectionMode="None">
         <ListView.Shadow>
             <ThemeShadow />
         </ListView.Shadow>
         <ListView.Header>
             <Grid Margin="15,15,15,15">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
 
-                        <!-- Квадратный элемент в первом столбце -->
+                <!--  Квадратный элемент в первом столбце  -->
                 <Grid>
-                    <StackPanel CornerRadius="8" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}" VerticalAlignment="Top">
-                        <Grid  Translation="0,0,8160" Width="200" Height="200" 
- 
-CornerRadius="8" Margin="5" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" Grid.Column="0">
+                    <StackPanel
+                        VerticalAlignment="Top"
+                        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
+                        CornerRadius="8">
+                        <Grid
+                            Grid.Column="0"
+                            Width="200"
+                            Height="200"
+                            Margin="5"
+                            Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
+                            CornerRadius="8"
+                            Translation="0,0,8160">
                             <FontIcon Glyph="&#xE90B;" />
-                            <customs:GridImagesCustom  x:Name="GridThumbs" Width="200" Height="200">
+                            <customs:GridImagesCustom
+                                x:Name="GridThumbs"
+                                Width="200"
+                                Height="200">
                                 <customs:GridImagesCustom.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
 
                                 </customs:GridImagesCustom.RowDefinitions>
                                 <customs:GridImagesCustom.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
                                 </customs:GridImagesCustom.ColumnDefinitions>
 
                             </customs:GridImagesCustom>
@@ -49,221 +65,265 @@ CornerRadius="8" Margin="5" Background="{ThemeResource LayerOnAccentAcrylicFillC
 
                         </Grid>
                         <StackPanel
-PointerEntered="ownerGrid_PointerEntered"
-PointerExited="ownerGrid_PointerExited"
-PointerPressed="ownerGrid_PointerPressed"
-Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"  Visibility="Collapsed" CornerRadius="10" x:Name="ownerGrid" Orientation="Horizontal" VerticalAlignment="Bottom" Margin="5" Padding="10" >
+                            x:Name="ownerGrid"
+                            Margin="5"
+                            Padding="10"
+                            VerticalAlignment="Bottom"
+                            Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"
+                            CornerRadius="10"
+                            Orientation="Horizontal"
+                            PointerEntered="ownerGrid_PointerEntered"
+                            PointerExited="ownerGrid_PointerExited"
+                            PointerPressed="ownerGrid_PointerPressed"
+                            Visibility="Collapsed">
                             <StackPanel.RenderTransform>
-                                <ScaleTransform x:Name="scaleTransform" ScaleX="1" ScaleY="1"/>
+                                <ScaleTransform x:Name="scaleTransform" ScaleX="1" ScaleY="1" />
                             </StackPanel.RenderTransform>
                             <StackPanel.RenderTransformOrigin>
                                 0.5,0.5
                             </StackPanel.RenderTransformOrigin>
                             <StackPanel.Resources>
                                 <Storyboard x:Name="ShowAnimation">
-                                    <DoubleAnimation Storyboard.TargetName="scaleTransform" Storyboard.TargetProperty="ScaleX"  To="0.975" Duration="0:0:0.15">
+                                    <DoubleAnimation
+                                        Storyboard.TargetName="scaleTransform"
+                                        Storyboard.TargetProperty="ScaleX"
+                                        To="0.975"
+                                        Duration="0:0:0.15">
                                         <DoubleAnimation.EasingFunction>
-                                            <ExponentialEase EasingMode="EaseOut"/>
+                                            <ExponentialEase EasingMode="EaseOut" />
                                         </DoubleAnimation.EasingFunction>
                                     </DoubleAnimation>
-                                    <DoubleAnimation Storyboard.TargetName="scaleTransform" Storyboard.TargetProperty="ScaleY"  To="0.975" Duration="0:0:0.15">
+                                    <DoubleAnimation
+                                        Storyboard.TargetName="scaleTransform"
+                                        Storyboard.TargetProperty="ScaleY"
+                                        To="0.975"
+                                        Duration="0:0:0.15">
                                         <DoubleAnimation.EasingFunction>
-                                            <ExponentialEase EasingMode="EaseOut"/>
+                                            <ExponentialEase EasingMode="EaseOut" />
                                         </DoubleAnimation.EasingFunction>
                                     </DoubleAnimation>
                                 </Storyboard>
                                 <Storyboard x:Name="HideAnimation">
-                                    <DoubleAnimation Storyboard.TargetName="scaleTransform" Storyboard.TargetProperty="ScaleX"  To="1" Duration="0:0:0.15">
+                                    <DoubleAnimation
+                                        Storyboard.TargetName="scaleTransform"
+                                        Storyboard.TargetProperty="ScaleX"
+                                        To="1"
+                                        Duration="0:0:0.15">
                                         <DoubleAnimation.EasingFunction>
-                                            <ExponentialEase EasingMode="EaseIn"/>
+                                            <ExponentialEase EasingMode="EaseIn" />
                                         </DoubleAnimation.EasingFunction>
                                     </DoubleAnimation>
-                                    <DoubleAnimation Storyboard.TargetName="scaleTransform" Storyboard.TargetProperty="ScaleY"  To="1" Duration="0:0:0.15">
+                                    <DoubleAnimation
+                                        Storyboard.TargetName="scaleTransform"
+                                        Storyboard.TargetProperty="ScaleY"
+                                        To="1"
+                                        Duration="0:0:0.15">
                                         <DoubleAnimation.EasingFunction>
-                                            <ExponentialEase EasingMode="EaseIn"/>
+                                            <ExponentialEase EasingMode="EaseIn" />
                                         </DoubleAnimation.EasingFunction>
                                     </DoubleAnimation>
                                 </Storyboard>
                             </StackPanel.Resources>
 
-                            <Grid  Width="30" Height="30"  Margin="0,0,5,0" CornerRadius="100" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}">
-                                <Image  VerticalAlignment="Center" Width="30" Height="30" x:Name="ownerPictire"></Image>
+                            <Grid
+                                Width="30"
+                                Height="30"
+                                Margin="0,0,5,0"
+                                Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
+                                CornerRadius="100">
+                                <Image
+                                    x:Name="ownerPictire"
+                                    Width="30"
+                                    Height="30"
+                                    VerticalAlignment="Center" />
                             </Grid>
-                            <TextBlock MaxWidth="170" MaxHeight="40" FontFamily="{StaticResource VKSansMedium}"    TextWrapping="Wrap" TextTrimming="CharacterEllipsis" x:Name="ownerName" VerticalAlignment="Center"></TextBlock>
+                            <TextBlock
+                                x:Name="ownerName"
+                                MaxWidth="170"
+                                MaxHeight="40"
+                                VerticalAlignment="Center"
+                                FontFamily="{StaticResource VKSansMedium}"
+                                TextTrimming="CharacterEllipsis"
+                                TextWrapping="Wrap" />
                         </StackPanel>
                     </StackPanel>
                 </Grid>
 
-                   
-                <StackPanel  Grid.Column="1" Margin="10,0,0,0">
 
-                    <StackPanel  Translation="0,0,16" Padding="10" CornerRadius="4" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}">
-                        <TextBlock 
-                        x:Name="textBlock1"
-                        Margin="10,0,0,0"
-                        FontFamily="{StaticResource VKSansRegular}"
-                        FontSize="33"
-        
-                        Opacity="1"
-        
-                        TextTrimming="CharacterEllipsis">
-                        
-                                    </TextBlock>
+                <StackPanel Grid.Column="1" Margin="10,0,0,0">
 
-                        <TextBlock 
-                                x:Name="DescriptionText"
-                                Margin="10,0,0,0"
+                    <StackPanel
+                        Padding="10"
+                        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
+                        CornerRadius="4"
+                        Translation="0,0,16">
+                        <TextBlock
+                            x:Name="textBlock1"
+                            Margin="10,0,0,0"
+                            FontFamily="{StaticResource VKSansRegular}"
+                            FontSize="33"
+                            Opacity="1"
+                            TextTrimming="CharacterEllipsis" />
+
+                        <TextBlock
+                            x:Name="DescriptionText"
+                            MaxHeight="200"
+                            Margin="10,0,0,0"
+                            FontFamily="{StaticResource VKSansRegular}"
+                            FontSize="22"
+                            Opacity="0.6"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="Wrap" />
+
+
+
+                    </StackPanel>
+                    <StackPanel
+                        Margin="0,10,0,0"
+                        Padding="10"
+                        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
+                        CornerRadius="4"
+                        Translation="0,0,16">
+
+                        <StackPanel
+                            x:Name="AddInfo"
+                            Grid.Column="1"
+                            Margin="0,0,0,0"
+                            Opacity="0.5"
+                            Orientation="Vertical"
+                            Visibility="{Binding Path=VisibileAddInfo}">
+                            <TextBlock
+                                x:Name="FollowersText"
                                 FontFamily="{StaticResource VKSansRegular}"
-                                FontSize="22"
-                                MaxHeight="200"
-                                Opacity="0.6"
-                       
-                                        TextWrapping="Wrap"
-                                TextTrimming="CharacterEllipsis">
-                        </TextBlock>
-                        
-                        
-                        
-                    </StackPanel>
-                    <StackPanel Margin="0,10,0,0" Translation="0,0,16" Padding="10" CornerRadius="4" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}">
+                                Text="{Binding Genres}"
+                                Visibility="Collapsed" />
+                            <TextBlock
+                                x:Name="Genres"
+                                FontFamily="{StaticResource VKSansRegular}"
+                                Text="{Binding Genres}"
+                                Visibility="Collapsed" />
+                            <TextBlock
+                                x:Name="Dot2"
+                                Margin="0,0,0,0"
+                                Text=""
+                                Visibility="Collapsed" />
+                            <TextBlock
+                                x:Name="Year"
+                                Margin="0,0,0,0"
+                                FontFamily="{StaticResource VKSansRegular}"
+                                Text="{Binding Year}"
+                                Visibility="Collapsed" />
 
-                        <StackPanel Grid.Column="1"
-        x:Name="AddInfo"
-        Margin="0,0,0,0"
-        Opacity="0.5"
-        Orientation="Vertical"
-        Visibility="{Binding Path=VisibileAddInfo}">
-                        <TextBlock
-                            x:Name="FollowersText"
-               Visibility="Collapsed"
-                FontFamily="{StaticResource VKSansRegular}"
-
-                Text="{Binding Genres}">
-                            
-                        </TextBlock>
-                        <TextBlock
-            x:Name="Genres"
-            FontFamily="{StaticResource VKSansRegular}"
-            Visibility="Collapsed"
-            Text="{Binding Genres}"></TextBlock>
-                                <TextBlock
-            x:Name="Dot2"
-            Margin="0,0,0,0"
-                 Visibility="Collapsed"
-            Text="" />
-                                <TextBlock
-            x:Name="Year"
-            Margin="0,0,0,0"
-            FontFamily="{StaticResource VKSansRegular}"
-                 Visibility="Collapsed"
-            Text="{Binding Year}" />
-                            
-                                <TextBlock
-            x:Name="Plays"
-            Margin="0,0,0,0"
-            FontFamily="{StaticResource VKSansRegular}"
-                 Visibility="Collapsed"
-            Text="{Binding Plays}" />
-                                <TextBlock
-            x:Name="PlaysText"
-            Margin="3,0,0,0"
-                 Visibility="Collapsed"
-            Text="" />
-                        <TextBlock
-            x:Name="CountTrText"
-            FontFamily="{StaticResource VKSansRegular}"
-            Visibility="Collapsed"
-            Text="{Binding Genres}"></TextBlock>
+                            <TextBlock
+                                x:Name="Plays"
+                                Margin="0,0,0,0"
+                                FontFamily="{StaticResource VKSansRegular}"
+                                Text="{Binding Plays}"
+                                Visibility="Collapsed" />
+                            <TextBlock
+                                x:Name="PlaysText"
+                                Margin="3,0,0,0"
+                                Text=""
+                                Visibility="Collapsed" />
+                            <TextBlock
+                                x:Name="CountTrText"
+                                FontFamily="{StaticResource VKSansRegular}"
+                                Text="{Binding Genres}"
+                                Visibility="Collapsed" />
+                        </StackPanel>
                     </StackPanel>
-                    </StackPanel>
-                    <GridView Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
-        x:Name="stackPanel"
-        Margin="0,10,0,0" Padding="10,5,5,2"
-        CornerRadius="4"       
-        SelectionMode="None"
-        RenderTransformOrigin="0.5,0.5">
+                    <GridView
+                        x:Name="stackPanel"
+                        Margin="0,10,0,0"
+                        Padding="10,5,5,2"
+                        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
+                        CornerRadius="4"
+                        RenderTransformOrigin="0.5,0.5"
+                        SelectionMode="None">
                         <GridView.ItemContainerStyle>
                             <Style TargetType="GridViewItem">
                                 <Setter Property="HorizontalContentAlignment" Value="Left" />
                             </Style>
                         </GridView.ItemContainerStyle>
                         <Button
-    x:Name="AddPlaylist"
-    Margin="0,0,0,0"
-  Width="170"
-    Click="AddPlaylist_Click">
-                                    <Button.Content>
-                                        <StackPanel Orientation="Horizontal">
-                                            <SymbolIcon x:Name="iconAdd" Symbol="Add"/>
-                                            <TextBlock x:Name="textAdd" Text="Добавить к себе" Margin="10,0,0,0"/>
-                                        </StackPanel>
-                                    </Button.Content>
-                                </Button>
-                                <Button
-    x:Name="PlayPlaylist"
-  
-      Margin="0,0,0,0"
-   Width="170"
-    Click="PlayPlaylist_Click">
-                                    <Button.Content>
-                                        <StackPanel Orientation="Horizontal">
-                                            <SymbolIcon Symbol="Play"/>
-                                            <TextBlock Text="Воспроизвести" Margin="10,0,0,0"/>
-                                        </StackPanel>
-                                    </Button.Content>
-                                </Button>
+                            x:Name="AddPlaylist"
+                            Width="170"
+                            Margin="0,0,0,0"
+                            Click="AddPlaylist_Click">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <SymbolIcon x:Name="iconAdd" Symbol="Add" />
+                                    <TextBlock
+                                        x:Name="textAdd"
+                                        Margin="10,0,0,0"
+                                        Text="Добавить к себе" />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                        <Button
+                            x:Name="PlayPlaylist"
+                            Width="170"
+                            Margin="0,0,0,0"
+                            Click="PlayPlaylist_Click">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <SymbolIcon Symbol="Play" />
+                                    <TextBlock Margin="10,0,0,0" Text="Воспроизвести" />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
 
-                                <Button
-    x:Name="EditPlaylist"
-      Margin="0,0,0,0"
-    Width="170"
-    Click="EditPlaylist_Click">
-                                    <Button.Content>
-                                        <StackPanel Orientation="Horizontal">
-                                            <SymbolIcon Symbol="Edit"/>
-                                            <TextBlock Text="Редактировать" Margin="10,0,0,0"/>
-                                        </StackPanel>
-                                    </Button.Content>
-                                </Button>
+                        <Button
+                            x:Name="EditPlaylist"
+                            Width="170"
+                            Margin="0,0,0,0"
+                            Click="EditPlaylist_Click">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <SymbolIcon Symbol="Edit" />
+                                    <TextBlock Margin="10,0,0,0" Text="Редактировать" />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
 
                         <Button
                             x:Name="DownloadPlaylist"
-                            HorizontalAlignment="Left"
-                            Margin="0,0,0,0"
                             Width="170"
+                            Margin="0,0,0,0"
+                            HorizontalAlignment="Left"
                             Click="DownloadPlaylist_Click">
                             <Button.Flyout>
                                 <MenuFlyout x:Name="folderFlyOut">
-                                    <MenuFlyoutItem  Text="Выбрать путь" Click="choosePath">
+                                    <MenuFlyoutItem Click="choosePath" Text="Выбрать путь">
                                         <MenuFlyoutItem.Icon>
-                                            <FontIcon Glyph="&#xECC8;" ></FontIcon>
+                                            <FontIcon Glyph="&#xECC8;" />
                                         </MenuFlyoutItem.Icon>
                                     </MenuFlyoutItem>
                                 </MenuFlyout>
                             </Button.Flyout>
                             <Button.Content>
-                                <StackPanel  Orientation="Horizontal">
+                                <StackPanel Orientation="Horizontal">
 
-                                    <SymbolIcon Symbol="Download"/>
-                                    <TextBlock Text="Скачать" Margin="10,0,0,0"/>
+                                    <SymbolIcon Symbol="Download" />
+                                    <TextBlock Margin="10,0,0,0" Text="Скачать" />
                                 </StackPanel>
                             </Button.Content>
-                            
-                            
+
+
                         </Button>
 
                         <Button
-                            Visibility="Collapsed"
-                              x:Name="UploadTrack"
-                              HorizontalAlignment="Left"
-                              Margin="0,0,0,0"
-                              Width="170"
-                              Click="UploadTrackClick">
-                     
+                            x:Name="UploadTrack"
+                            Width="170"
+                            Margin="0,0,0,0"
+                            HorizontalAlignment="Left"
+                            Click="UploadTrackClick"
+                            Visibility="Collapsed">
+
                             <Button.Content>
-                                <StackPanel  Orientation="Horizontal">
-                                    <SymbolIcon Symbol="Upload"/>
-                                    <TextBlock Text="Загрузить свою" Margin="10,0,0,0"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <SymbolIcon Symbol="Upload" />
+                                    <TextBlock Margin="10,0,0,0" Text="Загрузить свою" />
                                 </StackPanel>
                             </Button.Content>
 
@@ -271,23 +331,22 @@ Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"  Visibility="Co
                         </Button>
                     </GridView>
 
-                           
-                        </StackPanel>
-                    </Grid>
-                </ListView.Header>
 
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <custom:TrackControl
+                </StackPanel>
+            </Grid>
+        </ListView.Header>
+
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <custom:TrackControl
+                    Margin="0,0,0,8"
                     FocusVisualPrimaryBrush="Transparent"
-                    FocusVisualSecondaryThickness="0"
-                       Margin="0,0,0,8"
-                 ></custom:TrackControl>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-                <ListView.Footer>
-                    <ProgressRing x:Name="LoadingIndicator" IsActive="False" />
-                </ListView.Footer>
-            </ListView>
-  
+                    FocusVisualSecondaryThickness="0" />
+            </DataTemplate>
+        </ListView.ItemTemplate>
+        <ListView.Footer>
+            <ProgressRing x:Name="LoadingIndicator" IsActive="False" />
+        </ListView.Footer>
+    </ListView>
+
 </Page>

@@ -4,15 +4,13 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using VK_UI3.DB;
 using static VK_UI3.DB.AccountsDB;
-using VK_UI3.Views;
-using System;
 
 namespace VK_UI3.Controllers
 {
     public sealed partial class AccountController : UserControl
     {
-       public static readonly DependencyProperty AccountsProperty = DependencyProperty.Register(
-      "accounts", typeof(Accounts), typeof(AccountController), new PropertyMetadata(default(Accounts), onAccountProrertyChanged));
+        public static readonly DependencyProperty AccountsProperty = DependencyProperty.Register(
+       "accounts", typeof(Accounts), typeof(AccountController), new PropertyMetadata(default(Accounts), onAccountProrertyChanged));
         public static readonly DependencyProperty ListAccs = DependencyProperty.Register(
      "ListAccs", typeof(ListView), typeof(AccountController), new PropertyMetadata(default(ListView), onAccountProrertyChanged));
 
@@ -69,9 +67,9 @@ namespace VK_UI3.Controllers
             // Здесь добавьте код для удаления элемента
             //   
             AccountsDB.DeleteAccount(this.accounts);
-            
-           // MainView.invokeUpdateAccounts();
-        
+
+            // MainView.invokeUpdateAccounts();
+
         }
     }
 }

@@ -1,31 +1,20 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
-
+using Microsoft.UI.Xaml;
+using MusicX.Core.Services;
+using MusicX.Services;
+using NLog;
+using System;
+using System.Threading.Tasks;
+using VK_UI3.DB;
+using VK_UI3.Services;
+using VK_UI3.VKs.Ext;
+using VkNet.Abstractions;
 using VkNet.AudioBypassService.Abstractions;
 using VkNet.AudioBypassService.Extensions;
-
-using VkNet.Extensions.DependencyInjection;
-using Microsoft.UI.Xaml;
-using System;
-using VK_UI3.DB;
-using VkNet.Abstractions;
 using VkNet.AudioBypassService.Models.Auth;
-using Microsoft.AppCenter;
-using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
-
-using System.Threading.Tasks;
-using VK_UI3.VKs.Ext;
-using System.Runtime.InteropServices;
-using Windows.Win32;
-using WinRT.Interop;
-using Windows.Win32.Foundation;
-using MusicX.Core.Services;
-using NLog;
-using VK_UI3.Services;
-using MusicX.Services;
+using VkNet.Extensions.DependencyInjection;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -38,7 +27,7 @@ namespace VK_UI3
     public partial class App : Application
     {
 
-     
+
         public static readonly IHost _host = Host.CreateDefaultBuilder()
         .ConfigureAppConfiguration(c =>
         {
@@ -47,11 +36,11 @@ namespace VK_UI3
         .ConfigureServices(services =>
         {
             // Vk Net services
-           // services.AddVkNet();
-        
-          
-      
-           // services.AddVkNetWithAuth();
+            // services.AddVkNet();
+
+
+
+            // services.AddVkNetWithAuth();
             services.AddAudioBypass();
             services.AddVkNet();
             // services.AddSingleton<IAsyncCaptchaSolver, CaptchaSolverService>();
@@ -73,7 +62,7 @@ namespace VK_UI3
             var container = StaticService.Container = services.BuildServiceProvider();
 
 
-           // var container  = services.BuildServiceProvider();
+            // var container  = services.BuildServiceProvider();
             if (AccountsDB.activeAccount.Token == null)
             {
                 Task.Run(
@@ -98,7 +87,7 @@ namespace VK_UI3
             this.InitializeComponent();
         }
 
-       
+
 
 
         /// <summary>
@@ -108,11 +97,11 @@ namespace VK_UI3
         protected override async void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             _host.Start();
-           
+
 
             m_window = new MainWindow();
 
-       
+
             m_window.Activate();
 
 #if !DEBUG
