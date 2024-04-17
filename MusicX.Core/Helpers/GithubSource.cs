@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Immutable;
+using System.Runtime.Serialization;
+using System.Text;
+using Newtonsoft.Json;
 using NuGet.Versioning;
 using Squirrel;
 using Squirrel.Sources;
-using System.Collections.Immutable;
-using System.Runtime.Serialization;
-using System.Text;
 
 namespace MusicX.Core.Helpers;
 

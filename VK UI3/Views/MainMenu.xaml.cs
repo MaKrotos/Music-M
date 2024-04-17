@@ -1,9 +1,14 @@
+using System;
 using Microsoft.UI.Xaml;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using Octokit;
+using VK_UI3.DB;
+using Microsoft.UI.Xaml.Navigation;
+using VK_UI3.Helpers;
+using System.Linq;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using System.ComponentModel;
-using VK_UI3.DB;
 using VK_UI3.VKs.IVK;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -17,7 +22,7 @@ namespace VK_UI3
     public sealed partial class MainMenu : Microsoft.UI.Xaml.Controls.Page
     {
         public UserAudio userAudio = null;
-        //   ObservableCollection<ExtendedAudio> extendedAudios = new ObservableCollection<ExtendedAudio>();
+     //   ObservableCollection<ExtendedAudio> extendedAudios = new ObservableCollection<ExtendedAudio>();
 
         public MainMenu()
         {
@@ -39,7 +44,7 @@ namespace VK_UI3
         private void MainMenu_Loaded(object sender, RoutedEventArgs e)
         {
             // Находим ScrollViewer внутри ListView
-
+           
             scrollViewer = FindScrollViewer(TrackListView);
             if (scrollViewer != null)
             {
@@ -50,16 +55,16 @@ namespace VK_UI3
 
         private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
-            var isAtBottom = scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight - 50;
-            if (isAtBottom)
-            {
-
-                if (userAudio.itsAll) return;
-                userAudio.GetTracks();
-                LoadingIndicator.IsActive = false;
-                if (userAudio.itsAll)
-                    LoadingIndicator.Visibility = Visibility.Collapsed;
-            }
+                var isAtBottom = scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight-50;
+                if (isAtBottom)
+                {
+                
+                    if (userAudio.itsAll) return;
+                    userAudio.GetTracks();
+                    LoadingIndicator.IsActive = false;
+                    if (userAudio.itsAll)
+                        LoadingIndicator.Visibility = Visibility.Collapsed;
+                }
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

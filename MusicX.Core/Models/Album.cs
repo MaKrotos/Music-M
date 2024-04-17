@@ -1,4 +1,7 @@
 ﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace MusicX.Core.Models
 {
@@ -31,7 +34,7 @@ namespace MusicX.Core.Models
                     Thumb.Photo68 ??
                     null;
 
-
+               
             }
         }
     }

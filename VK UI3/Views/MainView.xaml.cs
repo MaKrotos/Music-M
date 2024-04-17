@@ -19,9 +19,12 @@ using VK_UI3.Controllers;
 using VK_UI3.DB;
 using VK_UI3.Helpers.Animations;
 using VK_UI3.Services;
+using VK_UI3.Views.LoginWindow;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
+using VkNet.Model;
 using VkNet.Model.Attachments;
+using Windows.Foundation;
 using static VK_UI3.DB.AccountsDB;
 using static VK_UI3.Views.SectionView;
 
@@ -46,16 +49,15 @@ namespace VK_UI3.Views
             frame = ContentFrame;
 
             //OpenMyPage(SectionType.MyListAudio);
-
+         
             this.Loaded += MainView_Loaded;
-
+         
         }
 
 
-        public void updateAllWithReacreate()
-        {
+        public void updateAllWithReacreate() {
 
-
+  
             TempPlayLists.TempPlayLists.updateNextRequest = true;
             if (ContentFrame.Content != null)
             {
@@ -73,7 +75,7 @@ namespace VK_UI3.Views
             NavWiv.BackRequested -= NavWiv_BackRequested;
             AccountsDB.ChanhgeActiveAccount -= ChangeAccount;
             this.KeyDown -= MainView_KeyDown;
-
+            
             this.Unloaded -= MainView_Unloaded;
         }
 
@@ -81,7 +83,7 @@ namespace VK_UI3.Views
         {
             if (e.Key == Windows.System.VirtualKey.F5)
             {
-                MainWindow.onRefreshClickedvoid();
+               MainWindow.onRefreshClickedvoid();
             }
         }
 
@@ -90,10 +92,10 @@ namespace VK_UI3.Views
         private static DispatcherQueue dispatcherQueue = null;
         private void MainView_Loaded(object sender, RoutedEventArgs e)
         {
-
+         
             //OpenMyPage(SectionType.MyListAudio);
             ContentFrame.Navigated += ContentFrame_Navigated;
-
+      
             NavWiv.BackRequested += NavWiv_BackRequested;
 
             MainWindow.mainWindow.onBackClicked += back;
@@ -107,7 +109,7 @@ namespace VK_UI3.Views
 
             _ = CreateNavigation();
             dispatcherQueue = this.DispatcherQueue;
-
+     
             MainWindow.mainWindow.MainWindow_showRefresh();
         }
 
@@ -125,22 +127,22 @@ namespace VK_UI3.Views
             updateAllWithReacreate();
         }
 
-
+        
 
         private void NavWiv_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
         {
             if (ContentFrame.CanGoBack)
-            {
-                ContentFrame.GoBack();
-            }
+                {
+                    ContentFrame.GoBack();
+                }
         }
 
         private void ContentFrame_Navigated(object sender, NavigationEventArgs e)
         {
             if (ContentFrame.CanGoBack && !navToAnotherPage)
             {
-                MainWindow.mainWindow.backBTNShow();
-
+              MainWindow.mainWindow.backBTNShow();
+        
             }
             else
             {
@@ -159,7 +161,7 @@ namespace VK_UI3.Views
         }
 
 
-
+    
         public List<AnimatedNavMenuController> navMenuControllers = new();
         private CancellationTokenSource _cts = new CancellationTokenSource();
         //   private CancellationTokenSource cts = null;
@@ -225,17 +227,17 @@ namespace VK_UI3.Views
                         foreach (var setting in navSettings)
                         {
                             token.ThrowIfCancellationRequested();
-
-                            var navViewItem = new AnimatedNavMenuController
-                            {
-                                navSettings = setting,
-                                Content = setting.MyMusicItem,
-                                Icon = new FontIcon { Glyph = setting.Icon }
-                            };
-                            NavWiv.MenuItems.Insert(index, navViewItem);
-                            navMenuControllers.Add(navViewItem);
-                            index++;
-
+                        
+                                var navViewItem = new AnimatedNavMenuController
+                                {
+                                    navSettings = setting,
+                                    Content = setting.MyMusicItem,
+                                    Icon = new FontIcon { Glyph = setting.Icon }
+                                };
+                                NavWiv.MenuItems.Insert(index, navViewItem);
+                                navMenuControllers.Add(navViewItem);
+                                index++;
+                      
                         }
                     });
 
@@ -247,7 +249,7 @@ namespace VK_UI3.Views
                 }
                 catch (Exception e)
                 {
-
+                
                 }
 
 
@@ -366,13 +368,13 @@ namespace VK_UI3.Views
         }
 
 
-
+      
 
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            //OpenMyPage(SectionType.MyListAudio);
+              //OpenMyPage(SectionType.MyListAudio);
             // Проверьте, является ли переданный параметр типом NavigationInfo
             if (e.Parameter is NavigationInfo navigationInfo)
             {
@@ -380,10 +382,10 @@ namespace VK_UI3.Views
                 // ((MainWindow) navigationInfo.SourcePageType).GoLogin();
                 MainWindow.mainWindow = (MainWindow)navigationInfo.SourcePageType;
             }
-
+ 
         }
 
-
+        
 
 
 
@@ -424,7 +426,7 @@ namespace VK_UI3.Views
                     case "моя музыка":
 
                         OpenMyPage(SectionType.MyListAudio);
-
+                    
                         break;
 
                     case "мои плейлисты":
@@ -445,13 +447,13 @@ namespace VK_UI3.Views
                         OpenSection(Item.navSettings.section.Id);
 
 
-
+                       
                         break;
-
-
+                 
+                      
                 }
 
-
+       
                 ContentFrame.BackStack.Clear();
                 MainWindow.mainWindow.backBTNHide();
 
@@ -464,7 +466,7 @@ namespace VK_UI3.Views
 
             }
 
-
+           
             //  NavWiv.IsBackEnabled = ContentFrame.CanGoBack;
         }
 
@@ -476,7 +478,7 @@ namespace VK_UI3.Views
         }
 
 
-        public static void OpenPlayListLists(long? id = null, OpenedPlayList openedPlayList = OpenedPlayList.all)
+        public static void OpenPlayListLists(long? id = null, OpenedPlayList openedPlayList= OpenedPlayList.all)
         {
             var sectionView = new WaitParameters();
             if (id == null)
@@ -503,7 +505,7 @@ namespace VK_UI3.Views
             sectionView.iVKGetAudio = iVKGetAudio;
             frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
         }
-
+       
         public static void OpenPlayList(long AlbumID, long AlbumOwnerID, string AlbumAccessKey)
         {
             var sectionView = new WaitParameters();
@@ -522,11 +524,11 @@ namespace VK_UI3.Views
             var sectionView = new WaitParameters();
             sectionView.SectionID = sectionID;
             sectionView.sectionType = sectionType;
-
+            
             frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
         }
 
-
+        
     }
 
 

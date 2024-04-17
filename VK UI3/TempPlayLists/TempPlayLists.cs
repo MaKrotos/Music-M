@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using VK_UI3.DB;
 using VK_UI3.VKs;
 using VkNet.Model.Attachments;
+using Windows.System;
 
 namespace VK_UI3.TempPlayLists
 {
@@ -23,8 +25,8 @@ namespace VK_UI3.TempPlayLists
         {
             if (
                     updateNow
-                || (DateTime.Now - lastUpdate).TotalSeconds > 120
-                || (_audioPlaylists.Count() < MaxCount && !isAllLoaded)
+                || (DateTime.Now - lastUpdate).TotalSeconds > 120 
+                || (_audioPlaylists.Count() < MaxCount && !isAllLoaded) 
                 || updateNextRequest
                 )
             {

@@ -11,8 +11,8 @@ internal class HandshakeResponseMessageSerializer : BaseMessageSerializer
 
     protected override IEnumerable<object> CreateItems(HubMessage message)
     {
-        var handshakeResponseMessage = (HandshakeResponseMessage)message;
-
+        var handshakeResponseMessage = (HandshakeResponseMessage) message;
+            
         yield return new HandshakeResponseMessageProtobuf
         {
             Error = handshakeResponseMessage.Error
@@ -21,7 +21,7 @@ internal class HandshakeResponseMessageSerializer : BaseMessageSerializer
 
     protected override HubMessage CreateHubMessage(IReadOnlyList<object> items)
     {
-        var protobuf = (HandshakeResponseMessageProtobuf)items.Single();
+        var protobuf = (HandshakeResponseMessageProtobuf) items.Single();
         return new HandshakeResponseMessage(protobuf.Error);
     }
 }

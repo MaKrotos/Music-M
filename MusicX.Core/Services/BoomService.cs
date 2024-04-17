@@ -2,7 +2,12 @@
 using MusicX.Core.Models.Boom;
 using Newtonsoft.Json;
 using NLog;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http.Headers;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MusicX.Core.Services
 {
@@ -47,14 +52,13 @@ namespace MusicX.Core.Services
                 var model = JsonConvert.DeserializeObject<AuthToken>(result);
 
                 return model;
-            }
-            catch (Exception ex)
+            }catch(Exception ex)
             {
                 logger.Error("BOOM API ERROR:");
                 logger.Error(ex, ex.Message);
                 throw;
             }
-
+           
         }
 
         public void SetToken(string token)
@@ -72,14 +76,13 @@ namespace MusicX.Core.Services
                 var model = JsonConvert.DeserializeObject<Response>(result);
 
                 return model.Data.User;
-            }
-            catch (Exception ex)
+            }catch(Exception ex)
             {
                 logger.Error("BOOM API ERROR:");
                 logger.Error(ex, ex.Message);
                 throw;
             }
-
+           
         }
 
         public async Task<List<Artist>> GetArtistsAsync()
@@ -145,7 +148,7 @@ namespace MusicX.Core.Services
 
                 var model = JsonConvert.DeserializeObject<Response>(result);
 
-                return model.Data.Radio;
+                 return model.Data.Radio;
             }
             catch (Exception ex)
             {
@@ -227,7 +230,7 @@ namespace MusicX.Core.Services
                 throw;
             }
         }
-
+        
         public async Task Like(string trackApiId)
         {
             try
@@ -241,7 +244,7 @@ namespace MusicX.Core.Services
                 throw;
             }
         }
-
+        
         public async Task UnLike(string trackApiId)
         {
             try
@@ -258,7 +261,7 @@ namespace MusicX.Core.Services
 
         private async Task<string> RequestAsync(string method, Dictionary<string, string>? arguments = null, HttpMethod? httpMethod = null)
         {
-            if (isAuth)
+            if(isAuth)
             {
                 Client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", token);
@@ -266,17 +269,17 @@ namespace MusicX.Core.Services
 
             var parameters = string.Empty;
 
-            if (arguments != null)
+            if(arguments != null)
             {
                 foreach (var key in arguments)
                 {
                     parameters += $"{key.Key}={key.Value}&";
                 }
-            }
+            } 
 
             using var response = await Client.SendAsync(new(httpMethod ?? HttpMethod.Get, method + "?" + parameters));
 
-            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            if(response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
                 throw new UnauthorizedException();
             }

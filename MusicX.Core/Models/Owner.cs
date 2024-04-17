@@ -1,4 +1,8 @@
-﻿namespace MusicX.Core.Models
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace MusicX.Core.Models
 {
     public class Owner
     {

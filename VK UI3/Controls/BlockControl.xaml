@@ -1,14 +1,16 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <UserControl
     x:Class="VK_UI3.Controls.BlockControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:blocks="using:VK_UI3.Controls.Blocks"
-    xmlns:controls="using:VK_UI3.Controls"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:VK_UI3.Controls"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:VK_UI3.Controls" 
+    xmlns:blocks="using:VK_UI3.Controls.Blocks" 
+    
     Margin="0"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -18,26 +20,23 @@
         </DataTemplate>
 
         <DataTemplate x:Key="none_separator">
-            <Rectangle
-                Height="1"
-                Fill="{ThemeResource SystemColorWindowColor}"
-                Opacity="0.1" />
+            <Rectangle  Height="1" Opacity="0.1" Fill="{ThemeResource SystemColorWindowColor}" />
         </DataTemplate>
+        
 
 
 
-
-        <DataTemplate x:Key="music_audios_triple_stacked_slider">
+        <DataTemplate x:Key="music_audios_triple_stacked_slider" >
             <blocks:ListTracks />
         </DataTemplate>
-        <DataTemplate x:Key="music_audios_music_chart_triple_stacked_slider">
-            <blocks:ListTracks />
+        <DataTemplate x:Key="music_audios_music_chart_triple_stacked_slider" >
+            <blocks:ListTracks/>
         </DataTemplate>
-        <DataTemplate x:Key="music_audios_list">
-            <blocks:ListTracksFull />
+        <DataTemplate x:Key="music_audios_list" >
+            <blocks:ListTracksFull/>
         </DataTemplate>
-        <DataTemplate x:Key="music_audios_music_chart_list">
-            <blocks:ListTracksFull />
+        <DataTemplate x:Key="music_audios_music_chart_list" >
+            <blocks:ListTracksFull/>
         </DataTemplate>
 
 
@@ -49,31 +48,31 @@
             <controls:DefaultControl />
         </DataTemplate>
 
-        <DataTemplate x:Key="music_playlists_recomms_slider">
+        <DataTemplate x:Key="music_playlists_recomms_slider" >
             <blocks:RecommsPlaylistBlock />
         </DataTemplate>
 
-        <DataTemplate x:Key="music_playlists_music_chart_large_slider">
-            <blocks:ListPlaylists />
+        <DataTemplate x:Key="music_playlists_music_chart_large_slider" >
+            <blocks:ListPlaylists/>
         </DataTemplate>
-        <DataTemplate x:Key="music_playlists">
-            <blocks:ListPlaylists />
+        <DataTemplate x:Key="music_playlists" >
+            <blocks:ListPlaylists/>
         </DataTemplate>
         <DataTemplate x:Key="music_playlists_list">
-            <blocks:ListPlaylists />
+            <blocks:ListPlaylists/>
         </DataTemplate>
 
         <DataTemplate x:Key="music_recommended_playlists">
-            <blocks:RemomendedUsersPlaylist />
+            <blocks:RemomendedUsersPlaylist/>
         </DataTemplate>
         <DataTemplate x:Key="music_recommended_playlists_list">
-            <blocks:RemomendedUsersPlaylist />
+            <blocks:RemomendedUsersPlaylist/>
         </DataTemplate>
 
         <DataTemplate x:Key="audio_stream_mixes_audio_stream_mix">
-            <blocks:MixControl />
+            <blocks:MixControl></blocks:MixControl>
         </DataTemplate>
-
+        
 
     </UserControl.Resources>
 

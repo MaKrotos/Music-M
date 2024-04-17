@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.SignalR.Protocol;
+﻿using System.Buffers;
+using Microsoft.AspNetCore.SignalR.Protocol;
 using ProtoBuf;
 using ProtoBuf.Meta;
 using SignalR.Protobuf.Messages;
 using SignalR.Protobuf.Util;
-using System.Buffers;
 
 namespace SignalR.Protobuf.MessageSerializers.Base;
 
@@ -30,7 +30,7 @@ internal abstract class BaseMessageSerializer : IMessageSerializer
             Items = itemsMetadata
         };
 
-        var metadataByteSize = (int)Serializer.Measure(metadata).LengthOnly();
+        var metadataByteSize = (int) Serializer.Measure(metadata).LengthOnly();
 
         var totalByteSize = 4 // Total byte size (int)
                             + 4 + metadataByteSize // Metadata byte size (int) and metadata itself
@@ -90,7 +90,7 @@ internal abstract class BaseMessageSerializer : IMessageSerializer
         var protobufInput = input.Slice(4);
 
         var arrayPool = ArrayPool<byte>.Shared;
-        var byteArray = arrayPool.Rent((int)protobufInput.Length);
+        var byteArray = arrayPool.Rent((int) protobufInput.Length);
         try
         {
             protobufInput.CopyTo(byteArray);

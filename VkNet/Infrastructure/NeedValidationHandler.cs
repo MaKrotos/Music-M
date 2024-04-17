@@ -5,25 +5,25 @@ using VkNet.Model;
 
 namespace VkNet.Infrastructure
 {
-    /// <inheritdoc />
-    public class NeedValidationHandler : INeedValidationHandler
-    {
-        /// <inheritdoc />
-        public AuthorizationResult Validate(string validateUrl, string phoneNumber)
-        {
-            throw new NotImplementedException();
-        }
+	/// <inheritdoc />
+	public class NeedValidationHandler : INeedValidationHandler
+	{
+		/// <inheritdoc />
+		public AuthorizationResult Validate(string validateUrl, string phoneNumber)
+		{
+			throw new NotImplementedException();
+		}
 
-        /// <inheritdoc />
-        public AuthorizationResult Validate(string validateUrl)
-        {
-            return ValidateAsync(validateUrl).ConfigureAwait(false).GetAwaiter().GetResult();
-        }
+		/// <inheritdoc />
+		public AuthorizationResult Validate(string validateUrl)
+		{
+			return ValidateAsync(validateUrl).ConfigureAwait(false).GetAwaiter().GetResult();
+		}
 
-        /// <inheritdoc />
-        public Task<AuthorizationResult> ValidateAsync(string validateUrl)
-        {
-            /*if (string.IsNullOrWhiteSpace(validateUrl))
+		/// <inheritdoc />
+		public Task<AuthorizationResult> ValidateAsync(string validateUrl)
+		{
+			/*if (string.IsNullOrWhiteSpace(validateUrl))
 			{
 				throw new ArgumentException("Не задан адрес валидации!");
 			}
@@ -50,7 +50,7 @@ namespace VkNet.Infrastructure
 				UserId = result.UserId,
 				ExpiresIn = result.ExpiresIn
 			};*/
-            throw new NotImplementedException();
-        }
-    }
+			throw new NotImplementedException();
+		}
+	}
 }

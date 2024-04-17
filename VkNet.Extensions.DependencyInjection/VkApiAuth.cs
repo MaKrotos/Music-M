@@ -38,7 +38,7 @@ public class VkApiAuth : IVkApiAuthAsync
         LogOutAsync().GetAwaiter().GetResult();
     }
 
-    public bool IsAuthorized { get; private set; }
+    public bool IsAuthorized { get; private set;}
     public async Task AuthorizeAsync(IApiAuthParams @params)
     {
         if (!string.IsNullOrEmpty(@params.AccessToken))
@@ -46,11 +46,11 @@ public class VkApiAuth : IVkApiAuthAsync
             await _tokenStore.SetAsync(@params.AccessToken);
             return;
         }
-
+        
         _authorizationFlow.SetAuthorizationParams(@params);
 
         var result = await _authorizationFlow.AuthorizeAsync();
-
+        
         await _tokenStore.SetAsync(result.AccessToken,
                                    result.ExpiresIn > 0
                                        ? DateTimeOffset.Now + TimeSpan.FromSeconds(result.ExpiresIn)

@@ -1,6 +1,7 @@
-﻿using JetBrains.Annotations;
-using Newtonsoft.Json;
+﻿using System;
 using System.Collections.ObjectModel;
+using JetBrains.Annotations;
+using Newtonsoft.Json;
 using VkNet.Enums.SafetyEnums;
 using VkNet.Utils.JsonConverter;
 

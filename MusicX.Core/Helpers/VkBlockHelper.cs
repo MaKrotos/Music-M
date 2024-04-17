@@ -1,6 +1,11 @@
 ﻿using MusicX.Core.Models;
+using MusicX.Core.Models.Boom;
 using MusicX.Core.Models.General;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
 
 namespace MusicX.Core.Helpers
 {
@@ -10,16 +15,16 @@ namespace MusicX.Core.Helpers
         public static ResponseData Proccess(this ResponseData response)
         {
 
-            if (response.Playlists != null)
+            if(response.Playlists != null)
             {
-                foreach (var playlist in response.Playlists)
+                foreach(var playlist in response.Playlists)
                 {
                     if (playlist.Original != null)
                     {
                         if (playlist.Original?.OwnerId < 0)
                         {
                             var id = (playlist.Original.OwnerId * -1);
-                            if (response.Groups != null)
+                            if(response.Groups != null)
                             {
                                 var value = response.Groups.SingleOrDefault(g => g.Id == id);
                                 playlist.OwnerName = value?.Name;
@@ -39,7 +44,7 @@ namespace MusicX.Core.Helpers
                         if (playlist.OwnerId < 0)
                         {
                             var id = (playlist.OwnerId * -1);
-                            if (response.Groups != null)
+                            if(response.Groups != null)
                             {
                                 var value = response.Groups.SingleOrDefault(g => g.Id == id);
                                 playlist.groupOwner = value;
@@ -56,11 +61,11 @@ namespace MusicX.Core.Helpers
                 }
             }
 
-            if (response.Replacements != null)
+            if(response.Replacements != null)
             {
-                foreach (var replaceModel in response.Replacements.ReplacementsModels)
+                foreach(var replaceModel in response.Replacements.ReplacementsModels)
                 {
-                    foreach (var block in replaceModel.ToBlocks)
+                    foreach(var block in replaceModel.ToBlocks)
                     {
                         ToBlocks(block, response);
                     }
@@ -90,7 +95,7 @@ namespace MusicX.Core.Helpers
             response.Section.Blocks.RemoveAll(block =>
                 block is { DataType: "radiostations" } or { Layout.Title: "Радиостанции" } ||
                 (
-                    block is { Banners.Count: > 0 } &&
+                    block is { Banners.Count: > 0 } && 
                     block.Banners.RemoveAll(banner => banner.ClickAction?.Action.Url.Contains("subscription") is true ||
                                                            banner.ClickAction?.Action.Url.Contains("combo") is true ||
                                                            banner.ClickAction?.Action.Url.Contains("https://vk.com/app") is true ||
@@ -105,7 +110,7 @@ namespace MusicX.Core.Helpers
                 if (block.DataType == "action" && block.Layout?.Name == "horizontal_buttons")
                 {
                     var refBlockIndex = response.Section.Blocks.FindIndex(b => b.DataType == block.Actions[0].RefDataType && b.Layout?.Name == block.Actions[0].RefLayoutName) - 1;
-
+                    
                     if (refBlockIndex >= 0 && block.Actions[0].Action.Type == "open_section")
                     {
                         response.Section.Blocks[refBlockIndex].Actions.AddRange(block.Actions);

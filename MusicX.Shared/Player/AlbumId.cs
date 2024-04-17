@@ -1,5 +1,5 @@
-﻿using ProtoBuf;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+using ProtoBuf;
 
 namespace MusicX.Shared.Player;
 
@@ -20,10 +20,10 @@ public sealed record VkAlbumId
             return false;
         if (ReferenceEquals(this, other))
             return true;
-
+        
         return Id == other.Id && OwnerId == other.OwnerId && AccessKey == other.AccessKey;
     }
-    public override int GetHashCode() =>
+    public override int GetHashCode() => 
         HashCode.Combine(Id.GetHashCode(), OwnerId.GetHashCode(), AccessKey.GetHashCode());
 }
 

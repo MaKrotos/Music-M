@@ -1,10 +1,10 @@
-﻿using JetBrains.Annotations;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using VkNet.Abstractions;
 using VkNet.Abstractions.Core;
 using VkNet.Abstractions.Utils;
@@ -58,7 +58,7 @@ public partial class AuthCategory : IAuthCategory
         }
         catch (System.Exception ex)
         {
-
+        
         }
 
         const string url =
@@ -100,10 +100,9 @@ public partial class AuthCategory : IAuthCategory
 
     public async Task<AuthCodeResponse> GetAuthCodeAsync(string deviceName, bool forceRegenerate = true)
     {
-        try
-        {
-
-            var a = await _apiInvoke.CallAsync<AuthCodeResponse>("auth.getAuthCode", new()
+        try { 
+     
+                var a = await _apiInvoke.CallAsync<AuthCodeResponse>("auth.getAuthCode", new()
             {
                 { "device_name", "Windows NT 10.0; Win64; x64" },
                 { "force_regenerate", forceRegenerate },
@@ -149,7 +148,7 @@ public partial class AuthCategory : IAuthCategory
             { "client_id", 2274003 },
             { "client_secret", "hHbZxrka2uZ6jB1inYsH" },
         }, true);
-
+        
         return response.Success.Count > 0 ? response.Success[0].AccessToken : null;
     }
 
@@ -180,7 +179,7 @@ public partial class AuthCategory : IAuthCategory
         {
             PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
         };
-
+        
         return JsonSerializer.Deserialize<PasskeyBeginResponse>(response.Value, options);
     }
 }

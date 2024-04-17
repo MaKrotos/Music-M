@@ -1,7 +1,11 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
 using VK_UI3.DB;
-using VkNet.AudioBypassService.Abstractions;
+
 using static VK_UI3.DB.AccountsDB;
+using Newtonsoft.Json.Linq;
+using VkNet.AudioBypassService.Abstractions;
 
 
 
@@ -11,7 +15,7 @@ public class RegistryExchangeTokenStore : IExchangeTokenStore
 
     public ValueTask<string?> GetExchangeTokenAsync()
     {
-        var a = AccountsDB.GetActiveAccounts();
+        var a=  AccountsDB.GetActiveAccounts();
         if (a.Count == 0)
         {
             return new ValueTask<string?>("");
@@ -33,7 +37,7 @@ public class RegistryExchangeTokenStore : IExchangeTokenStore
                 _activeAccount.Token = token;
             }
 
-
+          
             _activeAccount.Update();
         }
         else
@@ -47,5 +51,5 @@ public class RegistryExchangeTokenStore : IExchangeTokenStore
         return ValueTask.CompletedTask;
     }
 
-
+  
 }

@@ -1,11 +1,21 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using VK_UI3.Controllers;
 using VK_UI3.DownloadTrack;
 using VK_UI3.Helpers.Animations;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -21,7 +31,7 @@ namespace VK_UI3.Views.Download
             this.DataContextChanged += DownloadController_DataContextChanged;
             this.Loaded += DownloadController_Loaded;
             this.Unloaded += DownloadController_Unloaded;
-
+           
         }
 
         private void DownloadController_Unloaded(object sender, RoutedEventArgs e)
@@ -48,8 +58,8 @@ namespace VK_UI3.Views.Download
             if (DataContext == null) return;
             if (playListDownload != null)
             {
-                playListDownload.OnTrackDownloaded -= (OnTrackDownloaded_Event);
-                playListDownload.onStatusUpdate -= (OnTrackDownloaded_Event);
+                playListDownload.OnTrackDownloaded -=(OnTrackDownloaded_Event);
+                playListDownload.onStatusUpdate-=(OnTrackDownloaded_Event);
             }
             playListDownload = (DataContext as PlayListDownload);
             DownloadTitle.Text = playListDownload.iVKGetAudio.name;
@@ -60,9 +70,9 @@ namespace VK_UI3.Views.Download
             }
 
 
-            playListDownload.OnTrackDownloaded += (OnTrackDownloaded_Event);
-            playListDownload.onStatusUpdate += (OnTrackDownloaded_Event);
-
+            playListDownload.OnTrackDownloaded +=(OnTrackDownloaded_Event);
+            playListDownload.onStatusUpdate +=(OnTrackDownloaded_Event);
+     
             string original = playListDownload.path;
             if (original.Length > 20)
             {
@@ -97,15 +107,15 @@ namespace VK_UI3.Views.Download
                     }
                     else
                     {
-
-                        animationsChangeFontIcon.ChangeFontIconWithAnimation("\uE769");
-
+                      
+                            animationsChangeFontIcon.ChangeFontIconWithAnimation("\uE769");
+                    
                         if (!playListDownload.error)
                             DownloadProgressBar.ShowPaused = false;
                     }
                     dx.Text = $"{playListDownload.downloaded} из {playListDownload.iVKGetAudio.countTracks}";
 
-
+                
 
 
                     double totalTracks = (double)playListDownload.iVKGetAudio.countTracks;
@@ -132,7 +142,7 @@ namespace VK_UI3.Views.Download
             }
             else
             {
-
+             
             }
         }
 

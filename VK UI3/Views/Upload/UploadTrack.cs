@@ -3,10 +3,14 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using TagLib.Ape;
 using VK_UI3.VKs;
 using VkNet.Model.Attachments;
 using VkNet.Model.RequestParams;
@@ -47,7 +51,7 @@ namespace VK_UI3.Views.Upload
 
 
             _ = startDownloadAsync(pathFile, name, artist);
-
+          
         }
 
         private async void Client_UploadFileCompleted(object sender, UploadFileCompletedEventArgs e)
@@ -119,8 +123,8 @@ namespace VK_UI3.Views.Upload
             {
                 UploadsTracks.Add(this);
             });
-
-
+        
+        
             var uploadUrl = await VK.getUploadServerAsync();
 
             if (pathFile != null && uploadUrl != null)

@@ -1,4 +1,9 @@
-﻿namespace MusicX.Core.Models
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace MusicX.Core.Models
 {
     public class Audio : VkNet.Model.Attachments.Audio
     {
@@ -36,7 +41,7 @@
                 return false;
             return Equals((Audio)obj);
         }
-
+        
 
         public bool Equals(VkNet.Model.Attachments.Audio? other)
         {

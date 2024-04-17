@@ -1,7 +1,11 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
 using VK_UI3.DB;
-using VkNet.AudioBypassService.Abstractions;
+
 using static VK_UI3.DB.AccountsDB;
+using Newtonsoft.Json.Linq;
+using VkNet.AudioBypassService.Abstractions;
 
 
 
@@ -14,7 +18,7 @@ public class RegistryDeviceIdStore : IDeviceIdStore
         var a = AccountsDB.GetActiveAccounts();
         if (a.Count == 0)
         {
-            return new ValueTask<string?>("");
+           return new ValueTask<string?>("");
         }
         _activeAccount = a[0];
 
@@ -34,7 +38,7 @@ public class RegistryDeviceIdStore : IDeviceIdStore
                 _activeAccount.DeviceId = deviceId;
             }
 
-
+          
             _activeAccount.Update();
         }
         else
@@ -48,6 +52,6 @@ public class RegistryDeviceIdStore : IDeviceIdStore
         return ValueTask.CompletedTask;
     }
 
-
-
+ 
+   
 }

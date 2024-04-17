@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Connections;
+﻿using System.Buffers;
+using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Protocol;
 using ProtoBuf.Meta;
 using SignalR.Protobuf.Messages;
 using SignalR.Protobuf.MessageSerializers;
 using SignalR.Protobuf.MessageSerializers.Base;
-using System.Buffers;
 
 namespace SignalR.Protobuf;
 
@@ -18,14 +18,14 @@ public class ProtobufProtocol : IHubProtocol
     {
         var serializers = new IMessageSerializer[]
         {
-            new CancelInvocationMessageSerializer(),
-            new CloseMessageSerializer(),
+            new CancelInvocationMessageSerializer(), 
+            new CloseMessageSerializer(), 
             new CompletionMessageSerializer(),
-            new HandshakeRequestMessageSerializer(),
-            new HandshakeResponseMessageSerializer(),
-            new InvocationMessageSerializer(),
-            new PingMessageSerializer(),
-            new StreamInvocationMessageSerializer(),
+            new HandshakeRequestMessageSerializer(), 
+            new HandshakeResponseMessageSerializer(), 
+            new InvocationMessageSerializer(), 
+            new PingMessageSerializer(), 
+            new StreamInvocationMessageSerializer(), 
             new StreamItemMessageSerializer()
         };
 
@@ -35,10 +35,10 @@ public class ProtobufProtocol : IHubProtocol
             TypeToSerializerMap[serializer.MessageType] = serializer;
         }
     }
-
+        
     private readonly Dictionary<int, Type> _protobufIndexToTypeMap = new Dictionary<int, Type>();
     private readonly Dictionary<Type, int> _protobufTypeToIndexMap = new Dictionary<Type, int>();
-
+        
     public ProtobufProtocol(IReadOnlyDictionary<int, Type> protobufTypes)
     {
         foreach (var pair in protobufTypes)
@@ -54,7 +54,7 @@ public class ProtobufProtocol : IHubProtocol
                 );
             }
         }
-
+            
         var allPairs = protobufTypes
                        .Select(pair => (pair.Key, pair.Value))
                        .Concat(
@@ -94,7 +94,7 @@ public class ProtobufProtocol : IHubProtocol
     public int Version => 3;
     public TransferFormat TransferFormat => TransferFormat.Binary;
     public bool IsVersionSupported(int version) => version == Version;
-
+        
     public ReadOnlyMemory<byte> GetMessageBytes(HubMessage message)
     {
         return HubProtocolExtensions.GetMessageBytes(this, message);
@@ -103,7 +103,7 @@ public class ProtobufProtocol : IHubProtocol
     public void WriteMessage(HubMessage message, IBufferWriter<byte> output)
     {
         var serializer = TypeToSerializerMap[message.GetType()];
-        output.Write(new[] { (byte)serializer.HubMessageType });
+        output.Write(new[] { (byte) serializer.HubMessageType });
         serializer.WriteMessage(message, output, _protobufTypeToIndexMap);
     }
 
@@ -116,13 +116,13 @@ public class ProtobufProtocol : IHubProtocol
             return false;
         }
 
-        var enumType = (HubMessageType)input.Slice(0, 1).ToArray()[0];
+        var enumType = (HubMessageType) input.Slice(0, 1).ToArray()[0];
         var processedSequence = input.Slice(1);
-
+            
         var serializer = EnumTypeToSerializerMap[enumType];
         var successfullyParsed = serializer.TryParseMessage(
-            ref processedSequence,
-            out message,
+            ref processedSequence, 
+            out message, 
             _protobufIndexToTypeMap
         );
 

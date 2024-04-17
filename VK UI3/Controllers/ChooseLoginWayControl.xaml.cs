@@ -1,7 +1,11 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 using VkNet.AudioBypassService.Models.Auth;
 using VkNet.AudioBypassService.Models.Ecosystem;
+using static VK_UI3.DB.AccountsDB;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
@@ -22,16 +26,15 @@ namespace VK_UI3.Controllers
         string hello = "";
         private static void onLoiginWayProrertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            //  throw new NotImplementedException();
+          //  throw new NotImplementedException();
         }
 
         public ChooseLoginWayControl()
         {
             this.InitializeComponent();
 
-            this.DataContextChanged += (s, e) =>
-            {
-                // Bindings.Update();
+            this.DataContextChanged += (s, e) => {
+               // Bindings.Update();
 
                 if (loginWay != null)
                 {
@@ -40,7 +43,7 @@ namespace VK_UI3.Controllers
                         fontIcon.Glyph = "\uECAD";
                         MainTxT.Text = "Генератор кода";
                         secondTXT.Text = "Воспользуйтесь кодом из приложения генерации кодов авторизации";
-                    }
+                    } 
                     else if (loginWay.Name == LoginWay.Push)
                     {
                         fontIcon.Glyph = "\uE90A";
@@ -86,7 +89,7 @@ namespace VK_UI3.Controllers
                     else
                     {
                         fontIcon.Glyph = "?";
-                        MainTxT.Text = "Нереализованный метод (" + loginWay.Name.ToString() + ")";
+                        MainTxT.Text = "Нереализованный метод ("+loginWay.Name.ToString()+")";
                         secondTXT.Text = "???";
                     }
                 }
@@ -95,12 +98,12 @@ namespace VK_UI3.Controllers
 
             Loaded += ChooseLoginWayControl_Loaded;
 
-
+           
         }
 
         private void ChooseLoginWayControl_Loaded(object sender, RoutedEventArgs e)
         {
-
+          
         }
     }
 }

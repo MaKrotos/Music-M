@@ -11,7 +11,7 @@ internal class HandshakeRequestMessageSerializer : BaseMessageSerializer
 
     protected override IEnumerable<object> CreateItems(HubMessage message)
     {
-        var handshakeRequestMessage = (HandshakeRequestMessage)message;
+        var handshakeRequestMessage = (HandshakeRequestMessage) message;
         yield return new HandshakeRequestMessageProtobuf
         {
             Protocol = handshakeRequestMessage.Protocol,
@@ -21,7 +21,7 @@ internal class HandshakeRequestMessageSerializer : BaseMessageSerializer
 
     protected override HubMessage CreateHubMessage(IReadOnlyList<object> items)
     {
-        var protobuf = (HandshakeRequestMessageProtobuf)items.Single();
+        var protobuf = (HandshakeRequestMessageProtobuf) items.Single();
         return new HandshakeRequestMessage(protobuf.Protocol, protobuf.Version);
     }
 }

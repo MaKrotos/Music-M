@@ -1,13 +1,15 @@
+using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
 using MusicX.Core.Models;
-using System;
-using System.Collections.ObjectModel;
-using System.Drawing;
-using VK_UI3.Helpers;
-using VK_UI3.Views;
 using VK_UI3.VKs.IVK;
+using System.Collections.ObjectModel;
+using VK_UI3.Helpers;
+using Windows.UI;
+using System.Drawing;
+using Microsoft.UI.Xaml.Input;
+using VK_UI3.Views;
+using TagLib.Ape;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -48,11 +50,11 @@ namespace VK_UI3.Controls
         {
             playListVK = new PlayListVK(_PlayList, DispatcherQueue);
             double percentage;
-            if (double.TryParse(_PlayList.Percentage.Replace(".", ","), out percentage))
+            if (double.TryParse(_PlayList.Percentage.Replace(".",","), out percentage))
             {
                 PercentsTXT.Text = Math.Round(percentage * 100) + "%";
             }
-
+           
             PercentsDescrTXT.Text = _PlayList.PercentageTitle;
             PlayListNameTXT.Text = _PlayList.Playlist.Title;
 
@@ -63,8 +65,7 @@ namespace VK_UI3.Controls
             gradStart.Color = GetColorFromHex(_PlayList.Color);
             gradStop.Color = b;
 
-            if (_PlayList.Playlist.userOwner != null)
-            {
+            if (_PlayList.Playlist.userOwner != null) {
                 animationsChangeImage.ChangeImageWithAnimation(_PlayList.Playlist.userOwner.Photo100);
             }
             if (_PlayList.Playlist.groupOwner != null)
@@ -81,13 +82,13 @@ namespace VK_UI3.Controls
 
         private void StackPanel_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-
-            if (e.GetCurrentPoint(sender as UIElement).Properties.IsLeftButtonPressed)
-            {
-
-                MainView.OpenPlayList(_PlayList.Playlist);
-            }
-
+          
+                if (e.GetCurrentPoint(sender as UIElement).Properties.IsLeftButtonPressed)
+                {
+                    
+                        MainView.OpenPlayList(_PlayList.Playlist);
+                }
+           
         }
 
         private void StackPanel_PointerEntered(object sender, PointerRoutedEventArgs e)
@@ -98,7 +99,7 @@ namespace VK_UI3.Controls
 
         private void StackPanel_PointerExited(object sender, PointerRoutedEventArgs e)
         {
-
+           
             ShowAnimation.Pause();
             HideAnimation.Begin();
         }

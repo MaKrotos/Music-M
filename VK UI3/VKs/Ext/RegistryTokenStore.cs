@@ -1,9 +1,13 @@
-using System;
+using static VK_UI3.DB.AccountsDB;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
 using VK_UI3.DB;
+
+
+using Windows.System;
 using VkNet.AudioBypassService.Abstractions;
 using VkNet.Extensions.DependencyInjection;
-using static VK_UI3.DB.AccountsDB;
 
 public class RegistryTokenStore : IVkTokenStore, IExchangeTokenStore, IDeviceIdStore
 {
@@ -26,7 +30,7 @@ public class RegistryTokenStore : IVkTokenStore, IExchangeTokenStore, IDeviceIdS
         {
             return activeAccount.Token ?? activeAccount.AnonToken ??
                  throw new InvalidOperationException("Authorization is required");
-
+     
         }
     }
 
@@ -41,9 +45,9 @@ public class RegistryTokenStore : IVkTokenStore, IExchangeTokenStore, IDeviceIdS
         {
             activeAccount.Token = token;
         }
-
+     
         Expiration = expiration;
-
+    
         return Task.CompletedTask;
     }
 
@@ -51,7 +55,7 @@ public class RegistryTokenStore : IVkTokenStore, IExchangeTokenStore, IDeviceIdS
 
     public ValueTask SetExchangeTokenAsync(string token)
     {
-
+     
         activeAccount.ExchangeToken = token;
 
         return ValueTask.CompletedTask;
@@ -61,11 +65,11 @@ public class RegistryTokenStore : IVkTokenStore, IExchangeTokenStore, IDeviceIdS
 
     public ValueTask SetDeviceIdAsync(string deviceId)
     {
-
+  
         activeAccount.DeviceId = deviceId;
-
+     
         return ValueTask.CompletedTask;
     }
 
-
+   
 }

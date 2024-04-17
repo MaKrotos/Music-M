@@ -12,7 +12,7 @@ internal class CancelInvocationMessageSerializer : BaseMessageSerializer
 
     protected override IEnumerable<object> CreateItems(HubMessage message)
     {
-        var cancelInvocationMessage = (CancelInvocationMessage)message;
+        var cancelInvocationMessage = (CancelInvocationMessage) message;
 
         yield return new CancelInvocationMessageProtobuf
         {
@@ -23,8 +23,8 @@ internal class CancelInvocationMessageSerializer : BaseMessageSerializer
 
     protected override HubMessage CreateHubMessage(IReadOnlyList<object> items)
     {
-        var protobuf = (CancelInvocationMessageProtobuf)items.Single();
-
+        var protobuf = (CancelInvocationMessageProtobuf) items.Single();
+            
         return new CancelInvocationMessage(protobuf.InvocationId)
         {
             Headers = protobuf.Headers.Unflatten()

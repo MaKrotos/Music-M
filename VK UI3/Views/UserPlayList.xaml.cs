@@ -1,11 +1,16 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using VK_UI3.Controls;
 using VK_UI3.DB;
@@ -14,6 +19,7 @@ using VK_UI3.Views.ModalsPages;
 using VK_UI3.VKs;
 using VkNet.Model.Attachments;
 using VkNet.Utils;
+using Windows.Foundation;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -23,14 +29,13 @@ namespace VK_UI3.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public enum OpenedPlayList
+    public  enum OpenedPlayList
     {
         all,
         UserPlayList,
         UserAlbums
     }
-    public class UserPlayListParameters
-    {
+    public class UserPlayListParameters {
         public VkCollection<AudioPlaylist> VKaudioPlaylists;
         public uint offset = 0;
         public long? UserId = null;
@@ -49,7 +54,7 @@ namespace VK_UI3.Views
             this.Loading += UserPlayList_Loading;
 
             this.Unloaded += UserPlayList_Unloaded;
-
+            
         }
         public UserPlayList(Audio audio)
         {
@@ -71,7 +76,7 @@ namespace VK_UI3.Views
                 this.scrollViewer.ViewChanged -= ScrollViewer_ViewChanged;
         }
 
-
+    
 
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -82,11 +87,11 @@ namespace VK_UI3.Views
             try
             {
                 if (scrollViewer != null)
-                    this.scrollViewer.ViewChanged -= ScrollViewer_ViewChanged;
+                this.scrollViewer.ViewChanged -= ScrollViewer_ViewChanged;
             }
             catch (Exception ex)
-            {
-
+            { 
+            
             }
         }
 
@@ -101,10 +106,10 @@ namespace VK_UI3.Views
                 return;
             parameters = userPlayList;
 
-
+           
 
         }
-
+     
 
 
         private bool CheckIfAllContentIsVisible(ScrollViewer scrollViewer)
@@ -151,8 +156,8 @@ namespace VK_UI3.Views
                 addToList(parameters.VKaudioPlaylists);
             }
             else
-            {
-
+            { 
+                
             }
 
             if (CheckIfAllContentIsVisible(scrollViewer))
@@ -209,7 +214,7 @@ namespace VK_UI3.Views
                 parameters.LoadedAll = true;
                 LoadingIndicator.Visibility = Visibility.Collapsed;
             }
-
+    
 
             if (CheckIfAllContentIsVisible(scrollViewer))
             {
@@ -236,7 +241,7 @@ namespace VK_UI3.Views
             void CancelPressedHandler(object s, EventArgs e)
             {
                 if (dialog != null)
-                    dialog.Hide();
+                dialog.Hide();
                 dialog = null;
 
                 if (s != null && s is AudioPlaylist)
@@ -251,7 +256,7 @@ namespace VK_UI3.Views
 
             void CloseHandler(ContentDialog sender, ContentDialogClosedEventArgs args)
             {
-
+                
                 a.cancelPressed -= CancelPressedHandler;
             }
 

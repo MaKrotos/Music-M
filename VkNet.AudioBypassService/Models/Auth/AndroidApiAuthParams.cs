@@ -1,9 +1,9 @@
-﻿using JetBrains.Annotations;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
+using Newtonsoft.Json;
 using VkNet.Enums.Filters;
 using VkNet.Enums.SafetyEnums;
 using VkNet.Model;
@@ -20,7 +20,7 @@ public record AndroidApiAuthParams(string Login, string Sid, ActionRequestedDele
     {
         IsAnonymous = true;
     }
-
+    
     public ulong ApplicationId { get; set; } = 2274003;
     [CanBeNull] public string Login { get; set; } = Login;
     [CanBeNull] public string Password { get; set; } = Password;
@@ -58,10 +58,10 @@ public record AndroidApiAuthParams(string Login, string Sid, ActionRequestedDele
     public bool? Revoke { get; set; }
     public string Code { get; set; }
     public bool IsTokenUpdateAutomatically { get; set; }
-
+    
     public bool IsAnonymous { get; }
 
-    public bool IsValid => IsAnonymous ||
+    public bool IsValid =>IsAnonymous ||
                           (!string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Sid) &&
                            ActionRequestedAsync is not null && SupportedWays?.Any() is true);
 }

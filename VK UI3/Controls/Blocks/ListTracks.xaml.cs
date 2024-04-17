@@ -18,7 +18,7 @@ namespace VK_UI3.Controls.Blocks
         {
             InitializeComponent();
             this.DataContextChanged += ListTracks_DataContextChanged;
-
+        
             this.Loaded += ListTracks_Loaded;
             this.Unloaded += ListTracks_Unloaded;
 
@@ -55,7 +55,7 @@ namespace VK_UI3.Controls.Blocks
             return false;
         }
 
-
+      
 
         ScrollViewer scrollViewer { get; set; }
         bool connected = false;
@@ -90,12 +90,12 @@ namespace VK_UI3.Controls.Blocks
 
         private SectionAudio sectionAudio;
 
+     
+       
 
-
-
-
-
-
+       
+      
+       
 
     }
 }

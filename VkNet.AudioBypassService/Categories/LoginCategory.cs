@@ -30,7 +30,7 @@ public class LoginCategory : ILoginCategory
             { "version", 1 },
             { "app_id", 7913379 }
         };
-
+        
         var response = await _restClient.PostAsync(new("https://login.vk.com/?act=connect_internal"), parameters, Encoding.UTF8);
 
         if (!response.IsSuccess)
@@ -51,7 +51,7 @@ public class LoginCategory : ILoginCategory
             { "app_id", 7913379 },
             { "token", token }
         };
-
+        
         var response = await _restClient.PostAsync(new("https://login.vk.com/?act=connect_code_auth"), parameters, Encoding.UTF8);
 
         if (!response.IsSuccess)

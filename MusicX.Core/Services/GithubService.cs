@@ -1,6 +1,6 @@
-﻿using MusicX.Core.Models.Github;
+﻿using System.Net.Http.Json;
+using MusicX.Core.Models.Github;
 using NLog;
-using System.Net.Http.Json;
 
 namespace MusicX.Core.Services
 {

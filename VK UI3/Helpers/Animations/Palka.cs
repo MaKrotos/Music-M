@@ -3,7 +3,13 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.UI.Core.AnimationMetrics;
 
 namespace VK_UI3.Helpers.Animations
 {
@@ -48,7 +54,7 @@ namespace VK_UI3.Helpers.Animations
             this.RenderTransformOrigin = new Point(0.5, 0.5);
         }
 
-
+      
 
         private void Storyboard_Completed(object sender, object e)
         {
@@ -62,7 +68,7 @@ namespace VK_UI3.Helpers.Animations
 
         public void StartAnimation()
         {
-            storyboard.Begin();
+                storyboard.Begin();
         }
         public void StopAnimation()
         {

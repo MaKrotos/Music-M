@@ -43,7 +43,7 @@ namespace Setup
 
             button1.Enabled = false;
 
-            bool a = appUpdater.IsVersionInstalled(RuntimeInformation.FrameworkDescription);
+            bool a= appUpdater.IsVersionInstalled(RuntimeInformation.FrameworkDescription);
 
             if (!a)
             {
@@ -76,16 +76,16 @@ namespace Setup
             }
 
             appUpdater.DownloadProgressChanged += AppUpdater_DownloadProgressChanged;
-
+         
 
 
             await appUpdater.DownloadAndOpenFile();
 
-
+            
 
             //Close();
         }
 
-
+       
     }
 }

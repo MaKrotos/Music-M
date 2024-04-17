@@ -1,5 +1,5 @@
-﻿using JetBrains.Annotations;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace VkNet.AudioBypassService.Abstractions;
 

@@ -1,15 +1,15 @@
-﻿using JetBrains.Annotations;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security;
 using System.Security.Authentication;
 using System.Text;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using VkNet.Abstractions.Authorization;
 using VkNet.Abstractions.Core;
 using VkNet.Abstractions.Utils;
@@ -37,7 +37,7 @@ internal abstract class VkAndroidAuthorizationBase : IAuthorizationFlow
     private readonly LibVerifyClient _libVerifyClient;
 
     [CanBeNull] private AndroidApiAuthParams _apiAuthParams;
-
+    
     private readonly JsonSerializer _jsonSerializer = JsonSerializer.Create(new()
     {
         Converters = new List<JsonConverter>
@@ -54,7 +54,7 @@ internal abstract class VkAndroidAuthorizationBase : IAuthorizationFlow
         MaxDepth = null,
         ReferenceLoopHandling = ReferenceLoopHandling.Ignore
     });
-
+    
     protected VkAndroidAuthorizationBase(IVkTokenStore tokenStore, FakeSafetyNetClient safetyNetClient,
         IDeviceIdStore deviceIdStore, IVkApiVersionManager versionManager, ILanguageService languageService,
         IAsyncRateLimiter rateLimiter, IRestClient restClient, ICaptchaHandler captchaHandler, LibVerifyClient libVerifyClient)
@@ -69,7 +69,7 @@ internal abstract class VkAndroidAuthorizationBase : IAuthorizationFlow
         _captchaHandler = captchaHandler;
         _libVerifyClient = libVerifyClient;
     }
-
+    
     public Task<AuthorizationResult> AuthorizeAsync()
     {
         if (_apiAuthParams == null)
@@ -84,7 +84,7 @@ internal abstract class VkAndroidAuthorizationBase : IAuthorizationFlow
     {
         if (authorizationParams is not AndroidApiAuthParams authParams)
             throw new ArgumentException($"Authorization parameters must be of type {nameof(AndroidApiAuthParams)}", nameof(authorizationParams));
-
+        
         _apiAuthParams = authParams;
     }
 
@@ -105,10 +105,10 @@ internal abstract class VkAndroidAuthorizationBase : IAuthorizationFlow
         return await _captchaHandler.Perform(async (sid, key) =>
         {
             var parameters = await BuildParameters(authParams);
-
+            
             parameters.Add("captcha_sid", sid);
             parameters.Add("captcha_key", key);
-
+            
             await _rateLimiter.WaitNextAsync();
 
             var response = await _restClient.PostAsync(new Uri("https://api.vk.com/oauth/token"), parameters, Encoding.UTF8);
@@ -128,7 +128,7 @@ internal abstract class VkAndroidAuthorizationBase : IAuthorizationFlow
                     if (verifyResponse.Status != VerifyResponseStatus.Ok)
                         throw new VerificationException("Error verifying libverify session");
                 }
-
+                    
 
                 var state = loginWay == LoginWay.TwoFactorLibVerify
                     ? new TwoFactorAuthState(mask, verifyResponse!.Checks.Any(b => b == VerifyChecks.Sms),
@@ -136,7 +136,7 @@ internal abstract class VkAndroidAuthorizationBase : IAuthorizationFlow
                     : new AuthState();
 
                 var code = await authParams.ActionRequestedAsync(loginWay, state);
-
+                
                 if (verifyResponse is null)
                 {
                     parameters.Remove("code");
@@ -145,30 +145,30 @@ internal abstract class VkAndroidAuthorizationBase : IAuthorizationFlow
                 else
                 {
                     var (status, token) = await _libVerifyClient.AttemptAsync(verifyResponse.VerificationUrl, code);
-
+                    
                     if (status != VerifyResponseStatus.Ok)
                         throw new AuthenticationException("Error attempting libverify code");
 
                     parameters.Remove("validate_session");
                     parameters.Remove("validate_token");
-
+                    
                     parameters.Add("validate_session", verifyResponse.SessionId);
                     parameters.Add("validate_token", token);
                 }
-
+                
                 await _rateLimiter.WaitNextAsync();
 
                 response = await _restClient.PostAsync(new Uri("https://api.vk.com/oauth/token"), parameters, Encoding.UTF8);
 
                 obj = JObject.Parse(response.Value ?? response.Message);
             }
-
+            
             VkAuthErrors.IfErrorThrowException(obj);
 
             var result = obj.ToObject<AuthorizationResult>(_jsonSerializer);
 
             result.State = authParams.State;
-
+        
             return result;
         });
     }
@@ -205,7 +205,7 @@ internal abstract class VkAndroidAuthorizationBase : IAuthorizationFlow
         };
 
         var response = await _restClient.PostAsync(new Uri("https://api.vk.com/oauth/get_anonym_token"), parameters, Encoding.UTF8);
-
+        
         var obj = VkErrors.IfErrorThrowException(response.Value ?? response.Message);
         VkAuthErrors.IfErrorThrowException(obj);
 
@@ -223,7 +223,7 @@ internal abstract class VkAndroidAuthorizationBase : IAuthorizationFlow
         var response = await _safetyNetClient.Register(checkIn);
 
         deviceId = $"{checkIn.AndroidId}:{response.Split('=')[1]}";
-
+        
         await _deviceIdStore.SetDeviceIdAsync(deviceId);
 
         return deviceId;

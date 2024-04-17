@@ -1,7 +1,7 @@
-﻿using JetBrains.Annotations;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
+using Microsoft.Extensions.DependencyInjection;
 using VkNet.Abstractions;
 using VkNet.Abstractions.Authorization;
 using VkNet.AudioBypassService.Models.Auth;
@@ -44,7 +44,7 @@ public class VkApiAuth : IVkApiAuthAsync
         LogOutAsync().GetAwaiter().GetResult();
     }
 
-    public bool IsAuthorized { get; private set; }
+    public bool IsAuthorized { get; private set;}
     public async Task AuthorizeAsync(IApiAuthParams @params)
     {
         if (!string.IsNullOrEmpty(@params.AccessToken))
@@ -52,16 +52,16 @@ public class VkApiAuth : IVkApiAuthAsync
             await _tokenStore.SetAsync(@params.AccessToken);
             return;
         }
-
+        
         if (@params is not AndroidApiAuthParams authParams)
             throw new ArgumentException("Invalid auth params", nameof(@params));
 
         var flow = _serviceProvider.GetRequiredKeyedService<IAuthorizationFlow>(authParams.AndroidGrantType);
-
+        
         flow.SetAuthorizationParams(@params);
 
         var result = await flow.AuthorizeAsync();
-
+        
         await _tokenStore.SetAsync(result.AccessToken,
                                    result.ExpiresIn > 0
                                        ? DateTimeOffset.Now + TimeSpan.FromSeconds(result.ExpiresIn)

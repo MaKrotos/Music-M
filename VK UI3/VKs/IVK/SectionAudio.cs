@@ -1,8 +1,11 @@
 ﻿using Microsoft.UI.Dispatching;
 using MusicX.Core.Models;
 using MusicX.Core.Models.General;
+using MusicX.Core.Services;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.Helpers;
@@ -52,69 +55,69 @@ namespace VK_UI3.VKs.IVK
 
             ResponseData a = null;
 
-            Task.Run(async () =>
-            {
-                a = await VK.vkService.GetSectionAsync(id, Next);
-
-                if (a.Section != null)
+                Task.Run(async () =>
                 {
-                    if (a.Section.NextFrom == null)
+                     a = await VK.vkService.GetSectionAsync(id, Next);
+            
+                    if (a.Section != null)
+                            {
+                                if (a.Section.NextFrom == null)
+                                {
+                                    itsAll = true;
+
+                                }
+                                Next = a.Section.NextFrom;
+                            }
+
+                    var audios = a.Audios;
+
+                    if (audios.Count == 0)
                     {
+                        countTracks = listAudio.Count;
                         itsAll = true;
-
                     }
-                    Next = a.Section.NextFrom;
-                }
-
-                var audios = a.Audios;
-
-                if (audios.Count == 0)
-                {
-                    countTracks = listAudio.Count;
-                    itsAll = true;
-                }
-                foreach (var item in audios)
-                {
-                    ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
-                    ManualResetEvent resetEvent = new ManualResetEvent(false);
-
-                    try
+                    foreach (var item in audios)
                     {
-                        bool isEnqueued = DispatcherQueue.TryEnqueue(() =>
-                        {
-                            listAudio.Add(extendedAudio);
-                            resetEvent.Set();
-                        });
+                        ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
+                        ManualResetEvent resetEvent = new ManualResetEvent(false);
 
-                        if (!isEnqueued)
+                        try
                         {
-                            // Действия при неудачной попытке добавления в очередь
-                            Console.WriteLine("TryEnqueue не удалось добавить задачу в очередь.");
+                            bool isEnqueued = DispatcherQueue.TryEnqueue(() =>
+                            {
+                                listAudio.Add(extendedAudio);
+                                resetEvent.Set();
+                            });
+
+                            if (!isEnqueued)
+                            {
+                                // Действия при неудачной попытке добавления в очередь
+                                Console.WriteLine("TryEnqueue не удалось добавить задачу в очередь.");
+                            }
+
+                        }
+                        catch
+                        {
+                            throw;
                         }
 
+                        resetEvent.WaitOne();
+                        NotifyOnListUpdate();
                     }
-                    catch
+                }).ContinueWith(t =>
                     {
-                        throw;
-                    }
+                        if (t.IsFaulted)
+                        {
+                            getLoadedTracks = false;
 
-                    resetEvent.WaitOne();
-                    NotifyOnListUpdate();
-                }
-            }).ContinueWith(t =>
-                {
-                    if (t.IsFaulted)
-                    {
-                        getLoadedTracks = false;
-
-                        Console.WriteLine(t.Exception.Message);
-                    }
-                    else
-                    {
-                        getLoadedTracks = false;
-                    }
-                });
-
+                            Console.WriteLine(t.Exception.Message);
+                        }
+                        else
+                        {
+                            getLoadedTracks = false;
+                        }
+                    });
+              
         }
     }
 }

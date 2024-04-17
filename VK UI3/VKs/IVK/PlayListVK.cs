@@ -1,13 +1,22 @@
 using Microsoft.UI.Dispatching;
 using MusicX.Core.Models;
+using MusicX.Core.Models.Genius;
+using MusicX.Core.Services;
+using ProtoBuf.Meta;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.Helpers;
+using VkNet.Enums.Filters;
+using VkNet.Model;
 using VkNet.Model.Attachments;
+using VkNet.Model.RequestParams;
+using VkNet.Model.RequestParams.Leads;
+using VkNet.Utils;
 
 namespace VK_UI3.VKs.IVK
 {
@@ -26,9 +35,8 @@ namespace VK_UI3.VKs.IVK
             waitCreate = true;
             Task.Run(async () =>
             {
-
-                try
-                {
+               
+                try {
 
                     var p = await VK.vkService.GetPlaylistAsync(100, _playlist.Id, _playlist.AccessKey, _playlist.OwnerId);
 
@@ -44,7 +52,7 @@ namespace VK_UI3.VKs.IVK
                         }
                     }
 
-
+               
                     playlist = p.Playlist;
                     playlist.groupOwner = _playlist.groupOwner;
                     playlist.userOwner = _playlist.userOwner;
@@ -141,21 +149,20 @@ namespace VK_UI3.VKs.IVK
 
 
                 }
-                catch
+                catch 
                 (Exception e)
                 {
 
 
 
                 }
-                finally
-                {
+                finally {
                     waitCreate = true;
                     NotifyOnListUpdate();
                 }
 
 
-
+          
             });
         }
 
@@ -168,9 +175,9 @@ namespace VK_UI3.VKs.IVK
                 listAudioTrue.Add(new ExtendedAudio(audio, this));
             }
             countTracks = playlist.Count;
-
+         
             _Description = playlist.Description;
-
+      
         }
 
 
@@ -204,7 +211,7 @@ namespace VK_UI3.VKs.IVK
                 itsAll = true;
                 return;
             }
-
+           
             getLoadedTracks = true;
 
             Task.Run(async () =>
@@ -250,20 +257,20 @@ namespace VK_UI3.VKs.IVK
             else
             {
                 if (playlist.Thumbs != null)
-                    foreach (var item in playlist.Thumbs)
-                    {
-                        list.Add(
-                            item.Photo600 ??
-                            item.Photo1200 ??
-                            item.Photo300 ??
-                            item.Photo34 ??
-                            item.Photo270 ??
-                            item.Photo135 ??
-                            item.Photo68
-                            );
-                    }
+                foreach (var item in playlist.Thumbs)
+                {
+                    list.Add(
+                        item.Photo600 ?? 
+                        item.Photo1200 ?? 
+                        item.Photo300 ??
+                        item.Photo34 ??
+                        item.Photo270 ?? 
+                        item.Photo135 ?? 
+                        item.Photo68
+                        );
+                }
             }
-            return list;
+            return list;  
         }
     }
 }

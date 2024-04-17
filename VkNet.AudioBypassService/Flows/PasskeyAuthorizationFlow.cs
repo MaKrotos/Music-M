@@ -25,17 +25,17 @@ internal class PasskeyAuthorizationFlow : VkAndroidAuthorizationBase
     {
         if (string.IsNullOrEmpty(authParams.PasskeyData))
             throw new ArgumentException("Passkey data is empty", nameof(authParams));
-
+        
         return AuthAsync(authParams);
     }
 
     protected override async ValueTask<VkParameters> BuildParameters(AndroidApiAuthParams authParams)
     {
         var parameters = await base.BuildParameters(authParams);
-
+        
         parameters.Add("passkey_data", authParams.PasskeyData);
         parameters.Add("flow_type", "tg_flow");
-
+        
         return parameters;
     }
 }

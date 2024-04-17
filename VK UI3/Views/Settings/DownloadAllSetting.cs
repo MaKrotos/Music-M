@@ -1,5 +1,14 @@
+using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using VK_UI3.DownloadTrack;
 using vkPosterBot.DB;
 
@@ -12,7 +21,7 @@ namespace VK_UI3.Views.Settings
     {
         public DownloadAllSetting()
         {
-
+    
 
             this.Content = "Запускать параллельное скачивание автоматически";
 
@@ -39,7 +48,7 @@ namespace VK_UI3.Views.Settings
         private void StartUpSetting_Unchecked(object sender, RoutedEventArgs e)
         {
             SettingsTable.RemoveSetting("downloadALL");
-            PlayListDownload.ResumeOnlyFirst();
+            PlayListDownload.ResumeOnlyFirst(); 
 
         }
 

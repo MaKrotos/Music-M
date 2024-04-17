@@ -11,7 +11,7 @@ internal class CloseMessageSerializer : BaseMessageSerializer
 
     protected override IEnumerable<object> CreateItems(HubMessage message)
     {
-        var closeMessage = (CloseMessage)message;
+        var closeMessage = (CloseMessage) message;
 
         yield return new CloseMessageProtobuf
         {
@@ -21,7 +21,7 @@ internal class CloseMessageSerializer : BaseMessageSerializer
 
     protected override HubMessage CreateHubMessage(IReadOnlyList<object> items)
     {
-        var protobuf = (CloseMessageProtobuf)items.Single();
+        var protobuf = (CloseMessageProtobuf) items.Single();
         return new CloseMessage(protobuf.Error);
     }
 }

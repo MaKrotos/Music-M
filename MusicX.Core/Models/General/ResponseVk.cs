@@ -1,4 +1,7 @@
 ﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Text;
 using VkNet.Model;
 
 namespace MusicX.Core.Models.General

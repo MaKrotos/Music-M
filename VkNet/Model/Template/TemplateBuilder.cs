@@ -1,7 +1,7 @@
-using JetBrains.Annotations;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
+using Newtonsoft.Json;
 using VkNet.Enums.SafetyEnums;
 using VkNet.Exception;
 using VkNet.Model.Template.Carousel;
@@ -9,58 +9,58 @@ using VkNet.Utils.JsonConverter;
 
 namespace VkNet.Model.Template
 {
-    /// <inheritdoc />
-    [Serializable]
-    [UsedImplicitly]
-    [JsonConverter(typeof(SafetyEnumJsonConverter))]
-    public class TemplateBuilder : ITemplateBuilder
-    {
-        /// <inheritdoc />
-        [JsonConverter(typeof(SafetyEnumJsonConverter))]
-        public TemplateType Type { get; private set; } = TemplateType.Carousel;
+	/// <inheritdoc />
+	[Serializable]
+	[UsedImplicitly]
+	[JsonConverter(typeof(SafetyEnumJsonConverter))]
+	public class TemplateBuilder : ITemplateBuilder
+	{
+		/// <inheritdoc />
+		[JsonConverter(typeof(SafetyEnumJsonConverter))]
+		public TemplateType Type { get; private set; } = TemplateType.Carousel;
 
-        /// <inheritdoc />
-        public List<CarouselElement> Elements { get; private set; } = new List<CarouselElement>();
+		/// <inheritdoc />
+		public List<CarouselElement> Elements { get; private set; } = new List<CarouselElement>();
 
-        private string _tooMuchElementsExceptionTemplate = "Максимальное количество элементов в шаблоне 10";
+		private string _tooMuchElementsExceptionTemplate = "Максимальное количество элементов в шаблоне 10";
 
-        /// <inheritdoc />
-        public ITemplateBuilder AddTemplateElement(CarouselElement element)
-        {
-            if (Elements.Count >= 10)
-            {
-                throw new TooMuchElementsInTemplateException(_tooMuchElementsExceptionTemplate);
-            }
+		/// <inheritdoc />
+		public ITemplateBuilder AddTemplateElement(CarouselElement element)
+		{
+			if(Elements.Count >= 10)
+			{
+				throw new TooMuchElementsInTemplateException(_tooMuchElementsExceptionTemplate);
+			}
 
-            Elements.Add(element);
+			Elements.Add(element);
 
-            return this;
-        }
+			return this;
+		}
 
-        /// <inheritdoc />
-        public ITemplateBuilder SetType(TemplateType type)
-        {
-            Type = type;
+		/// <inheritdoc />
+		public ITemplateBuilder SetType(TemplateType type)
+		{
+			Type = type;
 
-            return this;
-        }
+			return this;
+		}
 
-        /// <inheritdoc />
-        public ITemplateBuilder ClearElements()
-        {
-            Elements.Clear();
+		/// <inheritdoc />
+		public ITemplateBuilder ClearElements()
+		{
+			Elements.Clear();
 
-            return this;
-        }
+			return this;
+		}
 
-        /// <inheritdoc />
-        public MessageTemplate Build()
-        {
-            return new MessageTemplate()
-            {
-                Type = Type,
-                Elements = Elements
-            };
-        }
-    }
+		/// <inheritdoc />
+		public MessageTemplate Build()
+		{
+			return new MessageTemplate()
+			{
+				Type = Type,
+				Elements = Elements
+			};
+		}
+	}
 }

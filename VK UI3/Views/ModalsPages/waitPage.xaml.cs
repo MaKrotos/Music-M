@@ -13,6 +13,6 @@ namespace VK_UI3.Views.LoginWindow
         public waitPage()
         {
             this.InitializeComponent();
-        }
+            }
     }
 }

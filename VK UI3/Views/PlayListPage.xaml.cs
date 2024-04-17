@@ -5,7 +5,10 @@ using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Net.Http;
 using System.Threading.Tasks;
 using VK_UI3.Controllers;
 using VK_UI3.DB;
@@ -16,8 +19,11 @@ using VK_UI3.Views.ModalsPages;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
-using Windows.Foundation;
 using Windows.Storage.Pickers;
+using Newtonsoft.Json;
+using VkNet.Utils;
+using VK_UI3.Views.Upload;
+using Windows.Foundation;
 
 
 namespace VK_UI3.Views
@@ -43,7 +49,7 @@ namespace VK_UI3.Views
             if (vkGetAudio != null)
             {
                 vkGetAudio.onPhotoUpdated.RemoveHandler(VkGetAudio_onPhotoUpdated);
-                vkGetAudio.onListUpdate -= (VkGetAudio_onListUpdate);
+                vkGetAudio.onListUpdate-=(VkGetAudio_onListUpdate);
                 vkGetAudio.onNameUpdated.RemoveHandler(VkGetAudio_onNameUpdated);
                 vkGetAudio.onCountUpDated.RemoveHandler(VkGetAudio_onCountUpDated);
                 vkGetAudio.onInfoUpdated.RemoveHandler(VkGetAudio_onInfoUpdated);
@@ -79,7 +85,7 @@ namespace VK_UI3.Views
             if (vkGetAudio != null)
             {
                 vkGetAudio.onPhotoUpdated.RemoveHandler(VkGetAudio_onPhotoUpdated);
-                vkGetAudio.onListUpdate -= (VkGetAudio_onListUpdate);
+                vkGetAudio.onListUpdate -=(VkGetAudio_onListUpdate);
                 vkGetAudio.onNameUpdated.RemoveHandler(VkGetAudio_onNameUpdated);
                 vkGetAudio.onCountUpDated.RemoveHandler(VkGetAudio_onCountUpDated);
                 vkGetAudio.onInfoUpdated.RemoveHandler(VkGetAudio_onInfoUpdated);
@@ -243,7 +249,7 @@ namespace VK_UI3.Views
 
 
                     if (
-                        userAudio.user.Status != null &&
+                        userAudio.user.Status!= null && 
                         (userAudio.user.Status.Equals("") || DescriptionText.Text == null)
                         )
                         DescriptionText.Visibility = Visibility.Collapsed;
@@ -296,13 +302,13 @@ namespace VK_UI3.Views
                 LoadingIndicator.Visibility = Visibility.Collapsed;
         }
 
-
+    
         private void VkGetAudio_onPhotoUpdated(object sender, EventArgs e)
         {
             GridThumbs.AddImagesToGrid(vkGetAudio.getPhotosList());
         }
 
-
+      
         private ScrollViewer FindScrollViewer(DependencyObject d)
         {
             if (d is ScrollViewer)
@@ -332,11 +338,11 @@ namespace VK_UI3.Views
         bool blockLoad = false;
         private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
-
+            
             var isAtBottom = scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight;
             if (isAtBottom)
             {
-
+               
                 if (vkGetAudio.itsAll)
                 {
                     LoadingIndicator.Visibility = Visibility.Collapsed;
@@ -417,7 +423,7 @@ namespace VK_UI3.Views
 
             dialog.Content = a;
             dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
-            a.cancelPressed += ((s, e) =>
+            a.cancelPressed+=((s, e) =>
             {
                 if (s != null && s is AudioPlaylist)
                 {
@@ -428,7 +434,7 @@ namespace VK_UI3.Views
                 try
                 {
                     if (dialog != null)
-                        dialog.Hide();
+                    dialog.Hide();
                     dialog = null;
                 }
                 catch
@@ -451,7 +457,7 @@ namespace VK_UI3.Views
         List<MenuFlyoutItem> menuFlyoutItem = new List<MenuFlyoutItem>();
         private void DownloadPlaylist_Click(object sender, RoutedEventArgs e)
         {
-
+         
             foreach (var item in menuFlyoutItem)
             {
                 this.DispatcherQueue.TryEnqueue(async () =>
@@ -527,7 +533,7 @@ namespace VK_UI3.Views
                 handler = (s, e) =>
                 {
                     if (dialog != null)
-                        dialog.Hide();
+                    dialog.Hide();
                     //    a.selectedPlayList -= handler; // Отписка от события
                 };
 
@@ -584,8 +590,7 @@ namespace VK_UI3.Views
                 {
                     // Операция была отменена пользователем
                 }
-            }
-            catch (Exception ex)
+            }catch (Exception ex)
             {
             }
         }

@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading.Tasks;
 using vkPosterBot.DB;
 
@@ -27,7 +30,7 @@ namespace VK_UI3.DownloadTrack
             }
             catch
             {
-
+              
             }
             return null;
         }
@@ -43,7 +46,7 @@ namespace VK_UI3.DownloadTrack
         {
             if (File.Exists(getPathFfmpeg()))
             {
-
+                
                 return true;
             }
             return false;
@@ -61,7 +64,7 @@ namespace VK_UI3.DownloadTrack
             }
         }
     }
-
+    
     public class DownloadFileWithProgress
     {
         public bool isNowDownload = false;
@@ -74,7 +77,7 @@ namespace VK_UI3.DownloadTrack
         private WebClient webClient;
         private CheckFFmpeg checkFFmpeg = new CheckFFmpeg();
 
-
+   
         public DownloadFileWithProgress()
         {
             if (MainWindow.downloadFileWithProgress == null)
@@ -90,8 +93,7 @@ namespace VK_UI3.DownloadTrack
                     MainWindow.mainWindow.requstDownloadFFMpegAsync();
                 }
             }
-            else
-            {
+            else {
 
                 MainWindow.mainWindow.MainWindow_showDownload();
             }
@@ -101,21 +103,21 @@ namespace VK_UI3.DownloadTrack
 
         public async void DownloadFile()
         {
-            _ = Task.Run(async () =>
-               {
-                   string path = checkFFmpeg.getPathFfmpeg() + ".temp";
-                   if (File.Exists(path)) { File.Delete(path); }
+             _=   Task.Run(async () =>
+                {
+                    string path = checkFFmpeg.getPathFfmpeg() + ".temp";
+                    if (File.Exists(path)) { File.Delete(path); }
 
-                   mb = await checkFFmpeg.getFileSizeInMBAsync();
-                   string? url = checkFFmpeg.getLinkFFMPEG();
-                   if (url != null)
-                   {
-                       webClient.OpenRead(url);
+                    mb = await checkFFmpeg.getFileSizeInMBAsync();
+                    string? url = checkFFmpeg.getLinkFFMPEG();
+                    if (url != null)
+                    {
+                        webClient.OpenRead(url);
 
 
-                       webClient.DownloadFileAsync(new Uri(url), path);
-                   }
-               });
+                        webClient.DownloadFileAsync(new Uri(url), path);
+                    }
+                });
         }
 
         public void CancelDownload()
@@ -130,7 +132,7 @@ namespace VK_UI3.DownloadTrack
 
         private void Completed(object sender, AsyncCompletedEventArgs e)
         {
-
+       
             string path = checkFFmpeg.getPathFfmpeg();
             string temp = path + ".temp";
 

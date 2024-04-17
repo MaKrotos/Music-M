@@ -11,7 +11,7 @@ internal static partial class PInvoke
     public const uint WebauthnAuthenticatorAttachmentCrossPlatform = 2;
     public const uint WebauthnAuthenticatorAttachmentCrossPlatformU2FV2 = 3;
     public const string WebauthnCredentialTypePublicKey = "public-key";
-
+    
     public record SecurityKeyClientData(
         [property: JsonPropertyName("type"), JsonPropertyOrder(1)]
         string DataType,

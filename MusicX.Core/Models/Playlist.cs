@@ -1,10 +1,14 @@
-﻿using VkNet.Model.Attachments;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using VkNet.Model.Attachments;
 
 namespace MusicX.Core.Models
 {
     public class Playlist : AudioPlaylist
     {
-
+       
 
         public string Cover
         {

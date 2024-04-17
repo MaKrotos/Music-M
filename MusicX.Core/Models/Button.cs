@@ -1,4 +1,7 @@
 ﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace MusicX.Core.Models
 {
@@ -27,13 +30,13 @@ namespace MusicX.Core.Models
 
         [JsonProperty("options")]
         public List<OptionButton> Options { get; set; } = new List<OptionButton>();
-
+        
         [JsonProperty("artist_id")]
         public string ArtistId { get; set; }
-
+        
         [JsonProperty("is_following")]
         public bool IsFollowing { get; set; }
-
+        
         [JsonProperty("owner_id")]
         public long OwnerId { get; set; }
     }
