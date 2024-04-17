@@ -1,21 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
-<UserControl x:Name="UCcontrol" 
-             PointerEntered="UCcontrol_PointerEntered"
-             PointerExited="UCcontrol_PointerExited"
-             PointerPressed="UCcontrol_PointerPressed"
+<?xml version="1.0" encoding="utf-8" ?>
+<UserControl
     x:Class="VK_UI3.Controls.TrackControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:VK_UI3.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:VK_UI3.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Translation="0,0,8"
-
-    RightTapped="UCcontrol_RightTapped"
+    x:Name="UCcontrol"
     Width="Auto"
-
-
-             
+    PointerEntered="UCcontrol_PointerEntered"
+    PointerExited="UCcontrol_PointerExited"
+    PointerPressed="UCcontrol_PointerPressed"
+    RightTapped="UCcontrol_RightTapped"
+    Translation="0,0,8"
     mc:Ignorable="d">
     <UserControl.Resources>
         <SolidColorBrush x:Key="SystemControlFocusVisualPrimaryBrush" Color="#FFFFFFFF" />
@@ -25,54 +22,102 @@
 
     <UserControl.ContextFlyout>
         <MenuFlyout x:Name="flyOutm">
-            <MenuFlyoutItem Visibility="Collapsed" x:Name="EditTrack" Text="Редактировать" Click="EditTrack_Click"  Icon="Edit" />
-            <MenuFlyoutItem x:Name="AddRemove" Text="Добавить к себе" Click="AddRemove_Click" Icon="Add" />
-            <MenuFlyoutItem Visibility="Collapsed" x:Name="RemovePlayList" Text="Удалить из плейлиста" Click="RemovePlayList_Click"  Icon="Delete" />
-            <MenuFlyoutSubItem x:Name="GoArtist" Text="Перейти к исполнителю" Icon="ContactInfo">
-                
-            </MenuFlyoutSubItem>
-            <MenuFlyoutItem x:Name="FlyGoAlbum" Text="Перейти в альбом" Click="GoToAlbum">
+            <MenuFlyoutItem
+                x:Name="EditTrack"
+                Click="EditTrack_Click"
+                Icon="Edit"
+                Text="Редактировать"
+                Visibility="Collapsed" />
+            <MenuFlyoutItem
+                x:Name="AddRemove"
+                Click="AddRemove_Click"
+                Icon="Add"
+                Text="Добавить к себе" />
+            <MenuFlyoutItem
+                x:Name="RemovePlayList"
+                Click="RemovePlayList_Click"
+                Icon="Delete"
+                Text="Удалить из плейлиста"
+                Visibility="Collapsed" />
+            <MenuFlyoutSubItem
+                x:Name="GoArtist"
+                Icon="ContactInfo"
+                Text="Перейти к исполнителю" />
+            <MenuFlyoutItem
+                x:Name="FlyGoAlbum"
+                Click="GoToAlbum"
+                Text="Перейти в альбом">
                 <MenuFlyoutItem.Icon>
-                    <FontIcon Glyph="&#xE93C;" ></FontIcon>
-                    </MenuFlyoutItem.Icon>
-            </MenuFlyoutItem>
-
-
-            <MenuFlyoutSubItem x:Name="AddPlayList" Text="Добавить в плейлист" Icon="Add">
-                <MenuFlyoutItem x:Name="addToPlayListMore" Text="Показать больше" Click="addToPlayListMore_Click">
-                    <MenuFlyoutItem.Icon>
-                        <FontIcon Glyph="&#xE93C;" ></FontIcon>
-                    </MenuFlyoutItem.Icon>
-                </MenuFlyoutItem>
-                <MenuFlyoutItem x:Name="CreatePlayListBTN" Text="Создать" Click="CreatePlayListBTN_Click">
-                    <MenuFlyoutItem.Icon>
-                        <FontIcon Glyph="&#xECC8;" ></FontIcon>
-                    </MenuFlyoutItem.Icon>
-                </MenuFlyoutItem>
-            </MenuFlyoutSubItem>
-
-
-            <MenuFlyoutItem x:Name="disText" Text="Не нравится" Click="DislikeClick">
-                <MenuFlyoutItem.Icon>
-                    <PathIcon Data="{x:Bind IconData, Mode=OneWay}"/>
+                    <FontIcon Glyph="&#xE93C;" />
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
-            <MenuFlyoutItem Text="Пропускать треки исполнителя" Click="AddArtistIgnore_Click" Icon="BlockContact" />
-     
 
-            <MenuFlyoutSubItem x:Name="DownloadFlyOut" Text="Скачать" Icon="Download">
 
-                <MenuFlyoutItem x:Name="PickFolderDownload" Text="Выбрать папку" Click="PickFolderDownload_Click">
+            <MenuFlyoutSubItem
+                x:Name="AddPlayList"
+                Icon="Add"
+                Text="Добавить в плейлист">
+                <MenuFlyoutItem
+                    x:Name="addToPlayListMore"
+                    Click="addToPlayListMore_Click"
+                    Text="Показать больше">
                     <MenuFlyoutItem.Icon>
-                        <FontIcon Glyph="&#xF12B;" ></FontIcon>
+                        <FontIcon Glyph="&#xE93C;" />
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem
+                    x:Name="CreatePlayListBTN"
+                    Click="CreatePlayListBTN_Click"
+                    Text="Создать">
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="&#xECC8;" />
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
             </MenuFlyoutSubItem>
 
 
-            <MenuFlyoutItem Text="Возпроизвести следующим" Click="PlayNext_Click" Icon="Play" />
-            <MenuFlyoutItem Text="Добавить в очередь" Click="AddToQueue_Click" Icon="Add" />
-            <MenuFlyoutItem Text="Скопировать ссылку" Click="CopyLink" Icon="Link" />
+            <MenuFlyoutItem
+                x:Name="disText"
+                Click="DislikeClick"
+                Text="Не нравится">
+                <MenuFlyoutItem.Icon>
+                    <PathIcon Data="{x:Bind IconData, Mode=OneWay}" />
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutItem
+                Click="AddArtistIgnore_Click"
+                Icon="BlockContact"
+                Text="Пропускать треки исполнителя" />
+
+
+            <MenuFlyoutSubItem
+                x:Name="DownloadFlyOut"
+                Icon="Download"
+                Text="Скачать">
+
+                <MenuFlyoutItem
+                    x:Name="PickFolderDownload"
+                    Click="PickFolderDownload_Click"
+                    Text="Выбрать папку">
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="&#xF12B;" />
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+            </MenuFlyoutSubItem>
+
+
+            <MenuFlyoutItem
+                Click="PlayNext_Click"
+                Icon="Play"
+                Text="Возпроизвести следующим" />
+            <MenuFlyoutItem
+                Click="AddToQueue_Click"
+                Icon="Add"
+                Text="Добавить в очередь" />
+            <MenuFlyoutItem
+                Click="CopyLink"
+                Icon="Link"
+                Text="Скопировать ссылку" />
         </MenuFlyout>
     </UserControl.ContextFlyout>
 
@@ -83,19 +128,15 @@
 
 
     <Grid
-        
-        
-        
-       Width="Auto"
         x:Name="Card"
+        Width="Auto"
         Margin="0,0,0,0"
         Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-        
         BorderBrush="{ThemeResource ApplicationForegroundThemeBrush}"
-        CornerRadius="5"
-        BorderThickness="0">
-        
-        
+        BorderThickness="0"
+        CornerRadius="5">
+
+
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
@@ -107,89 +148,95 @@
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" Orientation="Horizontal">
                 <Grid Margin="8,6.5,6,6" VerticalAlignment="Center">
-                    <Grid CornerRadius="5" Width="45" Height="45" Background = "{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}">
-                    <FontIcon Glyph="&#xEC4F;" />
+                    <Grid
+                        Width="45"
+                        Height="45"
+                        Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}"
+                        CornerRadius="5">
+                        <FontIcon Glyph="&#xEC4F;" />
 
                         <Grid x:Name="ImageThumbGrid">
-                        <Image Opacity="0" x:Name="ImageThumb"/>
+                            <Image x:Name="ImageThumb" Opacity="0" />
                         </Grid>
 
 
-                        <Grid x:Name="GridPlayIcon" Opacity="0" CornerRadius="0" Background="{StaticResource CustomAcrylicInAppBrush}">
-                        <SymbolIcon x:Name="PlayBTN" Symbol="Play"/>
-                        <Grid.Resources>
-                            <!-- Анимация прозрачности от 0 до 1 -->
-                            <Storyboard x:Name="FadeInAnimationGridPlayIcon">
-                                <DoubleAnimation Storyboard.TargetName="GridPlayIcon"
-                     Storyboard.TargetProperty="Opacity"
-                     To="1" Duration="0:0:0.25"/>
-                            </Storyboard>
-                            <!-- Анимация прозрачности от 1 до 0 -->
-                            <Storyboard x:Name="FadeOutAnimationGridPlayIcon">
-                                <DoubleAnimation Storyboard.TargetName="GridPlayIcon"
-                     Storyboard.TargetProperty="Opacity"
-                     To="0" Duration="0:0:0.25"/>
-                            </Storyboard>
-                        </Grid.Resources>
+                        <Grid
+                            x:Name="GridPlayIcon"
+                            Background="{StaticResource CustomAcrylicInAppBrush}"
+                            CornerRadius="0"
+                            Opacity="0">
+                            <SymbolIcon x:Name="PlayBTN" Symbol="Play" />
+                            <Grid.Resources>
+                                <!--  Анимация прозрачности от 0 до 1  -->
+                                <Storyboard x:Name="FadeInAnimationGridPlayIcon">
+                                    <DoubleAnimation
+                                        Storyboard.TargetName="GridPlayIcon"
+                                        Storyboard.TargetProperty="Opacity"
+                                        To="1"
+                                        Duration="0:0:0.25" />
+                                </Storyboard>
+                                <!--  Анимация прозрачности от 1 до 0  -->
+                                <Storyboard x:Name="FadeOutAnimationGridPlayIcon">
+                                    <DoubleAnimation
+                                        Storyboard.TargetName="GridPlayIcon"
+                                        Storyboard.TargetProperty="Opacity"
+                                        To="0"
+                                        Duration="0:0:0.25" />
+                                </Storyboard>
+                            </Grid.Resources>
 
                         </Grid>
                     </Grid>
                 </Grid>
                 <Grid x:Name="ChartGrid" Visibility="Collapsed">
                     <Rectangle
-                       Width="25"
-                       Height="25"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       Fill="Black"
-                       Opacity="0.2"
-                       RadiusX="100"
-                       RadiusY="100" />
+                        Width="25"
+                        Height="25"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Fill="Black"
+                        Opacity="0.2"
+                        RadiusX="100"
+                        RadiusY="100" />
                     <TextBlock
-                       x:Name="ChartPositionText"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       FontWeight="ExtraBlack"
-                       
-                       Text="1" />
+                        x:Name="ChartPositionText"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontWeight="ExtraBlack"
+                        Text="1" />
                 </Grid>
-                <StackPanel Margin="5,0,0,0" VerticalAlignment="Center" x:Name="TextsPanel">
+                <StackPanel
+                    x:Name="TextsPanel"
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Center">
                     <StackPanel x:Name="NamePanel" Orientation="Horizontal">
 
                         <TextBlock
                             x:Name="Title"
                             FontSize="16"
                             FontWeight="SemiBold"
-    
-                         
-                            
                             Text="Title"
-                            TextTrimming="CharacterEllipsis">
-                           
-                        </TextBlock>
+                            TextTrimming="CharacterEllipsis" />
 
                         <TextBlock
-                           x:Name="Subtitle"
-                           Margin="5,3,2,0"
-                           
-                           Opacity="0.3"
-                           Text="Subtitle"
-                           TextTrimming="CharacterEllipsis" />
+                            x:Name="Subtitle"
+                            Margin="5,3,2,0"
+                            Opacity="0.3"
+                            Text="Subtitle"
+                            TextTrimming="CharacterEllipsis" />
 
-                   
+
                     </StackPanel>
                     <Grid x:Name="ArtistTextGrid" HorizontalAlignment="Left">
                         <TextBlock
-                           HorizontalAlignment="Left"
-                           x:Name="Artists"
-                           Margin="0,2,0,0"
-                           FontSize="11"
-                           Opacity="0.6"
-                           Text="Artist"
-                           TextWrapping="NoWrap"
-                           TextTrimming="CharacterEllipsis">
-                           
-                        </TextBlock>
+                            x:Name="Artists"
+                            Margin="0,2,0,0"
+                            HorizontalAlignment="Left"
+                            FontSize="11"
+                            Opacity="0.6"
+                            Text="Artist"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="NoWrap" />
                     </Grid>
 
                 </StackPanel>
@@ -200,7 +247,6 @@
                 x:Name="RecommendedAudio"
                 Margin="0,0,10,0"
                 HorizontalAlignment="Right"
-          
                 Click="RecommendedAudio_Click"
                 FontSize="20"
                 Visibility="Collapsed">
@@ -217,14 +263,13 @@
 
 
             <TextBlock
-               x:Name="Time"
-               Grid.Column="1"
-               Margin="3,0,25,0"
-               HorizontalAlignment="Right"
-               VerticalAlignment="Center"
-               
-               Opacity="0.5"
-               Text="02:20" />
+                x:Name="Time"
+                Grid.Column="1"
+                Margin="3,0,25,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Opacity="0.5"
+                Text="02:20" />
         </Grid>
 
 

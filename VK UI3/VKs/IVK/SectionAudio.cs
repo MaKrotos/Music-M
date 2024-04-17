@@ -1,11 +1,8 @@
 ﻿using Microsoft.UI.Dispatching;
 using MusicX.Core.Models;
 using MusicX.Core.Models.General;
-using MusicX.Core.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.Helpers;
@@ -55,69 +52,69 @@ namespace VK_UI3.VKs.IVK
 
             ResponseData a = null;
 
-                Task.Run(async () =>
+            Task.Run(async () =>
+            {
+                a = await VK.vkService.GetSectionAsync(id, Next);
+
+                if (a.Section != null)
                 {
-                     a = await VK.vkService.GetSectionAsync(id, Next);
-            
-                    if (a.Section != null)
-                            {
-                                if (a.Section.NextFrom == null)
-                                {
-                                    itsAll = true;
-
-                                }
-                                Next = a.Section.NextFrom;
-                            }
-
-                    var audios = a.Audios;
-
-                    if (audios.Count == 0)
+                    if (a.Section.NextFrom == null)
                     {
-                        countTracks = listAudio.Count;
                         itsAll = true;
+
                     }
-                    foreach (var item in audios)
+                    Next = a.Section.NextFrom;
+                }
+
+                var audios = a.Audios;
+
+                if (audios.Count == 0)
+                {
+                    countTracks = listAudio.Count;
+                    itsAll = true;
+                }
+                foreach (var item in audios)
+                {
+                    ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
+                    ManualResetEvent resetEvent = new ManualResetEvent(false);
+
+                    try
                     {
-                        ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
-                        ManualResetEvent resetEvent = new ManualResetEvent(false);
-
-                        try
+                        bool isEnqueued = DispatcherQueue.TryEnqueue(() =>
                         {
-                            bool isEnqueued = DispatcherQueue.TryEnqueue(() =>
-                            {
-                                listAudio.Add(extendedAudio);
-                                resetEvent.Set();
-                            });
+                            listAudio.Add(extendedAudio);
+                            resetEvent.Set();
+                        });
 
-                            if (!isEnqueued)
-                            {
-                                // Действия при неудачной попытке добавления в очередь
-                                Console.WriteLine("TryEnqueue не удалось добавить задачу в очередь.");
-                            }
-
-                        }
-                        catch
+                        if (!isEnqueued)
                         {
-                            throw;
+                            // Действия при неудачной попытке добавления в очередь
+                            Console.WriteLine("TryEnqueue не удалось добавить задачу в очередь.");
                         }
 
-                        resetEvent.WaitOne();
-                        NotifyOnListUpdate();
                     }
-                }).ContinueWith(t =>
+                    catch
                     {
-                        if (t.IsFaulted)
-                        {
-                            getLoadedTracks = false;
+                        throw;
+                    }
 
-                            Console.WriteLine(t.Exception.Message);
-                        }
-                        else
-                        {
-                            getLoadedTracks = false;
-                        }
-                    });
-              
+                    resetEvent.WaitOne();
+                    NotifyOnListUpdate();
+                }
+            }).ContinueWith(t =>
+                {
+                    if (t.IsFaulted)
+                    {
+                        getLoadedTracks = false;
+
+                        Console.WriteLine(t.Exception.Message);
+                    }
+                    else
+                    {
+                        getLoadedTracks = false;
+                    }
+                });
+
         }
     }
 }

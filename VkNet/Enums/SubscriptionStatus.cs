@@ -1,23 +1,23 @@
 namespace VkNet.Enums
 {
-	/// <summary>
-	/// Статус подписки
-	/// </summary>
-	public enum SubscriptionStatus
-	{
-		/// <summary>
-		/// Платная
-		/// </summary>
-		Chargeable,
+    /// <summary>
+    /// Статус подписки
+    /// </summary>
+    public enum SubscriptionStatus
+    {
+        /// <summary>
+        /// Платная
+        /// </summary>
+        Chargeable,
 
-		/// <summary>
-		/// Активная
-		/// </summary>
-		Active,
+        /// <summary>
+        /// Активная
+        /// </summary>
+        Active,
 
-		/// <summary>
-		/// Отмененная
-		/// </summary>
-		Cancelled
-	}
+        /// <summary>
+        /// Отмененная
+        /// </summary>
+        Cancelled
+    }
 }

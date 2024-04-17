@@ -1,18 +1,15 @@
 using SQLite;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VK_UI3.DB
 {
     public class AccountsDB
     {
-        public class Accounts {
+        public class Accounts
+        {
             [PrimaryKey]
-           // [AutoIncrement]
+            // [AutoIncrement]
             public long id { get; set; }
             public bool Active { get; set; } = false;
             public String Name { get; set; } = "Добавить";
@@ -33,7 +30,7 @@ namespace VK_UI3.DB
                 {
                     DatabaseHandler.getConnect().Insert(this);
                 }
-                else 
+                else
                 {
                     DatabaseHandler.getConnect().Update(this);
                 }
@@ -75,7 +72,7 @@ namespace VK_UI3.DB
 
         public static void ActivateAccount(long id)
         {
-            DatabaseHandler.getConnect().Query<Accounts>("UPDATE Accounts SET Active = CASE WHEN id = "+id+" THEN 1 ELSE 0 END");
+            DatabaseHandler.getConnect().Query<Accounts>("UPDATE Accounts SET Active = CASE WHEN id = " + id + " THEN 1 ELSE 0 END");
         }
 
 
@@ -123,7 +120,7 @@ namespace VK_UI3.DB
 
         public static Accounts GetAccountsByID(long id)
         {
-            var a = DatabaseHandler.getConnect().Table<Accounts>().Where(a => a.id == id).ToList(); 
+            var a = DatabaseHandler.getConnect().Table<Accounts>().Where(a => a.id == id).ToList();
             if (a.Count < 1) return null;
             return a[0];
         }

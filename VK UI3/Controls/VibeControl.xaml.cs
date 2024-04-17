@@ -1,16 +1,12 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media.Animation;
 using System;
 using System.Collections.Generic;
 using VK_UI3.Controllers;
-using VK_UI3.DB;
 using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
 using VK_UI3.Views;
-using VK_UI3.Views.ModalsPages;
-using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
 
@@ -27,7 +23,7 @@ namespace VK_UI3.Controls
 
             AnimationsChangeFontIcon = new AnimationsChangeFontIcon(PlayPause, this.DispatcherQueue);
             titleAnim = new AnimationsChangeText(Title, this.DispatcherQueue);
-         
+
             this.Unloaded += PlaylistControl_Unloaded;
             this.Loaded += PlaylistControl_Loaded;
 
@@ -44,7 +40,7 @@ namespace VK_UI3.Controls
 
         private void PlaylistControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            AudioPlayer.oniVKUpdate -=AudioPlayer_oniVKUpdate;
+            AudioPlayer.oniVKUpdate -= AudioPlayer_oniVKUpdate;
 
             this.Unloaded -= PlaylistControl_Unloaded;
             this.Loaded -= PlaylistControl_Loaded;
@@ -57,7 +53,7 @@ namespace VK_UI3.Controls
         {
             updatePlayState();
         }
-    
+
         private void updatePlayState(bool prin = false, bool pause = false)
         {
             this.DispatcherQueue.TryEnqueue(() =>
@@ -121,8 +117,8 @@ namespace VK_UI3.Controls
 
 
         AnimationsChangeText titleAnim { get; set; }
-        
-        
+
+
 
 
         public static readonly DependencyProperty PlaylistItemsProperty =
@@ -139,22 +135,22 @@ namespace VK_UI3.Controls
             set { SetValue(PlaylistItemsProperty, value); }
         }
 
-     
 
-       
 
-       
+
+
+
         AnimationsChangeFontIcon AnimationsChangeFontIcon;
         AnimationsChangeImage animationsChangeImage;
 
         AudioPlaylist _PlayList { get; set; }
-   
+
 
         private void RecommsPlaylist_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             if (DataContext == null) return;
             _PlayList = (DataContext as AudioPlaylist);
-           
+
             update();
         }
 
@@ -163,13 +159,14 @@ namespace VK_UI3.Controls
             update();
         }
 
-        public void update() {
+        public void update()
+        {
 
             AnimationsChangeFontIcon.ChangeFontIconWithAnimation("\uF5B0");
-   
+
             titleAnim.ChangeTextWithAnimation(_PlayList.Title);
-         
-      
+
+
 
             if (_PlayList.Cover != null)
             {
@@ -188,15 +185,15 @@ namespace VK_UI3.Controls
                 }
                 GridThumbs.AddImagesToGrid(list);
             }
-           
 
-       
+
+
             updatePlayState();
 
             FadeInAnimationGrid.Begin();
         }
 
-      
+
 
         bool entered;
         private void UserControl_PointerEntered(object sender, PointerRoutedEventArgs e)
@@ -216,7 +213,7 @@ namespace VK_UI3.Controls
             }
         }
 
-            private void UserControl_PointerPressed(object sender, PointerRoutedEventArgs e)
+        private void UserControl_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             if (e.GetCurrentPoint(sender as UIElement).Properties.IsLeftButtonPressed)
             {
@@ -259,6 +256,6 @@ namespace VK_UI3.Controls
 
 
 
-     
+
     }
 }

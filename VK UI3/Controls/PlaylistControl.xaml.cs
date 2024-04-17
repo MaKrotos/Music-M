@@ -1,7 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media.Animation;
 using System;
 using System.Collections.Generic;
 using VK_UI3.Controllers;
@@ -28,7 +27,7 @@ namespace VK_UI3.Controls
             AnimationsChangeFontIcon = new AnimationsChangeFontIcon(PlayPause, this.DispatcherQueue);
             titleAnim = new AnimationsChangeText(Title, this.DispatcherQueue);
             descrAnim = new AnimationsChangeText(Subtitle, this.DispatcherQueue);
-         
+
             this.Unloaded += PlaylistControl_Unloaded;
             this.Loaded += PlaylistControl_Loaded;
 
@@ -45,7 +44,7 @@ namespace VK_UI3.Controls
 
         private void PlaylistControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            AudioPlayer.oniVKUpdate -=AudioPlayer_oniVKUpdate;
+            AudioPlayer.oniVKUpdate -= AudioPlayer_oniVKUpdate;
 
             this.Unloaded -= PlaylistControl_Unloaded;
             this.Loaded -= PlaylistControl_Loaded;
@@ -58,7 +57,7 @@ namespace VK_UI3.Controls
         {
             updatePlayState();
         }
-    
+
         private void updatePlayState(bool prin = false, bool pause = false)
         {
             this.DispatcherQueue.TryEnqueue(() =>
@@ -125,7 +124,7 @@ namespace VK_UI3.Controls
         AnimationsChangeText descrAnim { get; set; }
 
 
-        
+
 
 
         public static readonly DependencyProperty PlaylistItemsProperty =
@@ -142,7 +141,7 @@ namespace VK_UI3.Controls
             set { SetValue(PlaylistItemsProperty, value); }
         }
 
-     
+
 
         public async void AddRemove_Click(object sender, RoutedEventArgs e)
         {
@@ -185,18 +184,18 @@ namespace VK_UI3.Controls
             updateAddedBTN();
         }
 
-       
+
         AnimationsChangeFontIcon AnimationsChangeFontIcon;
         AnimationsChangeImage animationsChangeImage;
 
         AudioPlaylist _PlayList { get; set; }
-   
+
 
         private void RecommsPlaylist_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             if (DataContext == null) return;
             _PlayList = (DataContext as AudioPlaylist);
-           
+
             update();
         }
 
@@ -205,7 +204,8 @@ namespace VK_UI3.Controls
             update();
         }
 
-        public void update() {
+        public void update()
+        {
 
             AnimationsChangeFontIcon.ChangeFontIconWithAnimation("\uF5B0");
 
@@ -216,10 +216,10 @@ namespace VK_UI3.Controls
             else
             if (_PlayList.MainArtists != null && _PlayList.MainArtists.Count != 0)
                 descrAnim.ChangeTextWithAnimation(_PlayList.MainArtists[0].Name);
-               
+
             titleAnim.ChangeTextWithAnimation(_PlayList.Title);
-         
-      
+
+
 
             if (_PlayList.Cover != null)
             {
@@ -238,7 +238,7 @@ namespace VK_UI3.Controls
                 }
                 GridThumbs.AddImagesToGrid(list);
             }
-           
+
 
             updateAddedBTN();
             updatePlayState();
@@ -252,7 +252,7 @@ namespace VK_UI3.Controls
             {
                 bool canEdit = _PlayList.Permissions.Edit;
                 bool canDelete = _PlayList.Permissions.Delete;
-          
+
 
                 editAlbum.Visibility = canEdit ? Visibility.Visible : Visibility.Collapsed;
                 DeleteAlbum.Visibility = canDelete ? Visibility.Visible : Visibility.Collapsed;
@@ -267,18 +267,18 @@ namespace VK_UI3.Controls
                     AddRemove.Visibility = Visibility.Collapsed;
 
                 if (AddRemove.Visibility != Visibility.Collapsed)
-                if (!_PlayList.IsFollowing && _PlayList.OwnerId != AccountsDB.activeAccount.id)
-                {
-                    AddRemove.Text = "Добавить к себе";
-                    AddRemove.Icon = new SymbolIcon(Symbol.Add);
-                }
-                else
-                {
-                    AddRemove.Text = "Отписаться";
-                    AddRemove.Icon = new SymbolIcon(Symbol.Delete);
+                    if (!_PlayList.IsFollowing && _PlayList.OwnerId != AccountsDB.activeAccount.id)
+                    {
+                        AddRemove.Text = "Добавить к себе";
+                        AddRemove.Icon = new SymbolIcon(Symbol.Add);
+                    }
+                    else
+                    {
+                        AddRemove.Text = "Отписаться";
+                        AddRemove.Icon = new SymbolIcon(Symbol.Delete);
 
 
-                }
+                    }
             });
         }
 
@@ -300,7 +300,7 @@ namespace VK_UI3.Controls
             }
         }
 
-            private void UserControl_PointerPressed(object sender, PointerRoutedEventArgs e)
+        private void UserControl_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             if (e.GetCurrentPoint(sender as UIElement).Properties.IsLeftButtonPressed)
             {
@@ -346,29 +346,29 @@ namespace VK_UI3.Controls
         {
             ContentDialog dialog = new CustomDialog();
 
-           
+
             // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
             dialog.XamlRoot = this.XamlRoot;
 
 
             var a = new CreatePlayList(_PlayList);
-            
+
             dialog.Content = a;
             dialog.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
-            a.cancelPressed+=((s, e) =>
+            a.cancelPressed += ((s, e) =>
             {
                 if (s != null && s is AudioPlaylist)
                 {
                     _PlayList = s as AudioPlaylist;
 
-                    
+
                     FadeOutAnimationGrid.Begin();
                 }
 
                 try
                 {
                     if (dialog != null)
-                    dialog.Hide();
+                        dialog.Hide();
                     dialog = null;
                 }
                 catch

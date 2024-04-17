@@ -1,8 +1,5 @@
 ﻿using MusicX.Shared.ListenTogether.Radio;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MusicX.Core.Models
 {
@@ -46,6 +43,9 @@ namespace MusicX.Core.Models
 
         [JsonProperty("artists_ids")]
         public List<string> ArtistsIds { get; set; } = new List<string>();
+
+        [JsonProperty("audio_stream_mixes_ids")]
+        public List<string> Audio_Stream_Mixes_Ids { get; set; } = new List<string>();
 
         [JsonProperty("badge")]
         public Badge Badge { get; set; }
@@ -115,7 +115,7 @@ namespace MusicX.Core.Models
         public List<Placeholder> Placeholders { get; set; } = new List<Placeholder>();
 
         public List<MusicOwner> MusicOwners { get; set; } = new List<MusicOwner>();
-        
+
         public List<AudioFollowingsUpdateInfo> FollowingsUpdateInfos { get; set; } = new List<AudioFollowingsUpdateInfo>();
 
         public List<Station> Stations { get; set; } = new List<Station>();

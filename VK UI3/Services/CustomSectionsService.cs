@@ -1,15 +1,15 @@
+using Microsoft.Extensions.DependencyInjection;
+using MusicX.Core.Models;
+using MusicX.Core.Models.General;
+using MusicX.Core.Services;
+using MusicX.Shared.ListenTogether.Radio;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using MusicX.Core.Models;
-using MusicX.Core.Models.General;
-using MusicX.Core.Services;
 using VK_UI3.Helpers;
-using MusicX.Shared.ListenTogether.Radio;
-using NLog;
 using VK_UI3.Services;
 using VkNet.Abstractions;
 using VkNet.Enums.SafetyEnums;
@@ -227,7 +227,7 @@ public class CustomSectionsService : ICustomSectionsService
         catch (Exception ex)
         {
             AppCenterHelper.SendCrash(ex);
-           
+
         }
 
         var buttons = convs.Count > 10

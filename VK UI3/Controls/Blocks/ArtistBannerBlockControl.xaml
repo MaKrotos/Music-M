@@ -1,31 +1,33 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <UserControl
-   
-    Margin="0,8,0,0"
     x:Class="VK_UI3.Controls.Blocks.ArtistBannerBlockControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Margin="0,8,0,0"
     mc:Ignorable="d">
 
     <Grid
+        x:Name="ArtistBanner"
         Margin="10"
-        CornerRadius="4"
-        x:Name="ArtistBanner">
+        CornerRadius="4">
 
 
-        <Grid MaxHeight="450" Height="450">
-            <Image Height="{Binding ElementName=ArtistBannerImage, Path=Width}" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="ArtistBannerImage"  Stretch="UniformToFill">
-            </Image>
+        <Grid Height="450" MaxHeight="450">
+            <Image
+                x:Name="ArtistBannerImage"
+                Height="{Binding ElementName=ArtistBannerImage, Path=Width}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Stretch="UniformToFill" />
         </Grid>
 
         <Rectangle
-          Height="450"
-          Margin="0,0,-15,0"
-          Opacity="0.7"
-  
-          Visibility="Visible">
+            Height="450"
+            Margin="0,0,-15,0"
+            Opacity="0.7"
+            Visibility="Visible">
             <Rectangle.Fill>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
                     <GradientStop Offset="0.1" Color="{ThemeResource SystemAltHighColor}" />
@@ -34,17 +36,18 @@
             </Rectangle.Fill>
         </Rectangle>
 
-        <StackPanel Orientation="Vertical"
-                  Margin="30,0,0,10"
-                  VerticalAlignment="Center"
-                  HorizontalAlignment="Left"
-                  x:Name="MainPanel">
+        <StackPanel
+            x:Name="MainPanel"
+            Margin="30,0,0,10"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Orientation="Vertical">
             <TextBlock
-              x:Name="ArtistText"
-              FontFamily="{StaticResource VKSansBold}"
-              FontSize="50"
-              FontWeight="Bold"
-              Text="Artist text" />
+                x:Name="ArtistText"
+                FontFamily="{StaticResource VKSansBold}"
+                FontSize="50"
+                FontWeight="Bold"
+                Text="Artist text" />
             <Grid x:Name="ActionsGrid" HorizontalAlignment="Left" />
         </StackPanel>
     </Grid>

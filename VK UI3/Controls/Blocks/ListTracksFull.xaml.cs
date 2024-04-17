@@ -19,9 +19,9 @@ namespace VK_UI3.Controls.Blocks
         {
             InitializeComponent();
 
-        
 
-           
+
+
             this.DataContextChanged += ListTracks_DataContextChanged;
 
             this.Unloaded += ListTracksFull_Unloaded;
@@ -34,7 +34,7 @@ namespace VK_UI3.Controls.Blocks
             try
             {
                 if (sectionAudio != null)
-                sectionAudio.onListUpdate -= SectionAudio_onListUpdate;
+                    sectionAudio.onListUpdate -= SectionAudio_onListUpdate;
             }
             catch { }
             this.Unloaded -= ListTracksFull_Unloaded;
@@ -67,23 +67,23 @@ namespace VK_UI3.Controls.Blocks
 
         public SectionAudio sectionAudio;
 
-     
+
         protected void OnPropertyChanged(string propertyName)
         {
             this.DispatcherQueue.TryEnqueue(async () =>
             {
                 //   this.ImgUri = uri;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-              
+
             });
-           
+
         }
         private void SectionAudio_onListUpdate(object sender, EventArgs e)
         {
             OnPropertyChanged(nameof(sectionAudio));
         }
 
-        
+
 
         public static readonly DependencyProperty TracksProperty =
          DependencyProperty.Register("Tracks", typeof(List<Audio>), typeof(ListTracks), new PropertyMetadata(new List<Audio>()));
@@ -98,8 +98,8 @@ namespace VK_UI3.Controls.Blocks
                 SetValue(TracksProperty, value);
             }
         }
-      
-       
+
+
 
     }
 }

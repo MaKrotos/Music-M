@@ -1,20 +1,12 @@
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Navigation;
+using MusicX.Core.Models;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using VK_UI3.Controllers;
 using VK_UI3.Helpers.Animations;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using VK_UI3.VKs.IVK;
 using Windows.UI;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -48,11 +40,48 @@ namespace VK_UI3.Controls.Blocks
             this.InitializeComponent();
 
             this.Loading += MixControl_Loading;
+            this.Loaded += MixControl_Loaded;
+            this.Unloaded += MixControl_Unloaded;
+            this.DataContextChanged += MixControl_DataContextChanged;
         }
+
+        private void MixControl_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MixControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+
+
+            this.Loading -= MixControl_Loading;
+            this.Unloaded -= MixControl_Unloaded;
+            this.DataContextChanged -= MixControl_DataContextChanged;
+            AudioPlayer.oniVKUpdate -= AudioPlayer_oniVKUpdate;
+            /*
+          
+            */
+
+        }
+
+        private void MixControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            var a = args.NewValue;
+
+            if (DataContext is not Block block)
+            {
+                return;
+            }
+
+            this.block = block;
+            //   block.s
+            startPalki();
+        }
+        Block block;
+
         Random random = new Random();
         private void MixControl_Loading(FrameworkElement sender, object args)
         {
-          
             foreach (var child in columns.Children)
             {
                 if (child is Palka palka)
@@ -60,9 +89,60 @@ namespace VK_UI3.Controls.Blocks
                     // Установка цвета фона для каждого элемента palka
                     int colorIndex = random.Next(colors.Length);
                     palka.Background = new SolidColorBrush(colors[colorIndex]);
-                    palka.StartAnimation();
                 }
             }
+            AudioPlayer.oniVKUpdate += AudioPlayer_oniVKUpdate;
+
+        }
+
+        private void AudioPlayer_oniVKUpdate(object sender, EventArgs e)
+        {
+            startPalki();
+        }
+
+        private void startPalki()
+        {
+            if (block == null) return;
+            if (AudioPlayer.iVKGetAudio != null && AudioPlayer.iVKGetAudio is MixAudio mixAudio
+            && mixAudio.mix_id == block.Audio_Stream_Mixes_Ids[0]
+            )
+            {
+                this.DispatcherQueue.TryEnqueue(() =>
+                {
+
+                    foreach (var child in columns.Children)
+                    {
+                        if (child is Palka palka)
+                        {
+                            palka.StartAnimation();
+                        }
+                    }
+                });
+            }
+            else
+            {
+                this.DispatcherQueue.TryEnqueue(() =>
+                {
+                    foreach (var child in columns.Children)
+                    {
+                        if (child is Palka palka)
+                        {
+                            palka.StopAnimation();
+                        }
+                    }
+                });
+            }
+        }
+
+        private void UserControl_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+            new MixAudio(block.Audio_Stream_Mixes_Ids[0], this.DispatcherQueue);
         }
     }
 }

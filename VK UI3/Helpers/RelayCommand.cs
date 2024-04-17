@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Input;
-using Microsoft.UI.Xaml.Input;
 
 namespace WinUI3.Common;
 

@@ -13,9 +13,9 @@ public static class StringExtensions
     /// <returns>Byte array.</returns>
     public static byte[] Base64UrlDecode(this string? text)
     {
-        if (text == null) 
+        if (text == null)
             throw new ArgumentNullException(nameof(text));
-        
+
         var base64 = text
             .Replace("-", "+")
             .Replace("_", "/")
@@ -33,7 +33,7 @@ public static class StringExtensions
             return Array.Empty<byte>();
         }
     }
-    
+
     /// <summary>
     ///     Encodes byte array to string using Base64 URL encoding.
     /// </summary>
@@ -44,7 +44,7 @@ public static class StringExtensions
         var base64 = Convert.ToBase64String(data);
         return base64.TrimEnd('=').Replace("+", "-").Replace("/", "_");
     }
-    
+
     /// <summary>
     ///     Encodes byte array to string using Base64 URL encoding.
     /// </summary>

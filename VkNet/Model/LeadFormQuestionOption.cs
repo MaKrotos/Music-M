@@ -1,15 +1,15 @@
-using System;
 using Newtonsoft.Json;
+using System;
 
 namespace VkNet.Model
 {
-	[Serializable]
-	public class LeadFormQuestionOption
-	{
-		[JsonProperty("label")]
-		public string Label { get; set; }
+    [Serializable]
+    public class LeadFormQuestionOption
+    {
+        [JsonProperty("label")]
+        public string Label { get; set; }
 
-		[JsonProperty("key", NullValueHandling = NullValueHandling.Ignore)]
-		public string Key { get; set; }
-	}
+        [JsonProperty("key", NullValueHandling = NullValueHandling.Ignore)]
+        public string Key { get; set; }
+    }
 }
