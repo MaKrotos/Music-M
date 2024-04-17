@@ -1,27 +1,23 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <Page
     x:Class="VK_UI3.Views.LoginWindow.waitPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:VK_UI3.Views.LoginWindow"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+ >
     <Grid
-        Margin="50"
-        HorizontalAlignment="Center"
-        VerticalAlignment="Center"
-        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-        CornerRadius="8">
+
+        CornerRadius="8" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" Margin="50" VerticalAlignment="Center" HorizontalAlignment="Center" >
         <Grid.Resources>
             <ThemeShadow x:Name="SharedShadow" />
         </Grid.Resources>
 
-        <ProgressRing
-            Width="75"
-            Height="75"
-            Margin="25"
-            IsActive="True" />
+        <ProgressRing Width="75" Height="75" Margin="25" IsActive="True">
+
+        </ProgressRing>
 
 
     </Grid>

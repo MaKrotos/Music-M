@@ -1,5 +1,21 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using VK_UI3.Controllers;
+using VK_UI3.DownloadTrack;
+using VK_UI3.Helpers.Animations;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -15,7 +31,7 @@ namespace VK_UI3.Views.Upload
             this.DataContextChanged += DownloadController_DataContextChanged;
             this.Loaded += DownloadController_Loaded;
             this.Unloaded += DownloadController_Unloaded;
-
+           
         }
 
         private void DownloadController_Unloaded(object sender, RoutedEventArgs e)
@@ -40,8 +56,8 @@ namespace VK_UI3.Views.Upload
             if (DataContext == null) return;
             if (playListDownload != null)
             {
-                playListDownload.OnProgressChanged -= OnTrackDownloaded_Event;
-
+                playListDownload.OnProgressChanged -=OnTrackDownloaded_Event;
+           
             }
             playListDownload = (DataContext as UploadTrack);
             DownloadTitle.Text = playListDownload.name;
@@ -62,7 +78,7 @@ namespace VK_UI3.Views.Upload
             updateUI();
         }
 
-
+      
 
         private void updateUI()
         {
@@ -70,8 +86,8 @@ namespace VK_UI3.Views.Upload
             {
                 try
                 {
-
-
+                 
+        
 
                     DownloadProgressBar.Value = playListDownload.percent;
 
@@ -86,6 +102,6 @@ namespace VK_UI3.Views.Upload
             playListDownload.CancelDownload();
         }
 
-
+      
     }
 }

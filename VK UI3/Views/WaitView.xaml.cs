@@ -1,3 +1,4 @@
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using MusicX.Core.Models;
@@ -9,6 +10,7 @@ using VK_UI3.Views.LoginWindow;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
+using Windows.Media.Playlists;
 using static VK_UI3.Views.SectionView;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -17,8 +19,7 @@ using static VK_UI3.Views.SectionView;
 namespace VK_UI3.Views
 {
 
-    public class WaitParameters
-    {
+    public class WaitParameters {
         public SectionType sectionType;
         public string SectionID;
         public Section section;
@@ -33,22 +34,22 @@ namespace VK_UI3.Views
         {
             this.InitializeComponent();
 
-
+   
             this.Loaded += WaitView_Loaded;
             this.Unloaded += WaitView_Unloaded;
 
-
+          
         }
 
         private void WaitView_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
-
+            
             LoadAsync();
             MainWindow.onRefreshClicked += MainWindow_onRefreshClicked;
         }
 
         WaitParameters waitParameters;
-
+        
         private void WaitView_Unloaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
             MainWindow.onRefreshClicked -= MainWindow_onRefreshClicked;
@@ -57,7 +58,7 @@ namespace VK_UI3.Views
             this.Unloaded -= WaitView_Unloaded;
         }
 
-
+    
         private void MainWindow_onRefreshClicked(object sender, EventArgs e)
         {
             frameSection.Navigate(typeof(waitPage), null, new DrillInNavigationTransitionInfo());
@@ -70,12 +71,12 @@ namespace VK_UI3.Views
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
 
-            frameSection.Navigated += FrameSection_Navigated;
+            frameSection.Navigated += FrameSection_Navigated; 
             frameSection.Navigate(typeof(waitPage), null, new DrillInNavigationTransitionInfo());
 
-            var waitView = e.Parameter as WaitParameters;
-            if (waitView == null) return;
-            waitParameters = waitView;
+                var waitView = e.Parameter as WaitParameters;
+                if (waitView == null) return;
+                waitParameters = waitView;
 
 
         }
@@ -88,7 +89,7 @@ namespace VK_UI3.Views
 
         private void FrameSection_Navigating(object sender, NavigatingCancelEventArgs e)
         {
-
+           
         }
 
         private async Task LoadArtistSection(string artistId)
@@ -124,7 +125,7 @@ namespace VK_UI3.Views
         {
             try
             {
-                if (query == null
+                if (query == null 
                     ) return;
 
                 var res = await VK.vkService.GetAudioSearchAsync(query);
@@ -135,8 +136,8 @@ namespace VK_UI3.Views
                     try
                     {
                         res.Catalog.Sections[0].Blocks[1].Suggestions = res.Suggestions;
-                        // loadBlocks(res.Catalog.Sections[0].Blocks);
-                        //   nowOpenSearchSug = true;
+                       // loadBlocks(res.Catalog.Sections[0].Blocks);
+                     //   nowOpenSearchSug = true;
                     }
                     catch (Exception ex)
                     {
@@ -148,8 +149,8 @@ namespace VK_UI3.Views
                     return;
                 }
 
-                // nowOpenSearchSug = false;
-
+               // nowOpenSearchSug = false;
+                
                 loadSection(res.Catalog.DefaultSection);
             }
             catch (Exception ex)
@@ -167,8 +168,8 @@ namespace VK_UI3.Views
         HandlerContainer handlerContainer = new HandlerContainer();
         public async Task LoadAsync()
         {
-
-
+            
+            
             try
             {
                 await (waitParameters.sectionType switch
@@ -185,7 +186,7 @@ namespace VK_UI3.Views
             }
             finally
             {
-
+               
             }
         }
 
@@ -205,7 +206,7 @@ namespace VK_UI3.Views
 
         private async Task LoadPlayList(HandlerContainer handlerContainer)
         {
-
+     
             if (waitParameters.iVKGetAudio == null)
                 waitParameters.iVKGetAudio = new PlayListVK(this.waitParameters.Playlist, this.DispatcherQueue);
 
@@ -215,7 +216,7 @@ namespace VK_UI3.Views
 
                 handlerContainer.Handler = (sender, e) =>
                     {
-                        //    iVKGetAudio.onListUpdate.RemoveHandler(handlerContainer.Handler);
+                    //    iVKGetAudio.onListUpdate.RemoveHandler(handlerContainer.Handler);
                         this.DispatcherQueue.TryEnqueue(async () =>
                         {
                             handlerContainer.Handler = null; // Освободить ссылку на обработчик
@@ -231,19 +232,18 @@ namespace VK_UI3.Views
         {
             waitParameters.iVKGetAudio = new UserAudio(AccountsDB.activeAccount.id, this.DispatcherQueue);
 
-            handlerContainer.Handler = (sender, e) =>
-            {
-                //    iVKGetAudio.onListUpdate.RemoveHandler(handlerContainer.Handler);
+            handlerContainer.Handler = (sender, e) => {
+            //    iVKGetAudio.onListUpdate.RemoveHandler(handlerContainer.Handler);
                 this.DispatcherQueue.TryEnqueue(async () =>
                 {
-
+                   
                     handlerContainer.Handler = null; // Освободить ссылку на обработчик
                     frameSection.Navigate(typeof(PlayListPage), waitParameters.iVKGetAudio, new DrillInNavigationTransitionInfo());
                 });
-                waitParameters.iVKGetAudio.onListUpdate -= (handlerContainer.Handler);
+                waitParameters.iVKGetAudio.onListUpdate-=(handlerContainer.Handler);
             };
 
-            waitParameters.iVKGetAudio.onListUpdate += (handlerContainer.Handler);
+            waitParameters.iVKGetAudio.onListUpdate+=(handlerContainer.Handler);
         }
 
         private async Task loadSection(string sectionID, bool showTitle = false)
@@ -255,8 +255,8 @@ namespace VK_UI3.Views
 
         public void Dispose()
         {
-            MainWindow.onRefreshClicked -= MainWindow_onRefreshClicked;
-            this.handlerContainer.Handler = null;
+           MainWindow.onRefreshClicked -= MainWindow_onRefreshClicked;
+           this.handlerContainer.Handler = null;
         }
     }
 }

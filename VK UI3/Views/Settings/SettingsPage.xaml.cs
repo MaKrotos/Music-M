@@ -19,8 +19,8 @@ namespace VK_UI3.Views.Settings
 
         private void SettingsPage_Loaded(object sender, RoutedEventArgs e)
         {
-
-
+    
+           
 
         }
     }

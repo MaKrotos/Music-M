@@ -1,19 +1,15 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <Button
     x:Class="VK_UI3.Views.Controls.BlockButtonView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:VK_UI3.Views.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     CornerRadius="8"
     mc:Ignorable="d">
     <StackPanel Orientation="Horizontal">
-        <SymbolIcon x:Name="symbolIcon" Symbol="Accept" />
-        <TextBlock
-            x:Name="text"
-            Margin="8,0,0,0"
-            VerticalAlignment="Center"
-            Text="" />
+        <SymbolIcon Symbol="Accept" x:Name="symbolIcon" />
+        <TextBlock x:Name="text" Text="" VerticalAlignment="Center" Margin="8,0,0,0" />
     </StackPanel>
 </Button>

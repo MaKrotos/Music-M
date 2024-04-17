@@ -1,7 +1,10 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,8 +12,8 @@ namespace VK_UI3.Helpers.Animations
 {
     public class AnimatedButton : Button
     {
-
-
+      
+     
         private CancellationTokenSource cts;
 
         public static readonly DependencyProperty OriginalWidthProperty = DependencyProperty.Register(
@@ -92,7 +95,7 @@ namespace VK_UI3.Helpers.Animations
 
             cts?.Cancel();
             cts = new CancellationTokenSource();
-
+      
 
 
             double leftStep = (newMargin.Left - Margin.Left) / duration.TotalMilliseconds;
@@ -112,7 +115,7 @@ namespace VK_UI3.Helpers.Animations
 
             while (stopwatch.Elapsed < duration)
             {
-
+           
                 if (cts.Token.IsCancellationRequested)
                 {
                     stopwatch.Stop();

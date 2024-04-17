@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <Application
     x:Class="VK_UI3.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:VK_UI3">
     <Application.Resources>
-
+        
         <ResourceDictionary>
 
 
@@ -16,28 +16,27 @@
 
             <Thickness x:Key="ContentDialogPadding">0,0,0,0</Thickness>
 
-            <!--  Other app resources here  -->
-            <AcrylicBrush
-                x:Key="CustomAcrylicInAppBrush"
-                FallbackColor="{ThemeResource SystemColorWindowTextColor}"
-                Opacity="0.9"
-                TintColor="{ThemeResource SystemColorWindowTextColor}"
-                TintOpacity="0.1" />
+            <!-- Other app resources here -->
+            <AcrylicBrush x:Key="CustomAcrylicInAppBrush" 
+                TintOpacity="0.1" 
+                Opacity="0.9" 
+                TintColor="{ThemeResource SystemColorWindowTextColor}" 
+                FallbackColor="{ThemeResource SystemColorWindowTextColor}" />
 
-            <AcrylicBrush
-                x:Key="CustomAlternativeAcrylicInAppBrush"
+            <AcrylicBrush x:Key="CustomAlternativeAcrylicInAppBrush" 
+                TintOpacity="0.001" 
+                TintColor="{ThemeResource SystemAltHighColor}" 
                 FallbackColor="{ThemeResource SystemAltHighColor}"
-                TintColor="{ThemeResource SystemAltHighColor}"
-                TintOpacity="0.001" />
+            />
 
-
+     
             <FontFamily x:Key="SegoeFluentIcons">pack://application:,,,/;component/Fonts/#Segoe Fluent Icons</FontFamily>
             <FontFamily x:Key="VKSansDemiBold">pack://application:,,,/;component/Fonts/VKSansDisplay-DemiBold.ttf#VK Sans Display DemiBold</FontFamily>
             <FontFamily x:Key="VKSansMedium">pack://application:,,,/;component/Fonts/VKSansDisplay-Medium.ttf#VK Sans Display Medium</FontFamily>
             <FontFamily x:Key="VKSansBold">pack://application:,,,/;component/Fonts/VKSansDisplay-Bold.ttf#VK Sans Display Bold</FontFamily>
             <FontFamily x:Key="VKSansRegular">pack://application:,,,/;component/Fonts/VKSansDisplay-Regular.ttf#VK Sans Display Regular</FontFamily>
 
-
+           
         </ResourceDictionary>
     </Application.Resources>
 </Application>

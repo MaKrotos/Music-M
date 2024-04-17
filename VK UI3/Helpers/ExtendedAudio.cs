@@ -1,3 +1,5 @@
+using MusicX.Core.Models;
+using System.ComponentModel;
 using VK_UI3.Controllers;
 using VK_UI3.VKs.IVK;
 

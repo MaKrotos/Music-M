@@ -1,29 +1,32 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <UserControl
     x:Class="VK_UI3.Controls.TitleBlockControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Margin="15,-10,15,5"
     d:DesignHeight="450"
     d:DesignWidth="800"
+     Margin="15,-10,15,5"
     mc:Ignorable="d">
-    <Grid x:Name="TitleBlock" HorizontalAlignment="Stretch">
+    <Grid
+        x:Name="TitleBlock"
+       
+        HorizontalAlignment="Stretch">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel
-            Grid.Column="0"
-            VerticalAlignment="Top"
-            Orientation="Horizontal">
+        <StackPanel Grid.Column="0" VerticalAlignment="Top" Orientation="Horizontal">
             <TextBlock
                 x:Name="Title"
                 VerticalAlignment="Center"
+               
                 FontSize="30"
+              
+                
                 Text="Title block" />
             <TextBlock
                 x:Name="BadgeHeader"
@@ -31,31 +34,20 @@
                 Margin="10,5,0,0"
                 VerticalAlignment="Center"
                 FontSize="20"
+                
                 Opacity="0.3"
                 Text="123"
                 Visibility="Collapsed" />
 
-            <Image
-                x:Name="Shapka"
-                Height="40"
-                HorizontalAlignment="Left"
-                FlowDirection="RightToLeft"
-                Source="pack://application:,,,/Assets/newyear/newyearblock.png"
-                Visibility="Collapsed">
+            <Image x:Name="Shapka" Visibility="Collapsed" Height="40" FlowDirection="RightToLeft"  HorizontalAlignment="Left" Source="pack://application:,,,/Assets/newyear/newyearblock.png">
                 <Image.RenderTransform>
-                    <RotateTransform Angle="25" CenterX="35" />
+                    <RotateTransform CenterX="35" Angle="25"/>
                 </Image.RenderTransform>
             </Image>
 
         </StackPanel>
 
-        <TextBlock
-            x:Name="Subtitle"
-            Margin="0,35,0,0"
-            VerticalAlignment="Bottom"
-            Opacity="0.4"
-            Text="Subtitle"
-            Visibility="Collapsed" />
+        <TextBlock Margin="0,35,0,0" x:Name="Subtitle" Visibility="Collapsed" VerticalAlignment="Bottom" Opacity="0.4" Text="Subtitle"/>
 
         <Grid
             x:Name="ButtonsGrid"
@@ -66,33 +58,37 @@
             HorizontalAlignment="Right"
             Visibility="Collapsed">
             <TextBlock
+                HorizontalAlignment="Right"
                 x:Name="TitleButtons"
                 Margin="10,5,0,0"
-                HorizontalAlignment="Right"
+                
                 Text="" />
 
 
             <ComboBox
+                 HorizontalAlignment="Right"
                 x:Name="Buttons"
                 Grid.Column="1"
-                HorizontalAlignment="Right"
                 VerticalContentAlignment="Center"
                 Background="Transparent"
                 BorderBrush="#424242"
-                Text="dddd" />
+                Text="dddd"
+                 />
 
 
         </Grid>
 
 
         <Button
+            
             x:Name="MoreButton"
             Grid.Column="1"
             Height="30"
             Margin="0,0,0,0"
-            Padding="8,0"
+            Padding="8 0"
             HorizontalAlignment="Right"
             Click="MoreButton_Click"
+          
             Visibility="Collapsed" />
 
     </Grid>

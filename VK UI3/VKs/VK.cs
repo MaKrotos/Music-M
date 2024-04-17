@@ -1,31 +1,37 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.UI.Xaml.Media.Animation;
-using MusicX.Core.Services;
-using QRCoder;
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using VK_UI3.DB;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Threading.Tasks;
-using VK_UI3.DB;
-using VK_UI3.Helpers;
-using VK_UI3.Views;
-using VK_UI3.Views.LoginWindow;
-using VkNet.Abstractions;
-using VkNet.AudioBypassService.Abstractions.Categories;
-using VkNet.AudioBypassService.Models.Auth;
-using VkNet.AudioBypassService.Models.Ecosystem;
-using VkNet.Enums.Filters;
-using VkNet.Model.Attachments;
-using VkNet.Model.RequestParams;
-using VkNet.Utils;
 using Windows.Win32;
+using VK_UI3.Views.LoginWindow;
+using QRCoder;
+using VkNet.Abstractions;
 using Windows.Win32.Foundation;
 using Windows.Win32.Networking.WindowsWebServices;
+
+using VK_UI3.Helpers;
+
 using IAuthCategory = VkNet.AudioBypassService.Abstractions.Categories.IAuthCategory;
+using VkNet.AudioBypassService.Models.Ecosystem;
+using VkNet.AudioBypassService.Models.Auth;
+using VkNet.AudioBypassService.Abstractions.Categories;
+using Microsoft.UI.Xaml.Media.Animation;
+using VK_UI3.Views;
+using VkNet.Utils;
+using VkNet.Model.Attachments;
+using VkNet.Model.RequestParams;
+using System.Collections.Generic;
+
+using VkNet.Enums.Filters;
+using MusicX.Core.Services;
+using Microsoft.AppCenter.Crashes;
+using Microsoft.UI.Xaml.Controls;
+using VK_UI3.VKs.IVK;
 
 namespace VK_UI3.VKs
 {
@@ -43,7 +49,7 @@ namespace VK_UI3.VKs
 
         public WeakEventManager LoggedIn = new WeakEventManager();
 
-
+  
 
         IVkApiAuthAsync vkApi = App._host.Services.GetRequiredService<IVkApiAuthAsync>();
 
@@ -550,7 +556,7 @@ namespace VK_UI3.VKs
 
                 AccountsDB.activeAccount.id = profile.Id;
                 AccountsDB.activeAccount.Name = $"{profile.FirstName} {profile.LastName}";
-
+           
 
                 AccountsDB.activeAccount.UserPhoto = (profile.PhotoMax ?? profile.Photo400Orig ?? profile.Photo200Orig ?? profile.Photo200 ?? profile.Photo100 ?? new Uri("https://vk.com/images/camera_200.png")).ToString();
 
@@ -865,7 +871,7 @@ namespace VK_UI3.VKs
                     }
                 };
 
-
+                
                 var response = await api.CallAsync("audio.removeFromPlaylist", parameters);
 
                 if (response.RawJson == "1")
@@ -891,46 +897,45 @@ namespace VK_UI3.VKs
                 {
                     { "uuid", Guid.NewGuid() },
                     { "audio_id", $"{OwnerId}_{Id}"  },
-
+                    
                 };
                 if (playlistID != null)
                     parameters.Add("playlist_id", playlistID);
 
                 var response = await api.CallAsync("audio.sendStartEvent", parameters);
 
-
+                
             }
-            catch (Exception e)
-            {
-
+            catch (Exception e){ 
+              
             }
         }
 
 
         internal static async Task<string> getUploadServerAsync()
         {
+           
+                var parameters = new VkParameters
+                {
 
-            var parameters = new VkParameters
-            {
 
+                };
+                try
+                {
 
-            };
-            try
-            {
+                    var response = await api.CallAsync("audio.getUploadServer", parameters);
+                    var js = JsonObject.Parse(response.RawJson);
+                    return js["upload_url"].ToString();
+                    Console.WriteLine(response.ToString());
+                }
+                catch
+                (Exception e)
+                {
 
-                var response = await api.CallAsync("audio.getUploadServer", parameters);
-                var js = JsonObject.Parse(response.RawJson);
-                return js["upload_url"].ToString();
-                Console.WriteLine(response.ToString());
-            }
-            catch
-            (Exception e)
-            {
+                }
 
-            }
-
-            return null;
-
+                return null;
+          
         }
     }
 

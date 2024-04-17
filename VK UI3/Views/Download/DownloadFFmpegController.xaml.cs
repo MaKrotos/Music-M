@@ -13,7 +13,7 @@ namespace VK_UI3.Views.Download
         public DownloadFFmpegController()
         {
             this.InitializeComponent();
-
+     
             this.Loaded += DownloadFFmpegController_Loaded;
             this.Unloaded += DownloadFFmpegController_Unloaded;
         }
@@ -51,7 +51,7 @@ namespace VK_UI3.Views.Download
                 DownloadProgressBar.Value = progressPercentage;
                 pathText.Text = $"Загружено: {Math.Round((double)e.BytesReceived / (1024 * 1024))} Мб  из  {Math.Round((double)(sender as DownloadFileWithProgress).mb)} Мб ";
             });
-        }
+         }
 
     }
 }

@@ -5,8 +5,10 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using VK_UI3.Views.Download;
 using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
 using vkPosterBot.DB;
@@ -63,12 +65,12 @@ namespace VK_UI3.DownloadTrack
             this.dispatcherQueue = dispatcherQueue;
             if (iVKGetAudio is SectionAudio) return;
             if (PlayListDownloadsList.Contains(iVKGetAudio)) return;
-
+          
 
 
             foreach (char c in Path.GetInvalidPathChars())
             {
-                path = path.Replace(c.ToString(), "");
+                path = path.Replace(c.ToString(), ""); 
             }
             this.path = path;
 
@@ -87,14 +89,13 @@ namespace VK_UI3.DownloadTrack
                 this.location = path + "\\" + name;
             else
                 this.location = path;
-
+        
 
             if (!new CheckFFmpeg().isExist())
             {
                 new DownloadFileWithProgress();
                 this.Pause();
-            }
-            else
+            }else
             {
                 MainWindow.mainWindow.MainWindow_showDownload();
             }
@@ -112,8 +113,8 @@ namespace VK_UI3.DownloadTrack
 
         public async Task PlayListDownloadAsync()
         {
-
-
+            
+              
             _ = Task.Run(() =>
             {
                 try
@@ -123,7 +124,7 @@ namespace VK_UI3.DownloadTrack
 
                     string ffmpegPath = new CheckFFmpeg().getPathFfmpeg();
 
-
+                 
                     while (iVKGetAudio.countTracks > downloaded)
                     {
                         pauseEvent.WaitOne();
@@ -137,10 +138,10 @@ namespace VK_UI3.DownloadTrack
                             if (iVKGetAudio.itsAll) return;
                             if (iVKGetAudio.getLoadedTracks)
                             {
-
+                           
                                 continue;
                             }
-                            iVKGetAudio.GetTracks();
+                                iVKGetAudio.GetTracks();
                         }
 
 
@@ -153,7 +154,7 @@ namespace VK_UI3.DownloadTrack
                             StatusUpdate();
                             continue;
                         }
-                        string input = a.Url.ToString();
+                            string input = a.Url.ToString();
 
                         var invalidChars = Path.GetInvalidFileNameChars();
                         var titl = $"{a.Title}-{a.Artist}.mp3";
@@ -194,7 +195,7 @@ namespace VK_UI3.DownloadTrack
                         process.Start();
                         process.WaitForExit();
 
-
+                 
 
                         MakeTags(outputTemp, a);
                         File.Move(outputTemp, output);
@@ -203,10 +204,10 @@ namespace VK_UI3.DownloadTrack
 
                         dispatcherQueue.TryEnqueue(async () =>
                         {
-                            OnTrackDownloaded?.Invoke(this, new TrackDownloadedEventArgs { Downloaded = downloaded, Total = (int)iVKGetAudio.countTracks });
+                                OnTrackDownloaded?.Invoke(this, new TrackDownloadedEventArgs { Downloaded = downloaded, Total = (int)iVKGetAudio.countTracks });
                         });
 
-
+                  
                     }
                     if (SettingsTable.GetSetting("downloadALL") == null)
                     {
@@ -293,7 +294,7 @@ namespace VK_UI3.DownloadTrack
 
 
         public void Pause()
-        {
+        { 
             pauseEvent.Reset();
             pause = true;
 
@@ -313,18 +314,17 @@ namespace VK_UI3.DownloadTrack
             {
                 StatusUpdate();
             });
-
+            
         }
 
-        public void Cancel()
-        {
+        public void Cancel() {
             if (error)
             {
                 PlayListDownloads.Remove(this);
                 PlayListDownloadsList.Remove(iVKGetAudio);
                 return;
             }
-
+         
             cts.Cancel();
             pause = true;
             pauseEvent.Set();

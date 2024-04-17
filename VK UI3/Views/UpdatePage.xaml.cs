@@ -1,8 +1,19 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using VK_UI3.Helpers;
 using SetupLib;
-using System;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -31,15 +42,15 @@ namespace VK_UI3.Views
 
             appUpdater = e.Parameter as AppUpdater;
 
-
-            // Update the UI with the new version details
-            vers.Text = appUpdater.version;
-
+         
+                // Update the UI with the new version details
+                vers.Text = appUpdater.version;
+            
             // Assuming you have a TextBlock for the release name and update description
-            releaseName.Text = appUpdater.Name;
-            updateDescription.Text = appUpdater.Tit;
-            updateSize.Text = $"{Math.Round(appUpdater.sizeFile / 1024.0 / 1024, 2)} MB";
-
+                releaseName.Text = appUpdater.Name;
+                updateDescription.Text = appUpdater.Tit;
+                updateSize.Text = $"{Math.Round(appUpdater.sizeFile / 1024.0 / 1024,2)} MB";
+            
         }
 
         private async void UpdateButton_Click(object sender, RoutedEventArgs e)

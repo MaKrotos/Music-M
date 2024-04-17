@@ -16,11 +16,11 @@ namespace VK_UI3.Controls.Blocks
     {
         public ArtistBannerBlockControl()
         {
-
-
+     
+    
             InitializeComponent();
 
-
+      
             animationsChangeImage = new AnimationsChangeImage(ArtistBannerImage, this.DispatcherQueue);
 
 
@@ -30,7 +30,7 @@ namespace VK_UI3.Controls.Blocks
 
         private void ArtistBannerBlockControl_Unloaded(object sender, RoutedEventArgs e)
         {
-
+      
             this.Loading -= ArtistBannerBlockControl_Loading;
             this.Unloaded -= ArtistBannerBlockControl_Unloaded;
         }
@@ -78,10 +78,10 @@ namespace VK_UI3.Controls.Blocks
             }
         }
 
-
+ 
         AnimationsChangeImage animationsChangeImage = null;
 
-
+      
         public static T? FindParent<T>(DependencyObject? startNode) where T : DependencyObject
         {
             DependencyObject? parent = VisualTreeHelper.GetParent(startNode);

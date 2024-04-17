@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using MusicX.Core.Models;
 using System;
 using System.Collections.ObjectModel;
+using System.Resources;
 using VK_UI3.Helpers;
 using VkNet.Model.Attachments;
 
@@ -15,7 +16,7 @@ namespace VK_UI3.Controls.Blocks
         {
             this.InitializeComponent();
 
-
+      
             this.Loading += ListPlaylists_Loading;
 
             this.Unloaded += ListPlaylists_Unloaded;
@@ -53,7 +54,7 @@ namespace VK_UI3.Controls.Blocks
 
         ObservableCollection<Playlist> playlists = new();
 
-
+      
     }
 
     public class PlayListTemplateSelector : DataTemplateSelector
@@ -68,7 +69,7 @@ namespace VK_UI3.Controls.Blocks
                 string key;
                 if ((item as AudioPlaylist).meta != null && (item as AudioPlaylist).meta.View != null)
                 {
-                    key = (item as AudioPlaylist).meta.View;
+                 key = (item as AudioPlaylist).meta.View;
                 }
                 else
                 {
@@ -77,9 +78,9 @@ namespace VK_UI3.Controls.Blocks
                 }
 
                 PlayListTemplate playListTemplate = new PlayListTemplate();
-
+      
                 playListTemplate.Resources.TryGetValue(key, out object resource);
-                if (resource != null)
+                if (resource != null) 
                 {
                     return resource as DataTemplate;
                 }

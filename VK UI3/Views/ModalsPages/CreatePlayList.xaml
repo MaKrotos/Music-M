@@ -2,67 +2,40 @@
     x:Class="VK_UI3.Views.ModalsPages.CreatePlayList"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:VK_UI3.Views.ModalsPages"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+
     Margin="-25"
     CornerRadius="10"
-    mc:Ignorable="d">
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+   
+ 
+    >
     <Page.Shadow>
         <ThemeShadow />
     </Page.Shadow>
 
     <Grid Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}">
-        <ScrollView
-            x:Name="MainGrid"
-            Padding="10"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            CornerRadius="8">
+        <ScrollView   x:Name="MainGrid"   Padding="10"
+  CornerRadius="8"    VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
+       
 
+        <!-- Добавляем кнопку "Назад" -->
 
-            <!--  Добавляем кнопку "Назад"  -->
-
-            <StackPanel
-                HorizontalAlignment="Center"
-                Orientation="Vertical"
-                ScrollViewer.VerticalScrollMode="Enabled">
-                <Grid
-                    Width="300"
-                    Height="300"
-                    AllowDrop="True"
-                    Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-                    CornerRadius="10"
-                    DragOver="Grid_DragOver"
-                    Drop="PlaylistImage_Drop"
-                    PointerPressed="PlaylistImage_PointerPressed"
-                    Translation="0,0,8">
-                    <Image
-                        x:Name="PlaylistImage"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Stretch="UniformToFill" />
-                    <SymbolIcon Symbol="Edit" />
-                </Grid>
-                <TextBox
-                    x:Name="Title"
-                    Header="Название"
-                    MaxLength="1024" />
-                <TextBox
-                    x:Name="Description"
-                    AcceptsReturn="True"
-                    Header="Описание"
-                    MaxLength="1024"
-                    TextWrapping="Wrap" />
-                <ToggleSwitch x:Name="HideFromSearch" Header="Скрыть из поиска и рекомендаций" />
-                <StackPanel
-                    Margin="0,10,0,0"
-                    HorizontalAlignment="Right"
-                    Orientation="Horizontal">
-                    <Button Margin="5" Click="Button_Click">Отмена</Button>
-                    <Button x:Name="SaveBTN" Click="SaveBTN_Click">Сохранить</Button>
-                </StackPanel>
+        <StackPanel ScrollViewer.VerticalScrollMode="Enabled" Orientation="Vertical" HorizontalAlignment="Center">
+            <Grid  Width="300" Height="300" DragOver="Grid_DragOver" Drop="PlaylistImage_Drop"  AllowDrop="True" Translation="0,0,8" PointerPressed="PlaylistImage_PointerPressed"  CornerRadius="10" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}">
+                <Image VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="UniformToFill"   x:Name="PlaylistImage" />
+                <SymbolIcon  Symbol="Edit"/>
+            </Grid>
+            <TextBox MaxLength="1024" x:Name="Title" Header="Название" />
+            <TextBox MaxLength="1024" x:Name="Description" Header="Описание" AcceptsReturn="True" TextWrapping="Wrap" />
+            <ToggleSwitch x:Name="HideFromSearch" Header="Скрыть из поиска и рекомендаций" />
+            <StackPanel Margin="0,10,0,0" HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button Click="Button_Click" Margin="5">Отмена</Button>
+                <Button x:Name="SaveBTN" Click="SaveBTN_Click">Сохранить</Button>
             </StackPanel>
-        </ScrollView>
-    </Grid>
+        </StackPanel>
+    </ScrollView>
+        </Grid>
 </Page>

@@ -19,7 +19,7 @@ namespace VK_UI3.VKs.IVK
         public IVkApi api;
         public string id;
         bool shuffle = false;
-        internal bool waitCreate = false;
+        internal  bool waitCreate = false;
 
 
 
@@ -45,9 +45,9 @@ namespace VK_UI3.VKs.IVK
 
         public EventHandler onListUpdate;
 
+      
 
-
-        public WeakEventManager onCountUpDated = new WeakEventManager();
+        public  WeakEventManager onCountUpDated = new WeakEventManager();
 
         public void countUpdated() { onCountUpDated?.RaiseEvent(this, EventArgs.Empty); }
 
@@ -90,9 +90,9 @@ namespace VK_UI3.VKs.IVK
             }
         }
 
-        public void PlayThis()
+        public void PlayThis() 
         {
-
+           
             if (listAudio.Count == 0)
             {
                 EventHandler handler = null;
@@ -111,7 +111,7 @@ namespace VK_UI3.VKs.IVK
                 if (!waitCreate)
                     GetTracks();
             }
-            else
+            else 
             {
                 this.currentTrack = 0;
                 AudioPlayer.PlayList(this);
@@ -226,8 +226,8 @@ namespace VK_UI3.VKs.IVK
                         );
             }
             catch (Exception e)
-            {
-
+            { 
+            
             }
         }
 
@@ -235,8 +235,7 @@ namespace VK_UI3.VKs.IVK
         {
             onListUpdate?.Invoke(this, EventArgs.Empty);
         }
-        public void updateNumbers()
-        {
+        public void updateNumbers() {
             for (int i = 0; i < listAudio.Count; i++)
             {
                 listAudio[i].NumberInList = i;
@@ -350,14 +349,12 @@ namespace VK_UI3.VKs.IVK
         public ExtendedAudio GetTrackPlay(long tracI)
         {
             while (tracI > listAudioTrue.Count() - 1)
-            {
-                if (!getLoadedTracks)
-                {
-                    if (itsAll) return null;
+            {   if (!getLoadedTracks)
+                {   if (itsAll) return null;
                     else
                         GetTracks();
                 }
-
+                
             }
             return listAudio[(int)tracI];
         }
@@ -404,7 +401,7 @@ namespace VK_UI3.VKs.IVK
             }
         }
 
-
+      
     }
 
 

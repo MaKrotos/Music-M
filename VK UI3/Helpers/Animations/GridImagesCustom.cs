@@ -1,13 +1,17 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace VK_UI3.Helpers.Animations
 {
     class GridImagesCustom : Grid
     {
-        List<string> photos = null;
+        List<string> photos = null; 
         public void AddImagesToGrid(List<string> photos)
         {
             if (this.photos == photos) return;

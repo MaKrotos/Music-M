@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
@@ -40,7 +41,7 @@ namespace SetupLib
         public async Task<bool> CheckForUpdates()
         {
             var releases = await client.Repository.Release.GetAll("MaKrotos", "Music-M");
-
+       
             foreach (var release in releases)
             {
                 if (string.Compare(release.TagName, currentVersion) <= 0)
@@ -114,7 +115,7 @@ namespace SetupLib
                     await intsallCertAsync();
                 }
 
-
+              
 
                 if (!isInstalled)
                 {
@@ -256,32 +257,32 @@ namespace SetupLib
 
         private async Task intsallCertAsync()
         {
-            using (var response = await new HttpClient().GetAsync(UriDownload, HttpCompletionOption.ResponseHeadersRead))
-            using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
-            {
-                var path = Path.Combine(Path.GetTempPath(), Path.GetFileName(UriDownload));
-                using (var streamToWriteTo = File.Create(path))
+                using (var response = await new HttpClient().GetAsync(UriDownload, HttpCompletionOption.ResponseHeadersRead))
+                using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
                 {
-                    await streamToReadFrom.CopyToAsync(streamToWriteTo);
+                    var path = Path.Combine(Path.GetTempPath(), Path.GetFileName(UriDownload));
+                    using (var streamToWriteTo = File.Create(path))
+                    {
+                        await streamToReadFrom.CopyToAsync(streamToWriteTo);
+                    }
+
+                    // Установка сертификата
+                    X509Certificate2 cert = new X509Certificate2(path);
+                    X509Store store = new X509Store(StoreName.TrustedPeople, StoreLocation.LocalMachine);
+                    store.Open(OpenFlags.ReadWrite);
+                    // Проверка на существование сертификата и его срок действия
+                    bool certificateExists = store.Certificates.Find(X509FindType.FindByThumbprint, cert.Thumbprint, false).Count > 0;
+                    if (!certificateExists || cert.NotAfter <= DateTime.Now)
+                    {
+                        store.Add(cert);
+                    }
+
+                    store.Close();
                 }
-
-                // Установка сертификата
-                X509Certificate2 cert = new X509Certificate2(path);
-                X509Store store = new X509Store(StoreName.TrustedPeople, StoreLocation.LocalMachine);
-                store.Open(OpenFlags.ReadWrite);
-                // Проверка на существование сертификата и его срок действия
-                bool certificateExists = store.Certificates.Find(X509FindType.FindByThumbprint, cert.Thumbprint, false).Count > 0;
-                if (!certificateExists || cert.NotAfter <= DateTime.Now)
-                {
-                    store.Add(cert);
-                }
-
-                store.Close();
-            }
-
+            
         }
 
-
+      
 
         public bool IsVersionInstalled(string targetVersion)
         {
@@ -303,8 +304,7 @@ namespace SetupLib
                 }
 
                 return false;
-            }
-            catch (Exception ex) { return false; };
+            } catch (Exception ex) { return false; };
         }
 
         private Version GetVersionNumber(string versionString)
@@ -377,11 +377,11 @@ namespace SetupLib
             Process process = new Process() { StartInfo = startInfo };
             process.Start();
             string output = process.StandardOutput.ReadToEnd();
-
+       
             return output.Contains("True");
         }
 
-        public async Task InstallAppInstallerAsync()
+        public async Task InstallAppInstallerAsync() 
         {
             var uri = "https://github.com/microsoft/winget-cli/releases/download/v1.7.10661/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle";
             using (var response = await new HttpClient().GetAsync(uri))
@@ -418,20 +418,20 @@ namespace SetupLib
                 }
 
 
-
-                string command = $"Add-AppxPackage -Path {path};";
-                ProcessStartInfo startInfo = new ProcessStartInfo()
-                {
-                    FileName = "powershell.exe",
-                    Arguments = $"-Command \"{command}\"",
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                };
-                Process process = new Process() { StartInfo = startInfo };
-                process.Start();
-                string output = process.StandardOutput.ReadToEnd();
-                process.WaitForExit();
+ 
+                    string command = $"Add-AppxPackage -Path {path};";
+                    ProcessStartInfo startInfo = new ProcessStartInfo()
+                    {
+                        FileName = "powershell.exe",
+                        Arguments = $"-Command \"{command}\"",
+                        RedirectStandardOutput = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                    };
+                    Process process = new Process() { StartInfo = startInfo };
+                    process.Start();
+                    string output = process.StandardOutput.ReadToEnd();
+                    process.WaitForExit();
 
             }
 
@@ -524,4 +524,4 @@ namespace SetupLib
 
     }
 
-}
+    }

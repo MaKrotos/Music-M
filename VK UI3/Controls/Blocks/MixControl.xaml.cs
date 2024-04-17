@@ -1,9 +1,20 @@
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Navigation;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using VK_UI3.Helpers.Animations;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
 using Windows.UI;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -41,7 +52,7 @@ namespace VK_UI3.Controls.Blocks
         Random random = new Random();
         private void MixControl_Loading(FrameworkElement sender, object args)
         {
-
+          
             foreach (var child in columns.Children)
             {
                 if (child is Palka palka)
