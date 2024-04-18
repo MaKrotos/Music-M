@@ -32,6 +32,7 @@
 	  <None Remove="Controls\BannerControl.xaml" />
 	  <None Remove="Controls\BlockControl.xaml" />
 	  <None Remove="Controls\Blocks\ArtistBannerBlockControl.xaml" />
+	  <None Remove="Controls\Blocks\Buttons.xaml" />
 	  <None Remove="Controls\Blocks\Ext\ListTracksFull.xaml" />
 	  <None Remove="Controls\Blocks\ListPlaylists.xaml" />
 	  <None Remove="Controls\Blocks\MixControl.xaml" />
@@ -174,6 +175,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Controls\Blocks\MixControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Blocks\Buttons.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <None Update="Controls\ListPlaylists.xaml">

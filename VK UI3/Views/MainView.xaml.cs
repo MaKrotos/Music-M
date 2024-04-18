@@ -48,9 +48,14 @@ namespace VK_UI3.Views
             //OpenMyPage(SectionType.MyListAudio);
 
             this.Loaded += MainView_Loaded;
+            this.Loading += MainView_Loading;
 
         }
 
+        private void MainView_Loading(FrameworkElement sender, object args)
+        {
+            NavWiv.IsPaneOpen = false;
+        }
 
         public void updateAllWithReacreate()
         {
@@ -91,6 +96,7 @@ namespace VK_UI3.Views
         private void MainView_Loaded(object sender, RoutedEventArgs e)
         {
 
+            NavWiv.IsPaneOpen = false;
             //OpenMyPage(SectionType.MyListAudio);
             ContentFrame.Navigated += ContentFrame_Navigated;
 

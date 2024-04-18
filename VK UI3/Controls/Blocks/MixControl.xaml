@@ -97,21 +97,18 @@
                     Grid.Row="0"
                     Width="75"
                     Height="75"
-                    Click="Button_Click"
+                    Padding="0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                   
+                    Click="Button_Click"
                     CornerRadius="50">
                     <Button.Content>
-                        <FontIcon 
-                                    FontSize="50"
-                            Glyph="&#xE768;" />
+                        <FontIcon Margin="2.5,0,0,0" FontSize="30" Glyph="&#xE768;" />
                     </Button.Content>
                 </Button>
                 <TextBlock
                     Grid.Row="1"
                     Margin="10"
-            
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
                     Слушать VK Mix
