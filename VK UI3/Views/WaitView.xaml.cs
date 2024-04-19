@@ -4,7 +4,6 @@ using MusicX.Core.Models;
 using System;
 using System.Threading.Tasks;
 using VK_UI3.DB;
-using VK_UI3.Helpers;
 using VK_UI3.Views.LoginWindow;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
@@ -100,7 +99,6 @@ namespace VK_UI3.Views
             }
             catch (Exception ex)
             {
-                AppCenterHelper.SendCrash(ex);
 
             }
         }
@@ -115,7 +113,7 @@ namespace VK_UI3.Views
             }
             catch (Exception ex)
             {
-                AppCenterHelper.SendCrash(ex);
+
 
             }
         }
@@ -140,7 +138,6 @@ namespace VK_UI3.Views
                     }
                     catch (Exception ex)
                     {
-                        AppCenterHelper.SendCrash(ex);
                         // frameSection.Navigate(typeof(SectionView), section, new DrillInNavigationTransitionInfo());
                         // loadBlocks(res.Catalog.Sections[0].Blocks);
                     }
@@ -154,7 +151,6 @@ namespace VK_UI3.Views
             }
             catch (Exception ex)
             {
-                AppCenterHelper.SendCrash(ex);
 
 
             }

@@ -183,7 +183,6 @@ namespace VK_UI3.Helpers.Animations
                 }
                 catch (Exception e)
                 {
-                    AppCenterHelper.SendCrash(e);
                     // Если произошла ошибка при загрузке или сохранении изображения, возвращаем null
                     return null;
                 }

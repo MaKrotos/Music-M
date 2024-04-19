@@ -3,7 +3,6 @@ using Microsoft.UI.Xaml.Controls;
 using MusicX.Core.Models;
 using System;
 using System.Collections.ObjectModel;
-using VK_UI3.Helpers;
 
 
 namespace VK_UI3.Controls.Blocks
@@ -55,7 +54,7 @@ namespace VK_UI3.Controls.Blocks
             }
             catch (Exception ex)
             {
-                AppCenterHelper.SendCrash(ex);
+
 
 
             }

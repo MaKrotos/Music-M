@@ -2,7 +2,6 @@ using SQLite;
 using System;
 using System.IO;
 using System.Management;
-using VK_UI3.Helpers;
 using vkPosterBot.DB;
 using static VK_UI3.DB.AccountsDB;
 
@@ -54,7 +53,6 @@ namespace VK_UI3.DB
                 }
                 catch (SQLiteException ex)
                 {
-                    AppCenterHelper.SendCrash(ex);
                     if (ex.Message.Contains("file is not a database"))
                     {
                         // Если пароль не подходит, удаляем файл БД и создаем новый

@@ -2,7 +2,6 @@
 using Microsoft.UI.Xaml.Controls;
 using MusicX.Core.Models;
 using System;
-using VK_UI3.Helpers;
 using VK_UI3.Views;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -153,7 +152,7 @@ namespace VK_UI3.Controls
             }
             catch (Exception ex)
             {
-                AppCenterHelper.SendCrash(ex);
+
 
 
             }
@@ -190,7 +189,7 @@ namespace VK_UI3.Controls
             }
             catch (Exception ex)
             {
-                AppCenterHelper.SendCrash(ex);
+
 
 
             }

@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using VK_UI3.Controllers;
-using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
@@ -199,7 +198,6 @@ namespace VK_UI3.Views.Controls
             }
             catch (Exception e)
             {
-                AppCenterHelper.SendCrash(e);
                 // StaticService.Container.GetRequiredService<Logger>().Error(e, "Failed to invoke action {Type}", Action.Action.Type);
             }
         }

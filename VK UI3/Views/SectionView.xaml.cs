@@ -132,7 +132,6 @@ namespace VK_UI3.Views
             }
             catch (Exception ex)
             {
-                AppCenterHelper.SendCrash(ex);
 
             }
         }
@@ -170,7 +169,6 @@ namespace VK_UI3.Views
             }
             catch (Exception ex)
             {
-                AppCenterHelper.SendCrash(ex);
 
 
             }

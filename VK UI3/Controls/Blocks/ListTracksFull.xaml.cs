@@ -4,7 +4,6 @@ using MusicX.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using VK_UI3.Helpers;
 using VK_UI3.VKs.IVK;
 
 
@@ -61,7 +60,6 @@ namespace VK_UI3.Controls.Blocks
             }
             catch (Exception ex)
             {
-                AppCenterHelper.SendCrash(ex);
             }
         }
 

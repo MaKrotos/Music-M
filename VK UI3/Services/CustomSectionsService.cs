@@ -226,7 +226,6 @@ public class CustomSectionsService : ICustomSectionsService
         }
         catch (Exception ex)
         {
-            AppCenterHelper.SendCrash(ex);
 
         }
 

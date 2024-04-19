@@ -183,7 +183,6 @@ namespace VK_UI3.Controls
                                 }
                                 catch (Exception ex)
                                 {
-                                    AppCenterHelper.SendCrash(ex);
                                 }
                             })
                         };
@@ -225,7 +224,7 @@ namespace VK_UI3.Controls
             }
             catch (Exception ex)
             {
-                AppCenterHelper.SendCrash(ex);
+
             }
 
             if (dataTrack != null && !addedHandler)
@@ -320,7 +319,6 @@ namespace VK_UI3.Controls
             }
             catch (Exception ex)
             {
-                AppCenterHelper.SendCrash(ex);
             }
         }
 
@@ -368,7 +366,6 @@ namespace VK_UI3.Controls
             {
 
 
-                AppCenterHelper.SendCrash(ex);
             }
         }
 
@@ -542,7 +539,6 @@ namespace VK_UI3.Controls
                                    }
                                    catch (Exception ex)
                                    {
-                                       AppCenterHelper.SendCrash(ex);
                                    }
 
                                };
