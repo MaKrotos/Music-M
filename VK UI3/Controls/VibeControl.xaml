@@ -20,16 +20,24 @@
     <UserControl.Shadow>
         <ThemeShadow />
     </UserControl.Shadow>
-    <Grid CornerRadius="8">
+    <Grid 
+        Width="200" Height="60"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        CornerRadius="8">
         <StackPanel
             Padding="0"
+                Width="200" Height="60"
+   HorizontalAlignment="Center"
+   VerticalAlignment="Center"
             Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
             CornerRadius="8">
 
             <Grid
-                 
-            HorizontalAlignment="Center"
-     VerticalAlignment="Center"
+                
+                   Width="200" Height="60"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
                 Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
                 CornerRadius="8">
                 <Grid.Resources>
@@ -73,13 +81,14 @@
                     <FontIcon Glyph="&#xE90B;" />
                     <Grid
                           
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
+                         Width="200" Height="60"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
                         x:Name="fadeOp"
                         Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
                         Opacity="0">
                         <Image
-                            Stretch="Uniform"
+                            Stretch="UniformToFill"
                       
                             x:Name="GridThumbs"
                             HorizontalAlignment="Center"
@@ -107,7 +116,7 @@
                         TextWrapping="Wrap" />
                 </StackPanel>
 
-                <Grid Padding="10" VerticalAlignment="Center">
+                <Grid Padding="10" HorizontalAlignment="Right" VerticalAlignment="Center">
                     <Grid
                         x:Name="btnGrid"
                         Width="35"
