@@ -52,8 +52,6 @@ namespace VK_UI3.Controls.Blocks
 
         private void MixControl_Unloaded(object sender, RoutedEventArgs e)
         {
-
-
             this.Loading -= MixControl_Loading;
             this.Unloaded -= MixControl_Unloaded;
             this.DataContextChanged -= MixControl_DataContextChanged;

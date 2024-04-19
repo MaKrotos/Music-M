@@ -2,7 +2,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using System;
-using System.Collections.Generic;
 using VK_UI3.Controllers;
 using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
@@ -22,6 +21,7 @@ namespace VK_UI3.Controls
             this.InitializeComponent();
 
             AnimationsChangeFontIcon = new AnimationsChangeFontIcon(PlayPause, this.DispatcherQueue);
+            animationsChangeImage = new AnimationsChangeImage(GridThumbs, this.DispatcherQueue);
             titleAnim = new AnimationsChangeText(Title, this.DispatcherQueue);
 
             this.Unloaded += PlaylistControl_Unloaded;
@@ -170,21 +170,9 @@ namespace VK_UI3.Controls
 
             if (_PlayList.Cover != null)
             {
-                GridThumbs.AddImagesToGrid(_PlayList.Cover);
+                animationsChangeImage.ChangeImageWithAnimation(_PlayList.Cover);
             }
-            else if (_PlayList.Thumbs != null)
-            {
-                int count = _PlayList.Thumbs.Count;
-                int index = 0;
-                List<string> list = new List<string>();
-                foreach (var item in _PlayList.Thumbs)
-                {
-                    string photo = item.Photo600 ?? item.Photo1200 ?? item.Photo300 ?? item.Photo34 ?? item.Photo270 ?? item.Photo135 ?? item.Photo68;
-                    list.Add(photo);
-                    index++;
-                }
-                GridThumbs.AddImagesToGrid(list);
-            }
+
 
 
 

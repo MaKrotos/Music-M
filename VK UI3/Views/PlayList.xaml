@@ -13,20 +13,26 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
-
         </Grid.RowDefinitions>
 
         <ListView
             x:Name="TrackListView"
             Grid.Row="0"
-            AllowDrop="True"
-            CanReorderItems="True"
-            IsItemClickEnabled="True"
+            AllowDrop="False"
+            CanReorderItems="False"
+            IsItemClickEnabled="False"
+        
             ItemsSource="{x:Bind Tracks.listAudio, Mode=OneWay}"
             SelectionMode="None">
             <ListView.ItemTemplate>
+                
                 <DataTemplate>
-                    <custom:TrackControl />
+                    <custom:TrackControl 
+                        
+                           Margin="0,4,0,4"
+   FocusVisualPrimaryBrush="Transparent"
+   FocusVisualSecondaryThickness="0"
+                        />
                 </DataTemplate>
             </ListView.ItemTemplate>
 

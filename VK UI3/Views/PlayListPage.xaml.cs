@@ -86,7 +86,7 @@ namespace VK_UI3.Views
             }
         }
 
-
+        AudioPlaylist audioPlaylistOriginal;
 
         AnimationsChangeText MainText;
         AnimationsChangeText descriptionText;
@@ -102,6 +102,9 @@ namespace VK_UI3.Views
                 if (vkGetAudio is (PlayListVK))
                 {
                     var playlist = (vkGetAudio as PlayListVK).playlist;
+                    if (audioPlaylistOriginal == null)
+                        audioPlaylistOriginal = playlist;
+
                     if (!playlist.Permissions.Edit)
                     {
                         stackPanel.Items.Remove(EditPlaylist);
@@ -152,27 +155,31 @@ namespace VK_UI3.Views
 
                     string qownerName = "";
                     bool hasOwner = false;
-                    if (playlist.userOwner != null)
+                    if (audioPlaylistOriginal.userOwner != null)
                     {
                         hasOwner = true;
                         ownerGrid.Visibility = Visibility.Visible;
                         var a = new Helpers.Animations.AnimationsChangeImage(ownerPictire, DispatcherQueue);
-                        a.ChangeImageWithAnimation(playlist.userOwner.Photo100);
-                        qownerName = playlist.userOwner.FirstName + " " + playlist.userOwner.LastName;
+                        a.ChangeImageWithAnimation(audioPlaylistOriginal.userOwner.Photo100);
+                        qownerName = audioPlaylistOriginal.userOwner.FirstName + " " + audioPlaylistOriginal.userOwner.LastName;
                     }
-                    if (playlist.groupOwner != null)
+                    if (audioPlaylistOriginal.groupOwner != null)
                     {
                         hasOwner = true;
                         ownerGrid.Visibility = Visibility.Visible;
                         var a = new Helpers.Animations.AnimationsChangeImage(ownerPictire, DispatcherQueue);
-                        a.ChangeImageWithAnimation(playlist.groupOwner.Photo100);
-                        qownerName = playlist.groupOwner.Name;
+                        a.ChangeImageWithAnimation(audioPlaylistOriginal.groupOwner.Photo100);
+                        qownerName = audioPlaylistOriginal.groupOwner.Name;
                     }
                     if (!hasOwner)
                     {
                         stackPanel.Items.Remove(ownerGrid);
                     }
-                    ownerName.Text = qownerName;
+                    else
+                    {
+                        ownerName.Text = qownerName;
+                    }
+
 
 
 

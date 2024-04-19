@@ -3,7 +3,6 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using MusicX.Core.Models;
 using VK_UI3.Helpers.Animations;
-using VK_UI3.Views;
 using VK_UI3.Views.Controls;
 using static VK_UI3.Views.Controls.BlockButtonView;
 
@@ -45,7 +44,7 @@ namespace VK_UI3.Controls.Blocks
 
             ArtistText.Text = block.Artists[0].Name;
 
-            var sectionView = FindParent<SectionView>(this);
+            // var sectionView = FindParent<SectionView>(this);
 
             for (var i = 0; i < block.Actions.Count; i++)
             {

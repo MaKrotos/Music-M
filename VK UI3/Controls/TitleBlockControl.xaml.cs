@@ -92,7 +92,6 @@ namespace VK_UI3.Controls
 
                 if (block.Actions.Count > 0)
                 {
-
                     if (block.Actions[0].Options.Count > 0) //android
                     {
                         ButtonsGrid.Visibility = Visibility.Visible;
@@ -149,7 +148,6 @@ namespace VK_UI3.Controls
                 }
 
                 var button = block.Buttons[0];
-
 
                 MainView.OpenSection(button.SectionId);
             }

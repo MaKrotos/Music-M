@@ -101,6 +101,12 @@ namespace MusicX.Core.Models
 
         [JsonProperty("Banners")]
         public List<CatalogBanner> Banners { get; set; } = new List<CatalogBanner>();
+
+        [JsonProperty("meta")]
+        public MetaBLock? Meta { get; set; }
+
+
+
         public List<Link> Links { get; set; } = new List<Link>();
         public List<Suggestion> Suggestions { get; set; } = new List<Suggestion>();
         public List<Artist> Artists { get; set; } = new List<Artist>();
@@ -119,5 +125,11 @@ namespace MusicX.Core.Models
         public List<AudioFollowingsUpdateInfo> FollowingsUpdateInfos { get; set; } = new List<AudioFollowingsUpdateInfo>();
 
         public List<Station> Stations { get; set; } = new List<Station>();
+    }
+
+    public class MetaBLock
+    {
+        [JsonProperty("anchor")]
+        public string? anchor { get; set; }
     }
 }

@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:palks="using:VK_UI3.Helpers.Animations"
     Height="300"
+    Margin="0,8,0,0"
     Background="Transparent"
     PointerPressed="UserControl_PointerPressed"
     mc:Ignorable="d">

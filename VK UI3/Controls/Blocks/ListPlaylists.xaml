@@ -5,12 +5,18 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:custom="using:VK_UI3.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="using:VK_UI3.Controls.Blocks"
+    xmlns:local="using:VK_UI3.Controls"
+
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Margin="10,0,10,0"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <local:PlayListTemplateSelector x:Key="PlayListTemplateSelector" />
+        <DataTemplate x:Key="default">
+            <local:PlaylistControl />
+        </DataTemplate>
+        <DataTemplate x:Key="compact">
+            <local:VibeControl />
+        </DataTemplate>
     </UserControl.Resources>
     <UserControl.Shadow>
         <ThemeShadow />
@@ -23,7 +29,6 @@
         CornerRadius="8">
         <GridView
             x:Name="gridV"
-            ItemTemplateSelector="{StaticResource PlayListTemplateSelector}"
             ItemsSource="{x:Bind playlists, Mode=OneWay}"
             ScrollViewer.HorizontalScrollBarVisibility="Visible"
             ScrollViewer.HorizontalScrollMode="Enabled"

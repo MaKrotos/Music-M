@@ -1,14 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <UserControl
     x:Class="VK_UI3.Controls.Blocks.Buttons"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:VK_UI3.Controls.Blocks"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:VK_UI3.Controls.Blocks"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Margin="16,0,16,-15"
     mc:Ignorable="d">
 
-    <GridView ItemsSource="{x:Bind block.Actions}">
- 
-    </GridView>
+    <GridView x:Name="gridV" SelectionMode="None" />
 </UserControl>

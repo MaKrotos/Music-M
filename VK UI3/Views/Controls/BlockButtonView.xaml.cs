@@ -59,47 +59,65 @@ namespace VK_UI3.Views.Controls
         }
 
         public BlockBTN blockBTN;
-
+        bool firstRefresh = false;
         public void Refresh()
         {
+            string txt = "";
+            Symbol icon = Symbol.Accept;
 
-            switch (Action.Action.Type)
+            if (Action.Action.Type == "toggle_artist_subscription" && blockBTN.Artist != null && blockBTN.ParentBlock != null)
             {
-                case "toggle_artist_subscription" when blockBTN.Artist is not null && blockBTN.ParentBlock is not null:
-                    changeText.ChangeTextWithAnimation(blockBTN.Artist.IsFollowed ? "Отписаться" : "Подписаться");
-                    changeIcon.ChangeSymbolIconWithAnimation(blockBTN.Artist.IsFollowed ? Symbol.UnFavorite : Symbol.Favorite);
-                    break;
-                case "play_shuffled_audios_from_block":
-                    changeText.ChangeTextWithAnimation("Перемешать все");
-                    changeIcon.ChangeSymbolIconWithAnimation(Symbol.Play);
-                    break;
-                case "create_playlist":
-                    changeText.ChangeTextWithAnimation("Создать плейлист");
-                    changeIcon.ChangeSymbolIconWithAnimation(Symbol.Add);
-                    break;
-                case "play_audios_from_block":
-                    changeText.ChangeTextWithAnimation("Слушать всё");
-                    changeIcon.ChangeSymbolIconWithAnimation(Symbol.Play);
-                    break;
-                case "open_section":
-                    changeText.ChangeTextWithAnimation(Action.Title ?? "Открыть");
-                    changeIcon.ChangeSymbolIconWithAnimation(Symbol.OpenFile);
-                    break;
-                case "music_follow_owner":
-                    changeText.ChangeTextWithAnimation(Action.IsFollowing ? "Вы подписаны на музыку" : "Подписаться на музыку");
-                    changeIcon.ChangeSymbolIconWithAnimation(Action.IsFollowing ? Symbol.SolidStar : Symbol.Add);
-                    break;
-                case "open_url":
-                    changeText.ChangeTextWithAnimation(Action.Title);
-                    break;
-                default:
-                    changeIcon.ChangeSymbolIconWithAnimation(Symbol.Accept);
-                    changeText.ChangeTextWithAnimation("content");
-                    break;
+                txt = blockBTN.Artist.IsFollowed ? "Отписаться" : "Подписаться";
+                icon = blockBTN.Artist.IsFollowed ? Symbol.UnFavorite : Symbol.Favorite;
             }
+            else if (Action.Action.Type == "play_shuffled_audios_from_block")
+            {
+                txt = "Перемешать все";
+                icon = Symbol.Play;
+            }
+            else if (Action.Action.Type == "create_playlist")
+            {
+                txt = "Создать плейлист";
+                icon = Symbol.Add;
+            }
+            else if (Action.Action.Type == "play_audios_from_block")
+            {
+                txt = "Слушать всё";
+                icon = Symbol.Play;
+            }
+            else if (Action.Action.Type == "open_section")
+            {
+                txt = Action.Title ?? "Открыть";
+                icon = Symbol.OpenFile;
+            }
+            else if (Action.Action.Type == "music_follow_owner")
+            {
+                txt = Action.IsFollowing ? "Вы подписаны на музыку" : "Подписаться на музыку";
+                icon = Action.IsFollowing ? Symbol.SolidStar : Symbol.Add;
+            }
+            else if (Action.Action.Type == "open_url")
+            {
+                txt = Action.Title;
+            }
+            if (!firstRefresh)
+            {
 
 
+
+                text.Text = txt;
+                symbolIcon.Symbol = icon;
+
+            }
+            else
+            {
+                changeText.ChangeTextWithAnimation(txt);
+                changeIcon.ChangeSymbolIconWithAnimation(icon);
+            }
         }
+
+
+
+
         private async void Invoke()
         {
             try
