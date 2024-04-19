@@ -1,19 +1,20 @@
 [Скачать установщик](https://github.com/MaKrotos/Music-M/releases/download/0.1.5.2/Setup.VK.M.exe)
 
-![image](https://github.com/MaKrotos/Music-M/assets/43302537/93245f91-77e8-4bd7-aea4-0969251bdd11)
+![image](https://github.com/MaKrotos/Music-M/assets/43302537/981f28a3-4922-49ce-b616-d23ed499f9d8)
 
-![image](https://github.com/MaKrotos/Music-M/assets/43302537/71232814-03f8-4751-965d-ce24da090672)
+![image](https://github.com/MaKrotos/Music-M/assets/43302537/f92084eb-4d4d-4c01-b0ff-7a752f3c0613)
 
-![image](https://github.com/MaKrotos/Music-M/assets/43302537/682c2a15-760b-4d7c-a57b-3413491e7a5e)
+![image](https://github.com/MaKrotos/Music-M/assets/43302537/e0ed9b01-c133-4f02-9d75-5339e5db8d61)
 
-![image](https://github.com/MaKrotos/Music-M/assets/43302537/ceb23485-b442-4be4-b47a-eb5ea9f9b6b7)
+![image](https://github.com/MaKrotos/Music-M/assets/43302537/e1b1d021-64e1-4fce-8657-a3ef9a3b8627)
 
-![image](https://github.com/MaKrotos/Music-M/assets/43302537/4e3fc394-40f3-401e-a172-518025c984e1)
+![image](https://github.com/MaKrotos/Music-M/assets/43302537/520340ae-47ae-4576-b9dd-12a6afba7b25)
 
-![image](https://github.com/MaKrotos/Music-M/assets/43302537/afd7b8b6-e0c1-467d-b451-58f8f61b9537)
+![image](https://github.com/MaKrotos/Music-M/assets/43302537/740be7e5-2666-4170-880a-3f029d7fede2)
 
-![image](https://github.com/MaKrotos/Music-M/assets/43302537/5582b44b-0c42-4cf7-bb0c-955e8c69bbb7)
+![image](https://github.com/MaKrotos/Music-M/assets/43302537/d813e052-3ddb-4d21-8427-66ce37fe495b)
 
+![image](https://github.com/MaKrotos/Music-M/assets/43302537/4c5cce83-a184-426a-8e5f-a4155e1aaf77)
 
 
 Отдельная благодарность [Fooxboy/MusicX-WPF](https://github.com/Fooxboy/MusicX-WPF)https://github.com/Fooxboy/MusicX-WPF
