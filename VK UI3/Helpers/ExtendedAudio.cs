@@ -16,9 +16,11 @@ namespace VK_UI3.Helpers
         {
             get
             {
-                if (AudioPlayer._TrackDataThis == null) return false;
+                var trackdata = AudioPlayer._TrackDataThisGet().Result;
 
-                return AudioPlayer._TrackDataThis.audio.AccessKey == this.audio.AccessKey;
+                if (trackdata == null) return false;
+
+                return trackdata.audio.AccessKey == this.audio.AccessKey;
             }
         }
 

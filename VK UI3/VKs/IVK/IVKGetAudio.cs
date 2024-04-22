@@ -214,12 +214,12 @@ namespace VK_UI3.VKs.IVK
         }
 
 
-        public void shareToVK()
+        public async void shareToVK()
         {
             try
             {
 
-                var a = GetTrackPlay().audio;
+                var a = (await GetTrackPlay()).audio;
                 if (a != null)
                     VK.api.Audio.SetBroadcastAsync(
                        a.OwnerId + "_" + a.Id
@@ -290,7 +290,7 @@ namespace VK_UI3.VKs.IVK
 
 
 
-        public ExtendedAudio getNextTrackForPlay()
+        public async Task<ExtendedAudio> getNextTrackForPlay()
         {
 
             if (currentTrack >= countTracks - 1)
@@ -300,14 +300,12 @@ namespace VK_UI3.VKs.IVK
                 currentTrack++;
             }
 
-            return GetTrackPlay();
+            return await GetTrackPlay();
 
         }
 
-        public ExtendedAudio getPreviusTrackForPlay()
-
+        public async Task<ExtendedAudio> getPreviusTrackForPlay()
         {
-
             if (currentTrack <= 0)
                 currentTrack = countTracks - 1;
             else
@@ -315,7 +313,7 @@ namespace VK_UI3.VKs.IVK
                 currentTrack--;
             }
 
-            return GetTrackPlay();
+            return await GetTrackPlay();
 
         }
 
@@ -333,21 +331,20 @@ namespace VK_UI3.VKs.IVK
             set { _itsAll = value; }
         }
 
-        public bool HasMoreItems => throw new NotImplementedException();
 
-        public ExtendedAudio GetTrackPlay()
+        public async Task<ExtendedAudio> GetTrackPlay()
         {
             if (currentTrack == null)
                 currentTrack = 0;
-            return GetTrackPlay((long)currentTrack);
+            return await GetTrackPlayAsync((long)currentTrack);
         }
 
 
 
-
+        TaskCompletionSource<bool> tcs;
 
         public bool getLoadedTracks = false;
-        public ExtendedAudio GetTrackPlay(long tracI)
+        public async Task<ExtendedAudio> GetTrackPlayAsync(long tracI)
         {
             while (tracI > listAudioTrue.Count() - 1)
             {
@@ -356,6 +353,8 @@ namespace VK_UI3.VKs.IVK
                     if (itsAll) return null;
                     else
                         GetTracks();
+                    tcs = new TaskCompletionSource<bool>();
+                    await tcs.Task;
                 }
 
             }

@@ -5,6 +5,7 @@ using MusicX.Core.Models;
 using System;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.Linq;
 using VK_UI3.Helpers;
 using VK_UI3.Views;
 using VK_UI3.VKs.IVK;
@@ -72,11 +73,15 @@ namespace VK_UI3.Controls
                 animationsChangeImage.ChangeImageWithAnimation(_PlayList.Playlist.groupOwner.Photo100);
             }
             UserNameTXT.Text = _PlayList.Playlist.OwnerName;
-            extendedAudios.Clear();
-            foreach (var item in playListVK.listAudioTrue)
+            if (!playListVK.listAudioTrue.SequenceEqual(extendedAudios))
             {
-                extendedAudios.Add(item);
+                extendedAudios.Clear();
+                foreach (var item in playListVK.listAudioTrue)
+                {
+                    extendedAudios.Add(item);
+                }
             }
+
         }
 
         private void StackPanel_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)

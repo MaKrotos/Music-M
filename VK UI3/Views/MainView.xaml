@@ -60,6 +60,12 @@
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
 
+                    <NavigationViewItem Content="Музыка друзей">
+                        <NavigationViewItem.Icon>
+                            <FontIcon Glyph="&#xE716;" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+
                     <NavigationViewItemSeparator />
                     <NavigationViewItemHeader />
 

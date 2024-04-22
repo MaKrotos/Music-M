@@ -442,8 +442,11 @@ namespace VK_UI3.Views
                         break;
 
                     case "параметры":
-
                         frame.Navigate(typeof(Settings.SettingsPage), null, new DrillInNavigationTransitionInfo());
+                        break;
+
+                    case "музыка друзей":
+                        frame.Navigate(typeof(Share.FriendsList), null, new DrillInNavigationTransitionInfo());
                         break;
 
                     default:

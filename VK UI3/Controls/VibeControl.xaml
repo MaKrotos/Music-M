@@ -80,13 +80,12 @@
                 <Grid >
                     <FontIcon Glyph="&#xE90B;" />
                     <Grid
-                          
-                         Width="200" Height="60"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                        x:Name="fadeOp"
-                        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-                        Opacity="0">
+                            Width="200" Height="60"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            x:Name="fadeOp"
+                            Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
+                            Opacity="0">
                         <Image
                             Stretch="UniformToFill"
                       

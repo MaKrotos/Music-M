@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="VK_UI3.Views.Share.FriendsList"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:contr="using:VK_UI3.Views.Share.ShareControllers"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:VK_UI3.Views.Share"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+
+    Loading="Page_Loading"
+    mc:Ignorable="d">
+
+    <ListView ItemsSource="{x:Bind friends, Mode=OneWay}">
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <contr:UserControllers  Margin="0,4,0,4" />
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
+</Page>

@@ -76,34 +76,32 @@ namespace VK_UI3.Controllers
 
 
 
+        private static ExtendedAudio _trackDataThis;
 
-
-        public static ExtendedAudio _TrackDataThis
+        public static void _TrackDataThisSet(ExtendedAudio value)
         {
-            get
+            if (_trackDataThis != value)
             {
-                if (iVKGetAudio != null)
-                    if (iVKGetAudio.countTracks != 0)
-                    {
-                        return iVKGetAudio.GetTrackPlay();
+                _trackDataThis = value;
+                TrackDataThisChanged?.RaiseEvent(null, EventArgs.Empty);
+            }
 
-                    }
-                return _trackDataThis;
-            }
-            set
-            {
-                if (_trackDataThis != value)
+        }
+        public static async Task<ExtendedAudio> _TrackDataThisGet()
+        {
+            if (iVKGetAudio != null)
+                if (iVKGetAudio.countTracks != 0)
                 {
-                    _trackDataThis = value;
-                    TrackDataThisChanged?.RaiseEvent(null, EventArgs.Empty);
+                    return await iVKGetAudio.GetTrackPlay();
+
                 }
-            }
+            return _trackDataThis;
         }
 
-        private static ExtendedAudio _trackDataThis;
+
         public ExtendedAudio TrackDataThis
         {
-            get { return _TrackDataThis; }
+            get { return _TrackDataThisGet().Result; }
         }
 
 
@@ -128,7 +126,7 @@ namespace VK_UI3.Controllers
         {
             get
             {
-                if (TrackDataThis.audio == null || TrackDataThis.audio.Album == null || _TrackDataThis.audio.Album.Thumb == null) return "null";
+                if (TrackDataThis.audio == null || TrackDataThis.audio.Album == null || (_TrackDataThisGet().Result).audio.Album.Thumb == null) return "null";
                 if (TrackDataThis.audio.Album == null) return "null";
                 return TrackDataThis.audio.Album.Thumb.Photo600
                      ?? TrackDataThis.audio.Album.Thumb.Photo300
@@ -511,17 +509,21 @@ namespace VK_UI3.Controllers
         {
             // Проверяем, не является ли текущий трек последним в списке
 
-            iVKGetAudio.getNextTrackForPlay();
-            PlayTrack();
+            Task.Run(async () =>
+            {
+                await iVKGetAudio.getNextTrackForPlay();
+                PlayTrack();
+            });
 
         }
 
         internal static void PlayPreviousTrack()
         {
-
-            iVKGetAudio.getPreviusTrackForPlay();
-            PlayTrack();
-
+            Task.Run(async () =>
+            {
+                await iVKGetAudio.getPreviusTrackForPlay();
+                PlayTrack();
+            });
         }
         public static ExtendedAudio PlayingTrack = null;
 
@@ -530,22 +532,23 @@ namespace VK_UI3.Controllers
 
             if (v != null) iVKGetAudio.currentTrack = (long)v;
 
+            var trackdata = await _TrackDataThisGet();
 
 
             if (iVKGetAudio is PlayListVK)
             {
-                VK.sendStartEvent((long)_TrackDataThis.audio.Id, (long)_TrackDataThis.audio.OwnerId, (iVKGetAudio as PlayListVK).playlist.Id);
+                VK.sendStartEvent((long)trackdata.audio.Id, (long)trackdata.audio.OwnerId, (iVKGetAudio as PlayListVK).playlist.Id);
             }
             else
-                VK.sendStartEvent((long)_TrackDataThis.audio.Id, (long)_TrackDataThis.audio.OwnerId);
+                VK.sendStartEvent((long)trackdata.audio.Id, (long)trackdata.audio.OwnerId);
 
-            if (_TrackDataThis.audio.Url == null)
+            if (trackdata.audio.Url == null)
             {
 
                 PlayNextTrack();
                 return;
             }
-            var mediaSource = Windows.Media.Core.MediaSource.CreateFromUri(new Uri(_TrackDataThis.audio.Url.ToString()));
+            var mediaSource = Windows.Media.Core.MediaSource.CreateFromUri(new Uri(trackdata.audio.Url.ToString()));
             var mediaPlaybackItem = new Windows.Media.Playback.MediaPlaybackItem(mediaSource);
 
 
@@ -553,16 +556,16 @@ namespace VK_UI3.Controllers
 
             MediaItemDisplayProperties props = mediaPlaybackItem.GetDisplayProperties();
             props.Type = Windows.Media.MediaPlaybackType.Music;
-            props.MusicProperties.Title = _TrackDataThis.audio.Title;
-            props.MusicProperties.AlbumArtist = _TrackDataThis.audio.Artist;
+            props.MusicProperties.Title = trackdata.audio.Title;
+            props.MusicProperties.AlbumArtist = trackdata.audio.Artist;
 
 
-            if (_TrackDataThis.audio.Album != null && _TrackDataThis.audio.Album.Thumb != null)
+            if (trackdata.audio.Album != null && trackdata.audio.Album.Thumb != null)
             {
                 RandomAccessStreamReference imageStreamRef = RandomAccessStreamReference.CreateFromUri(new Uri(
-                    _TrackDataThis.audio.Album.Thumb.Photo600 ??
-                    _TrackDataThis.audio.Album.Thumb.Photo270 ??
-                    _TrackDataThis.audio.Album.Thumb.Photo300
+                    trackdata.audio.Album.Thumb.Photo600 ??
+                    trackdata.audio.Album.Thumb.Photo270 ??
+                    trackdata.audio.Album.Thumb.Photo300
                     ));
 
                 props.Thumbnail = imageStreamRef;
