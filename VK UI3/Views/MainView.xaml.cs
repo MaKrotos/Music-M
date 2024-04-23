@@ -340,7 +340,7 @@ namespace VK_UI3.Views
                 case "поиск":
                     icon = "\uE11A"; // Find
                     break;
-                case "книги и шоу":
+                case "книги и шоу":
                     icon = "\uE82D"; // Bookmarks
                     break;
                 default:
@@ -395,7 +395,7 @@ namespace VK_UI3.Views
 
         private void ListViewItem_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
-            NavWiv.IsPaneOpen = false;
+          //  NavWiv.IsPaneOpen = false;
 
         }
 

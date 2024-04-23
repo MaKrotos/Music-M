@@ -7,15 +7,24 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:VK_UI3.Views.Share"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-
     Loading="Page_Loading"
     mc:Ignorable="d">
 
-    <ListView ItemsSource="{x:Bind friends, Mode=OneWay}">
+    <ListView
+        x:Name="scrollView"
+        Padding="0,4,0,4"
+        ItemsSource="{x:Bind friends, Mode=OneWay}"
+        SelectionMode="None">
         <ListView.ItemTemplate>
             <DataTemplate>
-                <contr:UserControllers  Margin="0,4,0,4" />
+                <contr:UserControllers
+                    x:Name="DataController"
+                    Margin="-8,4,-8,4"
+                    isDisabled="True" />
             </DataTemplate>
         </ListView.ItemTemplate>
+        <ListView.Footer>
+            <ProgressRing x:Name="LoadingIndicator" IsActive="False" />
+        </ListView.Footer>
     </ListView>
 </Page>
