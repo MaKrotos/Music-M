@@ -449,6 +449,11 @@ namespace VK_UI3.Views
                         frame.Navigate(typeof(Share.FriendsList), null, new DrillInNavigationTransitionInfo());
                         break;
 
+                    case "вложения":
+                        frame.Navigate(typeof(Share.ConversationsList), null, new DrillInNavigationTransitionInfo());
+                        break;
+
+
                     default:
                         var Item = sender.SelectedItem as NavMenuController;
                         OpenSection(Item.navSettings.section.Id);

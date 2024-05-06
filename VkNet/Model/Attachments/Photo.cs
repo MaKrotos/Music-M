@@ -124,14 +124,21 @@ namespace VkNet.Model.Attachments
 		[JsonProperty("url")]
 		public Uri Url { get; set; }
 
-	#region Методы
+        /// <summary>
+        /// Просто получить чертово фото.
+        /// </summary>
+        public Uri JustGetPhoto => Photo604 ?? Photo807 ?? Photo200 ?? Photo130 ?? Photo100 ?? Photo1280 ?? Photo2560;
 
-		/// <summary>
-		/// Разобрать из json.
-		/// </summary>
-		/// <param name="response"> Ответ сервера. </param>
-		/// <returns> </returns>
-		public static Photo FromJson(VkResponse response)
+
+
+        #region Методы
+
+        /// <summary>
+        /// Разобрать из json.
+        /// </summary>
+        /// <param name="response"> Ответ сервера. </param>
+        /// <returns> </returns>
+        public static Photo FromJson(VkResponse response)
 		{
 			var photo = new Photo
 			{

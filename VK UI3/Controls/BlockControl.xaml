@@ -40,6 +40,13 @@
             <blocks:ListTracksFull />
         </DataTemplate>
 
+        <DataTemplate x:Key="music_owners_owner_cell">
+            <blocks:OwnerCell />
+        </DataTemplate>
+
+        <DataTemplate x:Key="placeholder_placeholder_big">
+            <blocks:PlaceHolderBig />
+        </DataTemplate>
 
         <DataTemplate x:Key="artist">
             <blocks:ArtistBannerBlockControl />

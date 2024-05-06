@@ -66,6 +66,12 @@
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
 
+                    <NavigationViewItem Content="Вложения">
+                        <NavigationViewItem.Icon>
+                            <FontIcon Glyph="&#xE8F2;" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+
                     <NavigationViewItemSeparator />
                     <NavigationViewItemHeader />
 

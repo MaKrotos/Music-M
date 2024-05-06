@@ -663,6 +663,9 @@ namespace VkNet.Model
         [JsonProperty("photo_max_orig")]
         public Uri PhotoMaxOrig { get; set; }
 
+        public Uri JustGetPhoto => Photo400Orig ?? Photo200Orig ?? Photo200 ?? Photo100 ?? PhotoMaxOrig ?? PhotoMax ?? Photo50;
+
+
         /// <summary>
         /// Избранные пользователем цитаты.
         /// </summary>
@@ -868,5 +871,8 @@ namespace VkNet.Model
         }
 
         #endregion
+
+
+       
     }
 }

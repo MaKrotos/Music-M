@@ -36,6 +36,8 @@
 	  <None Remove="Controls\Blocks\Ext\ListTracksFull.xaml" />
 	  <None Remove="Controls\Blocks\ListPlaylists.xaml" />
 	  <None Remove="Controls\Blocks\MixControl.xaml" />
+	  <None Remove="Controls\Blocks\OwnerCell.xaml" />
+	  <None Remove="Controls\Blocks\PlaceHolderBig.xaml" />
 	  <None Remove="Controls\Blocks\RecommsPlaylistBlock.xaml" />
 	  <None Remove="Controls\Blocks\RecomUsersControl.xaml" />
 	  <None Remove="Controls\Blocks\RemomendedUsersPlaylist.xaml" />
@@ -62,8 +64,11 @@
 	  <None Remove="Views\ModalsPages\EditTrack.xaml" />
 	  <None Remove="Views\SectionView.xaml" />
 	  <None Remove="Views\Settings\SettingsPage.xaml" />
+	  <None Remove="Views\Share\ConversationsList.xaml" />
 	  <None Remove="Views\Share\FriendsList.xaml" />
-	  <None Remove="Views\Share\FromMessagesList.xaml" />
+	  <None Remove="Views\Share\ShareControllers\AttachmentsController.xaml" />
+	  <None Remove="Views\Share\ShareControllers\ConvController.xaml" />
+	  <None Remove="Views\Share\ShareControllers\FriendsList.xaml" />
 	  <None Remove="Views\Share\ShareControllers\UserControllers.xaml" />
 	  <None Remove="Views\Upload\UploadController.xaml" />
 	  <None Remove="Views\Upload\UploadList.xaml" />
@@ -177,6 +182,12 @@
     <Page Update="Controls\Blocks\Buttons.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Controls\Blocks\OwnerCell.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\Blocks\PlaceHolderBig.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="Controls\ListPlaylists.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
@@ -186,10 +197,20 @@
     <None Update="DownloadTrack\ffmpeg.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Page Update="Views\Share\ShareControllers\UserControllers.xaml">
+    <Page Update="Views\Share\ShareControllers\FriendsList.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Views\Share\ShareControllers\AttachmentsController.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Update="Views\Share\FromMessagesList.xaml">
+    <Page Update="Views\Share\ConversationsList.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Views\Share\ShareControllers\ConvController.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Share\ShareControllers\UserControllers.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Views\Share\FriendsList.xaml">

@@ -192,16 +192,18 @@ namespace VkNet.Model
 		[JsonProperty("photo_200")]
 		public Uri Photo200 { get; set; }
 
-	#endregion
+        public Uri JustGetPhoto => Photo200 ?? Photo100;
 
-	#region Опциональные поля
+        #endregion
 
-		/// <summary>
-		/// Строка состояния публичной страницы. У групп возвращается строковое значение,
-		/// открыта ли группа или нет,
-		/// а у событий дата начала.
-		/// </summary>
-		[JsonProperty("activity")]
+        #region Опциональные поля
+
+        /// <summary>
+        /// Строка состояния публичной страницы. У групп возвращается строковое значение,
+        /// открыта ли группа или нет,
+        /// а у событий дата начала.
+        /// </summary>
+        [JsonProperty("activity")]
 		public string Activity { get; set; }
 
 		/// <summary>

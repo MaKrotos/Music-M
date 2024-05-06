@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using VkNet.Abstractions;
 using VkNet.Enums.Filters;
 using VkNet.Enums.SafetyEnums;
@@ -973,5 +974,7 @@ namespace VkNet.Categories
 
             throw new VkApiException("Сообщения с таким ID не существует.");
         }
+
+       
     }
 }
