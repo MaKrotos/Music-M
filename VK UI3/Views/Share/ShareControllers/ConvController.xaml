@@ -77,7 +77,15 @@
     <StackPanel
         Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
         CornerRadius="8" Padding="8,8,8,8" Orientation="Horizontal">
-        <Grid Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}" CornerRadius="50">
+        <Grid x:Name="gridBack" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}" CornerRadius="50">
+
+            <TextBlock
+         HorizontalAlignment="Center"
+         Foreground="Black"
+                Opacity="0.75"
+         VerticalAlignment="Center" FontWeight="Bold"
+                
+         x:Name="AAText"    FontFamily="{ThemeResource VKSansDemiBold}"></TextBlock>
             <Image
         x:Name="userIcon"
         Width="50"
@@ -85,10 +93,7 @@
         HorizontalAlignment="Center"
         VerticalAlignment="Center" />
 
-            <TextBlock
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                x:Name="AAText"    FontFamily="{ThemeResource VKSansDemiBold}"></TextBlock>
+           
         </Grid>
         <TextBlock
             FontFamily="{ThemeResource VKSansMedium}"

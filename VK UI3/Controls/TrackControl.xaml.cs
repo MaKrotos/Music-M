@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
+using MusicX.Shared.Player;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -39,10 +40,11 @@ namespace VK_UI3.Controls
         {
             this.InitializeComponent();
 
-            this.DataContextChanged += TrackControl_DataContextChanged;
+     
             Loaded += TrackControl_Loaded;
             Unloaded += TrackControl_Unloaded;
             this.Loading += TrackControl_Loading;
+            this.DataContextChanged += TrackControl_DataContextChanged;
             if (changeImage == null)
                 changeImage = new AnimationsChangeImage(ImageThumb, DispatcherQueue);
             changeIconPlayBTN = new AnimationsChangeIcon(PlayBTN);
@@ -53,11 +55,11 @@ namespace VK_UI3.Controls
             addedHandler = false;
             if (dataTrack != null)
             {
-                dataTrack.iVKGetAudio.AudioPlayedChangeEvent -= UserAudio_AudioPlayedChangeEvent;
+                AudioPlayer.AudioPlayedChangeEvent -= UserAudio_AudioPlayedChangeEvent;
             }
-            this.DataContextChanged -= TrackControl_DataContextChanged;
-            Loaded -= TrackControl_Loaded;
-            Unloaded -= TrackControl_Unloaded;
+          //  this.DataContextChanged -= TrackControl_DataContextChanged;
+          //  Loaded -= TrackControl_Loaded;
+          //  Unloaded -= TrackControl_Unloaded;
         }
         string? berImageLink = "";
 
@@ -66,8 +68,8 @@ namespace VK_UI3.Controls
             if ((DataContext as ExtendedAudio) != null)
             {
 
-                if (dataTrack != null)
-                    dataTrack.iVKGetAudio.AudioPlayedChangeEvent -= UserAudio_AudioPlayedChangeEvent;
+               // if (dataTrack != null)
+                  //  dataTrack.iVKGetAudio.AudioPlayedChangeEvent -= UserAudio_AudioPlayedChangeEvent;
 
                 var track = (DataContext as ExtendedAudio).audio;
                 if (track == null)
@@ -229,7 +231,7 @@ namespace VK_UI3.Controls
 
             if (dataTrack != null && !addedHandler)
             {
-                dataTrack.iVKGetAudio.AudioPlayedChangeEvent += UserAudio_AudioPlayedChangeEvent;
+                AudioPlayer.AudioPlayedChangeEvent += UserAudio_AudioPlayedChangeEvent;
                 addedHandler = true;
             }
         }
@@ -296,7 +298,7 @@ namespace VK_UI3.Controls
         AnimationsChangeImage changeImage = null;
         private void TrackControl_Loaded(object sender, RoutedEventArgs e)
         {
-
+           
         }
         public void RecommendedAudio_Click(object sender, RoutedEventArgs e)
         {
@@ -313,9 +315,13 @@ namespace VK_UI3.Controls
         {
             try
             {
-                Symbol symbol = dataTrack.PlayThis ? Symbol.Pause : Symbol.Play;
-                ChangeSymbolIcon(symbol);
-                HandleAnimation(dataTrack.PlayThis);
+                var a = dataTrack.audio.AccessKey == (sender as ExtendedAudio).audio.AccessKey;
+                Symbol symbol =  a ? Symbol.Pause : Symbol.Play;
+                this.DispatcherQueue.TryEnqueue(async() =>
+                {
+                    ChangeSymbolIcon(symbol);
+                    HandleAnimation(a);
+                });
             }
             catch (Exception ex)
             {
@@ -374,11 +380,7 @@ namespace VK_UI3.Controls
             GoMainArtist();
         }
 
-        public void Download_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
+       
         public void AddToQueue_Click(object sender, RoutedEventArgs e)
         {
 
@@ -693,8 +695,6 @@ namespace VK_UI3.Controls
             {
                 if (dialog != null)
                     dialog.Hide();
-
-                //    a.selectedPlayList -= handler; // Отписка от события
             };
 
             a.selectedPlayList += handler;
@@ -720,8 +720,6 @@ namespace VK_UI3.Controls
 
             dialog.Shadow = null;
             dialog.BorderThickness = new Thickness(0);
-
-
         }
 
 

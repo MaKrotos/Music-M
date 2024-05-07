@@ -258,38 +258,7 @@ namespace VK_UI3.VKs
                 llogin = arg;
                 Vk2FaCanUsePassword = flowNames.Any(b => b == AuthType.Password);
 
-
-
-                HasAnotherVerificationMethods = nextStep?.HasAnotherVerificationMethods ?? false;
-
-                if (flowNames.Any(b => b == AuthType.Passkey))
-                {
-                    if (flowNames.Count > 1 && nextStep?.HasAnotherVerificationMethods is null or true)
-                    {
-
-
-                        ObservableRangeCollection<EcosystemVerificationMethod> VerificationMethods = new();
-
-                        var response = await _ecosystemCategory.GetVerificationMethodsAsync(Sid);
-
-                        VerificationMethods.ReplaceRange(response.Methods.Where(b => !string.IsNullOrEmpty(b.Name?.ToString())).OrderBy(b => b.Priority));
-                        if (!hasOnePass)
-                        {
-                            VerificationMethods.Remove(VerificationMethods.FirstOrDefault(x => x.Name == LoginWay.Passkey));
-                        }
-                        ChooseVerMethods chooseVerMethods = new ChooseVerMethods();
-
-                        chooseVerMethods.VerificationMethods = VerificationMethods;
-
-                        chooseVerMethods.vk = this;
-
-                        login.Frame.Navigate(typeof(ChooseVerMethods), chooseVerMethods, new DrillInNavigationTransitionInfo());
-
-                        return;
-                    }
-                    await NextStepAsync(LoginWay.Passkey);
-                    return;
-                }
+                
 
                 if (nextStep is null || nextStep.VerificationMethod == LoginWay.Password)
                 {
@@ -319,12 +288,47 @@ namespace VK_UI3.VKs
                     return;
                 }
 
-                await NextStepAsync(nextStep.VerificationMethod);
+
+                ObservableRangeCollection<EcosystemVerificationMethod> VerificationMethods = new();
+                var response = await _ecosystemCategory.GetVerificationMethodsAsync(Sid);
+                VerificationMethods.ReplaceRange(response.Methods.Where(b => !string.IsNullOrEmpty(b.Name?.ToString())).OrderBy(b => b.Priority));
+
+
+                HasAnotherVerificationMethods = nextStep?.HasAnotherVerificationMethods ?? false;
+
+                if (flowNames.Any(b => b == AuthType.Passkey))
+                {
+                    if (flowNames.Count > 1 && nextStep?.HasAnotherVerificationMethods is null or true)
+                    {
+
+
+
+                        VerificationMethods.ReplaceRange(response.Methods.Where(b => !string.IsNullOrEmpty(b.Name?.ToString())).OrderBy(b => b.Priority));
+                        if (!hasOnePass)
+                        {
+                            VerificationMethods.Remove(VerificationMethods.FirstOrDefault(x => x.Name == LoginWay.Passkey));
+                        }
+                        ChooseVerMethods chooseVerMethods = new ChooseVerMethods();
+
+                        chooseVerMethods.VerificationMethods = VerificationMethods;
+
+                        chooseVerMethods.vk = this;
+
+                        login.Frame.Navigate(typeof(ChooseVerMethods), chooseVerMethods, new DrillInNavigationTransitionInfo());
+
+                        return;
+                    }
+                    await NextStepAsync(LoginWay.Passkey);
+                    return;
+                }
+
+                await NextStepAsync(nextStep.VerificationMethod, VerificationMethods.Where(ver => ver.Name.Equals(nextStep.VerificationMethod)).FirstOrDefault().Info);
             }
             catch (Exception ex)
             {
+                login.Frame.GoBack();
                 throw (ex);
-
+             
             }
         }
 
@@ -473,9 +477,13 @@ namespace VK_UI3.VKs
 
             OtpCode otpCodee = new OtpCode();
 
+            otpCodee.Info = phone;
+
             otpCodee.loginWay = loginWay;
 
             otpCodee.HasAnotherVerificationMethods = HasAnotherVerificationMethods;
+
+            otpCodee.CodeLength = codeLength;
 
             otpCodee.vk = this;
 

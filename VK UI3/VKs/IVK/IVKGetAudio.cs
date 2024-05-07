@@ -123,9 +123,9 @@ namespace VK_UI3.VKs.IVK
         public event ChangedPlayAudio AudioPlayedChangeEvent;
 
         // Метод для вызова события
-        public void ChangePlayAudio()
+        public void ChangePlayAudio(ExtendedAudio trackdata)
         {
-            AudioPlayedChangeEvent?.Invoke(this, EventArgs.Empty);
+            AudioPlayedChangeEvent?.Invoke(trackdata, EventArgs.Empty);
         }
         public string Next;
 

@@ -64,10 +64,13 @@ namespace VK_UI3.Views.LoginWindow
 
                 if (loginWay == LoginWay.Email)
                     txt = "Ваш код авторизации был отправлен на ваш Mail";
+                if (this.Info != "" && this.Info != null) txt += $" ({Info})";
 
                 if (loginWay == LoginWay.Sms)
+                {
                     txt = "Ваш код авторизации был отправлен в смс сообщении";
-
+                    if (this.Info != "" && this.Info != null) txt += " на номер " + Info;
+                }
                 if (loginWay == LoginWay.Push)
                     txt = "Ваш код авторизации был отправлен в приложение ВК на Вашем мобильном устройстве.";
 

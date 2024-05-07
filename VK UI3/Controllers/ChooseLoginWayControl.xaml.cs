@@ -19,6 +19,8 @@ namespace VK_UI3.Controllers
             set { SetValue(loginWayD, value); }
         }
 
+        public string info { get; set; }
+
         string hello = "";
         private static void onLoiginWayProrertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -64,6 +66,7 @@ namespace VK_UI3.Controllers
                         fontIcon.Glyph = "\uE8BD";
                         MainTxT.Text = "Sms уведомление";
                         secondTXT.Text = "Вам будет отправлено СМС сообщение для авторизации";
+                        if (loginWay.Info != "" && loginWay.Info != null) secondTXT.Text += " на номер " + loginWay.Info;
                     }
                     else if (loginWay.Name == LoginWay.ReserveCode)
                     {
@@ -76,6 +79,8 @@ namespace VK_UI3.Controllers
                         fontIcon.Glyph = "\uE715";
                         MainTxT.Text = "Электронная почта";
                         secondTXT.Text = "Вам будет отправлен код на электронную почту";
+                        if (loginWay.Info != "" && loginWay.Info != null) secondTXT.Text += $" {(loginWay.Info)}";
+
                     }
                     else if (loginWay.Name == LoginWay.Password)
                     {

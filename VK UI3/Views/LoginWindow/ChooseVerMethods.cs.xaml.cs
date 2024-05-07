@@ -72,7 +72,7 @@ namespace VK_UI3.Views.LoginWindow
             var se = VerificationMethods[LoginsListView.SelectedIndex].Name;
 
 
-            vk.NextStepAsync(se);
+            _ = vk.NextStepAsync(se, VerificationMethods[LoginsListView.SelectedIndex].Info);
 
         }
     }

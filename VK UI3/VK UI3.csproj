@@ -301,8 +301,4 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Resource\" />
-  </ItemGroup>
 </Project>
