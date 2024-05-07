@@ -65,7 +65,16 @@ namespace VK_UI3.VKs.IVK
 
         public void PhotoUpdated() { onPhotoUpdated?.RaiseEvent(this, EventArgs.Empty); }
 
-        public long? countTracks { get; set; }
+
+        private long? _countTracks { get; set; }
+
+        public long? countTracks { get
+            {
+                if (_countTracks != -1) return countTracks;
+                else return listAudio.Count;
+            
+            }
+            set { _countTracks = (long)value; } }
 
 
         private long? _currentTrack;
