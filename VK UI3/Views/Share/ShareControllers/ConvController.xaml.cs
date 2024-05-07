@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TagLib.Ape;
 using VK_UI3.Resource;
+using VK_UI3.VKs.IVK;
 using VkNet.Model;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -23,13 +24,13 @@ namespace VK_UI3.Views.Share.ShareControllers
             animationsChangeImage = new Helpers.Animations.AnimationsChangeImage(userIcon, this.DispatcherQueue);
         }
         Helpers.Animations.AnimationsChangeImage animationsChangeImage;
-
+        MessConv messConv;
         private void UserControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             
             if (DataContext is not MessConv messConv)
             { return; }
-
+            this.messConv = messConv;
 
             //ImagesGrid.Opacity = 0;
 
@@ -113,13 +114,8 @@ namespace VK_UI3.Views.Share.ShareControllers
 
         private void StackPanel_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-           // MainView.OpenSection(user.Id.ToString(), sectionType: SectionView.SectionType.UserSection);
-
-            //  if (e.GetCurrentPoint(sender as UIElement).Properties.IsLeftButtonPressed)
-            //  {
-
-            //      MainView.OpenPlayList(_PlayList.Playlist);
-            //  }
+            MessagesAudio messagesAudio = new MessagesAudio(messConv: messConv, dispatcher: DispatcherQueue);
+            MainView.OpenPlayList(messagesAudio);
 
         }
 

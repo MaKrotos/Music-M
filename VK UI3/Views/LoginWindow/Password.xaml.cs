@@ -21,8 +21,6 @@ namespace VK_UI3.Views.LoginWindow
         public int CodeLength { get; set; }
         public string? Info { get; set; }
 
-
-
         public string FirstName { get; set; } = "Незнакомец";
         public string Photo200 { get; set; } = "null";
         public string Phone { get; set; } = "***********";

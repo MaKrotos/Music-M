@@ -220,6 +220,8 @@ namespace VK_UI3.Views
                         waitParameters.iVKGetAudio.onListUpdate -= (handlerContainer.Handler);
                     };
                 waitParameters.iVKGetAudio.onListUpdate += (handlerContainer.Handler);
+                if (!waitParameters.iVKGetAudio.getLoadedTracks)
+                    waitParameters.iVKGetAudio.GetTracks();
             }
         }
 

@@ -4,7 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using TagLib.Ape;
 using VK_UI3.Helpers;
+using VK_UI3.Views.Share;
+using VkNet.Enums.SafetyEnums;
 using VkNet.Model;
 using VkNet.Model.Attachments;
 using VkNet.Model.RequestParams;
@@ -14,35 +17,43 @@ namespace VK_UI3.VKs.IVK
 {
     public class MessagesAudio : IVKGetAudio
     {
-        public MessagesAudio(long id, DispatcherQueue dispatcher) : base(id, dispatcher)
+        public MessagesAudio(MessConv messConv, DispatcherQueue dispatcher) : base(dispatcher)
         {
-            base.id = id.ToString();
+            base.id = messConv.conversation.Peer.LocalId.ToString();
+            this.messConv = messConv;
         }
-
+       
+        
         public override long? getCount()
         {
-            return api.Audio.GetCountAsync(long.Parse(id)).Result;
+            return -1;
         }
 
-        public User user;
+        MessConv messConv = null;
         public override string getName()
         {
             try
             {
-                List<long> ids = new List<long> { long.Parse(id) };
-                user = api.Users.GetAsync(ids).Result[0];
-
-                var request = new VkParameters
+                switch (messConv.conversation.Peer.Type.ToString())
                 {
-                    {"user_ids", string.Join(",", ids)},
-                    {"fields", string.Join(",", "photo_max_orig", "status")}
-                };
+                    case "chat":
+                        return messConv.conversation.ChatSettings.Title;
+                        
 
-                var response = api.Call("users.get", request);
-                user = User.FromJson(response[0]);
+                        break;
+                    case "user":
+                        return messConv.user.FirstName +" "+messConv.user.LastName;
+                        break;
+                    case "group":
+                        return messConv.group.Name;
+                        break;
+                    case "email":
 
+                        break;
+                    default:
+                        break;
+                }
 
-                return user.FirstName + " " + user.LastName;
             }
             catch (Exception ex)
             {
@@ -59,15 +70,27 @@ namespace VK_UI3.VKs.IVK
 
         public override Uri getPhoto()
         {
-            if (user != null)
+            switch (messConv.conversation.Peer.Type.ToString())
             {
-                return
-                    user.PhotoMaxOrig;
-            }
-            else
-                return null;
-        }
+                case "chat":
+                    return messConv.conversation.ChatSettings.Photo.JustGetPhoto;
 
+                    break;
+                case "user":
+                    return messConv.user.JustGetPhoto;
+                    break;
+                case "group":
+                    return messConv.group.JustGetPhoto;
+                    break;
+                case "email":
+
+                    break;
+                default:
+                    break;
+            }
+            return null;
+        }
+        string nextFrom = null;
         public override void GetTracks()
         {
             if (getLoadedTracks) return;
@@ -75,27 +98,25 @@ namespace VK_UI3.VKs.IVK
 
             Task.Run(async () =>
             {
-                int offset = listAudio.Count;
-                int count = 250;
+                
+                int count = 200;
 
-                if (countTracks > listAudio.Count)
-                {
+                
                     VkCollection<Audio> audios;
 
-
-                    audios = api.Audio.GetAsync(new AudioGetParams
+                    MessagesGetHistoryAttachmentsParams messagesGetHistoryAttachmentsParams = new MessagesGetHistoryAttachmentsParams()
                     {
-                        OwnerId = int.Parse(id),
-                        Offset = offset,
-                        Count = count
-                    }).Result;
+                        Count = 200,
+                        MediaType = MediaType.Audio,
+                        PeerId = messConv.conversation.Peer.Id,
+                        StartFrom = nextFrom
+                    };
 
-
+                    var attach = (VK.api.Messages.GetHistoryAttachments(messagesGetHistoryAttachmentsParams, out nextFrom));
                     ManualResetEvent resetEvent = new ManualResetEvent(false);
-
-                    foreach (var item in audios)
+                    foreach (var item in attach)
                     {
-                        ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
+                        ExtendedAudio extendedAudio = new ExtendedAudio(item.Attachment.Instance as Audio, this);
 
                         DispatcherQueue.TryEnqueue(() =>
                         {
@@ -111,7 +132,7 @@ namespace VK_UI3.VKs.IVK
 
 
                     getLoadedTracks = false;
-                }
+               
                 NotifyOnListUpdate();
             });
         }

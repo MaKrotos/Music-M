@@ -17,7 +17,7 @@ namespace VK_UI3.VKs.IVK
         {
             this.mix_id = mix_id;
             //Ќу никто ж не будет слушать столько, да?
-            this.countTracks = 10000000000000;
+            this.countTracks = -1;
             waitCreate = true;
             Task.Run(async () =>
             {

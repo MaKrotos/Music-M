@@ -584,9 +584,11 @@ namespace VK_UI3.Controllers
             mediaPlayer.Source = mediaPlaybackItem;
             mediaPlayer.Play();
 
-            iVKGetAudio.ChangePlayAudio();
-
+            iVKGetAudio.ChangePlayAudio(trackdata);
+            AudioPlayedChangeEvent.Invoke(trackdata, EventArgs.Empty);
         }
+
+        public static event EventHandler AudioPlayedChangeEvent;
 
 
 
