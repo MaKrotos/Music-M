@@ -102,7 +102,9 @@ namespace VK_UI3.Views
             PlayList,
             UserPlayListList,
             UserSection,
-            MessConv
+            MessConv,
+            ConversDialogs,
+            LoadFriends
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

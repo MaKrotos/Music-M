@@ -584,7 +584,7 @@ namespace VkNet.Model
         /// Признак находится ли пользователь сейчас на сайте.
         /// </summary>
         [JsonProperty("online")]
-        public bool? Online { get; set; }
+        public bool Online { get; set; } = false;
 
         /// <summary>
         /// Жизненная позиция.
@@ -663,7 +663,7 @@ namespace VkNet.Model
         [JsonProperty("photo_max_orig")]
         public Uri PhotoMaxOrig { get; set; }
 
-        public Uri JustGetPhoto => Photo400Orig ?? Photo200Orig ?? Photo200 ?? Photo100 ?? PhotoMaxOrig ?? PhotoMax ?? Photo50;
+        public Uri JustGetPhoto => PhotoMaxOrig ?? Photo400Orig ?? Photo200Orig ?? Photo200 ?? Photo100 ?? PhotoMax ?? Photo50;
 
 
         /// <summary>

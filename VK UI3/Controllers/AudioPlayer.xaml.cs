@@ -533,7 +533,7 @@ namespace VK_UI3.Controllers
             if (v != null) iVKGetAudio.currentTrack = (long)v;
 
             var trackdata = await _TrackDataThisGet();
-
+            if (trackdata == null) return;
 
             if (iVKGetAudio is PlayListVK)
             {

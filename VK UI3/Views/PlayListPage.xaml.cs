@@ -235,8 +235,13 @@ namespace VK_UI3.Views
 
 
                     MainText.ChangeTextWithAnimation(vkGetAudio.name);
-                    CountTrText.Text = $"Треков: {vkGetAudio.countTracks}";
-
+                    if (vkGetAudio.countTracks == -1) {
+                        CountTrText.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        CountTrText.Text = $"Треков: {vkGetAudio.countTracks}";
+                    }
 
                 }
                 if (vkGetAudio is UserAudio userAudio)
@@ -247,8 +252,6 @@ namespace VK_UI3.Views
                         VK_UI3.Views.Upload.UploadTrack.addedTrack += addedTrack;
                     }
                     DescriptionText.Text = userAudio.user.Status;
-
-
                     if (
                         userAudio.user.Status != null &&
                         (userAudio.user.Status.Equals("") || DescriptionText.Text == null)
@@ -262,9 +265,9 @@ namespace VK_UI3.Views
 
 
                 }
+                CheckAndHideGrid(AddInfo);
 
-
-
+                if (DescriptionText.Text is null || DescriptionText.Text == "") DescriptionText.Visibility = Visibility.Collapsed;
                 MainText.ChangeTextWithAnimation(vkGetAudio.name);
                 CountTrText.Visibility = Visibility.Visible;
 
@@ -272,12 +275,41 @@ namespace VK_UI3.Views
             });
         }
 
+        public void CheckAndHideGrid(StackPanel grid)
+        {
+            bool allChildrenHidden = true;
+
+            foreach (UIElement child in grid.Children)
+            {
+                if (child.Visibility == Visibility.Visible)
+                {
+                    if (child is TextBlock textblock && (textblock.Text is null || textblock.Text == ""))
+                    { textblock.Visibility = Visibility.Collapsed; }
+                    else
+                    {
+                        allChildrenHidden = false;
+                        break;
+                    }
+                }
+            }
+
+            if (allChildrenHidden)
+            {
+                grid.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                grid.Visibility = Visibility.Visible;
+            }
+        }
+
+
         private void addedTrack(object sender, EventArgs e)
         {
             if (sender is Audio audio)
             {
                 vkGetAudio.listAudio.Insert(0, new ExtendedAudio(audio, vkGetAudio));
-                vkGetAudio.NotifyOnListUpdate();
+                vkGetAudio.updateNumbers();
             }
         }
 

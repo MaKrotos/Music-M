@@ -24,9 +24,9 @@ namespace VK_UI3.VKs.IVK
         public PlayListVK(AudioPlaylist _playlist, DispatcherQueue dispatcher) : base(dispatcher)
         {
             waitCreate = true;
+            this.playlist = _playlist;
             Task.Run(async () =>
             {
-
                 try
                 {
 
@@ -151,12 +151,13 @@ namespace VK_UI3.VKs.IVK
                 finally
                 {
                     waitCreate = true;
+                    getLoadedTracks = true;
                     NotifyOnListUpdate();
                 }
 
 
 
-            });
+            }).Wait();
         }
 
         public PlayListVK(RecommendedPlaylist _playlist, DispatcherQueue dispatcher) : base(dispatcher)

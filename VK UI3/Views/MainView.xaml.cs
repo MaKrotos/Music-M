@@ -446,7 +446,7 @@ namespace VK_UI3.Views
                         break;
 
                     case "музыка друзей":
-                        frame.Navigate(typeof(Share.FriendsList), null, new DrillInNavigationTransitionInfo());
+                        OpenMyPage(SectionType.LoadFriends);
                         break;
 
                     case "вложения":

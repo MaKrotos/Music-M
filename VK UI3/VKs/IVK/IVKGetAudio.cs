@@ -70,7 +70,7 @@ namespace VK_UI3.VKs.IVK
 
         public long? countTracks { get
             {
-                if (_countTracks == null) return null; 
+                if (_countTracks == null) return -1; 
                 if (_countTracks != -1) return _countTracks;
                 else return listAudio.Count;
             
@@ -243,6 +243,12 @@ namespace VK_UI3.VKs.IVK
 
         public void NotifyOnListUpdate()
         {
+            foreach (var item in tcs)
+            {
+                item.SetResult(true);
+            }
+            tcs.Clear();
+            getLoadedTracks = false;
             onListUpdate?.Invoke(this, EventArgs.Empty);
         }
         public void updateNumbers()
@@ -351,7 +357,7 @@ namespace VK_UI3.VKs.IVK
 
 
 
-        TaskCompletionSource<bool> tcs;
+       public  List<TaskCompletionSource<bool>> tcs = new();
 
         public bool getLoadedTracks = false;
         public async Task<ExtendedAudio> GetTrackPlayAsync(long tracI)
@@ -362,9 +368,12 @@ namespace VK_UI3.VKs.IVK
                 {
                     if (itsAll) return null;
                     else
+                    {
+                        var tcsz = new TaskCompletionSource<bool>();
+                        tcs.Add(tcsz);
                         GetTracks();
-                    tcs = new TaskCompletionSource<bool>();
-                    await tcs.Task;
+                        await tcsz.Task;
+                    }
                 }
 
             }

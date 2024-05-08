@@ -100,9 +100,6 @@ namespace VK_UI3.Views
             if (userPlayList == null)
                 return;
             parameters = userPlayList;
-
-
-
         }
 
 

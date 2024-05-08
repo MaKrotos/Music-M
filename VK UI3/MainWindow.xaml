@@ -206,7 +206,7 @@
                         Background="Transparent"
                         CornerRadius="5"
                         OriginalHeight="25"
-                        OriginalMargin="0,0,0,5"
+                        OriginalMargin="5,0,5,5"
                         OriginalWidth="35">
                         <Button.Flyout>
                             <Flyout>

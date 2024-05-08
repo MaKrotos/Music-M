@@ -112,12 +112,16 @@ namespace VK_UI3.Views.Share
             if (loadingNow) return;
              loadingNow = true;
 
-            int off = 200;
+            int off = 50;
 
             var parameters = new GetConversationsParams();
-            parameters.Count = 200;
+            parameters.Count = 50;
             parameters.Offset = (ulong) counted;
             parameters.Extended = true;
+            parameters.Fields = new string[] {
+                "photo_max_orig",
+                "online"
+            };
          
          
             counted += off;

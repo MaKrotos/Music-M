@@ -178,60 +178,57 @@
 
 
                     </StackPanel>
+
+
                     <StackPanel
+                        x:Name="AddInfo"
                         Margin="0,10,0,0"
                         Padding="10"
                         Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
-                        CornerRadius="4"
-                        Translation="0,0,16">
-
-                        <StackPanel
-                            x:Name="AddInfo"
-                            Grid.Column="1"
+                        Opacity="0.5"
+                        Orientation="Vertical"
+                        Translation="0,0,16"
+                        Visibility="{Binding Path=VisibileAddInfo}">
+                        <TextBlock
+                            x:Name="FollowersText"
+                            FontFamily="{StaticResource VKSansRegular}"
+                            Text="{Binding Genres}"
+                            Visibility="Collapsed" />
+                        <TextBlock
+                            x:Name="Genres"
+                            FontFamily="{StaticResource VKSansRegular}"
+                            Text="{Binding Genres}"
+                            Visibility="Collapsed" />
+                        <TextBlock
+                            x:Name="Dot2"
                             Margin="0,0,0,0"
-                            Opacity="0.5"
-                            Orientation="Vertical"
-                            Visibility="{Binding Path=VisibileAddInfo}">
-                            <TextBlock
-                                x:Name="FollowersText"
-                                FontFamily="{StaticResource VKSansRegular}"
-                                Text="{Binding Genres}"
-                                Visibility="Collapsed" />
-                            <TextBlock
-                                x:Name="Genres"
-                                FontFamily="{StaticResource VKSansRegular}"
-                                Text="{Binding Genres}"
-                                Visibility="Collapsed" />
-                            <TextBlock
-                                x:Name="Dot2"
-                                Margin="0,0,0,0"
-                                Text=""
-                                Visibility="Collapsed" />
-                            <TextBlock
-                                x:Name="Year"
-                                Margin="0,0,0,0"
-                                FontFamily="{StaticResource VKSansRegular}"
-                                Text="{Binding Year}"
-                                Visibility="Collapsed" />
+                            Text=""
+                            Visibility="Collapsed" />
+                        <TextBlock
+                            x:Name="Year"
+                            Margin="0,0,0,0"
+                            FontFamily="{StaticResource VKSansRegular}"
+                            Text="{Binding Year}"
+                            Visibility="Collapsed" />
 
-                            <TextBlock
-                                x:Name="Plays"
-                                Margin="0,0,0,0"
-                                FontFamily="{StaticResource VKSansRegular}"
-                                Text="{Binding Plays}"
-                                Visibility="Collapsed" />
-                            <TextBlock
-                                x:Name="PlaysText"
-                                Margin="3,0,0,0"
-                                Text=""
-                                Visibility="Collapsed" />
-                            <TextBlock
-                                x:Name="CountTrText"
-                                FontFamily="{StaticResource VKSansRegular}"
-                                Text="{Binding Genres}"
-                                Visibility="Collapsed" />
-                        </StackPanel>
+                        <TextBlock
+                            x:Name="Plays"
+                            Margin="0,0,0,0"
+                            FontFamily="{StaticResource VKSansRegular}"
+                            Text="{Binding Plays}"
+                            Visibility="Collapsed" />
+                        <TextBlock
+                            x:Name="PlaysText"
+                            Margin="3,0,0,0"
+                            Text=""
+                            Visibility="Collapsed" />
+                        <TextBlock
+                            x:Name="CountTrText"
+                            FontFamily="{StaticResource VKSansRegular}"
+                            Text="{Binding Genres}"
+                            Visibility="Collapsed" />
                     </StackPanel>
+
                     <GridView
                         x:Name="stackPanel"
                         Margin="0,10,0,0"

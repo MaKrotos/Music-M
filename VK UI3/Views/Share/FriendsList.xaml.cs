@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using VK_UI3.VKs;
@@ -17,6 +18,12 @@ namespace VK_UI3.Views.Share
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
+    /// 
+    public class FriendsListParametrs
+    {
+        internal bool itsAll;
+        internal VkCollection<User> friends;
+    }
     public sealed partial class FriendsList : Page
     {
 
@@ -26,10 +33,13 @@ namespace VK_UI3.Views.Share
             this.InitializeComponent();
             this.Loaded += FriendsList_Loaded;
         }
-        ScrollViewer scrollViewer;
+        ScrollViewer scrollViewer = null;
         private void FriendsList_Loaded(object sender, RoutedEventArgs e)
         {
-            scrollViewer = FindScrollViewer(scrollView);
+            
+
+
+            if (scrollViewer == null) scrollViewer = FindScrollViewer(scrollView);
             if (scrollViewer != null)
             {
                 // Подписываемся на событие изменения прокрутки
@@ -39,11 +49,37 @@ namespace VK_UI3.Views.Share
 
         private void Page_Loading(FrameworkElement sender, object args)
         {
-            loadMoreFriends();
+            if (friendsListParametrs != null)
+            {
+                friendsListParametrs.itsAll = itsAll;
+
+                this.DispatcherQueue.TryEnqueue(() =>
+                {
+                    foreach (var item in friendsListParametrs.friends)
+                    {
+                        friends.Add(item);
+                    }
+                    if (scrollViewer == null) scrollViewer = FindScrollViewer(scrollView);
+                    if (CheckIfAllContentIsVisible(scrollViewer)) loadMoreFriends();
+                });
+            }
+            else
+            {
+                loadMoreFriends();
+            }
+           
         }
         bool itsAll = false;
         bool loadingNow = false;
+        FriendsListParametrs friendsListParametrs = null;
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            var userPlayList = e.Parameter as FriendsListParametrs;
+            if (userPlayList == null)
+                return;
+            friendsListParametrs = userPlayList;
+        }
         private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
             var isAtBottom = scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight - 50;
@@ -107,10 +143,9 @@ namespace VK_UI3.Views.Share
             {
                 { "count", off },
                 { "fields", "can_see_audio,photo_50,online, online, photo_100, photo_200_orig, status, nickname" },
-                { "offset", counted },
+                { "offset", friends.Count },
                 { "order", "name" }
             };
-            counted += off;
 
             var a = (await VK.api.CallAsync("friends.get", parameters)).ToVkCollectionOf<User>(
                 x => parameters["fields"] != null
@@ -127,9 +162,7 @@ namespace VK_UI3.Views.Share
             {
                 foreach (var item in a)
                 {
-               
                         friends.Add(item);
-              
                 }
             });
 

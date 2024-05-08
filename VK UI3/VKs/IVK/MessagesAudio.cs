@@ -99,14 +99,12 @@ namespace VK_UI3.VKs.IVK
             Task.Run(async () =>
             {
                 
-                int count = 200;
-
-                
+                    int count = 10;
                     VkCollection<Audio> audios;
 
                     MessagesGetHistoryAttachmentsParams messagesGetHistoryAttachmentsParams = new MessagesGetHistoryAttachmentsParams()
                     {
-                        Count = 200,
+                        Count = count,
                         MediaType = MediaType.Audio,
                         PeerId = messConv.conversation.Peer.Id,
                         StartFrom = nextFrom
@@ -128,7 +126,7 @@ namespace VK_UI3.VKs.IVK
                         resetEvent.Reset(); // —брасывает событие дл€ следующей итерации
                     }
 
-                    if (countTracks == listAudio.Count()) itsAll = true;
+                    if (nextFrom == null) itsAll = true;
 
 
                     getLoadedTracks = false;

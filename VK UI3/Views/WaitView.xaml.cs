@@ -5,9 +5,12 @@ using System;
 using System.Threading.Tasks;
 using VK_UI3.DB;
 using VK_UI3.Views.LoginWindow;
+using VK_UI3.Views.Share;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
+using VkNet.Model;
 using VkNet.Model.Attachments;
+using VkNet.Utils;
 using static VK_UI3.Views.SectionView;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -176,8 +179,10 @@ namespace VK_UI3.Views
                     SectionType.PlayList => LoadPlayList(handlerContainer),
                     SectionType.UserPlayListList => UserPlayListList(),
                     SectionType.MyListAudio => LoadMyAudioList(handlerContainer),
+                    SectionType.ConversDialogs => LoadDialogs(),
+                    SectionType.LoadFriends => LoadFriends(),
                     _ => throw new ArgumentOutOfRangeException()
-                });
+                }); ;
             }
             finally
             {
@@ -185,6 +190,41 @@ namespace VK_UI3.Views
             }
         }
 
+        private async Task LoadDialogs()
+        {
+            throw new NotImplementedException();
+        }
+
+        private async Task LoadFriends()
+        {
+  
+
+            var parameters = new VkParameters
+            {
+                { "count", 25 },
+                { "fields", "can_see_audio,photo_50,online, online, photo_100, photo_200_orig, status, nickname" },
+                { "offset", 0 },
+                { "order", "name" }
+            };
+
+            var a = (await VK.api.CallAsync("friends.get", parameters)).ToVkCollectionOf<User>(
+                x => parameters["fields"] != null
+                      ? x
+                      : new User
+                      {
+                          Id = x
+                      }
+                );
+            FriendsListParametrs userPlayListParameters = new();
+            if (a.Count < 25) userPlayListParameters.itsAll = true;
+            userPlayListParameters.friends = a;
+
+
+
+
+
+            frameSection.Navigate(typeof(FriendsList), userPlayListParameters, new DrillInNavigationTransitionInfo());
+        }
 
         private async Task UserPlayListList()
         {

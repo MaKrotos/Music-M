@@ -113,8 +113,7 @@ namespace VK_UI3.DownloadTrack
         public async Task PlayListDownloadAsync()
         {
 
-
-            _ = Task.Run(() =>
+            _ = Task.Run(async() =>
             {
                 try
                 {
@@ -124,7 +123,7 @@ namespace VK_UI3.DownloadTrack
                     string ffmpegPath = new CheckFFmpeg().getPathFfmpeg();
 
 
-                    while (iVKGetAudio.countTracks > downloaded)
+                    while (iVKGetAudio.listAudio.Count() > downloaded || !iVKGetAudio.itsAll)
                     {
                         pauseEvent.WaitOne();
                         if (cts.Token.IsCancellationRequested)
@@ -132,16 +131,14 @@ namespace VK_UI3.DownloadTrack
                             break;
                         }
 
-                        while (downloaded >= iVKGetAudio.listAudioTrue.Count)
+                        while (downloaded >= iVKGetAudio.listAudioTrue.Count && iVKGetAudio.countTracks != -1 && !iVKGetAudio.itsAll)
                         {
-                            if (iVKGetAudio.itsAll) return;
-                            if (iVKGetAudio.getLoadedTracks)
-                            {
-
-                                continue;
-                            }
+                            var tcsz = new TaskCompletionSource<bool>();
+                            iVKGetAudio.tcs.Add(tcsz);
                             iVKGetAudio.GetTracks();
+                            await tcsz.Task;
                         }
+                        if (downloaded >= iVKGetAudio.listAudioTrue.Count) break;
 
 
                         var a = iVKGetAudio.listAudioTrue[downloaded].audio;
@@ -203,7 +200,7 @@ namespace VK_UI3.DownloadTrack
 
                         dispatcherQueue.TryEnqueue(async () =>
                         {
-                            OnTrackDownloaded?.Invoke(this, new TrackDownloadedEventArgs { Downloaded = downloaded, Total = (int)iVKGetAudio.countTracks });
+                            OnTrackDownloaded?.Invoke(this, new TrackDownloadedEventArgs { Downloaded = downloaded, Total = (int?)iVKGetAudio.countTracks });
                         });
 
 
@@ -222,7 +219,8 @@ namespace VK_UI3.DownloadTrack
                     {
                         PlayListDownloads.Remove(this);
                         PlayListDownloadsList.Remove(iVKGetAudio);
-                        if (PlayListDownloads.Count() == 0) EndAllDownload();
+                        //if (iVKGetAudio.listAudio.Count() == downloaded && iVKGetAudio.itsAll) 
+                            EndAllDownload();
                     });
 
                 }
@@ -341,7 +339,7 @@ namespace VK_UI3.DownloadTrack
     public class TrackDownloadedEventArgs : EventArgs
     {
         public int Downloaded { get; set; }
-        public int Total { get; set; }
+        public int? Total { get; set; }
     }
 
 }
