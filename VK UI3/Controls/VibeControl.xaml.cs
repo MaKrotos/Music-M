@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using System;
+using System.Threading.Tasks;
 using VK_UI3.Controllers;
 using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
@@ -236,9 +237,12 @@ namespace VK_UI3.Controls
             }
             else
             {
-                iVKGetAudio = new PlayListVK(_PlayList, this.DispatcherQueue);
                 AnimationsChangeFontIcon.ChangeFontIconWithAnimation("\uE916");
-                iVKGetAudio.PlayThis();
+                Task.Run(async () =>
+                {
+                    iVKGetAudio = new PlayListVK(_PlayList, this.DispatcherQueue);
+                    iVKGetAudio.PlayThis();
+                });
             }
         }
 

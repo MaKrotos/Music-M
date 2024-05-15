@@ -38,10 +38,14 @@ namespace VK_UI3.Views.Share.ShareControllers
 
 
             if (isDisabled && !user.CanSeeAudio)
+            {
                 this.IsEnabled = false;
+                this.Opacity = 0.2;
+            }
             else
             {
                 this.IsEnabled = true;
+                this.Opacity = 1;
             }
     
         }

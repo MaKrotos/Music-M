@@ -10,6 +10,7 @@ using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
 using VkNet.Model;
 using VkNet.Model.Attachments;
+using VkNet.Model.RequestParams;
 using VkNet.Utils;
 using static VK_UI3.Views.SectionView;
 
@@ -181,6 +182,7 @@ namespace VK_UI3.Views
                     SectionType.MyListAudio => LoadMyAudioList(handlerContainer),
                     SectionType.ConversDialogs => LoadDialogs(),
                     SectionType.LoadFriends => LoadFriends(),
+            
                     _ => throw new ArgumentOutOfRangeException()
                 }); ;
             }
@@ -190,9 +192,26 @@ namespace VK_UI3.Views
             }
         }
 
+        
         private async Task LoadDialogs()
         {
-            throw new NotImplementedException();
+            var parameters = new GetConversationsParams();
+            parameters.Count = 50;
+            parameters.Offset = 0;
+            parameters.Extended = true;
+            parameters.Fields = new string[] {
+                "photo_max_orig",
+                "online"
+            };
+
+            var a = (await VK.api.Messages.GetConversationsAsync(parameters));
+
+            ConversationsListParams conversationsListParams = new ConversationsListParams();
+            conversationsListParams.result = a;
+
+            if (a.Count < 50) conversationsListParams.itsAll = true;
+
+            frameSection.Navigate(typeof(ConversationsList), conversationsListParams, new DrillInNavigationTransitionInfo());
         }
 
         private async Task LoadFriends()

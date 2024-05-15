@@ -450,7 +450,7 @@ namespace VK_UI3.Views
                         break;
 
                     case "вложения":
-                        frame.Navigate(typeof(Share.ConversationsList), null, new DrillInNavigationTransitionInfo());
+                        OpenMyPage(SectionType.ConversDialogs);
                         break;
 
 

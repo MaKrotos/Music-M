@@ -98,6 +98,14 @@ namespace VK_UI3.Controls
         {
 
             bool isOwner = dataTrack.audio.OwnerId == AccountsDB.activeAccount.id;
+            if (dataTrack.audio.Url == null)
+            {
+                this.Opacity = 0.2; 
+            }
+            else
+            {
+                this.Opacity = 1;
+            }
 
             if (dataTrack.audio.Release_audio_id == null && dataTrack.audio.OwnerId == AccountsDB.activeAccount.id)
             {
@@ -419,6 +427,7 @@ namespace VK_UI3.Controls
         private void UCcontrol_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
             //FadeInAnimation.Begin();
+            if (dataTrack.audio.Url == null) return;
             entered = true;
 
             Symbol symbol = dataTrack.PlayThis ? Symbol.Pause : Symbol.Play;

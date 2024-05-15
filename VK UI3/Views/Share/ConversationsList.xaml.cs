@@ -5,10 +5,13 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using TagLib.Ape;
 using VK_UI3.VKs;
 using VkNet.Model;
 using VkNet.Model.RequestParams;
@@ -25,7 +28,12 @@ namespace VK_UI3.Views.Share
         public User user { get; set; }
         public List<User> users = new List<User>();
         public Group group { get; set; }
+    }
 
+
+    public class ConversationsListParams {
+        public bool itsAll = false;
+        public GetConversationsResult result;
     }
 
     public sealed partial class ConversationsList : Page
@@ -50,10 +58,29 @@ namespace VK_UI3.Views.Share
 
         private void Page_Loading(FrameworkElement sender, object args)
         {
-            loadMoreConv();
+            if (conversationsListParams != null)
+            {
+                itsAll = conversationsListParams.itsAll;
+                counted += conversationsListParams.result.Items.Count();
+                addItems(conversationsListParams.result);
+
+            }
+            else
+            {
+                loadMoreConv();
+            }
         }
         bool itsAll = false;
         bool loadingNow = false;
+
+        ConversationsListParams conversationsListParams = null;
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            var mar = e.Parameter as ConversationsListParams;
+            if (mar == null)
+                return;
+            conversationsListParams = mar;
+        }
 
         private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
@@ -95,11 +122,12 @@ namespace VK_UI3.Views.Share
 
             return null;
         }
+        
+
+
         int counted = 0;
         private async Task loadMoreConv()
         {
-
-         
             if (itsAll)
             {
                 this.DispatcherQueue.TryEnqueue(() =>
@@ -130,42 +158,7 @@ namespace VK_UI3.Views.Share
 
             if (a.Count < off) itsAll = true;
 
-            this.DispatcherQueue.TryEnqueue(() =>
-            {
-                foreach (var item in a.Items)
-                {
-
-                    MessConv messConv = new MessConv();
-                    messConv.conversation = item.Conversation;
-                    
-
-                    switch (item.Conversation.Peer.Type.ToString())
-                    {
-                        case "chat":
-
-                            if (item.Conversation.ChatSettings.ActiveIds != null)
-                            foreach (var item1 in item.Conversation.ChatSettings.ActiveIds)
-                            {
-                                messConv.users.Add(a.Profiles.Where(profile => profile.Id == item1).FirstOrDefault());
-                            }
-
-                            break;
-                        case "user":
-                            messConv.user = a.Profiles.Where(profile => profile.Id == item.Conversation.Peer.LocalId).FirstOrDefault();
-                            break;
-                        case "group":
-                            messConv.group = a.Groups.Where(group => group.Id == item.Conversation.Peer.LocalId).FirstOrDefault();
-                            break;
-                        case "email":
-       
-                            break;
-                        default:
-                            break;
-                    }
-
-                    nmessConv.Add(messConv);
-                }
-            });
+            addItems(a);
 
 
             if (itsAll)
@@ -178,6 +171,46 @@ namespace VK_UI3.Views.Share
             }
             loadingNow = false;
                 if (CheckIfAllContentIsVisible(scrollViewer)) loadMoreConv();
+        }
+
+        private async Task addItems(GetConversationsResult a)
+        {
+            this.DispatcherQueue.TryEnqueue(() =>
+            {
+                foreach (var item in a.Items)
+                {
+
+                    MessConv messConv = new MessConv();
+                    messConv.conversation = item.Conversation;
+
+
+                    switch (item.Conversation.Peer.Type.ToString())
+                    {
+                        case "chat":
+
+                            if (item.Conversation.ChatSettings.ActiveIds != null)
+                                foreach (var item1 in item.Conversation.ChatSettings.ActiveIds)
+                                {
+                                    messConv.users.Add(a.Profiles.Where(profile => profile.Id == item1).FirstOrDefault());
+                                }
+
+                            break;
+                        case "user":
+                            messConv.user = a.Profiles.Where(profile => profile.Id == item.Conversation.Peer.LocalId).FirstOrDefault();
+                            break;
+                        case "group":
+                            messConv.group = a.Groups.Where(group => group.Id == item.Conversation.Peer.LocalId).FirstOrDefault();
+                            break;
+                        case "email":
+
+                            break;
+                        default:
+                            break;
+                    }
+
+                    nmessConv.Add(messConv);
+                }
+            });
         }
     }
 }

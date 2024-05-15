@@ -23,10 +23,12 @@ namespace VK_UI3.VKs.IVK
 
         public PlayListVK(AudioPlaylist _playlist, DispatcherQueue dispatcher) : base(dispatcher)
         {
-            waitCreate = true;
+        
             this.playlist = _playlist;
+            getLoadedTracks = true;
             Task.Run(async () =>
             {
+               
                 try
                 {
 
@@ -51,13 +53,7 @@ namespace VK_UI3.VKs.IVK
                     playlist.OwnerName = _playlist.OwnerName;
                     playlist.Audios = new ReadOnlyCollection<VkNet.Model.Attachments.Audio>(p.Audios.Cast<VkNet.Model.Attachments.Audio>().ToList());
 
-                    DispatcherQueue.TryEnqueue(() =>
-                    {
-                        foreach (var item in playlist.Audios)
-                        {
-                            listAudio.Add(new ExtendedAudio(item, this));
-                        }
-                    });
+                  
                     name = playlist.Title;
                     _Year = playlist.Year.ToString();
                     _Description = playlist.Description;
@@ -109,16 +105,40 @@ namespace VK_UI3.VKs.IVK
                         artists = playlist.OwnerName;
                     }
 
+
+
+                    // Создайте экземпляр ManualResetEvent
+                    ManualResetEvent resetEvent = new ManualResetEvent(false);
+
+                 
+                        foreach (var item in playlist.Audios)
+                        {
+                        DispatcherQueue.TryEnqueue(() =>
+                        {
+                            listAudioTrue.Add(new ExtendedAudio(item, this));
+                            // Сигнализировать ожидание
+                            resetEvent.Set();
+                            // Ждать сигнала
+                            resetEvent.WaitOne();
+                        });
+                    }
+                   
+
+                    countTracks += listAudio.Count;
+
                     if (playlist.Audios.Count == 0)
                     {
-
                         var res = await VK.vkService.AudioGetAsync(playlist.Id, playlist.OwnerId, playlist.AccessKey).ConfigureAwait(false);
 
                         DispatcherQueue.TryEnqueue(() =>
                         {
                             foreach (var item in res.Items)
                             {
-                                listAudio.Add(new ExtendedAudio(item, this));
+                                listAudioTrue.Add(new ExtendedAudio(item, this));
+                                // Сигнализировать ожидание
+                                resetEvent.Set();
+                                // Ждать сигнала
+                                resetEvent.WaitOne();
                             }
                         });
                     }
@@ -150,11 +170,10 @@ namespace VK_UI3.VKs.IVK
                 }
                 finally
                 {
-                    waitCreate = true;
-                    getLoadedTracks = true;
-                    NotifyOnListUpdate();
+                  
                 }
-
+                getLoadedTracks = false;
+                NotifyOnListUpdate();
 
 
             }).Wait();
@@ -162,7 +181,7 @@ namespace VK_UI3.VKs.IVK
 
         public PlayListVK(RecommendedPlaylist _playlist, DispatcherQueue dispatcher) : base(dispatcher)
         {
-            waitCreate = true;
+     
             playlist = _playlist.Playlist;
             foreach (var audio in _playlist.Audios)
             {
@@ -210,7 +229,7 @@ namespace VK_UI3.VKs.IVK
 
             Task.Run(async () =>
             {
-                int offset = listAudio.Count;
+                int offset = listAudioTrue.Count;
                 int count = 100;
 
 

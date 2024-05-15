@@ -19,7 +19,7 @@ namespace VK_UI3.VKs.IVK
         public IVkApi api;
         public string id;
         bool shuffle = false;
-        internal bool waitCreate = false;
+
 
 
 
@@ -103,29 +103,10 @@ namespace VK_UI3.VKs.IVK
         public void PlayThis()
         {
 
-            if (listAudio.Count == 0)
-            {
-                EventHandler handler = null;
-                handler = (sender, e) =>
-                {
-                    this.DispatcherQueue.TryEnqueue(async () =>
-                    {
-
-
-                        this.currentTrack = 0;
-                        AudioPlayer.PlayList(this);
-                        this.onListUpdate -= (handler);
-                    });
-                };
-                this.onListUpdate += (handler);
-                if (!waitCreate)
-                    GetTracks();
-            }
-            else
-            {
+         
                 this.currentTrack = 0;
                 AudioPlayer.PlayList(this);
-            }
+            
         }
 
         // Добавляем делегат и событие

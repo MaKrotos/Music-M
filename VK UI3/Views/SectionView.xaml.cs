@@ -104,7 +104,7 @@ namespace VK_UI3.Views
             UserSection,
             MessConv,
             ConversDialogs,
-            LoadFriends
+            LoadFriends,
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
