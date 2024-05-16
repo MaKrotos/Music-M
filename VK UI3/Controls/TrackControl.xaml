@@ -51,8 +51,6 @@
                     <FontIcon Glyph="&#xE93C;" />
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
-
-
             <MenuFlyoutSubItem
                 x:Name="AddPlayList"
                 Icon="Add"
@@ -74,8 +72,6 @@
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
             </MenuFlyoutSubItem>
-
-
             <MenuFlyoutItem
                 x:Name="disText"
                 Click="DislikeClick"
@@ -88,8 +84,6 @@
                 Click="AddArtistIgnore_Click"
                 Icon="BlockContact"
                 Text="Пропускать треки исполнителя" />
-
-
             <MenuFlyoutSubItem
                 x:Name="DownloadFlyOut"
                 Icon="Download"
@@ -104,8 +98,6 @@
                     </MenuFlyoutItem.Icon>
                 </MenuFlyoutItem>
             </MenuFlyoutSubItem>
-
-
             <MenuFlyoutItem
                 Click="PlayNext_Click"
                 Icon="Play"
@@ -118,6 +110,27 @@
                 Click="CopyLink"
                 Icon="Link"
                 Text="Скопировать ссылку" />
+            
+            <MenuFlyoutSubItem
+                Icon="Share"
+                Text="Отправить">
+                <MenuFlyoutItem
+                    x:Name="ShareFriendsList"
+                    Click="ShareFriendsList_Click"
+                    Text="Список друзей">
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="&#xE902;" />
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem
+                    x:Name="ShareDialogsList"
+                    Click="ShareDialogsList_Click"
+                    Text="Список диалогов">
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="&#xE8F2;" />
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+            </MenuFlyoutSubItem>
         </MenuFlyout>
     </UserControl.ContextFlyout>
 

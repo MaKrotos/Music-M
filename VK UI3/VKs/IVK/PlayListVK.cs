@@ -111,7 +111,7 @@ namespace VK_UI3.VKs.IVK
                     ManualResetEvent resetEvent = new ManualResetEvent(false);
 
                  
-                        foreach (var item in playlist.Audios)
+                    foreach (var item in playlist.Audios)
                         {
                         DispatcherQueue.TryEnqueue(() =>
                         {
@@ -119,8 +119,9 @@ namespace VK_UI3.VKs.IVK
                             // Сигнализировать ожидание
                             resetEvent.Set();
                             // Ждать сигнала
-                            resetEvent.WaitOne();
+                           
                         });
+                        resetEvent.WaitOne();
                     }
                    
 
@@ -138,9 +139,11 @@ namespace VK_UI3.VKs.IVK
                                 // Сигнализировать ожидание
                                 resetEvent.Set();
                                 // Ждать сигнала
-                                resetEvent.WaitOne();
+                             
                             }
+
                         });
+                        resetEvent.WaitOne();
                     }
 
 

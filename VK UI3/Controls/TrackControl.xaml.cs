@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using TagLib.Id3v2;
 using VK_UI3.Controllers;
 using VK_UI3.Converters;
 using VK_UI3.DB;
@@ -16,7 +17,9 @@ using VK_UI3.DownloadTrack;
 using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
 using VK_UI3.Views;
+using VK_UI3.Views.LoginWindow;
 using VK_UI3.Views.ModalsPages;
+using VK_UI3.Views.Share;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
@@ -802,6 +805,55 @@ namespace VK_UI3.Controls
 
             dialog.Shadow = null;
             dialog.BorderThickness = new Thickness(0);
+        }
+
+        private void ShareFriendsList_Click(object sender, RoutedEventArgs e)
+        {
+            ContentDialog dialog = new CustomDialog();
+
+            dialog.Transitions = new TransitionCollection
+                {
+                    new PopupThemeTransition()
+                };
+
+            // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
+            dialog.XamlRoot = this.XamlRoot;
+
+
+            var frame = new Microsoft.UI.Xaml.Controls.Frame();
+            dialog.Content = frame;
+            dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+
+            dialog.CornerRadius = new CornerRadius(0);
+            dialog.BorderThickness = new Thickness(0);
+            dialog.Translation = new System.Numerics.Vector3(0, 0, 0);
+
+
+            WaitParameters waitParameters = new WaitParameters();
+            waitParameters.sectionType = SectionType.LoadFriends;
+            var paramsFr = new FriendsListParametrs() { audio = this.dataTrack.audio };
+            waitParameters.moreParams = paramsFr;
+            frame.CornerRadius = new CornerRadius(15);
+
+            paramsFr.selectedFriend += ((s, e) =>
+            {
+                if (dialog != null)
+                    dialog.Hide();
+                dialog = null;
+
+                if (s != null && s is AudioPlaylist)
+                {
+                    TempPlayLists.TempPlayLists.updateNextRequest = true;
+                }
+            });
+
+            dialog.ShowAsync();
+            frame.Navigate(typeof(WaitView), waitParameters, new DrillInNavigationTransitionInfo());
+        }
+
+        private void ShareDialogsList_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

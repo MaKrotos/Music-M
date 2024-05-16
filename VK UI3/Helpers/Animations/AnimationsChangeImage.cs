@@ -9,7 +9,9 @@ using System.IO;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace VK_UI3.Helpers.Animations
 {
@@ -52,24 +54,27 @@ namespace VK_UI3.Helpers.Animations
         public void ChangeImageWithAnimation(Uri newImageSourceUrl)
         {
             if (newImageSourceUrl == null)
-                ChangeImageWithAnimation((string)null);
+                return;
             else
                 ChangeImageWithAnimation(newImageSourceUrl.ToString());
         }
-
+        Object element = null;
         public void ChangeImageWithAnimation(string? newImageSourceUrl, bool justDoIt = false)
         {
+
             if (imageSourceNow != null && imageSourceNow == newImageSourceUrl && !justDoIt)
                 return;
-            imageSourceNow = newImageSourceUrl;
+            if (newImageSourceUrl == null || newImageSourceUrl == "null") return;
+            GetImageAsync(newImageSourceUrl);
 
+            imageSourceNow = newImageSourceUrl;
             dispatcherQueue.TryEnqueue(async () =>
             {
                 if (storyboard.GetCurrentState() == ClockState.Active)
                 {
                     storyboard.Pause();
                 }
-                Object element = null;
+  
                 if (imageControl != null)
                     element = imageControl;
                 if (imageBrushControl != null)
@@ -79,50 +84,18 @@ namespace VK_UI3.Helpers.Animations
                 if (imageIcon != null)
                     element = imageIcon;
 
-                var animation = new DoubleAnimation
+
+                if ((element as FrameworkElement).Opacity == 0 || imageSourceNow == null)
                 {
-                    From = (element as FrameworkElement).Opacity,
-                    To = 0.0,
-                    Duration = TimeSpan.FromMilliseconds(250),
-                };
-
-                Storyboard.SetTarget(animation, (element as FrameworkElement));
-                Storyboard.SetTargetProperty(animation, "Opacity");
-                storyboard.Stop();
-                storyboard.Children.Clear();
-                storyboard.Children.Add(animation);
-
-                EventHandler<object> storyboardCompletedHandler = null;
-                storyboardCompletedHandler = async (s, e) =>
+                    showImage((element as FrameworkElement));
+                }
+                else
                 {
-                    // Отписка от события после его выполнения
-                    storyboard.Completed -= storyboardCompletedHandler;
-
-                    if (newImageSourceUrl == null || newImageSourceUrl == "null") return;
-                    var bitmapImage = await GetImageAsync(newImageSourceUrl);
-
-                    if (imageControl != null)
-                    {
-                        imageControl.Source = bitmapImage;
-                    }
-                    if (imageBrushControl != null)
-                    {
-                        imageBrushControl.ImageSource = bitmapImage;
-                    }
-                    if (personPicture != null)
-                    {
-                        personPicture.ProfilePicture = bitmapImage;
-                    }
-                    if (imageIcon != null)
-                    {
-                        imageIcon.Source = bitmapImage;
-                    }
-
                     var animation = new DoubleAnimation
                     {
                         From = (element as FrameworkElement).Opacity,
-                        To = 1,
-                        Duration = TimeSpan.FromMilliseconds(500),
+                        To = 0.0,
+                        Duration = TimeSpan.FromMilliseconds(250),
                     };
 
                     Storyboard.SetTarget(animation, (element as FrameworkElement));
@@ -130,21 +103,64 @@ namespace VK_UI3.Helpers.Animations
                     storyboard.Stop();
                     storyboard.Children.Clear();
                     storyboard.Children.Add(animation);
+
+                    EventHandler<object> storyboardCompletedHandler = null;
+                    storyboardCompletedHandler = async (s, e) =>
+                    {
+                        // Отписка от события после его выполнения
+                        storyboard.Completed -= storyboardCompletedHandler;
+
+                        showImage(element as FrameworkElement);
+
+
+                    };
+                    storyboard.Completed -= storyboardCompletedHandler;
+                    storyboard.Completed += storyboardCompletedHandler;
+
                     storyboard.Begin();
-
-
-                };
-                storyboard.Completed -= storyboardCompletedHandler;
-                storyboard.Completed += storyboardCompletedHandler;
-
-                storyboard.Begin();
+                }
             });
         }
 
+        private void showImage(FrameworkElement element)
+        {
+        
 
+            if (imageControl != null)
+            {
+                imageControl.Source = image;
+            }
+            if (imageBrushControl != null)
+            {
+                imageBrushControl.ImageSource = image;
+            }
+            if (personPicture != null)
+            {
+                personPicture.ProfilePicture = image;
+            }
+            if (imageIcon != null)
+            {
+                imageIcon.Source = image;
+            }
 
+            var animation = new DoubleAnimation
+            {
+                From = (element).Opacity,
+                To = 1,
+                Duration = TimeSpan.FromMilliseconds(500),
+            };
+
+            Storyboard.SetTarget(animation, (element));
+            Storyboard.SetTargetProperty(animation, "Opacity");
+            storyboard.Stop();
+            storyboard.Children.Clear();
+            storyboard.Children.Add(animation);
+            storyboard.Begin();
+        }
+        BitmapImage image = null;
         private async Task<BitmapImage> GetImageAsync(string newImageSourceUrl)
         {
+           
             var fileName = Path.Combine(databaseFolderPath, GetHashString(newImageSourceUrl));
 
             if (!Directory.Exists(databaseFolderPath)) Directory.CreateDirectory(databaseFolderPath);
@@ -153,12 +169,16 @@ namespace VK_UI3.Helpers.Animations
             {
                 var bitmapImage = new BitmapImage();
                 bitmapImage.UriSource = new Uri(newImageSourceUrl);
+                image = bitmapImage;
+            
                 return bitmapImage;
             }
             else if (File.Exists(fileName))
             {
                 var bitmapImage = new BitmapImage();
                 bitmapImage.UriSource = new Uri(fileName);
+                image = bitmapImage;
+             
                 return bitmapImage;
             }
             else
@@ -174,19 +194,26 @@ namespace VK_UI3.Helpers.Animations
 
                         var bitmapImage = new BitmapImage();
                         bitmapImage.UriSource = new Uri(fileName);
+                        image = bitmapImage;
+                     
                         return bitmapImage;
                     }
                     else
                     {
+                        image = null;
+                
                         return null;
                     }
                 }
                 catch (Exception e)
                 {
+                    image = null;
+               
                     // Если произошла ошибка при загрузке или сохранении изображения, возвращаем null
                     return null;
                 }
             }
+            
         }
 
 

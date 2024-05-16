@@ -10,7 +10,7 @@ namespace VK_UI3.Views.Share.ShareControllers
 {
     public sealed partial class UserControllers : UserControl
     {
-        public bool isDisabled { get; set; } = true;
+        public bool isDisabled { get; set; }
         public UserControllers()
         {
             this.InitializeComponent();
@@ -21,23 +21,25 @@ namespace VK_UI3.Views.Share.ShareControllers
         private void UserControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             
-            if (DataContext is not User user)
+            if (DataContext is not UserListed user)
             { return; }
-
-            if (this.user == user) return;
-            this.user = user;
+            this.isDisabled = user.isDisabled;
+            if (this.user == user.user) return;
+            this.user = user.user;
             userIcon.Opacity = 0;
 
-            nameTXT.Text = $"{user.FirstName} {user.LastName}";
-            animationsChangeImage.ChangeImageWithAnimation(user.Photo200Orig);
+            nameTXT.Text = $"{this.user.FirstName} {this.user.LastName}";
+            animationsChangeImage.ChangeImageWithAnimation(this.user.Photo200Orig);
 
-            if ((bool)user.Online)
+            if ((bool)this.user.Online)
                 onlineStatus.Visibility = Visibility.Visible;
             else
                 onlineStatus.Visibility = Visibility.Collapsed;
 
 
-            if (isDisabled && !user.CanSeeAudio)
+            if (!isDisabled && !this.user.CanSeeAudio 
+            ||  isDisabled && !this.user.CanWritePrivateMessage
+                )
             {
                 this.IsEnabled = false;
                 this.Opacity = 0.2;
@@ -55,6 +57,7 @@ namespace VK_UI3.Views.Share.ShareControllers
 
         private void StackPanel_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
+            if (isDisabled) return;
             MainView.OpenSection(user.Id.ToString(), sectionType: SectionView.SectionType.UserSection);
 
             //  if (e.GetCurrentPoint(sender as UIElement).Properties.IsLeftButtonPressed)

@@ -44,6 +44,7 @@ namespace VK_UI3.Controls
         }
         Helpers.Animations.AnimationsChangeImage animationsChangeImage;
         PlayListVK playListVK = null;
+        Uri photo;
         ObservableCollection<ExtendedAudio> extendedAudios = new ObservableCollection<ExtendedAudio>();
         private void update()
         {
@@ -64,14 +65,27 @@ namespace VK_UI3.Controls
             gradStart.Color = GetColorFromHex(_PlayList.Color);
             gradStop.Color = b;
 
+
+            Uri ph = null;
+
             if (_PlayList.Playlist.userOwner != null)
             {
-                animationsChangeImage.ChangeImageWithAnimation(_PlayList.Playlist.userOwner.Photo100);
+                ph = _PlayList.Playlist.userOwner.Photo100;
+           
             }
             if (_PlayList.Playlist.groupOwner != null)
             {
-                animationsChangeImage.ChangeImageWithAnimation(_PlayList.Playlist.groupOwner.Photo100);
+                ph = _PlayList.Playlist.groupOwner.Photo100;
+                
             }
+            if (ph != photo)
+            {
+                AvatarImage.Opacity = 0;
+                photo = ph;
+            }
+                animationsChangeImage.ChangeImageWithAnimation(ph);
+
+
             UserNameTXT.Text = _PlayList.Playlist.OwnerName;
             if (!playListVK.listAudioTrue.SequenceEqual(extendedAudios))
             {

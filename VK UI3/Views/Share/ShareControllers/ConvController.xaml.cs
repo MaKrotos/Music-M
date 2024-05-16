@@ -25,18 +25,20 @@ namespace VK_UI3.Views.Share.ShareControllers
         }
         Helpers.Animations.AnimationsChangeImage animationsChangeImage;
         MessConv messConv;
-        Uri photo;
+        Uri? photo;
         private void UserControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             
             if (DataContext is not MessConv messConv)
             { return; }
             this.messConv = messConv;
+            this.userIcon.Opacity = 1;
+            photo = null;
 
             //ImagesGrid.Opacity = 0;
 
 
-            
+
 
 
             switch (messConv.conversation.Peer.Type.ToString())
@@ -45,7 +47,6 @@ namespace VK_UI3.Views.Share.ShareControllers
                     if (messConv.conversation.ChatSettings.Photo != null)
                     {
                         photo = messConv.conversation.ChatSettings.Photo.JustGetPhoto;
-                       
                     }
                     else
                     {
@@ -57,9 +58,8 @@ namespace VK_UI3.Views.Share.ShareControllers
                 case "user":
                     if (messConv.user.JustGetPhoto != null)
                         photo = messConv.user.JustGetPhoto;
-                    else { 
-                      
-                    }
+                    else photo = null;
+                 
                     createAA($"{messConv.user.FirstName} {messConv.user.LastName}");
                     nameTXT.Text = $"{messConv.user.FirstName} {messConv.user.LastName}";
 
@@ -86,8 +86,16 @@ namespace VK_UI3.Views.Share.ShareControllers
                 default:
                     break;
             }
-            animationsChangeImage.ChangeImageWithAnimation(photo);
-
+            if (photo != null)
+            {
+                userIcon.Visibility = Visibility.Visible;
+                animationsChangeImage.ChangeImageWithAnimation(photo);
+                
+            }
+            else
+            {
+                userIcon.Visibility = Visibility.Collapsed;
+            }
             ChatColors chatColors = new ChatColors();
             var color = chatColors.GetColorByNumber((int)messConv.conversation.Peer.LocalId % 6);
             gridBack.Background = new SolidColorBrush(color);
@@ -118,7 +126,7 @@ namespace VK_UI3.Views.Share.ShareControllers
         private void StackPanel_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             MessagesAudio messagesAudio = new MessagesAudio(messConv: messConv, dispatcher: DispatcherQueue);
-            messagesAudio.name = nameTXT.Text + " (¬ÎÓÊÂÌËˇ)";
+            messagesAudio.name = nameTXT.Text + " (–í–ª–æ–∂–µ–Ω–∏—è)";
             messagesAudio.photoUri = photo;
             MainView.OpenPlayList(messagesAudio);
 

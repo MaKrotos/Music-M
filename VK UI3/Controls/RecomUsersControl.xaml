@@ -101,6 +101,9 @@
                 Совпадение с Вашим вкусом
             </TextBlock>
             <TextBlock
+                 MaxHeight="14"
+                TextTrimming="CharacterEllipsis"
+                TextWrapping="Wrap"
                 x:Name="PlayListNameTXT"
                 Margin="0,0,0,5"
                 FontFamily="{StaticResource VKSansDemiBold}"
@@ -108,7 +111,7 @@
                 FontWeight="Bold"
                 Foreground="White"
                 Opacity="1"
-                TextWrapping="Wrap">
+               >
                 Название
             </TextBlock>
             <StackPanel Orientation="Horizontal">
@@ -120,6 +123,7 @@
                     <Image x:Name="AvatarImage" />
                 </Grid>
                 <TextBlock
+                    MaxHeight="15"
                     x:Name="UserNameTXT"
                     Margin="5,0,0,0"
                     HorizontalAlignment="Center"

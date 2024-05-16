@@ -512,10 +512,10 @@ namespace VK_UI3.Views
 
         public static void OpenPlayList(IVKGetAudio iVKGetAudio)
         {
-            var sectionView = new WaitParameters();
-            sectionView.sectionType = SectionType.PlayList;
-            sectionView.iVKGetAudio = iVKGetAudio;
-            frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
+                var sectionView = new WaitParameters();
+                sectionView.sectionType = SectionType.PlayList;
+                sectionView.iVKGetAudio = iVKGetAudio;
+                frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
         }
 
         public static void OpenPlayList(long AlbumID, long AlbumOwnerID, string AlbumAccessKey)

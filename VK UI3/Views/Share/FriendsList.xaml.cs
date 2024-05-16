@@ -2,12 +2,14 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using VK_UI3.VKs;
-using VK_UI3.VKs.IVK;
-using VkNet.Exception;
 using VkNet.Model;
+using VkNet.Model.Attachments;
+using VkNet.Model.RequestParams;
 using VkNet.Utils;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -23,11 +25,25 @@ namespace VK_UI3.Views.Share
     {
         internal bool itsAll;
         internal VkCollection<User> friends;
+        internal Audio audio = null;
+        internal EventHandler selectedFriend;
     }
-    public sealed partial class FriendsList : Page
-    {
 
-        ObservableCollection<User> friends = new ObservableCollection<User>();
+    public class UserListed {
+
+       public User user { get; set; }
+        public bool isDisabled { get; set; }
+    }
+
+    public sealed partial class FriendsList : Microsoft.UI.Xaml.Controls.Page
+    {
+        public bool isDisableded { get; set; } = false;
+
+        public bool GetIsDisabled() {
+            return isDisableded;
+        }
+
+        ObservableCollection<UserListed> friends = new ObservableCollection<UserListed>();
         public FriendsList()
         {
             this.InitializeComponent();
@@ -37,13 +53,18 @@ namespace VK_UI3.Views.Share
         private void FriendsList_Loaded(object sender, RoutedEventArgs e)
         {
             
-
-
             if (scrollViewer == null) scrollViewer = FindScrollViewer(scrollView);
             if (scrollViewer != null)
             {
                 // Подписываемся на событие изменения прокрутки
                 scrollViewer.ViewChanged += ScrollViewer_ViewChanged; ;
+            }
+            if (friendsListParametrs.audio != null)
+            {
+                this.Width = 425;
+                Cancel.Visibility = Visibility.Visible;
+                scrollView.SelectionMode = ListViewSelectionMode.Single;
+                MainGrid.Background = (Brush)Microsoft.UI.Xaml.Application.Current.Resources["AcrylicBackgroundFillColorDefaultBrush"];
             }
         }
 
@@ -52,12 +73,16 @@ namespace VK_UI3.Views.Share
             if (friendsListParametrs != null)
             {
                 friendsListParametrs.itsAll = itsAll;
+                if (friendsListParametrs.audio != null) 
+                    isDisableded = true;
 
                 this.DispatcherQueue.TryEnqueue(() =>
                 {
                     foreach (var item in friendsListParametrs.friends)
                     {
-                        friends.Add(item);
+                        
+                        
+                        friends.Add(new UserListed() { user = item, isDisabled = isDisableded });
                     }
                     if (scrollViewer == null) scrollViewer = FindScrollViewer(scrollView);
                     if (CheckIfAllContentIsVisible(scrollViewer)) loadMoreFriends();
@@ -142,7 +167,7 @@ namespace VK_UI3.Views.Share
             var parameters = new VkParameters
             {
                 { "count", off },
-                { "fields", "can_see_audio,photo_50,online, online, photo_100, photo_200_orig, status, nickname" },
+                { "fields", "can_see_audio,photo_50,online, online, photo_100, photo_200_orig, status, nickname, can_write_private_message"},
                 { "offset", friends.Count },
                 { "order", "name" }
             };
@@ -162,7 +187,7 @@ namespace VK_UI3.Views.Share
             {
                 foreach (var item in a)
                 {
-                        friends.Add(item);
+                    friends.Add(new UserListed() { user = item, isDisabled = isDisableded });
                 }
             });
 
@@ -177,6 +202,36 @@ namespace VK_UI3.Views.Share
             }
             loadingNow = false;
                 if (CheckIfAllContentIsVisible(scrollViewer)) loadMoreFriends();
+        }
+
+        private void scrollView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count == 0)
+            {
+                return;
+            }
+            var a = scrollView.SelectedIndex;
+
+            
+
+            MessagesSendParams messagesSendParams = new MessagesSendParams();
+
+
+            messagesSendParams.Attachments = new List<Audio> { friendsListParametrs.audio };
+            messagesSendParams.UserId = friends[a].user.Id;
+            messagesSendParams.RandomId = 0;
+
+            VK.api.Messages.SendAsync(messagesSendParams);
+
+
+            // Получение ID плейлиста
+            friendsListParametrs.selectedFriend?.Invoke(friends[a].user, EventArgs.Empty);
+            
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            friendsListParametrs.selectedFriend?.Invoke(null, EventArgs.Empty);
         }
     }
 }

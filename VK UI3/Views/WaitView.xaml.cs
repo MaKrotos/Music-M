@@ -28,6 +28,7 @@ namespace VK_UI3.Views
         public IVKGetAudio iVKGetAudio;
         public OpenedPlayList openedPlayList;
         public AudioPlaylist Playlist;
+        public Object moreParams;
     }
 
     public sealed partial class WaitView : Microsoft.UI.Xaml.Controls.Page, IDisposable
@@ -35,12 +36,8 @@ namespace VK_UI3.Views
         public WaitView()
         {
             this.InitializeComponent();
-
-
             this.Loaded += WaitView_Loaded;
             this.Unloaded += WaitView_Unloaded;
-
-
         }
 
         private void WaitView_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
@@ -192,36 +189,44 @@ namespace VK_UI3.Views
             }
         }
 
-        
+
         private async Task LoadDialogs()
         {
-            var parameters = new GetConversationsParams();
-            parameters.Count = 50;
-            parameters.Offset = 0;
-            parameters.Extended = true;
-            parameters.Fields = new string[] {
+            _ = Task.Run(async () =>
+            {
+                var parameters = new GetConversationsParams();
+                parameters.Count = 50;
+                parameters.Offset = 0;
+                parameters.Extended = true;
+                parameters.Fields = new string[] {
                 "photo_max_orig",
                 "online"
             };
 
-            var a = (await VK.api.Messages.GetConversationsAsync(parameters));
+                var a = (await VK.api.Messages.GetConversationsAsync(parameters));
 
-            ConversationsListParams conversationsListParams = new ConversationsListParams();
-            conversationsListParams.result = a;
+                ConversationsListParams conversationsListParams = new ConversationsListParams();
+                conversationsListParams.result = a;
 
-            if (a.Count < 50) conversationsListParams.itsAll = true;
+                if (a.Count < 50) conversationsListParams.itsAll = true;
 
-            frameSection.Navigate(typeof(ConversationsList), conversationsListParams, new DrillInNavigationTransitionInfo());
+                this.DispatcherQueue.TryEnqueue(() =>
+                {
+                    frameSection.Navigate(typeof(ConversationsList), conversationsListParams, new DrillInNavigationTransitionInfo());
+                });
+            });
+                
         }
 
         private async Task LoadFriends()
         {
-  
 
-            var parameters = new VkParameters
+            _ = Task.Run(async () =>
+            { 
+                var parameters = new VkParameters
             {
                 { "count", 25 },
-                { "fields", "can_see_audio,photo_50,online, online, photo_100, photo_200_orig, status, nickname" },
+                { "fields", "can_see_audio,photo_50,online, online, photo_100, photo_200_orig, status, nickname, can_write_private_message" },
                 { "offset", 0 },
                 { "order", "name" }
             };
@@ -234,54 +239,70 @@ namespace VK_UI3.Views
                           Id = x
                       }
                 );
-            FriendsListParametrs userPlayListParameters = new();
-            if (a.Count < 25) userPlayListParameters.itsAll = true;
-            userPlayListParameters.friends = a;
-
-
-
-
-
-            frameSection.Navigate(typeof(FriendsList), userPlayListParameters, new DrillInNavigationTransitionInfo());
+                FriendsListParametrs userPlayListParameters;
+                if (waitParameters.moreParams != null && waitParameters.moreParams is FriendsListParametrs paramss) userPlayListParameters = paramss;
+                else userPlayListParameters = new();
+                if (a.Count < 25) userPlayListParameters.itsAll = true;
+                userPlayListParameters.friends = a;
+                this.DispatcherQueue.TryEnqueue(() =>
+                {
+                    frameSection.Navigate(typeof(FriendsList), userPlayListParameters, new DrillInNavigationTransitionInfo());
+                });
+            });
         }
 
         private async Task UserPlayListList()
         {
-            var id = long.Parse(waitParameters.SectionID);
-            var list = await VK.api.Audio.GetPlaylistsAsync(id, 100);
-            UserPlayListParameters userPlayListParameters = new UserPlayListParameters();
-            userPlayListParameters.VKaudioPlaylists = list;
-            userPlayListParameters.UserId = id;
-            userPlayListParameters.offset = 100;
-            userPlayListParameters.LoadedAll = (list.Count != 100);
-            userPlayListParameters.openedPlayList = waitParameters.openedPlayList;
-            frameSection.Navigate(typeof(UserPlayList), userPlayListParameters, new DrillInNavigationTransitionInfo());
+            _ = Task.Run(async () =>
+            {
+                var id = long.Parse(waitParameters.SectionID);
+                var list = await VK.api.Audio.GetPlaylistsAsync(id, 100);
+                UserPlayListParameters userPlayListParameters = new UserPlayListParameters();
+                userPlayListParameters.VKaudioPlaylists = list;
+                userPlayListParameters.UserId = id;
+                userPlayListParameters.offset = 100;
+                userPlayListParameters.LoadedAll = (list.Count != 100);
+                userPlayListParameters.openedPlayList = waitParameters.openedPlayList;
+
+                this.DispatcherQueue.TryEnqueue(() =>
+                {
+                    frameSection.Navigate(typeof(UserPlayList), userPlayListParameters, new DrillInNavigationTransitionInfo());
+                });
+            });
         }
 
         private async Task LoadPlayList(HandlerContainer handlerContainer)
         {
-
-            if (waitParameters.iVKGetAudio == null)
-                waitParameters.iVKGetAudio = new PlayListVK(this.waitParameters.Playlist, this.DispatcherQueue);
-
-            if (waitParameters.iVKGetAudio.listAudio.Count != 0) frameSection.Navigate(typeof(PlayListPage), waitParameters.iVKGetAudio, new DrillInNavigationTransitionInfo());
-            else
+            _ = Task.Run(async () =>
             {
+                if (waitParameters.iVKGetAudio == null)
+                    waitParameters.iVKGetAudio = new PlayListVK(this.waitParameters.Playlist, this.DispatcherQueue);
 
-                handlerContainer.Handler = (sender, e) =>
+                if (waitParameters.iVKGetAudio.listAudio.Count != 0)
+                {
+                    this.DispatcherQueue.TryEnqueue(() =>
                     {
-                        //    iVKGetAudio.onListUpdate.RemoveHandler(handlerContainer.Handler);
-                        this.DispatcherQueue.TryEnqueue(async () =>
+                        frameSection.Navigate(typeof(PlayListPage), waitParameters.iVKGetAudio, new DrillInNavigationTransitionInfo());
+                    });
+                }
+                else
+                {
+
+                    handlerContainer.Handler = (sender, e) =>
                         {
-                            handlerContainer.Handler = null; // Освободить ссылку на обработчик
-                            frameSection.Navigate(typeof(PlayListPage), waitParameters.iVKGetAudio, new DrillInNavigationTransitionInfo());
-                        });
-                        waitParameters.iVKGetAudio.onListUpdate -= (handlerContainer.Handler);
-                    };
-                waitParameters.iVKGetAudio.onListUpdate += (handlerContainer.Handler);
-                if (!waitParameters.iVKGetAudio.getLoadedTracks)
-                    waitParameters.iVKGetAudio.GetTracks();
-            }
+                            //    iVKGetAudio.onListUpdate.RemoveHandler(handlerContainer.Handler);
+                            this.DispatcherQueue.TryEnqueue(async () =>
+                            {
+                                handlerContainer.Handler = null; // Освободить ссылку на обработчик
+                                frameSection.Navigate(typeof(PlayListPage), waitParameters.iVKGetAudio, new DrillInNavigationTransitionInfo());
+                            });
+                            waitParameters.iVKGetAudio.onListUpdate -= (handlerContainer.Handler);
+                        };
+                    waitParameters.iVKGetAudio.onListUpdate += (handlerContainer.Handler);
+                    if (!waitParameters.iVKGetAudio.getLoadedTracks)
+                        waitParameters.iVKGetAudio.GetTracks();
+                }
+            });
         }
 
         private async Task LoadMyAudioList(HandlerContainer handlerContainer)
@@ -305,9 +326,15 @@ namespace VK_UI3.Views
 
         private async Task loadSection(string sectionID, bool showTitle = false)
         {
-            var sectin = await VK.vkService.GetSectionAsync(sectionID);
-            this.waitParameters.section = sectin.Section;
-            frameSection.Navigate(typeof(SectionView), waitParameters.section, new DrillInNavigationTransitionInfo());
+            _ = Task.Run(async () =>
+            {
+                var sectin = await VK.vkService.GetSectionAsync(sectionID);
+                this.waitParameters.section = sectin.Section;
+                this.DispatcherQueue.TryEnqueue(() =>
+                {
+                    frameSection.Navigate(typeof(SectionView), waitParameters.section, new DrillInNavigationTransitionInfo());
+                });
+            });
         }
 
         public void Dispose()
