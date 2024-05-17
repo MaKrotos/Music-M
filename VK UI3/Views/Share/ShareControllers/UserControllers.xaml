@@ -6,11 +6,13 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:VK_UI3.Views.Share.ShareControllers"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    HorizontalAlignment="Stretch"
     DataContextChanged="UserControl_DataContextChanged"
     PointerEntered="StackPanel_PointerEntered"
     PointerExited="StackPanel_PointerExited"
     PointerPressed="StackPanel_PointerPressed"
     Translation="0,0,16"
+    MaxHeight="70"
     mc:Ignorable="d">
     <UserControl.Shadow>
         <ThemeShadow />
@@ -67,37 +69,50 @@
     </UserControl.Resources>
 
 
-
-
-
-
-
-    <StackPanel
+    <Grid
         Padding="8,8,8,8"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
         Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-        CornerRadius="8"
-        Orientation="Horizontal">
-        <Grid Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}" CornerRadius="50">
+        CornerRadius="8">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid
+            Grid.Column="0"
+            Width="50"
+            Height="50"
+            Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
+            CornerRadius="50">
             <Image
                 x:Name="userIcon"
                 Width="50"
                 Height="50"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center" />
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch" />
         </Grid>
-        <TextBlock
-            x:Name="nameTXT"
-            Margin="8"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Center"
-            TextTrimming="CharacterEllipsis"
-            TextWrapping="Wrap" />
-        <Ellipse
-            x:Name="onlineStatus"
-            Width="10"
-            Height="10"
-            VerticalAlignment="Center"
-            Fill="LightGreen"
-            Visibility="Collapsed" />
-    </StackPanel>
+        <StackPanel Margin="8"   VerticalAlignment="Center" Grid.Column="1">
+            <Ellipse
+                x:Name="onlineStatus"
+                
+                Width="10"
+                Height="10"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Fill="LightGreen"
+                Visibility="Collapsed" />
+            <TextBlock
+                x:Name="nameTXT"
+           
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                MaxLines="2"
+                TextTrimming="CharacterEllipsis"
+                TextWrapping="Wrap" />
+        </StackPanel>
+
+
+    </Grid>
 </UserControl>

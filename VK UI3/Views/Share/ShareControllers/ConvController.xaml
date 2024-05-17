@@ -12,6 +12,7 @@
     PointerExited="StackPanel_PointerExited"
     PointerPressed="StackPanel_PointerPressed"
     Translation="0,0,16"
+     MaxHeight="70"
     mc:Ignorable="d">
     <UserControl.Shadow>
         <ThemeShadow />
@@ -73,13 +74,15 @@
 
 
 
-    <StackPanel
-        Padding="8,8,8,8"
-        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-        CornerRadius="8"
-        Orientation="Horizontal">
+    <Grid Margin="8" x:Name="MainGrid" CornerRadius="8">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
         <Grid
             x:Name="gridBack"
+            Grid.Column="0"
             Width="50"
             Height="50"
             Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
@@ -102,20 +105,25 @@
 
 
         </Grid>
-        <TextBlock
-            x:Name="nameTXT"
+        <StackPanel
+            Grid.Column="1"
             Margin="8"
-            TextWrapping="Wrap"
-            TextTrimming="CharacterEllipsis"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Center"
-            FontFamily="{ThemeResource VKSansMedium}" />
-        <Ellipse
-            x:Name="onlineStatus"
-            Width="10"
-            Height="10"
-            VerticalAlignment="Center"
-            Fill="LightGreen"
-            Visibility="Collapsed" />
-    </StackPanel>
+            VerticalAlignment="Center">
+            <Ellipse
+                x:Name="onlineStatus"
+                Width="10"
+                Height="10"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Fill="LightGreen"
+                Visibility="Collapsed" />
+            <TextBlock
+                x:Name="nameTXT"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                MaxLines="2"
+                TextTrimming="CharacterEllipsis"
+                TextWrapping="Wrap" />
+        </StackPanel>
+    </Grid>
 </UserControl>
