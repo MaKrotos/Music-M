@@ -110,10 +110,8 @@
                 Click="CopyLink"
                 Icon="Link"
                 Text="Скопировать ссылку" />
-            
-            <MenuFlyoutSubItem
-                Icon="Share"
-                Text="Отправить">
+
+            <MenuFlyoutSubItem Icon="Share" Text="Отправить">
                 <MenuFlyoutItem
                     x:Name="ShareFriendsList"
                     Click="ShareFriendsList_Click"

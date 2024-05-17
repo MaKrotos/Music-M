@@ -107,12 +107,12 @@ namespace VK_UI3.VKs.IVK
 
 
 
-                    // Создайте экземпляр ManualResetEvent
-                    ManualResetEvent resetEvent = new ManualResetEvent(false);
+            
 
                  
                     foreach (var item in playlist.Audios)
                         {
+                        ManualResetEvent resetEvent = new ManualResetEvent(false);
                         DispatcherQueue.TryEnqueue(() =>
                         {
                             listAudioTrue.Add(new ExtendedAudio(item, this));
@@ -130,20 +130,24 @@ namespace VK_UI3.VKs.IVK
                     if (playlist.Audios.Count == 0)
                     {
                         var res = await VK.vkService.AudioGetAsync(playlist.Id, playlist.OwnerId, playlist.AccessKey).ConfigureAwait(false);
-
-                        DispatcherQueue.TryEnqueue(() =>
+                      
+                        foreach (var item in res.Items)
                         {
-                            foreach (var item in res.Items)
-                            {
-                                listAudioTrue.Add(new ExtendedAudio(item, this));
-                                // Сигнализировать ожидание
-                                resetEvent.Set();
-                                // Ждать сигнала
-                             
-                            }
+                            ManualResetEvent resetEvent = new ManualResetEvent(false);
+                            DispatcherQueue.TryEnqueue(() =>
+                                {
 
-                        });
-                        resetEvent.WaitOne();
+                                    listAudioTrue.Add(new ExtendedAudio(item, this));
+                                    // Сигнализировать ожидание
+                                    resetEvent.Set();
+                                    // Ждать сигнала
+
+
+
+                                });
+                            resetEvent.WaitOne();
+                        }
+                
                     }
 
 
@@ -222,11 +226,13 @@ namespace VK_UI3.VKs.IVK
         {
             if (getLoadedTracks) return;
 
-            if (listAudio.Count >= playlist.Count)
+            if (listAudio.Count >= playlist.Count || itsAll)
             {
                 itsAll = true;
+                NotifyOnListUpdate();
                 return;
             }
+            
 
             getLoadedTracks = true;
 
