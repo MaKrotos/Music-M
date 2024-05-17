@@ -9,8 +9,8 @@
     CornerRadius="10"
     mc:Ignorable="d">
     <ContentDialog.Resources>
-        <Style BasedOn="{StaticResource DefaultContentDialogStyle}" TargetType="local:CustomDialog" />
-    </ContentDialog.Resources>
+        <Setter Property="Shadow" Value="{x:Null}" />
+        <Setter Property="Margin" Value="10,10,10,100" />
     <ContentDialog.Transitions>
         <TransitionCollection>
             <PopupThemeTransition />
