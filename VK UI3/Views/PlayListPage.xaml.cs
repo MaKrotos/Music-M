@@ -99,6 +99,36 @@ namespace VK_UI3.Views
             {
 
                 GridThumbs.AddImagesToGrid(vkGetAudio.getPhotosList());
+
+                switch (vkGetAudio)
+                {
+                    case MessagesAudio:
+                        FontIconTypeVk.Glyph = "\uE8F2";
+                        break;
+
+                    case MixAudio:
+                        FontIconTypeVk.Glyph = "\uE8F2";
+                        break;
+                    case PlayListVK:
+                        FontIconTypeVk.Glyph = "\uE93C";
+                        break;
+                    case SectionAudio:
+                        FontIconTypeVk.Glyph = "\uE8F2";
+                        break;
+                    case SimpleAudio:
+                        FontIconTypeVk.Glyph = "\uE8F2";
+                        break;
+                    case UserAudio:
+                        FontIconTypeVk.Glyph = "\uE77B";
+                        break;
+
+                    default:
+                        break;
+                }
+
+             
+
+
                 if (vkGetAudio is (PlayListVK))
                 {
                     var playlist = (vkGetAudio as PlayListVK).playlist;
@@ -265,13 +295,13 @@ namespace VK_UI3.Views
 
 
                 }
-                CheckAndHideGrid(AddInfo);
+            
 
                 if (DescriptionText.Text is null || DescriptionText.Text == "") DescriptionText.Visibility = Visibility.Collapsed;
                 MainText.ChangeTextWithAnimation(vkGetAudio.name);
                 CountTrText.Visibility = Visibility.Visible;
 
-
+                CheckAndHideGrid(AddInfo);
             });
         }
 

@@ -34,6 +34,7 @@ namespace VK_UI3.Views.Share.ShareControllers
             this.messConv = messConv;
             this.userIcon.Opacity = 1;
             photo = null;
+            isDisabled = messConv.isDisabled;
 
             //ImagesGrid.Opacity = 0;
 
@@ -102,11 +103,17 @@ namespace VK_UI3.Views.Share.ShareControllers
 
 
 
+
+
             if (isDisabled && !messConv.conversation.CanWrite.Allowed)
+            {
                 this.IsEnabled = false;
+                this.Opacity = 0.2;
+            }
             else
             {
                 this.IsEnabled = true;
+                this.Opacity = 1;
             }
     
         }
@@ -125,6 +132,7 @@ namespace VK_UI3.Views.Share.ShareControllers
 
         private void StackPanel_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
+            if (isDisabled) return;
             MessagesAudio messagesAudio = new MessagesAudio(messConv: messConv, dispatcher: DispatcherQueue);
             messagesAudio.name = nameTXT.Text + " (Вложения)";
             messagesAudio.photoUri = photo;

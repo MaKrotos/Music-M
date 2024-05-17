@@ -833,7 +833,8 @@ namespace VK_UI3.Controls
             waitParameters.sectionType = SectionType.LoadFriends;
             var paramsFr = new FriendsListParametrs() { audio = this.dataTrack.audio };
             waitParameters.moreParams = paramsFr;
-            frame.CornerRadius = new CornerRadius(15);
+
+            frame.Padding = new Thickness(0,30,0,30);
 
             paramsFr.selectedFriend += ((s, e) =>
             {
@@ -841,19 +842,65 @@ namespace VK_UI3.Controls
                     dialog.Hide();
                 dialog = null;
 
-                if (s != null && s is AudioPlaylist)
-                {
-                    TempPlayLists.TempPlayLists.updateNextRequest = true;
-                }
             });
 
             dialog.ShowAsync();
+
+            dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+
+            dialog.CornerRadius = new CornerRadius(0);
+            dialog.BorderThickness = new Thickness(0);
+            dialog.Translation = new System.Numerics.Vector3(0, 0, -100);
             frame.Navigate(typeof(WaitView), waitParameters, new DrillInNavigationTransitionInfo());
         }
 
         private void ShareDialogsList_Click(object sender, RoutedEventArgs e)
         {
 
+            ContentDialog dialog = new CustomDialog();
+
+            dialog.Transitions = new TransitionCollection
+                {
+                    new PopupThemeTransition()
+                };
+
+            // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
+            dialog.XamlRoot = this.XamlRoot;
+
+
+            var frame = new Microsoft.UI.Xaml.Controls.Frame();
+            dialog.Content = frame;
+            dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+
+            dialog.CornerRadius = new CornerRadius(0);
+            dialog.BorderThickness = new Thickness(0);
+            dialog.Translation = new System.Numerics.Vector3(0, 0, 0);
+
+
+            WaitParameters waitParameters = new WaitParameters();
+            waitParameters.sectionType = SectionType.ConversDialogs;
+            var paramsFr = new ConversationsListParams() { audio = this.dataTrack.audio };
+            waitParameters.moreParams = paramsFr;
+
+            frame.Padding = new Thickness(0, 30, 0, 30);
+
+            paramsFr.selectedDialog += ((s, e) =>
+            {
+                if (dialog != null)
+                    dialog.Hide();
+                dialog = null;
+
+             
+            });
+
+            dialog.ShowAsync();
+
+            dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+
+            dialog.CornerRadius = new CornerRadius(0);
+            dialog.BorderThickness = new Thickness(0);
+            dialog.Translation = new System.Numerics.Vector3(0, 0, -100);
+            frame.Navigate(typeof(WaitView), waitParameters, new DrillInNavigationTransitionInfo());
         }
     }
 }

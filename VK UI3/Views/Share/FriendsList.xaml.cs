@@ -63,6 +63,7 @@ namespace VK_UI3.Views.Share
             {
                 this.Width = 425;
                 Cancel.Visibility = Visibility.Visible;
+                Rectr.Visibility = Visibility.Visible;
                 scrollView.SelectionMode = ListViewSelectionMode.Single;
                 MainGrid.Background = (Brush)Microsoft.UI.Xaml.Application.Current.Resources["AcrylicBackgroundFillColorDefaultBrush"];
             }
@@ -167,7 +168,7 @@ namespace VK_UI3.Views.Share
             var parameters = new VkParameters
             {
                 { "count", off },
-                { "fields", "can_see_audio,photo_50,online, online, photo_100, photo_200_orig, status, nickname, can_write_private_message"},
+                { "fields", "can_see_audio,photo_50,online,online,photo_100,photo_200_orig,status,nickname,can_write_private_message"},
                 { "offset", friends.Count },
                 { "order", "name" }
             };
@@ -212,7 +213,12 @@ namespace VK_UI3.Views.Share
             }
             var a = scrollView.SelectedIndex;
 
-            
+            if (!friends[a].user.CanWritePrivateMessage)
+            {
+                scrollView.SelectedItem = null;
+                return;
+
+            }    
 
             MessagesSendParams messagesSendParams = new MessagesSendParams();
 
@@ -220,9 +226,11 @@ namespace VK_UI3.Views.Share
             messagesSendParams.Attachments = new List<Audio> { friendsListParametrs.audio };
             messagesSendParams.UserId = friends[a].user.Id;
             messagesSendParams.RandomId = 0;
-
-            VK.api.Messages.SendAsync(messagesSendParams);
-
+            try
+            {
+                VK.api.Messages.SendAsync(messagesSendParams);
+            }
+            catch (Exception ex) { }
 
             // Получение ID плейлиста
             friendsListParametrs.selectedFriend?.Invoke(friends[a].user, EventArgs.Empty);

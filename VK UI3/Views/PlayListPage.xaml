@@ -63,6 +63,19 @@
                             </customs:GridImagesCustom>
 
 
+                            <Grid
+                                Opacity="0.9"
+                                Margin="10"
+                                Padding="10"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                
+                                Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"
+                                CornerRadius="4">
+                                <FontIcon
+                                    x:Name="FontIconTypeVk"
+                                    Glyph="&#xE93C;" />
+                            </Grid>
                         </Grid>
                         <StackPanel
                             x:Name="ownerGrid"

@@ -107,9 +107,10 @@ namespace VK_UI3.VKs.IVK
 
 
 
-            
 
-                 
+
+
+                    /*
                     foreach (var item in playlist.Audios)
                         {
                         ManualResetEvent resetEvent = new ManualResetEvent(false);
@@ -149,7 +150,7 @@ namespace VK_UI3.VKs.IVK
                         }
                 
                     }
-
+                    */
 
 
                     if (playlist.Plays > 1000 && playlist.Plays < 1000000)

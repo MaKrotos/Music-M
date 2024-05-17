@@ -105,6 +105,8 @@
         <TextBlock
             x:Name="nameTXT"
             Margin="8"
+            TextWrapping="Wrap"
+            TextTrimming="CharacterEllipsis"
             HorizontalAlignment="Left"
             VerticalAlignment="Center"
             FontFamily="{ThemeResource VKSansMedium}" />

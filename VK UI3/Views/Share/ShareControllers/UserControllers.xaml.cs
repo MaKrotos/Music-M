@@ -37,9 +37,9 @@ namespace VK_UI3.Views.Share.ShareControllers
                 onlineStatus.Visibility = Visibility.Collapsed;
 
 
-            if (!isDisabled && !this.user.CanSeeAudio 
-            ||  isDisabled && !this.user.CanWritePrivateMessage
-                )
+            if ((!isDisabled && !this.user.CanSeeAudio)
+                 || (isDisabled && !this.user.CanWritePrivateMessage)
+              )
             {
                 this.IsEnabled = false;
                 this.Opacity = 0.2;

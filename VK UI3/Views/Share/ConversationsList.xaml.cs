@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using MusicX.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,6 +15,7 @@ using System.Threading.Tasks;
 using TagLib.Ape;
 using VK_UI3.VKs;
 using VkNet.Model;
+using VkNet.Model.Attachments;
 using VkNet.Model.RequestParams;
 
 namespace VK_UI3.Views.Share
@@ -27,18 +29,27 @@ namespace VK_UI3.Views.Share
        public Conversation conversation { get; set; }
         public User user { get; set; }
         public List<User> users = new List<User>();
-        public Group group { get; set; }
+        public VkNet.Model.Group group { get; set; }
+
+        public bool isDisabled { get; set; } = false;
+        
     }
 
 
     public class ConversationsListParams {
         public bool itsAll = false;
         public GetConversationsResult result;
+        public VkNet.Model.Attachments.Audio audio;
+        internal EventHandler selectedDialog;
     }
 
-    public sealed partial class ConversationsList : Page
+
+
+
+    public sealed partial class ConversationsList : Microsoft.UI.Xaml.Controls.Page
     {
 
+        public bool isDisabled = false;
         ObservableCollection<MessConv> nmessConv = new ObservableCollection<MessConv>();
         public ConversationsList()
         {
@@ -58,17 +69,8 @@ namespace VK_UI3.Views.Share
 
         private void Page_Loading(FrameworkElement sender, object args)
         {
-            if (conversationsListParams != null)
-            {
-                itsAll = conversationsListParams.itsAll;
-                counted += conversationsListParams.result.Items.Count();
-                addItems(conversationsListParams.result);
-
-            }
-            else
-            {
-                loadMoreConv();
-            }
+           
+          
         }
         bool itsAll = false;
         bool loadingNow = false;
@@ -148,7 +150,8 @@ namespace VK_UI3.Views.Share
             parameters.Extended = true;
             parameters.Fields = new string[] {
                 "photo_max_orig",
-                "online"
+                "online",
+                "can_write_private_message"
             };
          
          
@@ -181,6 +184,7 @@ namespace VK_UI3.Views.Share
                 {
 
                     MessConv messConv = new MessConv();
+                    messConv.isDisabled = this.isDisabled;
                     messConv.conversation = item.Conversation;
 
 
@@ -210,7 +214,76 @@ namespace VK_UI3.Views.Share
 
                     nmessConv.Add(messConv);
                 }
+                if (CheckIfAllContentIsVisible(scrollViewer)) loadMoreConv();
             });
+        }
+
+        private void scrollView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count == 0)
+            {
+                return;
+            }
+            var a = scrollView.SelectedIndex;
+
+
+            if (!nmessConv[a].conversation.CanWrite.Allowed)
+            {
+                scrollView.SelectedItem = null;
+                return;
+            }
+
+
+            MessagesSendParams messagesSendParams = new MessagesSendParams();
+
+
+            messagesSendParams.Attachments = new List<VkNet.Model.Attachments.Audio> { conversationsListParams.audio };
+
+
+         
+            messagesSendParams.PeerId = nmessConv[a].conversation.Peer.Id;
+
+
+
+            messagesSendParams.RandomId = 0;
+            try
+            {
+                VK.api.Messages.SendAsync(messagesSendParams);
+            }
+            catch (Exception ex) { }
+
+            // Получение ID плейлиста
+            conversationsListParams.selectedDialog?.Invoke(nmessConv[a], EventArgs.Empty);
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            conversationsListParams.selectedDialog?.Invoke(null, EventArgs.Empty);
+
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (conversationsListParams != null)
+            {
+                itsAll = conversationsListParams.itsAll;
+                counted += conversationsListParams.result.Items.Count();
+                addItems(conversationsListParams.result);
+
+            }
+            else
+            {
+                loadMoreConv();
+            }
+            if (conversationsListParams.audio != null)
+            {
+                isDisabled = true;
+                this.Width = 425;
+                Cancel.Visibility = Visibility.Visible;
+                Rectr.Visibility = Visibility.Visible;
+                scrollView.SelectionMode = ListViewSelectionMode.Single;
+                MainGrid.Background = (Brush)Microsoft.UI.Xaml.Application.Current.Resources["AcrylicBackgroundFillColorDefaultBrush"];
+            }
         }
     }
 }

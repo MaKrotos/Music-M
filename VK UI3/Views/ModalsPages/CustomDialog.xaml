@@ -6,15 +6,23 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:VK_UI3.Views.ModalsPages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    CornerRadius="10"
+    CornerRadius="15"
+    BorderBrush="Transparent"
+    DoubleTapped="ContentDialog_DoubleTapped"
+
+ 
     mc:Ignorable="d">
-    <ContentDialog.Resources>
-        <Setter Property="Shadow" Value="{x:Null}" />
-        <Setter Property="Margin" Value="10,10,10,100" />
+  
+
+   
+
+
+
     <ContentDialog.Transitions>
         <TransitionCollection>
             <PopupThemeTransition />
         </TransitionCollection>
     </ContentDialog.Transitions>
 
+    
 </ContentDialog>

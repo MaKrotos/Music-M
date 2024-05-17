@@ -200,14 +200,16 @@ namespace VK_UI3.Views
                 parameters.Extended = true;
                 parameters.Fields = new string[] {
                 "photo_max_orig",
-                "online"
+                "online",
+                "can_write_private_message"
             };
 
                 var a = (await VK.api.Messages.GetConversationsAsync(parameters));
 
-                ConversationsListParams conversationsListParams = new ConversationsListParams();
+                ConversationsListParams conversationsListParams;
+                if (waitParameters.moreParams != null && waitParameters.moreParams is ConversationsListParams paramss) conversationsListParams = paramss;
+                else conversationsListParams = new();
                 conversationsListParams.result = a;
-
                 if (a.Count < 50) conversationsListParams.itsAll = true;
 
                 this.DispatcherQueue.TryEnqueue(() =>
@@ -226,7 +228,7 @@ namespace VK_UI3.Views
                 var parameters = new VkParameters
             {
                 { "count", 25 },
-                { "fields", "can_see_audio,photo_50,online, online, photo_100, photo_200_orig, status, nickname, can_write_private_message" },
+                { "fields", "can_see_audio,photo_50,online,online,photo_100,photo_200_orig,status,nickname,can_write_private_message"},
                 { "offset", 0 },
                 { "order", "name" }
             };

@@ -166,7 +166,12 @@ namespace VkNet.Utils
 		/// </returns>
 		public static implicit operator long(VkResponse response)
 		{
-			return (long) response._token;
+			try
+			{
+				return (long)(response != null ? (long?)response._token : 0);
+			}
+			catch { return 0; };
+            return (long) response._token;
 		}
 
 		/// <summary>

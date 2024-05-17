@@ -64,8 +64,11 @@ namespace VK_UI3.Helpers.Animations
 
             if (imageSourceNow != null && imageSourceNow == newImageSourceUrl && !justDoIt)
                 return;
-            if (newImageSourceUrl == null || newImageSourceUrl == "null") return;
-            GetImageAsync(newImageSourceUrl);
+      
+            dispatcherQueue.TryEnqueue(async () =>
+            {
+                GetImageAsync(newImageSourceUrl);
+            });
 
             imageSourceNow = newImageSourceUrl;
             dispatcherQueue.TryEnqueue(async () =>
@@ -109,7 +112,7 @@ namespace VK_UI3.Helpers.Animations
                     {
                         // Отписка от события после его выполнения
                         storyboard.Completed -= storyboardCompletedHandler;
-
+                        if (image != null)
                         showImage(element as FrameworkElement);
 
 
@@ -160,7 +163,12 @@ namespace VK_UI3.Helpers.Animations
         BitmapImage image = null;
         private async Task<BitmapImage> GetImageAsync(string newImageSourceUrl)
         {
-           
+
+            if (newImageSourceUrl == null || newImageSourceUrl == "null")
+            {
+                image = null;
+                return null;
+            }
             var fileName = Path.Combine(databaseFolderPath, GetHashString(newImageSourceUrl));
 
             if (!Directory.Exists(databaseFolderPath)) Directory.CreateDirectory(databaseFolderPath);
@@ -175,7 +183,7 @@ namespace VK_UI3.Helpers.Animations
             }
             else if (File.Exists(fileName))
             {
-                var bitmapImage = new BitmapImage();
+                var bitmapImage = new BitmapImage(new Uri(fileName));
                 bitmapImage.UriSource = new Uri(fileName);
                 image = bitmapImage;
              
