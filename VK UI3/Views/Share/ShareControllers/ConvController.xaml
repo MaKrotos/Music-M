@@ -7,12 +7,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:VK_UI3.Views.Share.ShareControllers"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    MaxHeight="70"
     DataContextChanged="UserControl_DataContextChanged"
     PointerEntered="StackPanel_PointerEntered"
     PointerExited="StackPanel_PointerExited"
     PointerPressed="StackPanel_PointerPressed"
     Translation="0,0,16"
-     MaxHeight="70"
     mc:Ignorable="d">
     <UserControl.Shadow>
         <ThemeShadow />
@@ -74,7 +74,12 @@
 
 
 
-    <Grid Margin="8" x:Name="MainGrid" CornerRadius="8">
+    <Grid
+        Padding="8,8,8,8"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
+        CornerRadius="8">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />

@@ -15,9 +15,10 @@
     <Grid Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}">
         <ScrollView
             x:Name="MainGrid"
-            Padding="10"
+            Padding="10,35,10,30"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
+
             CornerRadius="8">
 
 

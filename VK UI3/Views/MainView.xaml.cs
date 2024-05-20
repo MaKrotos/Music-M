@@ -188,6 +188,7 @@ namespace VK_UI3.Views
                     this.DispatcherQueue.TryEnqueue(async () =>
                     {
                         NavWiv.SelectedItem = 0;
+                        navigateInvoke();
                         ClearMenuItems();
                     });
                     var catalogs = await VK.vkService.GetAudioCatalogAsync();
@@ -411,76 +412,7 @@ namespace VK_UI3.Views
 
 
         bool navToAnotherPage = false;
-        private void NavWiv_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
-        {
-            var invokedItem = sender.SelectedItem as NavigationViewItem;
-
-            if (invokedItem == null)
-            {
-                sender.SelectedItem = sender.MenuItems[0];
-                return;
-            }
-
-            if (invokedItem != null && invokedItem.Content != null)
-            {
-
-                navToAnotherPage = true;
-                switch (invokedItem.Content.ToString().ToLower())
-                {
-                    case "моя музыка":
-
-                        OpenMyPage(SectionType.MyListAudio);
-
-                        break;
-
-                    case "мои плейлисты":
-                        OpenPlayListLists(openedPlayList: OpenedPlayList.UserPlayList);
-                        break;
-
-                    case "плейлисты":
-                        OpenPlayListLists(openedPlayList: OpenedPlayList.UserAlbums);
-                        break;
-
-                    case "параметры":
-                        frame.Navigate(typeof(Settings.SettingsPage), null, new DrillInNavigationTransitionInfo());
-                        break;
-
-                    case "музыка друзей":
-                        OpenMyPage(SectionType.LoadFriends);
-                        break;
-
-                    case "вложения":
-                        OpenMyPage(SectionType.ConversDialogs);
-                        break;
-
-
-                    default:
-                        var Item = sender.SelectedItem as NavMenuController;
-                        OpenSection(Item.navSettings.section.Id);
-
-
-
-                        break;
-
-
-                }
-
-
-                ContentFrame.BackStack.Clear();
-                MainWindow.mainWindow.backBTNHide();
-
-            }
-            else
-            {
-
-
-
-
-            }
-
-
-            //  NavWiv.IsBackEnabled = ContentFrame.CanGoBack;
-        }
+  
 
         public static void OpenMyPage(SectionType sectionType)
         {
@@ -540,7 +472,80 @@ namespace VK_UI3.Views
             frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
         }
 
+        private void NavWiv_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
+        {
+            navigateInvoke();
+        }
 
+        private void navigateInvoke()
+        {
+            var invokedItem = NavWiv.SelectedItem as NavigationViewItem;
+
+            if (invokedItem == null)
+            {
+                NavWiv.SelectedItem = NavWiv.MenuItems[0];
+                invokedItem = NavWiv.SelectedItem as NavigationViewItem;
+            }
+
+            if (invokedItem != null && invokedItem.Content != null)
+            {
+
+                navToAnotherPage = true;
+                switch (invokedItem.Content.ToString().ToLower())
+                {
+                    case "моя музыка":
+
+                        OpenMyPage(SectionType.MyListAudio);
+
+                        break;
+
+                    case "мои плейлисты":
+                        OpenPlayListLists(openedPlayList: OpenedPlayList.UserPlayList);
+                        break;
+
+                    case "плейлисты":
+                        OpenPlayListLists(openedPlayList: OpenedPlayList.UserAlbums);
+                        break;
+
+                    case "параметры":
+                        frame.Navigate(typeof(Settings.SettingsPage), null, new DrillInNavigationTransitionInfo());
+                        break;
+
+                    case "музыка друзей":
+                        OpenMyPage(SectionType.LoadFriends);
+                        break;
+
+                    case "вложения":
+                        OpenMyPage(SectionType.ConversDialogs);
+                        break;
+
+
+                    default:
+                        var Item = NavWiv.SelectedItem as NavMenuController;
+                        OpenSection(Item.navSettings.section.Id);
+
+
+
+                        break;
+
+
+                }
+
+
+                ContentFrame.BackStack.Clear();
+                MainWindow.mainWindow.backBTNHide();
+
+            }
+            else
+            {
+
+
+
+
+            }
+        }
+
+      
     }
 
 

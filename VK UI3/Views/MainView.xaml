@@ -37,7 +37,9 @@
                 IsPaneOpen="False"
                 IsSettingsVisible="True"
                 PaneDisplayMode="Auto"
-                SelectionChanged="NavWiv_SelectionChanged">
+                ItemInvoked="NavWiv_ItemInvoked"
+               
+>
 
                 <NavigationView.MenuItems>
 
