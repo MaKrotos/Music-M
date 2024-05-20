@@ -6,12 +6,14 @@ using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using vkPosterBot.DB;
 
 namespace VK_UI3.Helpers.Animations
 {
@@ -64,12 +66,12 @@ namespace VK_UI3.Helpers.Animations
 
             if (imageSourceNow != null && imageSourceNow == newImageSourceUrl && !justDoIt)
                 return;
-      
-            dispatcherQueue.TryEnqueue(async () =>
-            {
-                GetImageAsync(newImageSourceUrl);
-            });
 
+            Task<BitmapImage> GetImageTask = null ;
+           
+                GetImageTask = GetImageAsync(newImageSourceUrl);
+           
+         
             imageSourceNow = newImageSourceUrl;
             dispatcherQueue.TryEnqueue(async () =>
             {
@@ -90,7 +92,7 @@ namespace VK_UI3.Helpers.Animations
 
                 if ((element as FrameworkElement).Opacity == 0 || imageSourceNow == null)
                 {
-                    showImage((element as FrameworkElement));
+                    showImage((element as FrameworkElement), await GetImageTask);
                 }
                 else
                 {
@@ -113,7 +115,7 @@ namespace VK_UI3.Helpers.Animations
                         // Отписка от события после его выполнения
                         storyboard.Completed -= storyboardCompletedHandler;
                         if (image != null)
-                        showImage(element as FrameworkElement);
+                        showImage(element as FrameworkElement, await GetImageTask);
 
 
                     };
@@ -125,7 +127,7 @@ namespace VK_UI3.Helpers.Animations
             });
         }
 
-        private void showImage(FrameworkElement element)
+        private void showImage(FrameworkElement element, BitmapImage image)
         {
         
 
@@ -172,22 +174,28 @@ namespace VK_UI3.Helpers.Animations
             var fileName = Path.Combine(databaseFolderPath, GetHashString(newImageSourceUrl));
 
             if (!Directory.Exists(databaseFolderPath)) Directory.CreateDirectory(databaseFolderPath);
-
+            BitmapImage bitmap = null ; 
             if (new Uri(newImageSourceUrl).IsFile)
             {
-                var bitmapImage = new BitmapImage();
-                bitmapImage.UriSource = new Uri(newImageSourceUrl);
-                image = bitmapImage;
-            
-                return bitmapImage;
+                var tcs = new TaskCompletionSource<BitmapImage>();
+                dispatcherQueue.TryEnqueue(() =>
+                {
+                    bitmap = new BitmapImage(new Uri(fileName));
+                    image = bitmap;
+                    tcs.SetResult(bitmap);
+                });
+                return await tcs.Task;
             }
             else if (File.Exists(fileName))
             {
-                var bitmapImage = new BitmapImage(new Uri(fileName));
-                bitmapImage.UriSource = new Uri(fileName);
-                image = bitmapImage;
-             
-                return bitmapImage;
+                var tcs = new TaskCompletionSource<BitmapImage>();
+                dispatcherQueue.TryEnqueue(() =>
+                {
+                    bitmap = new BitmapImage(new Uri(fileName));
+                    image = bitmap;
+                    tcs.SetResult(bitmap);
+                });
+                return await tcs.Task;
             }
             else
             {
@@ -200,11 +208,19 @@ namespace VK_UI3.Helpers.Animations
                     {
                         await File.WriteAllBytesAsync(fileName, buffer);
 
-                        var bitmapImage = new BitmapImage();
-                        bitmapImage.UriSource = new Uri(fileName);
-                        image = bitmapImage;
-                     
-                        return bitmapImage;
+                        var tcs = new TaskCompletionSource<BitmapImage>();
+                        dispatcherQueue.TryEnqueue(() =>
+                        {
+                            bitmap = new BitmapImage(new Uri(fileName));
+                            image = bitmap;
+                            tcs.SetResult(bitmap);
+                        });
+                        
+                        _ = CheckAndDeleteOldFilesAsync(databaseFolderPath);
+                        return await tcs.Task;
+
+   
+                    
                     }
                     else
                     {
@@ -224,6 +240,42 @@ namespace VK_UI3.Helpers.Animations
             
         }
 
+        private async Task CheckAndDeleteOldFilesAsync(string directoryPath)
+        {
+            _ = Task.Run(async() =>
+            {
+                int val = 100;
+                var a = SettingsTable.GetSetting("photoCacheSize");
+                if (a != null) val = int.Parse(a.settingValue);
+
+                long maxDirectorySize = val * 1024 * 1024;
+                if (Directory.Exists(directoryPath))
+                {
+                    DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
+                    FileInfo[] files = directoryInfo.GetFiles();
+                    long directorySize = files.Sum(file => file.Length);
+
+                    if (directorySize > maxDirectorySize)
+                    {
+                        var orderedFiles = files.OrderBy(file => file.CreationTime);
+                        foreach (var file in orderedFiles)
+                        {
+                            
+                            directorySize -= file.Length;
+                            file.Delete();
+                            if (directorySize <= maxDirectorySize)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+
+                }
+            });
+        }
 
         private string GetHashString(string inputString)
         {

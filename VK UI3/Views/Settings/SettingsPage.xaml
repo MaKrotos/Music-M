@@ -31,6 +31,24 @@
             <local:DownloadAllSetting />
         </Border>
 
+        <Border>
+            <StackPanel>
+                <TextBlock Text="Размер кеша фотографий"></TextBlock>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <local:PhotoCacheSize Grid.Column="0" x:Name="photocache" />
+                <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" Grid.Column="1" Text="{x:Bind photocache.Value, Mode=OneWay}"></TextBlock>
+                <TextBlock VerticalAlignment="Center" Grid.Column="2" Text="МБ"></TextBlock>
+            </Grid>
+            </StackPanel>
+        </Border>
+        <Border>
+            <local:CheckUpdate />
+        </Border>
 
 
         <TextBlock Margin="0,20,0,0" TextAlignment="Center">

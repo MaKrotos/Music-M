@@ -15,6 +15,7 @@ namespace VK_UI3.Views.Settings
         {
             this.InitializeComponent();
             this.Loaded += SettingsPage_Loaded;
+            
         }
 
         private void SettingsPage_Loaded(object sender, RoutedEventArgs e)

@@ -531,12 +531,9 @@ namespace VK_UI3
 
 
 
-        private void checkUpdate()
+        public async Task<bool> checkUpdate()
         {
-
-
-            Task.Run(async () =>
-            {
+            
 
                 Windows.ApplicationModel.Package package = Windows.ApplicationModel.Package.Current;
                 PackageId packageId = package.Id;
@@ -553,15 +550,15 @@ namespace VK_UI3
                 if (updateAvailable)
                 {
 
+           
                     // Создайте новое окно
                     dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
                     {
                         ContentFrame.Navigate(typeof(UpdatePage), appUpdater, new DrillInNavigationTransitionInfo());
                     });
-
+                    return true;
                 }
-            });
-
+            return false;
         }
 
 
