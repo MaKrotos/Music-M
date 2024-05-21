@@ -6,6 +6,8 @@ using MusicX.Core.Services;
 using MusicX.Services;
 using NLog;
 using System;
+using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.DB;
 using VK_UI3.Services;
@@ -15,6 +17,8 @@ using VkNet.AudioBypassService.Abstractions;
 using VkNet.AudioBypassService.Extensions;
 using VkNet.AudioBypassService.Models.Auth;
 using VkNet.Extensions.DependencyInjection;
+using Windows.ApplicationModel.Activation;
+using Windows.Win32;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -88,7 +92,8 @@ namespace VK_UI3
         }
 
 
-
+        private Mutex _mutex = null;
+        private const int SW_RESTORE = 9;
 
         /// <summary>
         /// Invoked when the application is launched.
@@ -96,23 +101,72 @@ namespace VK_UI3
         /// <param name="args">Details about the launch request and process.</param>
         protected override async void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
+            const string mutexName = "VKMMaKrotosApp";
+            bool createdNew;
+
+            _mutex = new Mutex(true, mutexName, out createdNew);
+            if (!createdNew)
+            {
+                // Здесь ваш код для запуска приложения
+                _mutex = null;
+
+                // Получаем текущий процесс
+                Process current = Process.GetCurrentProcess();
+
+                // Получаем все процессы с таким же именем, как у текущего
+                foreach (Process process in Process.GetProcessesByName(current.ProcessName))
+                {
+                    // Если процесс не является текущим и его главное окно не минимизировано
+                    if (process.Id != current.Id && process.MainWindowHandle != IntPtr.Zero)
+                    {
+                        // Развертываем окно, если оно свернуто
+                        var a = new Windows.Win32.Foundation.HWND(process.MainWindowHandle);
+                        if (PInvoke.IsIconic(new Windows.Win32.Foundation.HWND(a)))
+                        {
+                            PInvoke.ShowWindow(new Windows.Win32.Foundation.HWND(a), Windows.Win32.UI.WindowsAndMessaging.SHOW_WINDOW_CMD.SW_RESTORE);
+                        }
+
+                        // Переводим окно на передний план
+                        PInvoke.SetForegroundWindow(new Windows.Win32.Foundation.HWND(a));
+                        break;
+                    }
+                }
+                Application.Current.Exit();
+                return;
+
+            }
+
             _host.Start();
 
-
             m_window = new MainWindow();
-
+            m_window.Closed += M_window_Closed;
 
             m_window.Activate();
 
-
-
-
-
-
-
+            this.UnhandledException += App_UnhandledException;
             //   await (appUpdater.CheckForUpdaterBool)
         }
 
+
+        private void M_window_Closed(object sender, WindowEventArgs args)
+        {
+            if (_mutex != null)
+            {
+                _mutex.ReleaseMutex();
+                _mutex = null;
+            }
+        }
+
+        private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+        {
+            if (_mutex != null)
+            {
+                _mutex.ReleaseMutex();
+                _mutex = null;
+            }
+        }
+
+      
         public static Microsoft.UI.Xaml.Window m_window;
     }
 }

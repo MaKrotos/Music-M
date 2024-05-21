@@ -16,3 +16,6 @@ SetWindowLongPtr
 DefWindowProc
 CallWindowProc
 GetWindow
+SetForegroundWindow
+ShowWindow
+IsIconic

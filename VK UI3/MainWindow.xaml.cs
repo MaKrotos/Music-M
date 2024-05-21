@@ -23,6 +23,7 @@ using VK_UI3.Views;
 using VK_UI3.Views.LoginWindow;
 using VK_UI3.Views.ModalsPages;
 using VK_UI3.Views.Upload;
+using VK_UI3.VKs;
 using vkPosterBot.DB;
 using Windows.ApplicationModel;
 using Windows.Foundation;
@@ -66,7 +67,7 @@ namespace VK_UI3
 
             AppWindowTitleBar m_TitleBar = m_AppWindow.TitleBar;
 
-
+            VK.api.RequestsPerSecond = 50;
 
 
             CheckMica();

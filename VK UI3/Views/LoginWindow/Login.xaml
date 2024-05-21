@@ -42,8 +42,10 @@
                 Width="300"
                 KeyDown="LoginTextBox_KeyDown" />
 
+            <Image x:Name="qrcodeimage"></Image>
 
-            <Button
+
+                <Button
                 Margin="0,10,0,0"
                 HorizontalAlignment="Stretch"
                 Click="LoginButton_Click"

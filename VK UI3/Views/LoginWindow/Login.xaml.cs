@@ -3,7 +3,10 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media.Imaging;
+using QRCoder;
 using System;
+using System.Drawing;
+using System.IO;
 using System.Threading.Tasks;
 using VK_UI3.DB;
 using VK_UI3.Views.ModalsPages;
@@ -11,6 +14,7 @@ using VK_UI3.VKs;
 using Windows.Foundation;
 using Windows.System;
 using static VK_UI3.DB.AccountsDB;
+using Image = Microsoft.UI.Xaml.Controls.Image;
 
 
 
@@ -33,10 +37,11 @@ namespace VK_UI3.Views.LoginWindow
             //BackBTN.IsEnabled = this.Frame.CanGoBack;
             this.Loaded += Login_Loaded;
 
-
+            animationsChangeImage = new Helpers.Animations.AnimationsChangeImage(qrcodeimage, this.DispatcherQueue);
 
 
         }
+        Helpers.Animations.AnimationsChangeImage animationsChangeImage { get; set; }
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
             throw new NotImplementedException();
@@ -48,7 +53,80 @@ namespace VK_UI3.Views.LoginWindow
             // BackBTN.IsEnabled = this.Frame.CanGoBack;
             LoginTextBox.Focus(FocusState.Pointer);
             MainWindow.mainWindow.MainWindow_hideRefresh();
+
+           // ChangeQR();
         }
+        /*
+private async Task ChangeQR()
+{
+    var a = await VK.api.GetAuthCodeAsync("VK M Player", true);
+    QRCodeGenerator generator = new QRCodeGenerator();
+
+    var qrCodeData = generator.CreateQrCode(new PayloadGenerator.Url(a.AuthUrl));
+    QRCode qrCode = new QRCode(qrCodeData);
+
+    System.Drawing.Bitmap qrCodeGraphic = qrCode.GetGraphic(20);
+
+    // Преобразование System.Drawing.Bitmap в BitmapImage
+    BitmapImage qrCodeImage = new BitmapImage();
+    using (MemoryStream memory = new MemoryStream())
+    {
+        qrCodeGraphic.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
+        memory.Position = 0;
+        qrCodeImage.SetSource(memory.AsRandomAccessStream());
+    }
+
+    qrcodeimage.Source = qrCodeImage;
+}
+
+
+
+
+  private async Task LoadQrCode(bool forceRegenerate = false)
+{
+    var (_, hash, _, url, _) = await _authCategory.GetAuthCodeAsync("VK M Player", forceRegenerate);
+    QRCodeGenerator generator = new QRCodeGenerator();
+
+    var qrCode = generator.CreateQrCode(new PayloadGenerator.Url(url)); 
+    var xaml = new XamlQRCode(qrCode);
+    QrCode = xaml.GetGraphic(new(76, 76), new SolidColorBrush(Colors.Black), new SolidColorBrush(Colors.Transparent), false);
+
+    while (QrStatus != AuthCheckStatus.Ok)
+    {
+        var response = await _authCategory.CheckAuthCodeAsync(hash);
+
+        QrStatus = response.Status;
+
+        switch (response.Status)
+        {
+            case AuthCheckStatus.Continue or AuthCheckStatus.ConfirmOnPhone:
+                await Task.Delay(5000);
+                continue;
+            case AuthCheckStatus.Expired:
+                QrCode = null;
+                break;
+            case AuthCheckStatus.Ok:
+                {
+                    if (response.SuperAppToken is not null)
+                    {
+                        var uuid = Guid.NewGuid().ToString().Replace("-", "");
+                        await _loginCategory.ConnectAsync(uuid);
+                        await _loginCategory.ConnectAuthCodeAsync(response.SuperAppToken, uuid);
+                    }
+                    else if (response.AccessToken is not null)
+                    {
+                        await _vkService.SetTokenAsync(response.AccessToken);
+                    }
+
+                    LoggedIn?.Invoke(this, EventArgs.Empty);
+                    break;
+                }
+        }
+    }
+
+
+}
+ */
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
@@ -177,6 +255,7 @@ namespace VK_UI3.Views.LoginWindow
             dialog.PrimaryButtonText = "Подтвердить";
             dialog.SecondaryButtonText = "Отмена";
 
+           
 
             if (await dialog.ShowAsync() == ContentDialogResult.Primary)
                 result = inputTextBox.Text;

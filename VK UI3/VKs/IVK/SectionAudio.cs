@@ -38,22 +38,27 @@ namespace VK_UI3.VKs.IVK
         {
             return null;
         }
-
+        private readonly object _lock = new object();
         public override List<string> getPhotosList()
         {
             return new List<string>();
         }
-
+        private static SemaphoreSlim semaphore = new SemaphoreSlim(1);
         public override void GetTracks()
         {
             if (getLoadedTracks) return;
             if (itsAll) return;
-            getLoadedTracks = true;
+
+
 
             ResponseData a = null;
 
             Task.Run(async () =>
             {
+                if (getLoadedTracks)
+                    return;
+                getLoadedTracks = true;
+
                 a = await VK.vkService.GetSectionAsync(id, Next);
 
                 if (a.Section != null)
@@ -98,9 +103,11 @@ namespace VK_UI3.VKs.IVK
                         throw;
                     }
 
+
                     resetEvent.WaitOne();
-                    NotifyOnListUpdate();
                 }
+            
+                NotifyOnListUpdate();
             }).ContinueWith(t =>
                 {
                     if (t.IsFaulted)

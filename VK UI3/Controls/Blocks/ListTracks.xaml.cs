@@ -21,6 +21,7 @@ namespace VK_UI3.Controls.Blocks
 
             this.Loaded += ListTracks_Loaded;
             this.Unloaded += ListTracks_Unloaded;
+            
 
         }
 
@@ -34,30 +35,30 @@ namespace VK_UI3.Controls.Blocks
                 sectionAudio.onListUpdate -= SectionAudio_onListUpdate;
                 connected = false;
             }
+            gridV.loadMore -= loadMore;
+        }
+
+        private void loadMore(object sender, EventArgs e)
+        {
+            sectionAudio.GetTracks();
         }
 
         private void ListTracks_Loaded(object sender, RoutedEventArgs e)
         {
-            scrollViewer = SmallHelpers.FindScrollViewer(gridV);
+        
             try
             {
                 sectionAudio?.NotifyOnListUpdate();
             }
             catch { }
+            gridV.loadMore += loadMore;
         }
 
-        private bool CheckIfAllContentIsVisible(ScrollViewer scrollViewer)
-        {
-            if (scrollViewer.ViewportWidth >= scrollViewer.ExtentWidth)
-            {
-                return true;
-            }
-            return false;
-        }
+     
 
 
 
-        ScrollViewer scrollViewer { get; set; }
+    
         bool connected = false;
         private void ListTracks_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
@@ -81,7 +82,7 @@ namespace VK_UI3.Controls.Blocks
 
         private void SectionAudio_onListUpdate(object sender, EventArgs e)
         {
-            if (CheckIfAllContentIsVisible(scrollViewer))
+            if (gridV.CheckIfAllContentIsVisible())
             {
                 sectionAudio.GetTracks();
             }
@@ -89,13 +90,16 @@ namespace VK_UI3.Controls.Blocks
 
         private SectionAudio sectionAudio;
 
+      
+        private void ScrollRight_Click(object sender, RoutedEventArgs e)
+        {
+            gridV.ScrollRight();
+        }
 
-
-
-
-
-
-
+        private void ScrollLeft_Click(object sender, RoutedEventArgs e)
+        {
+            gridV.ScrollLeft();
+        }
     }
 }
 
