@@ -14,7 +14,13 @@
         <ThemeShadow />
     </UserControl.Shadow>
 
-    <Grid x:Name="gridCh" Height="Auto">
+    <Grid
+        x:Name="gridCh"
+        Height="Auto"
+        Background="Transparent"
+        PointerEntered="gridCh_PointerEntered"
+        PointerExited="gridCh_PointerExited">
+
 
         <customV:CustomGridView
             x:Name="gridV"
@@ -24,7 +30,7 @@
             ScrollViewer.HorizontalScrollBarVisibility="Visible"
             ScrollViewer.HorizontalScrollMode="Enabled"
             ScrollViewer.IsScrollInertiaEnabled="False"
-            ScrollViewer.VerticalScrollBarVisibility="Visible"
+            ScrollViewer.VerticalScrollBarVisibility="Disabled"
             ScrollViewer.VerticalScrollMode="Disabled"
             SelectionMode="None">
             <customV:CustomGridView.ItemContainerStyle>
@@ -55,24 +61,78 @@
                 </DataTemplate>
             </customV:CustomGridView.ItemTemplate>
         </customV:CustomGridView>
-        <Button
-            x:Name="ScrollLeft"
+        <Grid
+            x:Name="LeftGrid"
             Width="50"
             Height="50"
-            Background="{StaticResource AcrylicBackgroundFillColorDefaultBrush}"
-            Click="ScrollLeft_Click"
-            CornerRadius="50">
-            <FontIcon Glyph="&#xE76B;" />
-        </Button>
-        <Button
-            x:Name="ScrollRight"
+            HorizontalAlignment="Left"
+            Background="{StaticResource SystemControlBackgroundAltMediumHighBrush}"
+            CornerRadius="50"
+            Opacity="0"
+            Visibility="Collapsed">
+            <Grid.Resources>
+                <Storyboard x:Name="FadeInAnimationLeftBTN">
+                    <DoubleAnimation
+                        Storyboard.TargetName="LeftGrid"
+                        Storyboard.TargetProperty="Opacity"
+                        To="1"
+                        Duration="0:0:0.15" />
+                </Storyboard>
+                <!--  Анимация прозрачности от 1 до 0  -->
+                <Storyboard x:Name="FadeOutAnimationLeftBTN" Completed="FadeOutAnimationLeftBTN_Completed">
+                    <DoubleAnimation
+                        Storyboard.TargetName="LeftGrid"
+                        Storyboard.TargetProperty="Opacity"
+                        To="0"
+                        Duration="0:0:0.15" />
+                </Storyboard>
+            </Grid.Resources>
+            <Button
+                x:Name="ScrollLeft"
+                Width="50"
+                Height="50"
+                Click="ScrollLeft_Click"
+                CornerRadius="50">
+                <FontIcon Glyph="&#xE76B;" />
+            </Button>
+        </Grid>
+
+        <Grid
+            x:Name="RightGrid"
             Width="50"
             Height="50"
             HorizontalAlignment="Right"
-            Background="{StaticResource AcrylicBackgroundFillColorDefaultBrush}"
-            Click="ScrollRight_Click"
-            CornerRadius="50">
-            <FontIcon Glyph="&#xE76C;" />
-        </Button>
+            Background="{StaticResource SystemControlBackgroundAltMediumHighBrush}"
+            CornerRadius="50"
+            Opacity="0"
+            Visibility="Collapsed">
+            <Grid.Resources>
+                <Storyboard x:Name="FadeInAnimationRightBTN">
+                    <DoubleAnimation
+                        Storyboard.TargetName="RightGrid"
+                        Storyboard.TargetProperty="Opacity"
+                        To="1"
+                        Duration="0:0:0.15" />
+                </Storyboard>
+                <!--  Анимация прозрачности от 1 до 0  -->
+                <Storyboard x:Name="FadeOutAnimationRightBTN" Completed="FadeOutAnimationRightBTN_Completed">
+                    <DoubleAnimation
+                        Storyboard.TargetName="RightGrid"
+                        Storyboard.TargetProperty="Opacity"
+                        To="0"
+                        Duration="0:0:0.15" />
+                </Storyboard>
+            </Grid.Resources>
+            <Button
+                x:Name="ScrollRight"
+                Width="50"
+                Height="50"
+                HorizontalAlignment="Right"
+                Click="ScrollRight_Click"
+                CornerRadius="50">
+                <FontIcon Glyph="&#xE76C;" />
+            </Button>
+        </Grid>
+
     </Grid>
 </UserControl>

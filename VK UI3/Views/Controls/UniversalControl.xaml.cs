@@ -3,46 +3,69 @@ using Microsoft.UI.Xaml.Controls;
 using MusicX.Core.Models;
 using System;
 using System.Collections.ObjectModel;
-using System.Threading;
+using static System.Net.Mime.MediaTypeNames;
 using VK_UI3.VKs;
+using System.Threading;
+using VK_UI3.VKs.IVK;
+using System.Collections;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace VK_UI3.Controls.Blocks
+namespace VK_UI3.Views.Controls
 {
-    public sealed partial class RecommsPlaylistBlock : UserControl
+    public sealed partial class UniversalControl : UserControl
     {
-        ObservableCollection<Playlist> playlists = new();
-        public RecommsPlaylistBlock()
+
+        public UniversalControl()
         {
             this.InitializeComponent();
 
 
-            this.Loading += RecommsPlaylistBlock_Loading;
-            this.Unloaded += RecommsPlaylistBlock_Unloaded;
-            this.Loaded += RecommsPlaylistBlock_Loaded;
+        //    this.Loading += ListPlaylists_Loading;
+            this.Loaded += ListPlaylists_Loaded;
+            this.Unloaded += ListPlaylists_Unloaded;
+
         }
 
-        private void RecommsPlaylistBlock_Loaded(object sender, RoutedEventArgs e)
+        public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register("ItemsSource", typeof(IEnumerable), typeof(UniversalControl), new PropertyMetadata(null));
+
+        public IEnumerable ItemsSource
         {
+            get { return (IEnumerable)GetValue(ItemsSourceProperty); }
+            set { SetValue(ItemsSourceProperty, value); }
+        }
+
+        public static readonly DependencyProperty ItemsPanelTemplateProperty = DependencyProperty.Register("ItemsPanelTemplate", typeof(ItemsPanelTemplate), typeof(UniversalControl), new PropertyMetadata(null));
+
+        public ItemsPanelTemplate ItemsPanelTemplate
+        {
+            get { return (ItemsPanelTemplate)GetValue(ItemsPanelTemplateProperty); }
+            set { SetValue(ItemsPanelTemplateProperty, value); }
+        }
+
+
+        private void ListPlaylists_Loaded(object sender, RoutedEventArgs e)
+        {
+            gridV.ItemsPanel = ItemsPanelTemplate;
+            if (gridV.CheckIfAllContentIsVisible())
+                load();
             gridV.loadMore += loadMore;
             gridV.LeftChange += LeftChange;
             gridV.RightChange += RightChange;
         }
-        Block localBlock;
-        private void RecommsPlaylistBlock_Unloaded(object sender, RoutedEventArgs e)
+
+        private void ListPlaylists_Unloaded(object sender, RoutedEventArgs e)
         {
-
-            this.Loading -= RecommsPlaylistBlock_Loading;
-            this.Unloaded -= RecommsPlaylistBlock_Unloaded;
-
+            this.Unloaded -= ListPlaylists_Unloaded;
+            gridV.loadMore -= loadMore;
 
             gridV.loadMore -= loadMore;
             gridV.LeftChange -= LeftChange;
             gridV.RightChange -= RightChange;
         }
+
+
         private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+
         private async void load()
         {
             await semaphore.WaitAsync();
@@ -54,9 +77,9 @@ namespace VK_UI3.Controls.Blocks
                 this.DispatcherQueue.TryEnqueue(async () => {
                     foreach (var item in a.Playlists)
                     {
-                        playlists.Add(item);
+               //         playlists.Add(item);
                     }
-                    if (gridV.CheckIfAllContentIsVisible())
+                 //   if (gridV.CheckIfAllContentIsVisible())
                         load();
                 });
             }
@@ -66,25 +89,46 @@ namespace VK_UI3.Controls.Blocks
             }
         }
 
-        private void RecommsPlaylistBlock_Loading(FrameworkElement sender, object args)
+
+        Block localBlock;
+
+        /*
+        private void ListPlaylists_Loading(FrameworkElement sender, object args)
         {
             try
             {
                 if (DataContext is not Block block)
                     return;
+                playlists.Clear();
                 localBlock = block;
-                foreach (var item in block.Playlists)
+
+                if (block.Meta != null && block.Meta.anchor == "vibes")
+
                 {
-                    playlists.Add(item);
+                    gridV.ItemTemplate = this.Resources["compact"] as DataTemplate;
                 }
+                else
+                {
+                    gridV.ItemTemplate = this.Resources["default"] as DataTemplate;
+                }
+
+                var pl = (DataContext as Block).Playlists;
+
+
+                foreach (var item in pl)
+                {
+                //    playlists.Add(item);
+                }
+              
             }
             catch (Exception ex)
             {
 
 
+
             }
         }
-
+        */
 
 
         private void LeftChange(object sender, EventArgs e)
@@ -182,4 +226,6 @@ namespace VK_UI3.Controls.Blocks
         }
 
     }
+
+  
 }

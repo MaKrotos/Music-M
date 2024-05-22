@@ -413,8 +413,7 @@ namespace VK_UI3.Controllers
             OnPropertyChanged(nameof(TrackPosition));
             OnPropertyChanged(nameof(TrackDataThis));
 
-            var a = Thumbnail;
-            changeImage.ChangeImageWithAnimation(a);
+            changeImage.ChangeImageWithAnimation(Thumbnail);
             changeText.ChangeTextWithAnimation(TrackDataThis.audio.Artist);
             changeText2.ChangeTextWithAnimation(TrackDataThis.audio.Title);
 

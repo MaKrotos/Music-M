@@ -36,6 +36,8 @@ namespace VK_UI3.Controls.Blocks
                 connected = false;
             }
             gridV.loadMore -= loadMore;
+            gridV.LeftChange -= LeftChange;
+            gridV.RightChange -= RightChange;
         }
 
         private void loadMore(object sender, EventArgs e)
@@ -45,20 +47,18 @@ namespace VK_UI3.Controls.Blocks
 
         private void ListTracks_Loaded(object sender, RoutedEventArgs e)
         {
-        
             try
             {
                 sectionAudio?.NotifyOnListUpdate();
             }
             catch { }
             gridV.loadMore += loadMore;
+
+            gridV.LeftChange += LeftChange;
+            gridV.RightChange += RightChange;
         }
 
-     
 
-
-
-    
         bool connected = false;
         private void ListTracks_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
@@ -99,6 +99,90 @@ namespace VK_UI3.Controls.Blocks
         private void ScrollLeft_Click(object sender, RoutedEventArgs e)
         {
             gridV.ScrollLeft();
+        }
+
+
+
+        private void RightChange(object sender, EventArgs e)
+        {
+            RightCh();
+        }
+
+        private void RightCh()
+        {
+            if (gridV.showRight)
+            {
+                RightGrid.Visibility = Visibility.Visible;
+
+                FadeOutAnimationRightBTN.Pause();
+                FadeInAnimationRightBTN.Begin();
+
+            }
+            else
+            {
+                if (sectionAudio.itsAll)
+                {
+                    FadeInAnimationRightBTN.Pause();
+                    FadeOutAnimationRightBTN.Begin();
+                }
+            }
+        }
+
+        private void LeftChange(object sender, EventArgs e)
+        {
+            LeftCh();
+        }
+
+        private void LeftCh()
+        {
+            if (gridV.showLeft)
+            {
+                LeftGrid.Visibility = Visibility.Visible;
+
+                FadeOutAnimationLeftBTN.Pause();
+                FadeInAnimationLeftBTN.Begin();
+            }
+            else
+            {
+                FadeInAnimationLeftBTN.Pause();
+                FadeOutAnimationLeftBTN.Begin();
+
+            }
+        }
+
+        private void FadeOutAnimationRightBTN_Completed(object sender, object e)
+        {
+            if (!gridV.showRight || !enterpoint)
+            {
+                RightGrid.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void FadeOutAnimationLeftBTN_Completed(object sender, object e)
+        {
+            if (!gridV.showLeft || !enterpoint)
+            {
+                LeftGrid.Visibility = Visibility.Collapsed;
+            }
+           
+        }
+
+        private void gridCh_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            enterpoint = true;
+            var a = gridV.ShowLeftChecker;
+            a = gridV.ShowRightChecker;
+            LeftCh();
+            RightCh();
+        }
+        bool enterpoint;
+        private void gridCh_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            this.enterpoint = false;
+            FadeInAnimationLeftBTN.Pause();
+            FadeOutAnimationLeftBTN.Begin();
+            FadeInAnimationRightBTN.Pause();
+            FadeOutAnimationRightBTN.Begin();
         }
     }
 }

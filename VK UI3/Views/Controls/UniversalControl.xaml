@@ -1,15 +1,14 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <UserControl
-    x:Class="VK_UI3.Controls.Blocks.ListPlaylists"
+    x:Class="VK_UI3.Views.Controls.UniversalControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:custom="using:VK_UI3.Controls"
     xmlns:customV="using:VK_UI3.Views.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:VK_UI3.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Margin="0,0,0,0"
     mc:Ignorable="d">
+
     <UserControl.Resources>
         <DataTemplate x:Key="default">
             <local:PlaylistControl />
@@ -18,10 +17,10 @@
             <local:VibeControl />
         </DataTemplate>
     </UserControl.Resources>
+
     <UserControl.Shadow>
         <ThemeShadow />
     </UserControl.Shadow>
-
 
     <Grid
         x:Name="gridCh"
@@ -32,7 +31,7 @@
         <customV:CustomGridView
             x:Name="gridV"
             Margin="20,0,20,0"
-            ItemsSource="{x:Bind playlists, Mode=OneWay}"
+            ItemsSource="{x:Bind ItemsSource, Mode=OneWay}"
             ScrollViewer.HorizontalScrollBarVisibility="Visible"
             ScrollViewer.HorizontalScrollMode="Enabled"
             ScrollViewer.IsScrollInertiaEnabled="False"
@@ -50,12 +49,9 @@
                     </Setter>
                 </Style>
             </GridView.ItemContainerStyle>
-            <GridView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <ItemsWrapGrid MaximumRowsOrColumns="1" Orientation="Vertical" />
-                </ItemsPanelTemplate>
-            </GridView.ItemsPanel>
+       
         </customV:CustomGridView>
+
         <Grid
             x:Name="LeftGrid"
             Width="50"
@@ -128,5 +124,6 @@
                 <FontIcon Glyph="&#xE76C;" />
             </Button>
         </Grid>
+
     </Grid>
 </UserControl>

@@ -5,12 +5,16 @@ using System;
 using System.Collections.ObjectModel;
 using static System.Net.Mime.MediaTypeNames;
 using VK_UI3.VKs;
+using System.Threading;
+using VK_UI3.VKs.IVK;
 
 
 namespace VK_UI3.Controls.Blocks
 {
     public sealed partial class ListPlaylists : UserControl
     {
+
+        ObservableCollection<Playlist> playlists = new();
         public ListPlaylists()
         {
             this.InitializeComponent();
@@ -24,36 +28,49 @@ namespace VK_UI3.Controls.Blocks
 
         private void ListPlaylists_Loaded(object sender, RoutedEventArgs e)
         {
-            gridV.loadMore += loadMore;
             if (gridV.CheckIfAllContentIsVisible())
                 load();
+            gridV.loadMore += loadMore;
+            gridV.LeftChange += LeftChange;
+            gridV.RightChange += RightChange;
         }
 
         private void ListPlaylists_Unloaded(object sender, RoutedEventArgs e)
         {
             this.Unloaded -= ListPlaylists_Unloaded;
             gridV.loadMore -= loadMore;
+
+            gridV.loadMore -= loadMore;
+            gridV.LeftChange -= LeftChange;
+            gridV.RightChange -= RightChange;
         }
 
-        private void loadMore(object sender, EventArgs e)
-        {
-            load();
-        }
+
+        private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
         private async void load()
         {
-            if (localBlock.NextFrom == null) return;
-            var a = await VK.vkService.GetSectionAsync(localBlock.Id, localBlock.NextFrom);
-            localBlock.NextFrom = a.Section.NextFrom;
-            this.DispatcherQueue.TryEnqueue(async() => {
-                foreach (var item in a.Playlists)
-                {
-                    playlists.Add(item);
-                }
-                if (gridV.CheckIfAllContentIsVisible())
-                    load();
-            });
+            await semaphore.WaitAsync();
+            try
+            {
+                if (localBlock.NextFrom == null) return;
+                var a = await VK.vkService.GetSectionAsync(localBlock.Id, localBlock.NextFrom);
+                localBlock.NextFrom = a.Section.NextFrom;
+                this.DispatcherQueue.TryEnqueue(async () => {
+                    foreach (var item in a.Playlists)
+                    {
+                        playlists.Add(item);
+                    }
+                    if (gridV.CheckIfAllContentIsVisible())
+                        load();
+                });
+            }
+            finally
+            {
+                semaphore.Release();
+            }
         }
+
 
         Block localBlock;
         private void ListPlaylists_Loading(FrameworkElement sender, object args)
@@ -92,7 +109,92 @@ namespace VK_UI3.Controls.Blocks
             }
         }
 
-        ObservableCollection<Playlist> playlists = new();
+
+
+        private void LeftChange(object sender, EventArgs e)
+        {
+            LeftCh();
+        }
+        private void RightChange(object sender, EventArgs e)
+        {
+            RightCh();
+        }
+
+        private void RightCh()
+        {
+            if (gridV.showRight)
+            {
+                RightGrid.Visibility = Visibility.Visible;
+
+                FadeOutAnimationRightBTN.Pause();
+                FadeInAnimationRightBTN.Begin();
+
+            }
+            else
+            {
+                if (localBlock.NextFrom != null)
+                {
+                    FadeInAnimationRightBTN.Pause();
+                    FadeOutAnimationRightBTN.Begin();
+                }
+            }
+        }
+        private void FadeOutAnimationRightBTN_Completed(object sender, object e)
+        {
+            if (!gridV.showRight || !enterpoint)
+            {
+                RightGrid.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void FadeOutAnimationLeftBTN_Completed(object sender, object e)
+        {
+            if (!gridV.showLeft || !enterpoint)
+            {
+                LeftGrid.Visibility = Visibility.Collapsed;
+            }
+
+        }
+
+        private void gridCh_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            enterpoint = true;
+            var a = gridV.ShowLeftChecker;
+            a = gridV.ShowRightChecker;
+            LeftCh();
+            RightCh();
+        }
+        bool enterpoint;
+        private void gridCh_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            this.enterpoint = false;
+            FadeInAnimationLeftBTN.Pause();
+            FadeOutAnimationLeftBTN.Begin();
+            FadeInAnimationRightBTN.Pause();
+            FadeOutAnimationRightBTN.Begin();
+        }
+        private void LeftCh()
+        {
+            if (gridV.showLeft)
+            {
+                LeftGrid.Visibility = Visibility.Visible;
+
+                FadeOutAnimationLeftBTN.Pause();
+                FadeInAnimationLeftBTN.Begin();
+            }
+            else
+            {
+                FadeInAnimationLeftBTN.Pause();
+                FadeOutAnimationLeftBTN.Begin();
+
+            }
+        }
+        private void loadMore(object sender, EventArgs e)
+        {
+            load();
+        }
+
+
         private void ScrollRight_Click(object sender, RoutedEventArgs e)
         {
             gridV.ScrollRight();
@@ -104,33 +206,4 @@ namespace VK_UI3.Controls.Blocks
         }
 
     }
-
-
-
-
-
-    /*
-     * 
-     * 
-   public class BlockTemplateSelector : DataTemplateSelector
- {
-     protected override DataTemplate? SelectTemplateCore(object? item, DependencyObject container)
-     {
-         if (item is Block block)
-         {
-             BlockControl blockControl = new BlockControl();
-             string key = string.IsNullOrEmpty(block.Layout?.Name) ? block.DataType : $"{block.DataType}_{block.Layout.Name}";
-
-             if (blockControl.Resources.TryGetValue(key, out object resource) || blockControl.Resources.TryGetValue(block.DataType, out resource) || blockControl.Resources.TryGetValue("default", out resource))
-             {
-                 return resource as DataTemplate;
-             }
-         }
-
-         return null;
-     }
- }
-     * 
-     * 
-     */
 }

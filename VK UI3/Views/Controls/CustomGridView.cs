@@ -21,13 +21,58 @@ namespace VK_UI3.Views.Controls
         {
             this.Loaded += CustomGridView_Loaded;
         }
-
+        public EventHandler RightChange;
+        public EventHandler LeftChange;
         private void CustomGridView_Loaded(object sender, RoutedEventArgs e)
         {
-
             scrollViewer = FindScrollViewer(this);
-            scrollViewer.ViewChanged += ScrollViewer_ViewChanged; ;
+            scrollViewer.ViewChanged += ScrollViewer_ViewChanged;
         }
+
+
+
+        bool _showLeft = false;
+        bool _showRight = false;
+
+        public bool showLeft
+        {
+            get { return _showLeft; }
+            set
+            {
+                if (_showLeft == value) return;
+                _showLeft = value;
+                if (LeftChange != null)
+                    LeftChange.Invoke(this, EventArgs.Empty);
+            }
+        }
+        public bool showRight
+        {
+            get { return _showRight; }
+            set
+            {
+                if (_showRight == value) return;
+                _showRight = value;
+                if (RightChange != null)
+                    RightChange.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public bool ShowRightChecker { get {
+                var isAtRight = scrollViewer.HorizontalOffset > scrollViewer.ScrollableWidth - 50;
+                showRight = !isAtRight;
+                return !isAtRight;
+            } }
+
+        public bool ShowLeftChecker
+        {
+            get
+            {
+                var isAtLeft = scrollViewer.HorizontalOffset == 0;
+                showLeft = !isAtLeft;
+                return !isAtLeft;
+            }
+        }
+
 
         // Функция для прокрутки вправо
         public void ScrollRight()
@@ -40,29 +85,77 @@ namespace VK_UI3.Views.Controls
         {
             scrollViewer.ChangeView(scrollViewer.HorizontalOffset - scrollViewer.ActualWidth, null, null);
         }
-
+        private object _lock = new object();
+        private bool lockVertical = false;
+        private bool lockHorizontal = false;
         private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
-            if (scrollViewer.VerticalScrollMode == ScrollMode.Enabled)
-            {
-                var isAtBottom = scrollViewer.VerticalOffset > scrollViewer.ScrollableHeight - 50;
-                if (isAtBottom)
+            
+                if (scrollViewer.VerticalScrollMode == ScrollMode.Enabled)
                 {
-                    if (loadMore != null)
-                        loadMore.Invoke(this, EventArgs.Empty);
+                    var isAtBottom = scrollViewer.VerticalOffset > scrollViewer.ScrollableHeight - 50;
+                    if (isAtBottom)
+                    {
+                        lock (_lock)
+                        {
+                            if (loadMore != null)
+                            {
+                                if (!lockVertical)
+                                {
+                                    lockVertical = true;
+                                    loadMore.Invoke(this, EventArgs.Empty);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        lockVertical = false;
+                    }
                 }
-            }
-            if (scrollViewer.HorizontalScrollMode == ScrollMode.Enabled)
-            {
-                var isAtBottom = scrollViewer.HorizontalOffset  > scrollViewer.ScrollableWidth -50;
-                if (isAtBottom)
+
+                if (scrollViewer.HorizontalScrollMode == ScrollMode.Enabled)
                 {
-                    if (loadMore != null)
-                        loadMore.Invoke(this, EventArgs.Empty);
+                    var isAtRight = scrollViewer.HorizontalOffset > scrollViewer.ScrollableWidth - 50;
+                    if (isAtRight)
+                    {
+                        lock (_lock)
+                        {
+                            if (loadMore != null)
+                            {
+                                if (!lockHorizontal)
+                                {
+                                    lockHorizontal = true;
+                                    loadMore.Invoke(this, EventArgs.Empty);
+                                }
+                            }
+                        }
+                        // Показать правую кнопку
+                        showRight = false;
+                    }
+                    else
+                    {
+                        lockHorizontal = false;
+                        // Скрыть правую кнопку
+                        showRight = true;
+                    }
+
+                    var isAtLeft = scrollViewer.HorizontalOffset == 0;
+                    if (isAtLeft)
+                    {
+                        // Скрыть левую кнопку
+                        showLeft = false;
+                    }
+                    else
+                    {
+                        // Показать левую кнопку
+                        showLeft = true;
+                    }
                 }
-            }
+            
         }
 
+  
         public bool CheckIfAllContentIsVisible()
         {
             
