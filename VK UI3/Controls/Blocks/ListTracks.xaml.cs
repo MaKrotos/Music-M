@@ -35,9 +35,8 @@ namespace VK_UI3.Controls.Blocks
                 sectionAudio.onListUpdate -= SectionAudio_onListUpdate;
                 connected = false;
             }
-            gridV.loadMore -= loadMore;
-            gridV.LeftChange -= LeftChange;
-            gridV.RightChange -= RightChange;
+            myControl.loadMore = null;
+
         }
 
         private void loadMore(object sender, EventArgs e)
@@ -52,10 +51,7 @@ namespace VK_UI3.Controls.Blocks
                 sectionAudio?.NotifyOnListUpdate();
             }
             catch { }
-            gridV.loadMore += loadMore;
-
-            gridV.LeftChange += LeftChange;
-            gridV.RightChange += RightChange;
+            myControl.loadMore = sectionAudio.GetTracks;
         }
 
 
@@ -82,7 +78,7 @@ namespace VK_UI3.Controls.Blocks
 
         private void SectionAudio_onListUpdate(object sender, EventArgs e)
         {
-            if (gridV.CheckIfAllContentIsVisible())
+            if (myControl.CheckIfAllContentIsVisible())
             {
                 sectionAudio.GetTracks();
             }
@@ -90,100 +86,11 @@ namespace VK_UI3.Controls.Blocks
 
         private SectionAudio sectionAudio;
 
-      
-        private void ScrollRight_Click(object sender, RoutedEventArgs e)
-        {
-            gridV.ScrollRight();
-        }
-
-        private void ScrollLeft_Click(object sender, RoutedEventArgs e)
-        {
-            gridV.ScrollLeft();
-        }
 
 
+ 
 
-        private void RightChange(object sender, EventArgs e)
-        {
-            RightCh();
-        }
-
-        private void RightCh()
-        {
-            if (gridV.showRight)
-            {
-                RightGrid.Visibility = Visibility.Visible;
-
-                FadeOutAnimationRightBTN.Pause();
-                FadeInAnimationRightBTN.Begin();
-
-            }
-            else
-            {
-                if (sectionAudio.itsAll)
-                {
-                    FadeInAnimationRightBTN.Pause();
-                    FadeOutAnimationRightBTN.Begin();
-                }
-            }
-        }
-
-        private void LeftChange(object sender, EventArgs e)
-        {
-            LeftCh();
-        }
-
-        private void LeftCh()
-        {
-            if (gridV.showLeft)
-            {
-                LeftGrid.Visibility = Visibility.Visible;
-
-                FadeOutAnimationLeftBTN.Pause();
-                FadeInAnimationLeftBTN.Begin();
-            }
-            else
-            {
-                FadeInAnimationLeftBTN.Pause();
-                FadeOutAnimationLeftBTN.Begin();
-
-            }
-        }
-
-        private void FadeOutAnimationRightBTN_Completed(object sender, object e)
-        {
-            if (!gridV.showRight || !enterpoint)
-            {
-                RightGrid.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        private void FadeOutAnimationLeftBTN_Completed(object sender, object e)
-        {
-            if (!gridV.showLeft || !enterpoint)
-            {
-                LeftGrid.Visibility = Visibility.Collapsed;
-            }
-           
-        }
-
-        private void gridCh_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-            enterpoint = true;
-            var a = gridV.ShowLeftChecker;
-            a = gridV.ShowRightChecker;
-            LeftCh();
-            RightCh();
-        }
-        bool enterpoint;
-        private void gridCh_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-            this.enterpoint = false;
-            FadeInAnimationLeftBTN.Pause();
-            FadeOutAnimationLeftBTN.Begin();
-            FadeInAnimationRightBTN.Pause();
-            FadeOutAnimationRightBTN.Begin();
-        }
+  
     }
 }
 

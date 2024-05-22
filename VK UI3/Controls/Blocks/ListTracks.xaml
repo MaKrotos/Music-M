@@ -9,130 +9,21 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Margin="0,0,0,0"
     mc:Ignorable="d">
-    <UserControl.Resources />
-    <UserControl.Shadow>
-        <ThemeShadow />
-    </UserControl.Shadow>
 
-    <Grid
-        x:Name="gridCh"
-        Height="Auto"
-        Background="Transparent"
-        PointerEntered="gridCh_PointerEntered"
-        PointerExited="gridCh_PointerExited">
-
-
-        <customV:CustomGridView
-            x:Name="gridV"
-            Margin="20,0,20,0"
-            CornerRadius="5"
-            ItemsSource="{x:Bind sectionAudio.listAudio, Mode=OneWay}"
-            ScrollViewer.HorizontalScrollBarVisibility="Visible"
-            ScrollViewer.HorizontalScrollMode="Enabled"
-            ScrollViewer.IsScrollInertiaEnabled="False"
-            ScrollViewer.VerticalScrollBarVisibility="Disabled"
-            ScrollViewer.VerticalScrollMode="Disabled"
-            SelectionMode="None">
-            <customV:CustomGridView.ItemContainerStyle>
-                <Style TargetType="GridViewItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    <Setter Property="VerticalContentAlignment" Value="Stretch" />
-                    <Setter x:Name="WSetter" Property="Width" Value="300" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="GridViewItem">
-                                <ContentPresenter />
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </customV:CustomGridView.ItemContainerStyle>
-            <customV:CustomGridView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <ItemsWrapGrid MaximumRowsOrColumns="3" Orientation="Vertical" />
-                </ItemsPanelTemplate>
-            </customV:CustomGridView.ItemsPanel>
-            <customV:CustomGridView.ItemTemplate>
-                <DataTemplate>
-                    <custom:TrackControl
-                        x:Name="trControl"
-                        FocusVisualPrimaryBrush="Transparent"
-                        FocusVisualSecondaryThickness="0" />
-                </DataTemplate>
-            </customV:CustomGridView.ItemTemplate>
-        </customV:CustomGridView>
-        <Grid
-            x:Name="LeftGrid"
-            Width="50"
-            Height="50"
-            HorizontalAlignment="Left"
-            Background="{StaticResource SystemControlBackgroundAltMediumHighBrush}"
-            CornerRadius="50"
-            Opacity="0"
-            Visibility="Collapsed">
-            <Grid.Resources>
-                <Storyboard x:Name="FadeInAnimationLeftBTN">
-                    <DoubleAnimation
-                        Storyboard.TargetName="LeftGrid"
-                        Storyboard.TargetProperty="Opacity"
-                        To="1"
-                        Duration="0:0:0.15" />
-                </Storyboard>
-                <!--  Анимация прозрачности от 1 до 0  -->
-                <Storyboard x:Name="FadeOutAnimationLeftBTN" Completed="FadeOutAnimationLeftBTN_Completed">
-                    <DoubleAnimation
-                        Storyboard.TargetName="LeftGrid"
-                        Storyboard.TargetProperty="Opacity"
-                        To="0"
-                        Duration="0:0:0.15" />
-                </Storyboard>
-            </Grid.Resources>
-            <Button
-                x:Name="ScrollLeft"
-                Width="50"
-                Height="50"
-                Click="ScrollLeft_Click"
-                CornerRadius="50">
-                <FontIcon Glyph="&#xE76B;" />
-            </Button>
-        </Grid>
-
-        <Grid
-            x:Name="RightGrid"
-            Width="50"
-            Height="50"
-            HorizontalAlignment="Right"
-            Background="{StaticResource SystemControlBackgroundAltMediumHighBrush}"
-            CornerRadius="50"
-            Opacity="0"
-            Visibility="Collapsed">
-            <Grid.Resources>
-                <Storyboard x:Name="FadeInAnimationRightBTN">
-                    <DoubleAnimation
-                        Storyboard.TargetName="RightGrid"
-                        Storyboard.TargetProperty="Opacity"
-                        To="1"
-                        Duration="0:0:0.15" />
-                </Storyboard>
-                <!--  Анимация прозрачности от 1 до 0  -->
-                <Storyboard x:Name="FadeOutAnimationRightBTN" Completed="FadeOutAnimationRightBTN_Completed">
-                    <DoubleAnimation
-                        Storyboard.TargetName="RightGrid"
-                        Storyboard.TargetProperty="Opacity"
-                        To="0"
-                        Duration="0:0:0.15" />
-                </Storyboard>
-            </Grid.Resources>
-            <Button
-                x:Name="ScrollRight"
-                Width="50"
-                Height="50"
-                HorizontalAlignment="Right"
-                Click="ScrollRight_Click"
-                CornerRadius="50">
-                <FontIcon Glyph="&#xE76C;" />
-            </Button>
-        </Grid>
-
-    </Grid>
+    <customV:UniversalControl x:Name="myControl" ItemsSource="{x:Bind sectionAudio.listAudio}">
+        <customV:UniversalControl.ItemsPanelTemplate>
+            <ItemsPanelTemplate>
+                <ItemsWrapGrid MaximumRowsOrColumns="3" Orientation="Vertical" />
+            </ItemsPanelTemplate>
+        </customV:UniversalControl.ItemsPanelTemplate>
+        <customV:UniversalControl.ItemTemplate>
+            <DataTemplate>
+                <custom:TrackControl
+                    x:Name="trControl"
+                    MinWidth="300"
+                    FocusVisualPrimaryBrush="Transparent"
+                    FocusVisualSecondaryThickness="0" />
+            </DataTemplate>
+        </customV:UniversalControl.ItemTemplate>
+    </customV:UniversalControl>
 </UserControl>

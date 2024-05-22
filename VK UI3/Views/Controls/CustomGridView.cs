@@ -158,7 +158,7 @@ namespace VK_UI3.Views.Controls
   
         public bool CheckIfAllContentIsVisible()
         {
-            
+            if (scrollViewer == null) return false;
 
             if (scrollViewer.HorizontalScrollMode == ScrollMode.Enabled)
             {

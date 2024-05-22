@@ -26,29 +26,39 @@ namespace VK_UI3.Views.Controls
 
         }
 
-        public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register("ItemsSource", typeof(IEnumerable), typeof(UniversalControl), new PropertyMetadata(null));
+        public Action loadMore = nul;
+
+        private static void nul()
+        {
+        }
+
 
         public IEnumerable ItemsSource
         {
-            get { return (IEnumerable)GetValue(ItemsSourceProperty); }
-            set { SetValue(ItemsSourceProperty, value); }
+            get;
+            set;
         }
 
-        public static readonly DependencyProperty ItemsPanelTemplateProperty = DependencyProperty.Register("ItemsPanelTemplate", typeof(ItemsPanelTemplate), typeof(UniversalControl), new PropertyMetadata(null));
 
         public ItemsPanelTemplate ItemsPanelTemplate
         {
-            get { return (ItemsPanelTemplate)GetValue(ItemsPanelTemplateProperty); }
-            set { SetValue(ItemsPanelTemplateProperty, value); }
+            get;
+            set;
+        }
+        public DataTemplate ItemTemplate
+        {
+            get;
+            set;
         }
 
 
         private void ListPlaylists_Loaded(object sender, RoutedEventArgs e)
         {
             gridV.ItemsPanel = ItemsPanelTemplate;
+            gridV.ItemTemplate = ItemTemplate;
             if (gridV.CheckIfAllContentIsVisible())
-                load();
-            gridV.loadMore += loadMore;
+                loadMore?.Invoke();
+            gridV.loadMore += load;
             gridV.LeftChange += LeftChange;
             gridV.RightChange += RightChange;
         }
@@ -56,39 +66,24 @@ namespace VK_UI3.Views.Controls
         private void ListPlaylists_Unloaded(object sender, RoutedEventArgs e)
         {
             this.Unloaded -= ListPlaylists_Unloaded;
-            gridV.loadMore -= loadMore;
-
-            gridV.loadMore -= loadMore;
+ 
+            gridV.loadMore -= load;
             gridV.LeftChange -= LeftChange;
             gridV.RightChange -= RightChange;
         }
 
+        private void load(object sender, EventArgs e)
+        {
+            if (loadMore != null)
+            loadMore?.Invoke();
+        }
 
         private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
-        private async void load()
+        public bool CheckIfAllContentIsVisible()
         {
-            await semaphore.WaitAsync();
-            try
-            {
-                if (localBlock.NextFrom == null) return;
-                var a = await VK.vkService.GetSectionAsync(localBlock.Id, localBlock.NextFrom);
-                localBlock.NextFrom = a.Section.NextFrom;
-                this.DispatcherQueue.TryEnqueue(async () => {
-                    foreach (var item in a.Playlists)
-                    {
-               //         playlists.Add(item);
-                    }
-                 //   if (gridV.CheckIfAllContentIsVisible())
-                        load();
-                });
-            }
-            finally
-            {
-                semaphore.Release();
-            }
+            return gridV.CheckIfAllContentIsVisible();
         }
-
 
         Block localBlock;
 
@@ -139,7 +134,7 @@ namespace VK_UI3.Views.Controls
         {
             RightCh();
         }
-
+        public bool itsAll { get; set; }
         private void RightCh()
         {
             if (gridV.showRight)
@@ -152,7 +147,7 @@ namespace VK_UI3.Views.Controls
             }
             else
             {
-                if (localBlock.NextFrom != null)
+                if (itsAll)
                 {
                     FadeInAnimationRightBTN.Pause();
                     FadeOutAnimationRightBTN.Begin();
@@ -209,10 +204,7 @@ namespace VK_UI3.Views.Controls
 
             }
         }
-        private void loadMore(object sender, EventArgs e)
-        {
-            load();
-        }
+     
 
 
         private void ScrollRight_Click(object sender, RoutedEventArgs e)
