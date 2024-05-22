@@ -26,7 +26,7 @@ namespace VK_UI3.Views.Controls
 
         }
 
-        public Action loadMore = nul;
+        public Action loadMore { get; set; } = nul;
 
         private static void nul()
         {
@@ -50,6 +50,8 @@ namespace VK_UI3.Views.Controls
             get;
             set;
         }
+
+        public bool itsAll { get; set; }
 
 
         private void ListPlaylists_Loaded(object sender, RoutedEventArgs e)
@@ -134,7 +136,7 @@ namespace VK_UI3.Views.Controls
         {
             RightCh();
         }
-        public bool itsAll { get; set; }
+     
         private void RightCh()
         {
             if (gridV.showRight)

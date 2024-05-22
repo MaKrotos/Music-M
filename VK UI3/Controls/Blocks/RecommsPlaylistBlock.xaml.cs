@@ -26,9 +26,7 @@ namespace VK_UI3.Controls.Blocks
 
         private void RecommsPlaylistBlock_Loaded(object sender, RoutedEventArgs e)
         {
-            gridV.loadMore += loadMore;
-            gridV.LeftChange += LeftChange;
-            gridV.RightChange += RightChange;
+            myControl.loadMore = load;
         }
         Block localBlock;
         private void RecommsPlaylistBlock_Unloaded(object sender, RoutedEventArgs e)
@@ -36,11 +34,8 @@ namespace VK_UI3.Controls.Blocks
 
             this.Loading -= RecommsPlaylistBlock_Loading;
             this.Unloaded -= RecommsPlaylistBlock_Unloaded;
+            myControl.loadMore = null;
 
-
-            gridV.loadMore -= loadMore;
-            gridV.LeftChange -= LeftChange;
-            gridV.RightChange -= RightChange;
         }
         private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
         private async void load()
@@ -56,7 +51,7 @@ namespace VK_UI3.Controls.Blocks
                     {
                         playlists.Add(item);
                     }
-                    if (gridV.CheckIfAllContentIsVisible())
+                    if (myControl.CheckIfAllContentIsVisible())
                         load();
                 });
             }
@@ -84,101 +79,13 @@ namespace VK_UI3.Controls.Blocks
 
             }
         }
-
-
-
-        private void LeftChange(object sender, EventArgs e)
+        public bool itsAll
         {
-            LeftCh();
-        }
-        private void RightChange(object sender, EventArgs e)
-        {
-            RightCh();
-        }
-
-        private void RightCh()
-        {
-            if (gridV.showRight)
+            get
             {
-                RightGrid.Visibility = Visibility.Visible;
-
-                FadeOutAnimationRightBTN.Pause();
-                FadeInAnimationRightBTN.Begin();
-
+                if (localBlock == null) return true;
+                if (localBlock.NextFrom == null) return true; else return false;
             }
-            else
-            {
-                if (localBlock.NextFrom != null)
-                {
-                    FadeInAnimationRightBTN.Pause();
-                    FadeOutAnimationRightBTN.Begin();
-                }
-            }
-        }
-        private void FadeOutAnimationRightBTN_Completed(object sender, object e)
-        {
-            if (!gridV.showRight || !enterpoint)
-            {
-                RightGrid.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        private void FadeOutAnimationLeftBTN_Completed(object sender, object e)
-        {
-            if (!gridV.showLeft || !enterpoint)
-            {
-                LeftGrid.Visibility = Visibility.Collapsed;
-            }
-
-        }
-
-        private void gridCh_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-            enterpoint = true;
-            var a = gridV.ShowLeftChecker;
-            a = gridV.ShowRightChecker;
-            LeftCh();
-            RightCh();
-        }
-        bool enterpoint;
-        private void gridCh_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-            this.enterpoint = false;
-            FadeInAnimationLeftBTN.Pause();
-            FadeOutAnimationLeftBTN.Begin();
-            FadeInAnimationRightBTN.Pause();
-            FadeOutAnimationRightBTN.Begin();
-        }
-        private void LeftCh()
-        {
-            if (gridV.showLeft)
-            {
-                LeftGrid.Visibility = Visibility.Visible;
-
-                FadeOutAnimationLeftBTN.Pause();
-                FadeInAnimationLeftBTN.Begin();
-            }
-            else
-            {
-                FadeInAnimationLeftBTN.Pause();
-                FadeOutAnimationLeftBTN.Begin();
-
-            }
-        }
-        private void loadMore(object sender, EventArgs e)
-        {
-            load();
-        }
-
-
-        private void ScrollRight_Click(object sender, RoutedEventArgs e)
-        {
-            gridV.ScrollRight();
-        }
-
-        private void ScrollLeft_Click(object sender, RoutedEventArgs e)
-        {
-            gridV.ScrollLeft();
         }
 
     }

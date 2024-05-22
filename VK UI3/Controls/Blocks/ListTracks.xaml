@@ -10,7 +10,10 @@
     Margin="0,0,0,0"
     mc:Ignorable="d">
 
-    <customV:UniversalControl x:Name="myControl" ItemsSource="{x:Bind sectionAudio.listAudio}">
+    <customV:UniversalControl
+        x:Name="myControl"
+        ItemsSource="{x:Bind sectionAudio.listAudio}"
+        itsAll="{x:Bind sectionAudio.itsAll}">
         <customV:UniversalControl.ItemsPanelTemplate>
             <ItemsPanelTemplate>
                 <ItemsWrapGrid MaximumRowsOrColumns="3" Orientation="Vertical" />

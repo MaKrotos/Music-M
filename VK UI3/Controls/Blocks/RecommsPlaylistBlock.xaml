@@ -15,107 +15,23 @@
         <ThemeShadow />
     </UserControl.Shadow>
 
-    <Grid
-        x:Name="gridCh"
-        Height="Auto"
-        CornerRadius="8"
-        PointerEntered="gridCh_PointerEntered"
-        PointerExited="gridCh_PointerExited">
-        <customV:CustomGridView
-            x:Name="gridV"
-            Margin="20,0,20,0"
-            ItemsSource="{x:Bind playlists, Mode=OneWay}"
-            ScrollViewer.HorizontalScrollBarVisibility="Visible"
-            ScrollViewer.HorizontalScrollMode="Enabled"
-            ScrollViewer.IsScrollInertiaEnabled="False"
-            ScrollViewer.VerticalScrollBarVisibility="Disabled"
-            ScrollViewer.VerticalScrollMode="Disabled"
-            SelectionMode="None">
-            <GridView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <ItemsWrapGrid MaximumRowsOrColumns="1" Orientation="Vertical" />
-                </ItemsPanelTemplate>
-            </GridView.ItemsPanel>
-            <GridView.ItemTemplate>
-                <DataTemplate>
-                    <custom:RecommsPlaylist
-                        x:Name="trControl"
-                        FocusVisualPrimaryBrush="Transparent"
-                        FocusVisualSecondaryThickness="0" />
-                </DataTemplate>
-            </GridView.ItemTemplate>
-        </customV:CustomGridView>
-        <Grid
-            x:Name="LeftGrid"
-            Width="50"
-            Height="50"
-            HorizontalAlignment="Left"
-            Background="{StaticResource SystemControlBackgroundAltMediumHighBrush}"
-            CornerRadius="50"
-            Opacity="0"
-            Visibility="Collapsed">
-            <Grid.Resources>
-                <Storyboard x:Name="FadeInAnimationLeftBTN">
-                    <DoubleAnimation
-                        Storyboard.TargetName="LeftGrid"
-                        Storyboard.TargetProperty="Opacity"
-                        To="1"
-                        Duration="0:0:0.15" />
-                </Storyboard>
-                <!--  Анимация прозрачности от 1 до 0  -->
-                <Storyboard x:Name="FadeOutAnimationLeftBTN" Completed="FadeOutAnimationLeftBTN_Completed">
-                    <DoubleAnimation
-                        Storyboard.TargetName="LeftGrid"
-                        Storyboard.TargetProperty="Opacity"
-                        To="0"
-                        Duration="0:0:0.15" />
-                </Storyboard>
-            </Grid.Resources>
-            <Button
-                x:Name="ScrollLeft"
-                Width="50"
-                Height="50"
-                Click="ScrollLeft_Click"
-                CornerRadius="50">
-                <FontIcon Glyph="&#xE76B;" />
-            </Button>
-        </Grid>
 
-        <Grid
-            x:Name="RightGrid"
-            Width="50"
-            Height="50"
-            HorizontalAlignment="Right"
-            Background="{StaticResource SystemControlBackgroundAltMediumHighBrush}"
-            CornerRadius="50"
-            Opacity="0"
-            Visibility="Collapsed">
-            <Grid.Resources>
-                <Storyboard x:Name="FadeInAnimationRightBTN">
-                    <DoubleAnimation
-                        Storyboard.TargetName="RightGrid"
-                        Storyboard.TargetProperty="Opacity"
-                        To="1"
-                        Duration="0:0:0.15" />
-                </Storyboard>
-                <!--  Анимация прозрачности от 1 до 0  -->
-                <Storyboard x:Name="FadeOutAnimationRightBTN" Completed="FadeOutAnimationRightBTN_Completed">
-                    <DoubleAnimation
-                        Storyboard.TargetName="RightGrid"
-                        Storyboard.TargetProperty="Opacity"
-                        To="0"
-                        Duration="0:0:0.15" />
-                </Storyboard>
-            </Grid.Resources>
-            <Button
-                x:Name="ScrollRight"
-                Width="50"
-                Height="50"
-                HorizontalAlignment="Right"
-                Click="ScrollRight_Click"
-                CornerRadius="50">
-                <FontIcon Glyph="&#xE76C;" />
-            </Button>
-        </Grid>
-    </Grid>
+    <customV:UniversalControl
+        x:Name="myControl"
+        ItemsSource="{x:Bind playlists}"
+        itsAll="{x:Bind itsAll}">
+        <customV:UniversalControl.ItemsPanelTemplate>
+            <ItemsPanelTemplate>
+                <ItemsWrapGrid MaximumRowsOrColumns="1" Orientation="Vertical" />
+            </ItemsPanelTemplate>
+        </customV:UniversalControl.ItemsPanelTemplate>
+        <customV:UniversalControl.ItemTemplate>
+            <DataTemplate>
+                <custom:RecommsPlaylist
+                    x:Name="trControl"
+                    FocusVisualPrimaryBrush="Transparent"
+                    FocusVisualSecondaryThickness="0" />
+            </DataTemplate>
+        </customV:UniversalControl.ItemTemplate>
+    </customV:UniversalControl>
 </UserControl>

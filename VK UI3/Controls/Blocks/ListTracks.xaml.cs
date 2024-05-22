@@ -39,10 +39,7 @@ namespace VK_UI3.Controls.Blocks
 
         }
 
-        private void loadMore(object sender, EventArgs e)
-        {
-            sectionAudio.GetTracks();
-        }
+    
 
         private void ListTracks_Loaded(object sender, RoutedEventArgs e)
         {
@@ -51,10 +48,12 @@ namespace VK_UI3.Controls.Blocks
                 sectionAudio?.NotifyOnListUpdate();
             }
             catch { }
+
             myControl.loadMore = sectionAudio.GetTracks;
+            if (myControl.CheckIfAllContentIsVisible()) sectionAudio.GetTracks();
         }
 
-
+  
         bool connected = false;
         private void ListTracks_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
@@ -85,12 +84,6 @@ namespace VK_UI3.Controls.Blocks
         }
 
         private SectionAudio sectionAudio;
-
-
-
- 
-
-  
     }
 }
 
