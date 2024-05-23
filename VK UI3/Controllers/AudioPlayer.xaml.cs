@@ -500,7 +500,17 @@ namespace VK_UI3.Controllers
 
         }
 
-        public static IVKGetAudio iVKGetAudio = null;
+        private static IVKGetAudio _iVKGetAudio = null;
+        public static IVKGetAudio iVKGetAudio
+        {
+            get { return _iVKGetAudio; }
+            set
+            {
+                if (_iVKGetAudio == value) return;
+                _iVKGetAudio = value;
+                NotifyoniVKUpdate();
+            }
+        }
 
 
 
@@ -778,8 +788,10 @@ namespace VK_UI3.Controllers
         {
 
             iVKGetAudio = userAudio;
+       
             AudioPlayer.PlayTrack();
-            NotifyoniVKUpdate();
+           
+
         }
 
     }
