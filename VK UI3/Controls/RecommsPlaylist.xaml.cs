@@ -61,19 +61,19 @@ namespace VK_UI3.Controls
 
         private void updatePlayState(bool prin = false, bool pause = false)
         {
-            string icon = "\uE768"; // default icon
+            this.DispatcherQueue.TryEnqueue(() =>
+            {
+                string icon = "\uE768"; // default icon
 
-            if (prin)
-            {
-                icon = pause ? "\uE768" : "\uE769";
-            }
-            else if (isThisPlayList_Now_Play && AudioPlayer.mediaPlayer.PlaybackSession.PlaybackState != Windows.Media.Playback.MediaPlaybackState.Paused)
-            {
-                icon = "\uE769";
-            }
+                if (prin)
+                {
+                    icon = pause ? "\uE768" : "\uE769";
+                }
+                else if (isThisPlayList_Now_Play && AudioPlayer.mediaPlayer.PlaybackSession.PlaybackState != Windows.Media.Playback.MediaPlaybackState.Paused)
+                {
+                    icon = "\uE769";
+                }
 
-            this.DispatcherQueue.TryEnqueue(async () =>
-            {
                 if (!isThisPlayList_Now_Play)
                 {
                     if (!entered)
@@ -87,9 +87,9 @@ namespace VK_UI3.Controls
                     FadeOutAnimationGridPlayIcon.Pause();
                     FadeInAnimationGridPlayIcon.Begin();
                 }
-            });
 
-            AnimationsChangeFontIcon.ChangeFontIconWithAnimation(icon);
+                AnimationsChangeFontIcon.ChangeFontIconWithAnimation(icon);
+            });
         }
 
         public bool isThisPlayList_Now_Play
