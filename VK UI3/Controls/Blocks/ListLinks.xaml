@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <UserControl
-    x:Class="VK_UI3.Controls.Blocks.ListPlaylists"
+    x:Class="VK_UI3.Controls.Blocks.ListLinks"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:custom="using:VK_UI3.Controls"
@@ -31,7 +31,7 @@
 
         <customV:UniversalControl
             x:Name="myControl"
-            ItemsSource="{x:Bind playlists}"
+            ItemsSource="{x:Bind links}"
             itsAll="{x:Bind itsAll}"
            >
             <customV:UniversalControl.ItemsPanelTemplate>
@@ -39,7 +39,13 @@
                     <ItemsWrapGrid MaximumRowsOrColumns="1" Orientation="Vertical" />
                 </ItemsPanelTemplate>
             </customV:UniversalControl.ItemsPanelTemplate>
-          
+            <customV:UniversalControl.ItemTemplate>
+                <DataTemplate>
+                    <custom:LinksController
+                        FocusVisualPrimaryBrush="Transparent"
+                        FocusVisualSecondaryThickness="0" />
+                </DataTemplate>
+            </customV:UniversalControl.ItemTemplate>
         </customV:UniversalControl>
     </Grid>
 </UserControl>

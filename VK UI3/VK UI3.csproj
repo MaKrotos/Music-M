@@ -34,6 +34,7 @@
 	  <None Remove="Controls\Blocks\ArtistBannerBlockControl.xaml" />
 	  <None Remove="Controls\Blocks\Buttons.xaml" />
 	  <None Remove="Controls\Blocks\Ext\ListTracksFull.xaml" />
+	  <None Remove="Controls\Blocks\ListLinks.xaml" />
 	  <None Remove="Controls\Blocks\ListPlaylists.xaml" />
 	  <None Remove="Controls\Blocks\MixControl.xaml" />
 	  <None Remove="Controls\Blocks\OwnerCell.xaml" />
@@ -42,6 +43,7 @@
 	  <None Remove="Controls\Blocks\RecomUsersControl.xaml" />
 	  <None Remove="Controls\Blocks\RemomendedUsersPlaylist.xaml" />
 	  <None Remove="Controls\DefaultControl.xaml" />
+	  <None Remove="Controls\LinksController.xaml" />
 	  <None Remove="Controls\ListTracks.xaml" />
 	  <None Remove="Controls\PlaylistControl.xaml" />
 	  <None Remove="Controls\RecommsPlaylist.xaml" />
@@ -136,6 +138,10 @@
     <Page Update="Controls\Blocks\Ext\ListTracksFull.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
+    <Page Update="Controls\Blocks\ListLinks.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Controls\Blocks\ListPlaylists.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
@@ -148,6 +154,9 @@
     </Page>
     <Page Update="Controls\BlockControl.xaml">
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\LinksController.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
     <Page Update="Controls\VibeControl.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>

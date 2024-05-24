@@ -209,7 +209,7 @@ namespace VK_UI3.Controls
         {
 
             AnimationsChangeFontIcon.ChangeFontIconWithAnimation("\uF5B0");
-
+            if (_PlayList == null) return;
             if (_PlayList.Description != null)
             {
                 descrAnim.ChangeTextWithAnimation(_PlayList.Description);

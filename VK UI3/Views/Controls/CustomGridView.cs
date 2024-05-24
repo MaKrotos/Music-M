@@ -58,7 +58,8 @@ namespace VK_UI3.Views.Controls
         }
 
         public bool ShowRightChecker { get {
-                var isAtRight = scrollViewer.HorizontalOffset > scrollViewer.ScrollableWidth - 50;
+                if (scrollViewer == null) return false;
+                var isAtRight = scrollViewer.HorizontalOffset > scrollViewer.ScrollableWidth;
                 showRight = !isAtRight;
                 return !isAtRight;
             } }
@@ -67,6 +68,7 @@ namespace VK_UI3.Views.Controls
         {
             get
             {
+                if (scrollViewer == null) return false;
                 var isAtLeft = scrollViewer.HorizontalOffset == 0;
                 showLeft = !isAtLeft;
                 return !isAtLeft;
@@ -140,17 +142,8 @@ namespace VK_UI3.Views.Controls
                         showRight = true;
                     }
 
-                    var isAtLeft = scrollViewer.HorizontalOffset == 0;
-                    if (isAtLeft)
-                    {
-                        // Скрыть левую кнопку
-                        showLeft = false;
-                    }
-                    else
-                    {
-                        // Показать левую кнопку
-                        showLeft = true;
-                    }
+                var a = ShowLeftChecker;
+                a = ShowRightChecker;
                 }
             
         }
