@@ -20,12 +20,12 @@ namespace VK_UI3.Views.Controls
             this.InitializeComponent();
 
 
-        //    this.Loading += ListPlaylists_Loading;
+            //    this.Loading += ListPlaylists_Loading;
             this.Loaded += ListPlaylists_Loaded;
             this.Unloaded += ListPlaylists_Unloaded;
 
         }
-
+        public ScrollViewer scrollVi { get { return gridV.scrollViewer; } }
         public Action loadMore { get; set; } = nul;
 
         private static void nul()

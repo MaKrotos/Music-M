@@ -8,35 +8,141 @@
     xmlns:local="using:VK_UI3.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Width="200"
-    Height="60"
-    Margin="3,0,0,0"
+    Height="70"
+    Margin="0,0,0,0"
     CornerRadius="8"
-    
-
     Translation="0,0,8"
     mc:Ignorable="d">
-
+    <UserControl.RenderTransform>
+        <ScaleTransform x:Name="scaleTransform" ScaleX="1" ScaleY="1" />
+    </UserControl.RenderTransform>
+    <UserControl.RenderTransformOrigin>
+        0.5,0.5
+    </UserControl.RenderTransformOrigin>
     <UserControl.Shadow>
         <ThemeShadow />
     </UserControl.Shadow>
-    <Grid 
-        Width="200" Height="60"
-        HorizontalAlignment="Center"
-        VerticalAlignment="Center"
-        CornerRadius="8">
+    <Grid
+        Margin="0"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
+        CornerRadius="8"
+        PointerEntered="Grid_PointerEntered"
+        PointerExited="Grid_PointerExited"
+        PointerPressed="Grid_PointerPressed">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <Grid Grid.Column="0" Width="50" Height="50" CornerRadius="50">
-            <Image x:Name="imageLink"></Image>
-            <FontIcon Glyph="&#xE71B;" />
+
+        <Grid
+            Grid.Column="0"
+            Width="40"
+            Height="40"
+            Margin="10"
+            CornerRadius="50">
+            <Image x:Name="imageLink" />
+            <Grid x:Name="gridIconLinnk" Background="{ThemeResource CustomAcrylicInAppBrush}" Opacity="0">
+                <FontIcon Glyph="&#xE71B;" />
+            </Grid>
         </Grid>
-        <StackPanel>
-            <TextBlock Grid.Column="0" x:Name="MainText">wws</TextBlock>
-            <TextBlock Grid.Column="0" x:Name="SecondText">wws</TextBlock>
+        <StackPanel
+            Grid.Column="1"
+            Margin="10"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center">
+            <TextBlock
+                x:Name="MainText"
+                MaxWidth="250"
+                MaxHeight="20"
+                VerticalAlignment="Stretch"
+                MaxLines="2"
+                TextTrimming="CharacterEllipsis"
+                TextWrapping="WrapWholeWords" />
+            <TextBlock
+                x:Name="SecondText"
+                Grid.Column="0"
+                MaxWidth="250"
+                MaxHeight="40"
+                VerticalAlignment="Stretch"
+                FontSize="11"
+                MaxLines="2"
+                Opacity="0.7"
+                TextTrimming="CharacterEllipsis"
+                TextWrapping="Wrap">
+            </TextBlock>
         </StackPanel>
-        
-       
+
+        <Grid.Resources>
+            <Storyboard x:Name="ShowAnimation">
+                <DoubleAnimation
+                    Storyboard.TargetName="scaleTransform"
+                    Storyboard.TargetProperty="ScaleX"
+                    To="0.975"
+                    Duration="0:0:0.15">
+                    <DoubleAnimation.EasingFunction>
+                        <ExponentialEase EasingMode="EaseOut" />
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+                <DoubleAnimation
+                    Storyboard.TargetName="scaleTransform"
+                    Storyboard.TargetProperty="ScaleY"
+                    To="0.975"
+                    Duration="0:0:0.15">
+                    <DoubleAnimation.EasingFunction>
+                        <ExponentialEase EasingMode="EaseOut" />
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+            </Storyboard>
+
+            <Storyboard x:Name="showLinkAnimation">
+                <DoubleAnimation
+                    Storyboard.TargetName="gridIconLinnk"
+                    Storyboard.TargetProperty="Opacity"
+                    To="1"
+                    Duration="0:0:0.15">
+                    <DoubleAnimation.EasingFunction>
+                        <ExponentialEase EasingMode="EaseOut" />
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+            </Storyboard>
+
+
+            <Storyboard x:Name="HideLinkAnimation">
+                <DoubleAnimation
+                    Storyboard.TargetName="gridIconLinnk"
+                    Storyboard.TargetProperty="Opacity"
+                    To="0"
+                    Duration="0:0:0.15">
+                    <DoubleAnimation.EasingFunction>
+                        <ExponentialEase EasingMode="EaseOut" />
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+            </Storyboard>
+
+            <Storyboard x:Name="HideAnimation">
+                <DoubleAnimation
+                    Storyboard.TargetName="scaleTransform"
+                    Storyboard.TargetProperty="ScaleX"
+                    To="1"
+                    Duration="0:0:0.15">
+                    <DoubleAnimation.EasingFunction>
+                        <ExponentialEase EasingMode="EaseIn" />
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+                <DoubleAnimation
+                    Storyboard.TargetName="scaleTransform"
+                    Storyboard.TargetProperty="ScaleY"
+                    To="1"
+                    Duration="0:0:0.15">
+                    <DoubleAnimation.EasingFunction>
+                        <ExponentialEase EasingMode="EaseIn" />
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+            </Storyboard>
+        </Grid.Resources>
+
     </Grid>
 </UserControl>

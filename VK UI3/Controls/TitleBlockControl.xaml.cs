@@ -17,8 +17,10 @@ namespace VK_UI3.Controls
 
             this.Loading += TitleBlockControl_Loading;
             this.Unloaded += TitleBlockControl_Unloaded;
+            AnimationsChangeImage = new Helpers.Animations.AnimationsChangeImage(Shapka, this.DispatcherQueue);
         }
 
+        Helpers.Animations.AnimationsChangeImage AnimationsChangeImage;
         private void TitleBlockControl_Unloaded(object sender, RoutedEventArgs e)
         {
 
@@ -50,7 +52,13 @@ namespace VK_UI3.Controls
                 Subtitle.Visibility = Visibility.Visible;
             }
 
-            if (block.Badge != null)
+            if (block.Layout.TopTitle is not null && block.Layout.TopTitle.Icon is not null)
+            {
+                AnimationsChangeImage.ChangeImageWithAnimation(block.Layout.TopTitle.Icon);
+                Shapka.Visibility = Visibility.Visible;
+            }
+
+                if (block.Badge != null)
             {
                 BadgeHeader.Text = block.Badge.Text;
                 BadgeHeader.Visibility = Visibility.Visible;

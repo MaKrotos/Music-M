@@ -110,7 +110,7 @@
                 VerticalAlignment="Center"
                 MaxLines="2"
                 TextTrimming="CharacterEllipsis"
-                TextWrapping="Wrap" />
+                TextWrapping="Wrap" ></TextBlock>
         </StackPanel>
 
 

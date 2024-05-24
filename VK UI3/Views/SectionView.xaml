@@ -15,6 +15,7 @@
 
     <ScrollView x:Name="scrollVIew" ViewChanged="scrollVIew_ViewChanged">
         <ListView
+            Padding="0,20,0,20"
             x:Name="ListBlocks"
             ItemTemplateSelector="{StaticResource SectionTemplateSelector}"
             ItemsSource="{x:Bind blocks, Mode=OneWay}"

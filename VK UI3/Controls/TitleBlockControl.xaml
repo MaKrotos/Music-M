@@ -20,11 +20,25 @@
             Grid.Column="0"
             VerticalAlignment="Top"
             Orientation="Horizontal">
-            <TextBlock
-                x:Name="Title"
-                VerticalAlignment="Center"
-                FontSize="30"
-                Text="Title block" />
+            <StackPanel Orientation="Horizontal">
+                <Image
+                    x:Name="Shapka"
+                    Height="30"
+                    HorizontalAlignment="Left"
+                    FlowDirection="RightToLeft"
+                    Margin="0,0,8,8"
+                    Visibility="Collapsed">
+              
+                </Image>
+                <TextBlock
+                    x:Name="Title"
+                    
+                    VerticalAlignment="Stretch"
+                    FontSize="30"
+                        Margin="0,0,8,4"
+                    />
+            </StackPanel>
+
             <TextBlock
                 x:Name="BadgeHeader"
                 Grid.Column="0"
@@ -35,17 +49,7 @@
                 Text="123"
                 Visibility="Collapsed" />
 
-            <Image
-                x:Name="Shapka"
-                Height="40"
-                HorizontalAlignment="Left"
-                FlowDirection="RightToLeft"
-                Source="pack://application:,,,/Assets/newyear/newyearblock.png"
-                Visibility="Collapsed">
-                <Image.RenderTransform>
-                    <RotateTransform Angle="25" CenterX="35" />
-                </Image.RenderTransform>
-            </Image>
+
 
         </StackPanel>
 

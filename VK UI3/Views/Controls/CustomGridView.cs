@@ -59,7 +59,7 @@ namespace VK_UI3.Views.Controls
 
         public bool ShowRightChecker { get {
                 if (scrollViewer == null) return false;
-                var isAtRight = scrollViewer.HorizontalOffset > scrollViewer.ScrollableWidth;
+                var isAtRight = scrollViewer.HorizontalOffset > scrollViewer.ScrollableWidth - 10;
                 showRight = !isAtRight;
                 return !isAtRight;
             } }
@@ -132,14 +132,12 @@ namespace VK_UI3.Views.Controls
                                 }
                             }
                         }
-                        // Показать правую кнопку
-                        showRight = false;
+                  
                     }
                     else
                     {
-                        lockHorizontal = false;
-                        // Скрыть правую кнопку
-                        showRight = true;
+                      
+                  
                     }
 
                 var a = ShowLeftChecker;
@@ -178,7 +176,17 @@ namespace VK_UI3.Views.Controls
         }
 
         public EventHandler loadMore;
-        ScrollViewer scrollViewer;
+
+        public ScrollViewer _scrollViewer;
+
+        public ScrollViewer scrollViewer { 
+            get 
+            { if (_scrollViewer == null)
+                    _scrollViewer = FindScrollViewer(this); 
+                return _scrollViewer; 
+            }
+            set { _scrollViewer = value; }
+        }
         public static ScrollViewer FindScrollViewer(DependencyObject d)
         {
             if (d is ScrollViewer sv)

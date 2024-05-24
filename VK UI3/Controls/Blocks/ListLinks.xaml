@@ -34,11 +34,7 @@
             ItemsSource="{x:Bind links}"
             itsAll="{x:Bind itsAll}"
            >
-            <customV:UniversalControl.ItemsPanelTemplate>
-                <ItemsPanelTemplate>
-                    <ItemsWrapGrid MaximumRowsOrColumns="1" Orientation="Vertical" />
-                </ItemsPanelTemplate>
-            </customV:UniversalControl.ItemsPanelTemplate>
+         
             <customV:UniversalControl.ItemTemplate>
                 <DataTemplate>
                     <custom:LinksController
@@ -46,6 +42,14 @@
                         FocusVisualSecondaryThickness="0" />
                 </DataTemplate>
             </customV:UniversalControl.ItemTemplate>
+            
+            <customV:UniversalControl.Resources>
+                <ItemsPanelTemplate x:Key="default">
+                    <ItemsWrapGrid MaximumRowsOrColumns="1" Orientation="Vertical" />
+                </ItemsPanelTemplate>
+         
+            </customV:UniversalControl.Resources>
+            
         </customV:UniversalControl>
     </Grid>
 </UserControl>

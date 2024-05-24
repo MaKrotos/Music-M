@@ -29,6 +29,24 @@ namespace VK_UI3.Controls.Blocks
 
         private void ListPlaylists_Loaded(object sender, RoutedEventArgs e)
         {
+
+            if (localBlock.Layout.Name == "categories_list")
+            {
+
+                myControl.scrollVi.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+                myControl.scrollVi.HorizontalScrollMode = ScrollMode.Disabled;
+                myControl.scrollVi.IsScrollInertiaEnabled = false;
+                myControl.scrollVi.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+                myControl.scrollVi.VerticalScrollMode = ScrollMode.Disabled;
+
+         
+
+            }
+            else
+            {
+             
+            }
+
             if (myControl.CheckIfAllContentIsVisible())
                 load();
 
@@ -85,14 +103,12 @@ namespace VK_UI3.Controls.Blocks
                 links.Clear();
                 localBlock = block;
 
-                if (block.Meta != null && block.Meta.anchor == "vibes")
-
+                if (localBlock.Layout.Name == "categories_list")
                 {
-                    myControl.ItemTemplate = this.Resources["compact"] as DataTemplate;
                 }
                 else
                 {
-                    myControl.ItemTemplate = this.Resources["default"] as DataTemplate;
+                    myControl.ItemsPanelTemplate = (ItemsPanelTemplate)myControl.Resources["default"];
                 }
 
                 var pl = (DataContext as Block).Links;

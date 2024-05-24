@@ -49,6 +49,7 @@ namespace VK_UI3.Views.Share.ShareControllers
                 this.IsEnabled = true;
                 this.Opacity = 1;
             }
+           
     
         }
 

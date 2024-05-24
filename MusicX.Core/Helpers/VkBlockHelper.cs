@@ -88,7 +88,7 @@ namespace MusicX.Core.Helpers
             }
 
             response.Section.Blocks.RemoveAll(block =>
-                block is { DataType: "radiostations" } or { Layout.Title: "Радиостанции" } ||
+                block is { DataType: "radiostations" } or { Layout.Title: "Радиостанции" or "Эфиры" } ||
                 (
                     block is { Banners.Count: > 0 } &&
                     block.Banners.RemoveAll(banner => banner.ClickAction?.Action.Url.Contains("subscription") is true ||
@@ -96,6 +96,14 @@ namespace MusicX.Core.Helpers
                                                            banner.ClickAction?.Action.Url.Contains("https://vk.com/app") is true ||
                                                            banner.ClickAction?.Action.Url.Contains("https://vk.com/vk_music") is true) > 0 &&
                     block.Banners.Count == 0
+                ) ||
+                (
+                    block is { Links.Count: > 0 } &&
+                    block.Links.RemoveAll(link => link.Url.Contains("audio_offline") ||
+                                                  link.Url.Contains("radiostations") ||
+                                                  link.Url.Contains("music_transfer") ||
+                                                  link.Url.Contains("subscription")) > 0 &&
+                    block.Links.Count == 0
                 )
             );
 
