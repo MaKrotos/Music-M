@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using TagLib.Riff;
 using VK_UI3.Controls;
 using VK_UI3.Controls.Blocks;
 using VK_UI3.Helpers;
@@ -52,17 +53,19 @@ namespace VK_UI3.Views
 
         private void SectionView_Loaded(object sender, RoutedEventArgs e)
         {
-
-            if (this.section != null && this.section.Blocks != null && this.section.Blocks.Count != 0)
+            _ = Task.Run(async () =>
             {
-                this.nextLoad = this.section.NextFrom;
-                loadBlocks(this.section.Blocks);
-            }
-            else
-            {
+                if (this.section != null && this.section.Blocks != null && this.section.Blocks.Count != 0)
+                {
+                    this.nextLoad = this.section.NextFrom;
+                    loadBlocks(this.section.Blocks);
+                }
+                else
+                {
 
-                LoadAsync();
-            }
+                    LoadAsync();
+                }
+            });
         }
 
 
@@ -112,8 +115,6 @@ namespace VK_UI3.Views
             base.OnNavigatedTo(e);
 
             openedSectionView = this;
-
-
 
             var section = e.Parameter as Section;
             if (section == null) return;
@@ -183,14 +184,7 @@ namespace VK_UI3.Views
             try
             {
 
-                if (tracksFull != null)
-                {
-                    tracksFull.DispatcherQueue.TryEnqueue(() =>
-                    {
-                        tracksFull.sectionAudio.GetTracks();
-                    });
-                    return;
-                }
+               
 
 
                 await (sectionType switch
@@ -219,9 +213,9 @@ namespace VK_UI3.Views
         bool hidedLoad = false;
         private async Task loadSection(string sectionID, bool showTitle = false)
         {
-
             try
             {
+                
                 // string key = string.IsNullOrEmpty(block.Layout?.Name) ? block.DataType : $"{block.DataType}_{block.Layout.Name}";
                 if (nextLoad == null || loadedAll)
                 {
@@ -247,109 +241,65 @@ namespace VK_UI3.Views
                     loadedAll = true;
                     return;
                 }
-                blockLoad = false;
+              
 
                 loadBlocks(sectin.Section.Blocks);
             }
             catch (Exception e)
             {
-
                 blockLoad = false;
+               
                 throw e;
             }
         }
-        ListTracksFull _tracksFull = null;
-        ListTracksFull tracksFull
-        {
-            get
-            {
-                if (_tracksFull != null)
-                {
-                    return _tracksFull;
-                }
 
-                var lastItem = ListBlocks.Items.LastOrDefault();
-                if (lastItem != null)
-                {
-                    var container = ListBlocks.ContainerFromItem(lastItem) as ListViewItem;
-                    if (container == null)
-                    {
-                        return null;
-                    }
 
-                    var dataTemplate = container.ContentTemplateRoot as ListTracksFull;
-                    if (dataTemplate != null && _tracksFull == null)
-                    {
-                        _tracksFull = dataTemplate;
-                        if (!listened)
-                        {
-                            listened = true;
-                            _tracksFull.sectionAudio.onListUpdate += (SectionAudio_onListUpdate);
-                        }
-                    }
-                }
 
-                return _tracksFull;
-            }
-            set
-            {
-                _tracksFull = value;
-            }
-        }
-
-        bool listened = false;
-
-        bool connectedLoad = false;
         private void loadBlocks(List<Block> block)
         {
-            foreach (var item in block)
+            this.DispatcherQueue.TryEnqueue(() =>
             {
-
-                if (tracksFull != null)
+                var blockList = blocks.ToList();
+                foreach (var item in block)
                 {
-
-
-                    foreach (var audio in item.Audios)
+                    int index = blockList.FindIndex(b => b.Id == item.Id);
+                    if (index != -1)
                     {
-                        this.DispatcherQueue.TryEnqueue(() =>
+                        var controller = ListBlocks.ContainerFromIndex(index) as ListViewItem;
+                        if (controller?.ContentTemplateRoot is IBlockAdder blockAdder)
                         {
-                            tracksFull.sectionAudio.listAudio.Add(new ExtendedAudio(audio, tracksFull.sectionAudio));
-                            tracksFull.sectionAudio.Next = item.NextFrom;
-                            if (item.NextFrom == null) tracksFull.sectionAudio.itsAll = true;
-                            tracksFull.sectionAudio.NotifyOnListUpdate();
-
-                        });
-                    }
-                    continue;
-                }
-
-                this.DispatcherQueue.TryEnqueue(() =>
+                            blockAdder.AddBlock(item);
+                        }
+                        else
                         {
                             blocks.Add(item);
-                        });
+                        }
+                    }
+                    else
+                    {
+                        blocks.Add(item);
+                    }
+                }
+                if (CheckIfAllContentIsVisible(scrollViewer))
+                {
+                    LoadAsync();
+                }
+                if (nextLoad == null || loadedAll && !hidedLoad)
+                {
+                    hidedLoad = true;
+                    HideLoad();
+                }
+                blockLoad = false;
 
-
-
-            }
-            if (CheckIfAllContentIsVisible(scrollViewer))
-            {
-                LoadAsync();
-            }
-            if (nextLoad == null || loadedAll)
-            {
-                if (hidedLoad) return;
-                hidedLoad = true;
-                HideLoad();
-            }
-
-
+            });
         }
+
 
 
         private void SectionAudio_onListUpdate(object sender, EventArgs e)
         {
             if ((sender as SectionAudio).itsAll)
-                this.DispatcherQueue.TryEnqueue(() =>
+                this.DispatcherQueue.TryEnqueue(async() =>
                 {
                     HideLoad();
                 });

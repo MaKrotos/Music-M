@@ -27,19 +27,11 @@
         x:Name="gridCh"
         Height="Auto"
         CornerRadius="8">
-
-
         <customV:UniversalControl
             x:Name="myControl"
             ItemsSource="{x:Bind playlists}"
             itsAll="{x:Bind itsAll}"
            >
-            <customV:UniversalControl.ItemsPanelTemplate>
-                <ItemsPanelTemplate>
-                    <ItemsWrapGrid MaximumRowsOrColumns="1" Orientation="Vertical" />
-                </ItemsPanelTemplate>
-            </customV:UniversalControl.ItemsPanelTemplate>
-          
         </customV:UniversalControl>
     </Grid>
 </UserControl>

@@ -92,64 +92,65 @@ namespace VK_UI3.Views.Controls
         private bool lockHorizontal = false;
         private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
-            
-                if (scrollViewer.VerticalScrollMode == ScrollMode.Enabled)
+            if (disableLoadMode) return;
+            if (scrollViewer.VerticalScrollMode == ScrollMode.Enabled)
+            {
+                var isAtBottom = scrollViewer.VerticalOffset > scrollViewer.ScrollableHeight - 50;
+                if (isAtBottom)
                 {
-                    var isAtBottom = scrollViewer.VerticalOffset > scrollViewer.ScrollableHeight - 50;
-                    if (isAtBottom)
+                    lock (_lock)
                     {
-                        lock (_lock)
+                        if (loadMore != null)
                         {
-                            if (loadMore != null)
+                            if (!lockVertical)
                             {
-                                if (!lockVertical)
-                                {
-                                    lockVertical = true;
-                                    loadMore.Invoke(this, EventArgs.Empty);
-                                }
+                                lockVertical = true;
+                                loadMore.Invoke(this, EventArgs.Empty);
                             }
                         }
-                    }
-                    else
-                    {
-                        lockVertical = false;
                     }
                 }
-
-                if (scrollViewer.HorizontalScrollMode == ScrollMode.Enabled)
+                else
                 {
-                    var isAtRight = scrollViewer.HorizontalOffset > scrollViewer.ScrollableWidth - 50;
-                    if (isAtRight)
+                    lockVertical = false;
+                }
+            }
+
+            if (scrollViewer.HorizontalScrollMode == ScrollMode.Enabled)
+            {
+                var isAtRight = scrollViewer.HorizontalOffset > scrollViewer.ScrollableWidth - 50;
+                if (isAtRight)
+                {
+                    lock (_lock)
                     {
-                        lock (_lock)
+                        if (loadMore != null)
                         {
-                            if (loadMore != null)
+                            if (!lockHorizontal)
                             {
-                                if (!lockHorizontal)
-                                {
-                                    lockHorizontal = true;
-                                    loadMore.Invoke(this, EventArgs.Empty);
-                                }
+                                lockHorizontal = true;
+                                loadMore.Invoke(this, EventArgs.Empty);
                             }
                         }
-                  
                     }
-                    else
-                    {
-                      
-                  
-                    }
+
+                }
+                else
+                {
+
+
+                }
 
                 var a = ShowLeftChecker;
                 a = ShowRightChecker;
-                }
-            
+            }
+
         }
 
   
         public bool CheckIfAllContentIsVisible()
         {
-            if (scrollViewer == null) return false;
+            if (scrollViewer == null || 
+                disableLoadMode) return false;
 
             if (scrollViewer.HorizontalScrollMode == ScrollMode.Enabled)
             {
@@ -166,24 +167,20 @@ namespace VK_UI3.Views.Controls
                     return true;
                 }
             }
-
-
-
-
-
-
             return false;
         }
 
         public EventHandler loadMore;
 
         public ScrollViewer _scrollViewer;
+        internal bool disableLoadMode { get; set; } = false;
 
         public ScrollViewer scrollViewer { 
             get 
-            { if (_scrollViewer == null)
-                    _scrollViewer = FindScrollViewer(this); 
-                return _scrollViewer; 
+            { if (_scrollViewer != null)
+                 
+                return _scrollViewer;
+                return null;
             }
             set { _scrollViewer = value; }
         }

@@ -14,7 +14,7 @@ namespace VK_UI3.Views.Controls
 {
     public sealed partial class UniversalControl : UserControl
     {
-
+        public bool disableLoadMode{ get { return gridV.disableLoadMode; } set { gridV.disableLoadMode = value; }  }
         public UniversalControl()
         {
             this.InitializeComponent();
@@ -26,10 +26,14 @@ namespace VK_UI3.Views.Controls
 
         }
         public ScrollViewer scrollVi { get { return gridV.scrollViewer; } }
+
+
+
         public Action loadMore { get; set; } = nul;
 
         private static void nul()
         {
+
         }
 
 
@@ -56,9 +60,10 @@ namespace VK_UI3.Views.Controls
 
         private void ListPlaylists_Loaded(object sender, RoutedEventArgs e)
         {
+
             gridV.ItemsPanel = ItemsPanelTemplate;
             gridV.ItemTemplate = ItemTemplate;
-            if (gridV.CheckIfAllContentIsVisible())
+            if (gridV.CheckIfAllContentIsVisible() && !disableLoadMode)
                 loadMore?.Invoke();
             gridV.loadMore += load;
             gridV.LeftChange += LeftChange;
@@ -76,7 +81,8 @@ namespace VK_UI3.Views.Controls
 
         private void load(object sender, EventArgs e)
         {
-            if (loadMore != null)
+
+            if (loadMore != null && !disableLoadMode)
             loadMore?.Invoke();
         }
 
@@ -84,6 +90,7 @@ namespace VK_UI3.Views.Controls
 
         public bool CheckIfAllContentIsVisible()
         {
+            
             return gridV.CheckIfAllContentIsVisible();
         }
 

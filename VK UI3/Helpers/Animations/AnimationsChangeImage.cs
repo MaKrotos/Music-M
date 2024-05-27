@@ -5,23 +5,23 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System;
+using System.Drawing.Imaging;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using vkPosterBot.DB;
 
 namespace VK_UI3.Helpers.Animations
 {
     public class AnimationsChangeImage
     {
-        string imageSourceNow = null;
+        Uri imageSourceNow = null;
         Storyboard storyboard = new Storyboard();
-        Image imageControl = null;
+        Microsoft.UI.Xaml.Controls.Image imageControl = null;
         ImageIcon imageIcon = null;
         ImageBrush imageBrushControl = null;
         PersonPicture personPicture = null;
@@ -29,7 +29,7 @@ namespace VK_UI3.Helpers.Animations
 
         string databaseFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "photosCache");
 
-        public AnimationsChangeImage(Image imageControl, DispatcherQueue dispatcherQueue)
+        public AnimationsChangeImage(Microsoft.UI.Xaml.Controls.Image imageControl, DispatcherQueue dispatcherQueue)
         {
             this.imageControl = imageControl;
             this.dispatcherQueue = dispatcherQueue;
@@ -53,15 +53,15 @@ namespace VK_UI3.Helpers.Animations
             this.imageBrushControl = imageBrushControl;
             this.dispatcherQueue = dispatcherQueue;
         }
-        public void ChangeImageWithAnimation(Uri newImageSourceUrl)
+        public void ChangeImageWithAnimation(string newImageSourceUrl, bool justDoIt = false, bool setColorTheme = false)
         {
             if (newImageSourceUrl == null)
                 return;
             else
-                ChangeImageWithAnimation(newImageSourceUrl.ToString());
+                ChangeImageWithAnimation(new Uri(newImageSourceUrl), justDoIt, setColorTheme: setColorTheme);
         }
         Object element = null;
-        public void ChangeImageWithAnimation(string? newImageSourceUrl, bool justDoIt = false)
+        public void ChangeImageWithAnimation(Uri? newImageSourceUrl, bool justDoIt = false, bool setColorTheme = false)
         {
 
             if (imageSourceNow != null && imageSourceNow == newImageSourceUrl && !justDoIt)
@@ -69,7 +69,7 @@ namespace VK_UI3.Helpers.Animations
 
             Task<BitmapImage> GetImageTask = null ;
            
-                GetImageTask = GetImageAsync(newImageSourceUrl);
+                GetImageTask = GetImageAsync(newImageSourceUrl, setColorTheme);
            
          
             imageSourceNow = newImageSourceUrl;
@@ -163,19 +163,19 @@ namespace VK_UI3.Helpers.Animations
             storyboard.Begin();
         }
         BitmapImage image = null;
-        private async Task<BitmapImage> GetImageAsync(string newImageSourceUrl)
+        private async Task<BitmapImage> GetImageAsync(Uri newImageSourceUrl, bool setColorTheme)
         {
 
-            if (newImageSourceUrl == null || newImageSourceUrl == "null")
+            if (newImageSourceUrl == null)
             {
                 image = null;
                 return null;
             }
-            var fileName = Path.Combine(databaseFolderPath, GetHashString(newImageSourceUrl));
+            var fileName = Path.Combine(databaseFolderPath, GetHashString(newImageSourceUrl.ToString()));
 
             if (!Directory.Exists(databaseFolderPath)) Directory.CreateDirectory(databaseFolderPath);
             BitmapImage bitmap = null ; 
-            if (new Uri(newImageSourceUrl).IsFile)
+            if (newImageSourceUrl.IsFile)
             {
                 var tcs = new TaskCompletionSource<BitmapImage>();
                 dispatcherQueue.TryEnqueue(() =>
@@ -207,7 +207,8 @@ namespace VK_UI3.Helpers.Animations
                     if (buffer != null && buffer.Length > 0)
                     {
                         await File.WriteAllBytesAsync(fileName, buffer);
-
+                        if (setColorTheme)
+                            ColorOpaquePartFastParallel(fileName);
                         var tcs = new TaskCompletionSource<BitmapImage>();
                         dispatcherQueue.TryEnqueue(() =>
                         {
@@ -218,9 +219,6 @@ namespace VK_UI3.Helpers.Animations
                         
                         _ = CheckAndDeleteOldFilesAsync(databaseFolderPath);
                         return await tcs.Task;
-
-   
-                    
                     }
                     else
                     {
@@ -239,6 +237,77 @@ namespace VK_UI3.Helpers.Animations
             }
             
         }
+
+        public static void ColorOpaquePartFastParallel(string imagePath)
+        {
+            try
+            {
+                using (MemoryStream ms = new MemoryStream(File.ReadAllBytes(imagePath)))
+                {
+                    Bitmap originalBmp = new Bitmap(ms);
+
+                    // Загружаем изображение
+
+
+                    // Создаем новый объект Bitmap из исходного изображения
+                    Bitmap bmp = new Bitmap(originalBmp);
+
+                    // Получаем текущую тему Windows
+                    var currentTheme = Application.Current.RequestedTheme;
+
+                    Color color;
+                    if (currentTheme == ApplicationTheme.Light)
+                    {
+                        color = Color.Black; // Используйте нужный цвет для темной темы
+                    }
+                    else
+                    {
+                        color = Color.White; // Используйте нужный цвет для светлой темы
+                    }
+
+                    BitmapData data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadWrite, bmp.PixelFormat);
+                    unsafe
+                    {
+                        byte* ptr = (byte*)data.Scan0;
+                        int bytesPerPixel = System.Drawing.Image.GetPixelFormatSize(bmp.PixelFormat) / 8;
+                        int heightInPixels = data.Height;
+                        int widthInBytes = data.Width * bytesPerPixel;
+                        Parallel.For(0, heightInPixels, y =>
+                        {
+                            byte* currentLine = ptr + (y * data.Stride);
+                            for (int x = 0; x < widthInBytes; x = x + bytesPerPixel)
+                            {
+                                // Проверяем альфа-канал
+                                int alphaByte = currentLine[x + 3];
+                                if (alphaByte != 0) // Если пиксель непрозрачный
+                                {
+                                    // Закрашиваем его цветом, соответствующим текущей теме Windows
+                                    currentLine[x] = color.B;
+                                    currentLine[x + 1] = color.G;
+                                    currentLine[x + 2] = color.R;
+                                }
+                            }
+                        });
+                    }
+                    bmp.UnlockBits(data);
+
+                    // Сохраняем изображение по тому же пути
+                    bmp.Save(imagePath, ImageFormat.Png);
+
+                    // Освобождаем ресурсы
+                    originalBmp.Dispose();
+                    bmp.Dispose();
+                }
+            }
+            catch (Exception ex) 
+            {
+            
+            
+            }
+        }
+
+
+
 
         private async Task CheckAndDeleteOldFilesAsync(string directoryPath)
         {

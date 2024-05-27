@@ -11,7 +11,7 @@ using VK_UI3.VKs.IVK;
 
 namespace VK_UI3.Controls.Blocks
 {
-    public sealed partial class ListPlaylists : UserControl
+    public sealed partial class ListPlaylists : UserControl, IBlockAdder
     {
 
         ObservableCollection<Playlist> playlists = new();
@@ -23,12 +23,25 @@ namespace VK_UI3.Controls.Blocks
             this.Loading += ListPlaylists_Loading;
             this.Loaded += ListPlaylists_Loaded;
             this.Unloaded += ListPlaylists_Unloaded;
-            myControl.loadMore = load;
+     
 
         }
 
         private void ListPlaylists_Loaded(object sender, RoutedEventArgs e)
         {
+            if (localBlock.Layout.Name == "categories_list")
+            {
+                myControl.scrollVi.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+                myControl.scrollVi.HorizontalScrollMode = ScrollMode.Disabled;
+                myControl.scrollVi.IsScrollInertiaEnabled = false;
+                myControl.scrollVi.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+                myControl.scrollVi.VerticalScrollMode = ScrollMode.Disabled;
+            }
+            else
+            {
+
+            }
+
             if (myControl.CheckIfAllContentIsVisible())
                 load();
 
@@ -80,10 +93,28 @@ namespace VK_UI3.Controls.Blocks
         {
             try
             {
+
+
+            
+
+
+
                 if (DataContext is not Block block)
                     return;
                 playlists.Clear();
                 localBlock = block;
+
+                switch (localBlock.Layout.Name)
+                {
+                    case "list":
+                        myControl.disableLoadMode = true;
+                        break;
+                    default:
+                        myControl.loadMore = load;
+                        myControl.ItemsPanelTemplate = (ItemsPanelTemplate)Microsoft.UI.Xaml.Application.Current.Resources["GlobalItemsPanelTemplate"];
+
+                        break;
+                }
 
                 if (block.Meta != null && block.Meta.anchor == "vibes")
 
@@ -112,9 +143,15 @@ namespace VK_UI3.Controls.Blocks
             }
         }
 
-
-
-        
-
+        public void AddBlock(Block block)
+        {
+            localBlock.NextFrom = block.NextFrom;
+            this.DispatcherQueue.TryEnqueue(async () => {
+                foreach (var item in block.Playlists)
+                {
+                    playlists.Add(item);
+                }
+            });
+        }
     }
 }

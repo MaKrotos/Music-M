@@ -11,7 +11,7 @@ using VK_UI3.VKs;
 
 namespace VK_UI3.Controls.Blocks
 {
-    public sealed partial class RecommsPlaylistBlock : UserControl
+    public sealed partial class RecommsPlaylistBlock : UserControl, IBlockAdder
     {
         ObservableCollection<Playlist> playlists = new();
         public RecommsPlaylistBlock()
@@ -68,6 +68,21 @@ namespace VK_UI3.Controls.Blocks
                 if (DataContext is not Block block)
                     return;
                 localBlock = block;
+
+
+                switch (localBlock.Layout.Name)
+                {
+                    case "list":
+                        myControl.disableLoadMode = true;
+                        break;
+                    default:
+                        myControl.loadMore = load;
+                        myControl.ItemsPanelTemplate = (ItemsPanelTemplate)Microsoft.UI.Xaml.Application.Current.Resources["GlobalItemsPanelTemplate"];
+
+                        break;
+                }
+
+
                 foreach (var item in block.Playlists)
                 {
                     playlists.Add(item);
@@ -79,6 +94,17 @@ namespace VK_UI3.Controls.Blocks
 
             }
         }
+
+        public void AddBlock(Block block)
+        {
+            this.DispatcherQueue.TryEnqueue(async () => {
+                foreach (var item in block.Playlists)
+                {
+                    playlists.Add(item);
+                }
+            });
+        }
+
         public bool itsAll
         {
             get

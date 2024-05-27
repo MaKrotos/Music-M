@@ -10,7 +10,7 @@ using VK_UI3.VKs.IVK;
 
 namespace VK_UI3.Controls.Blocks
 {
-    public partial class ListTracks : UserControl
+    public partial class ListTracks : UserControl, IBlockAdder
     {
 
 
@@ -21,8 +21,6 @@ namespace VK_UI3.Controls.Blocks
 
             this.Loaded += ListTracks_Loaded;
             this.Unloaded += ListTracks_Unloaded;
-            
-
         }
 
         private void ListTracks_Unloaded(object sender, RoutedEventArgs e)
@@ -81,6 +79,15 @@ namespace VK_UI3.Controls.Blocks
             {
                 sectionAudio.GetTracks();
             }
+        }
+
+        public void AddBlock(Block block)
+        {
+            foreach (var item in block.Audios)
+            {
+                sectionAudio.listAudioTrue.Add(new ExtendedAudio(item, sectionAudio));
+            }
+            sectionAudio.Next = block.NextFrom;
         }
 
         private SectionAudio sectionAudio;

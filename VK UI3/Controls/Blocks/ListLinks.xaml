@@ -8,6 +8,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:VK_UI3.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="userC"
     Margin="0,0,0,0"
     mc:Ignorable="d">
     <UserControl.Resources>
@@ -23,6 +24,8 @@
     </UserControl.Shadow>
 
 
+
+
     <Grid
         x:Name="gridCh"
         Height="Auto"
@@ -32,24 +35,26 @@
         <customV:UniversalControl
             x:Name="myControl"
             ItemsSource="{x:Bind links}"
-            itsAll="{x:Bind itsAll}"
-           >
-         
-            <customV:UniversalControl.ItemTemplate>
-                <DataTemplate>
-                    <custom:LinksController
-                        FocusVisualPrimaryBrush="Transparent"
-                        FocusVisualSecondaryThickness="0" />
-                </DataTemplate>
-            </customV:UniversalControl.ItemTemplate>
+            itsAll="{x:Bind itsAll}">
+
             
             <customV:UniversalControl.Resources>
                 <ItemsPanelTemplate x:Key="default">
                     <ItemsWrapGrid MaximumRowsOrColumns="1" Orientation="Vertical" />
                 </ItemsPanelTemplate>
-         
+
+                <DataTemplate x:Key="defaultTemplate">
+                    <custom:LinksController FocusVisualPrimaryBrush="Transparent" FocusVisualSecondaryThickness="0" />
+                </DataTemplate>
+
+                <DataTemplate x:Key="compactTemplate">
+                    <custom:LinksController
+                        FocusVisualPrimaryBrush="Transparent"
+                        FocusVisualSecondaryThickness="0"
+                        setCOlorTheme="True" />
+                </DataTemplate>
             </customV:UniversalControl.Resources>
-            
+
         </customV:UniversalControl>
     </Grid>
 </UserControl>

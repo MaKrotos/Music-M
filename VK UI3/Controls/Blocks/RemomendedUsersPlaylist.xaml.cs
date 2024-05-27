@@ -11,7 +11,7 @@ using VK_UI3.VKs;
 
 namespace VK_UI3.Controls.Blocks
 {
-    public sealed partial class RemomendedUsersPlaylist : UserControl
+    public sealed partial class RemomendedUsersPlaylist : UserControl, IBlockAdder
     {
         public RemomendedUsersPlaylist()
         {
@@ -38,6 +38,19 @@ namespace VK_UI3.Controls.Blocks
                     return;
 
                 localBlock = block;
+
+
+                switch (localBlock.Layout.Name)
+                {
+                    case "list":
+                        myControl.disableLoadMode = true;
+                        break;
+                    default:
+                        myControl.loadMore = load;
+                        myControl.ItemsPanelTemplate = (ItemsPanelTemplate)Microsoft.UI.Xaml.Application.Current.Resources["GlobalItemsPanelTemplate"];
+
+                        break;
+                }
 
                 var pl = (DataContext as Block).RecommendedPlaylists;
 
@@ -86,6 +99,16 @@ namespace VK_UI3.Controls.Blocks
             }
         }
 
+        public void AddBlock(Block block)
+        {
+            localBlock.NextFrom = block.NextFrom;
+            this.DispatcherQueue.TryEnqueue(async () => {
+                foreach (var item in block.RecommendedPlaylists)
+                {
+                    playlists.Add(item);
+                }
+            });
+        }
 
         ObservableCollection<RecommendedPlaylist> playlists = new();
 

@@ -18,16 +18,22 @@ namespace MusicX.Core.Models
 
         [JsonProperty("subtitle")]
         public string Subtitle { get; set; }
-
+         
         [JsonProperty("title")]
         public string Title { get; set; }
 
         [JsonProperty("url")]
         public string Url { get; set; }
+
+        [JsonExtensionData]
+        public Dictionary<string, object> AdditionalData { get; set; }
     }
 
     public class Meta
     {
+        [JsonExtensionData]
+        public Dictionary<string, object> AdditionalData { get; set; }
+
         [JsonProperty("content_type")]
         public string ContentType { get; set; }
 

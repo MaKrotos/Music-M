@@ -40,7 +40,12 @@
             <FontFamily x:Key="VKSansBold">pack://application:,,,/;component/Fonts/VKSansDisplay-Bold.ttf#VK Sans Display Bold</FontFamily>
             <FontFamily x:Key="VKSansRegular">pack://application:,,,/;component/Fonts/VKSansDisplay-Regular.ttf#VK Sans Display Regular</FontFamily>
 
+            <ItemsPanelTemplate x:Key="GlobalItemsPanelTemplate">
+                <ItemsWrapGrid MaximumRowsOrColumns="1" Orientation="Vertical" />
+            </ItemsPanelTemplate>
 
         </ResourceDictionary>
+
+      
     </Application.Resources>
 </Application>

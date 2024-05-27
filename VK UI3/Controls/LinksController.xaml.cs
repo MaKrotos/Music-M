@@ -38,6 +38,7 @@ namespace VK_UI3.Controls
 
 
         }
+        public bool setCOlorTheme { get; set; } = false;
         MusicX.Core.Models.Link link = null;
         private void LinksController_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
@@ -66,17 +67,34 @@ namespace VK_UI3.Controls
 
       
                 ToolTipService.SetToolTip(this, toolTip);
-
+              // bool setCOlorTheme = false;
+              //  if (link.Title is "Недавнee" or "Плейлисты" or "Альбомы" or "Артисты и кураторы")
+              //      setCOlorTheme = true;
 
                 if (link.Meta.ContentType is "group" or "user" or "chat")
                 {
                     if (link.Image is not (null or { Count: 0 }))
-                        AnimationsChangeImage.ChangeImageWithAnimation(link.Image[1].Url);
+                    {
+                        imageLink.Visibility = Visibility.Visible;
+                        AnimationsChangeImage.ChangeImageWithAnimation(link.Image[1].Url, setColorTheme: setCOlorTheme);
+                    }
+                    else
+                    {
+                        imageLink.Visibility = Visibility.Collapsed;
+                    }
 
                 }
                 else
                 {
-                    if (link.Image != null) AnimationsChangeImage.ChangeImageWithAnimation(link.Image[0].Url);
+                    if (link.Image != null)
+                    {
+                        imageLink.Visibility = Visibility.Visible;
+                        AnimationsChangeImage.ChangeImageWithAnimation(link.Image[0].Url, setColorTheme: setCOlorTheme);
+                    }
+                    else
+                    {
+                        imageLink.Visibility = Visibility.Collapsed;
+                    }
 
                 }
                
@@ -87,12 +105,7 @@ namespace VK_UI3.Controls
 
         private void PlaylistControl_Unloaded(object sender, RoutedEventArgs e)
         {
-     
-
             this.Unloaded -= PlaylistControl_Unloaded;
-          
-          
-
         }
 
 
@@ -167,9 +180,6 @@ namespace VK_UI3.Controls
             catch (Exception ex)
             {
 
-              
-
-           
             }
         }
 
@@ -195,7 +205,6 @@ namespace VK_UI3.Controls
         {
             showLinkAnimation.Pause();
             HideLinkAnimation.Begin();
-          
             ShowAnimation.Pause();
             HideAnimation.Begin();
         }

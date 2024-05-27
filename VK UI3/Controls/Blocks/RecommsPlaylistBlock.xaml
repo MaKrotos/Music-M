@@ -20,11 +20,7 @@
         x:Name="myControl"
         ItemsSource="{x:Bind playlists}"
         itsAll="{x:Bind itsAll}">
-        <customV:UniversalControl.ItemsPanelTemplate>
-            <ItemsPanelTemplate>
-                <ItemsWrapGrid MaximumRowsOrColumns="1" Orientation="Vertical" />
-            </ItemsPanelTemplate>
-        </customV:UniversalControl.ItemsPanelTemplate>
+     
         <customV:UniversalControl.ItemTemplate>
             <DataTemplate>
                 <custom:RecommsPlaylist

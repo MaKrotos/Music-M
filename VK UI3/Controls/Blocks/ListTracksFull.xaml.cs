@@ -4,22 +4,20 @@ using MusicX.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using VK_UI3.Helpers;
 using VK_UI3.VKs.IVK;
 
 
 
 namespace VK_UI3.Controls.Blocks
 {
-    public partial class ListTracksFull : UserControl
+    public partial class ListTracksFull : UserControl, IBlockAdder
     {
 
 
         public ListTracksFull()
         {
             InitializeComponent();
-
-
-
 
             this.DataContextChanged += ListTracks_DataContextChanged;
 
@@ -81,7 +79,14 @@ namespace VK_UI3.Controls.Blocks
             OnPropertyChanged(nameof(sectionAudio));
         }
 
-
+        public void AddBlock(Block block)
+        {
+            foreach (var item in block.Audios)
+            {
+                sectionAudio.listAudioTrue.Add(new ExtendedAudio(item, sectionAudio));
+            }
+            sectionAudio.Next = block.NextFrom;
+        }
 
         public static readonly DependencyProperty TracksProperty =
          DependencyProperty.Register("Tracks", typeof(List<Audio>), typeof(ListTracks), new PropertyMetadata(new List<Audio>()));
