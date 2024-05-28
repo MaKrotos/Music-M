@@ -32,6 +32,12 @@ namespace VK_UI3.Resource
                 throw new ArgumentException("Invalid color number");
             }
         }
+        public Windows.UI.Color GetColorByText(string text)
+        {
+            int number = text.Length % colors.Count;
+            return GetColorByNumber(number);
+        }
+
     }
 
 }

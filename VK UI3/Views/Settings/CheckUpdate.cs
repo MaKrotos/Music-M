@@ -27,12 +27,12 @@ namespace VK_UI3.Views.Settings
                 if (!a)
                 {
 
-                    MenuFlyout myFlyout = new MenuFlyout();
+                    Flyout myFlyout = new Flyout();
 
                     // Добавьте элементы в меню
-                    MenuFlyoutItem firstItem = new MenuFlyoutItem { Text = "Обновлений не найдено" };
+                    TextBlock firstItem = new TextBlock { Text = "Обновлений не найдено" };
 
-                    myFlyout.Items.Add(firstItem);
+                    myFlyout.Content = firstItem;
 
 
                     // Покажите всплывающее меню

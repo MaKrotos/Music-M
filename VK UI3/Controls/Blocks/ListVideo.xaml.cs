@@ -13,21 +13,15 @@ using Microsoft.UI;
 
 namespace VK_UI3.Controls.Blocks
 {
-    public sealed partial class ListLinks : UserControl, IBlockAdder
+    public sealed partial class ListVideo : UserControl, IBlockAdder
     {
 
-        ObservableCollection<Link> links = new();
+        ObservableCollection<Video> video = new();
 
-        public static readonly DependencyProperty SetColorThemeProperty =
-    DependencyProperty.Register("SetColorTheme", typeof(bool), typeof(ListLinks), new PropertyMetadata(false));
+     
 
-        public bool SetColorTheme
-        {
-            get { return (bool)GetValue(SetColorThemeProperty); }
-            set { SetValue(SetColorThemeProperty, value); }
-        }
 
-        public ListLinks()
+        public ListVideo()
         {
             this.InitializeComponent();
 
@@ -35,7 +29,6 @@ namespace VK_UI3.Controls.Blocks
             this.Loading += ListPlaylists_Loading;
             this.Loaded += ListPlaylists_Loaded;
             this.Unloaded += ListPlaylists_Unloaded;
-            
 
         }
      
@@ -88,9 +81,9 @@ namespace VK_UI3.Controls.Blocks
                 var a = await VK.vkService.GetSectionAsync(localBlock.Id, localBlock.NextFrom);
                 localBlock.NextFrom = a.Section.NextFrom;
                 this.DispatcherQueue.TryEnqueue(async () => {
-                    foreach (var item in a.Links)
+                    foreach (var item in a.Videos)
                     {
-                        links.Add(item);
+                        video.Add(item);
                     }
                     if (myControl.CheckIfAllContentIsVisible())
                         load();
@@ -110,22 +103,18 @@ namespace VK_UI3.Controls.Blocks
             {
                 if (DataContext is not Block block)
                     return;
-                links.Clear();
+                video.Clear();
                 localBlock = block;
                 switch (localBlock.Layout.Name)
                 {
                     case "list":
                         myControl.disableLoadMode = true;
-                        myControl.ItemTemplate = myControl.Resources["defaultTemplate"] as DataTemplate;
-                        break;
-                    case "categories_list":
-                        myControl.disableLoadMode = false;
-                        myControl.ItemTemplate = myControl.Resources["compactTemplate"] as DataTemplate;
+     
                         break;
                     default:
                         myControl.loadMore = load;
-                        myControl.ItemTemplate = myControl.Resources["defaultTemplate"] as DataTemplate;
-                        myControl.ItemsPanelTemplate = (ItemsPanelTemplate)myControl.Resources["default"];
+
+                        myControl.ItemsPanelTemplate = (ItemsPanelTemplate)Microsoft.UI.Xaml.Application.Current.Resources["GlobalItemsPanelTemplate"];
                         myControl.disableLoadMode = false;
                         break;
                 }
@@ -135,14 +124,21 @@ namespace VK_UI3.Controls.Blocks
 
 
 
-                var pl = (DataContext as Block).Links;
-
-
+                var pl = (DataContext as Block).Videos;
                 foreach (var item in pl)
                 {
-                    links.Add(item);
+                    video.Add(item);
                 }
-              
+
+                pl = (DataContext as Block).ArtistVideos;
+                foreach (var item in pl)
+                {
+                    video.Add(item);
+                }
+
+               
+
+
             }
             catch (Exception ex)
             {
@@ -155,12 +151,17 @@ namespace VK_UI3.Controls.Blocks
         public void AddBlock(Block block)
         {
             localBlock.NextFrom = block.NextFrom;
+        
             this.DispatcherQueue.TryEnqueue(async () => {
-                foreach (var item in block.Links)
+                foreach (var item in block.Videos)
                 {
-                    links.Add(item);
+                    video.Add(item);
                 }
-              
+                foreach (var item in block.ArtistVideos)
+                {
+                    video.Add(item);
+                }
+
             });
         }
     }

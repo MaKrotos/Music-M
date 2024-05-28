@@ -89,6 +89,23 @@
         </DataTemplate>
 
 
+        <DataTemplate x:Key="artist_videos">
+            <blocks:ListVideo />
+        </DataTemplate>
+        <DataTemplate x:Key="artist_videos_list">
+            <blocks:ListVideo />
+        </DataTemplate>
+
+        <DataTemplate x:Key="videos">
+            <blocks:ListVideo />
+        </DataTemplate>
+        <DataTemplate x:Key="videos_list">
+            <blocks:ListVideo />
+        </DataTemplate>
+
+
+
+
     </UserControl.Resources>
 
 

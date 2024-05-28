@@ -31,6 +31,7 @@ namespace VK_UI3.Helpers.Animations
 
         public AnimationsChangeImage(Microsoft.UI.Xaml.Controls.Image imageControl, DispatcherQueue dispatcherQueue)
         {
+            element = imageControl;
             this.imageControl = imageControl;
             this.dispatcherQueue = dispatcherQueue;
         }
@@ -38,27 +39,40 @@ namespace VK_UI3.Helpers.Animations
 
         public AnimationsChangeImage(ImageIcon imageIcon, DispatcherQueue dispatcherQueue)
         {
+            element = imageIcon;
             this.imageIcon = imageIcon;
             this.dispatcherQueue = dispatcherQueue;
         }
 
         public AnimationsChangeImage(PersonPicture personPicture, DispatcherQueue dispatcherQueue)
         {
+            element = personPicture;
             this.personPicture = personPicture;
             this.dispatcherQueue = dispatcherQueue;
         }
 
         public AnimationsChangeImage(ImageBrush imageBrushControl, DispatcherQueue dispatcherQueue)
         {
+            element = imageBrushControl;
             this.imageBrushControl = imageBrushControl;
             this.dispatcherQueue = dispatcherQueue;
         }
         public void ChangeImageWithAnimation(string newImageSourceUrl, bool justDoIt = false, bool setColorTheme = false)
         {
-            if (newImageSourceUrl == null)
-                return;
-            else
-                ChangeImageWithAnimation(new Uri(newImageSourceUrl), justDoIt, setColorTheme: setColorTheme);
+            switch (newImageSourceUrl)
+            {
+                case null:
+                    return;
+                case "null":
+                    dispatcherQueue.TryEnqueue(async () =>
+                    {
+                        hideAnimation(null);
+                    });
+                    break;
+                default:
+                    ChangeImageWithAnimation(new Uri(newImageSourceUrl), justDoIt, setColorTheme: setColorTheme);
+                    break;
+            }
         }
         Object element = null;
         public void ChangeImageWithAnimation(Uri? newImageSourceUrl, bool justDoIt = false, bool setColorTheme = false)
@@ -80,15 +94,7 @@ namespace VK_UI3.Helpers.Animations
                     storyboard.Pause();
                 }
   
-                if (imageControl != null)
-                    element = imageControl;
-                if (imageBrushControl != null)
-                    element = imageBrushControl;
-                if (personPicture != null)
-                    element = personPicture;
-                if (imageIcon != null)
-                    element = imageIcon;
-
+                
 
                 if ((element as FrameworkElement).Opacity == 0 || imageSourceNow == null)
                 {
@@ -96,35 +102,42 @@ namespace VK_UI3.Helpers.Animations
                 }
                 else
                 {
-                    var animation = new DoubleAnimation
-                    {
-                        From = (element as FrameworkElement).Opacity,
-                        To = 0.0,
-                        Duration = TimeSpan.FromMilliseconds(250),
-                    };
-
-                    Storyboard.SetTarget(animation, (element as FrameworkElement));
-                    Storyboard.SetTargetProperty(animation, "Opacity");
-                    storyboard.Stop();
-                    storyboard.Children.Clear();
-                    storyboard.Children.Add(animation);
-
-                    EventHandler<object> storyboardCompletedHandler = null;
-                    storyboardCompletedHandler = async (s, e) =>
-                    {
-                        // Отписка от события после его выполнения
-                        storyboard.Completed -= storyboardCompletedHandler;
-                        if (image != null)
-                        showImage(element as FrameworkElement, await GetImageTask);
-
-
-                    };
-                    storyboard.Completed -= storyboardCompletedHandler;
-                    storyboard.Completed += storyboardCompletedHandler;
-
-                    storyboard.Begin();
+                    hideAnimation(GetImageTask);
                 }
             });
+        }
+
+        private void hideAnimation(Task<BitmapImage>? getImageTask)
+        {
+            var animation = new DoubleAnimation
+            {
+                From = (element as FrameworkElement).Opacity,
+                To = 0.0,
+                Duration = TimeSpan.FromMilliseconds(250),
+            };
+
+            Storyboard.SetTarget(animation, (element as FrameworkElement));
+            Storyboard.SetTargetProperty(animation, "Opacity");
+            storyboard.Stop();
+            storyboard.Children.Clear();
+            storyboard.Children.Add(animation);
+
+
+            EventHandler<object> storyboardCompletedHandler = null;
+
+            if (getImageTask != null)
+            {
+                storyboardCompletedHandler = async (s, e) =>
+                {
+                    // Отписка от события после его выполнения
+                    storyboard.Completed -= storyboardCompletedHandler;
+                    if (image != null)
+                        showImage(element as FrameworkElement, await getImageTask);
+                };
+                storyboard.Completed -= storyboardCompletedHandler;
+                storyboard.Completed += storyboardCompletedHandler;
+            }
+            storyboard.Begin();
         }
 
         private void showImage(FrameworkElement element, BitmapImage image)

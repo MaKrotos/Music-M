@@ -61,6 +61,7 @@ namespace VK_UI3
             this.SetTitleBar(AppTitleBar);
             AppTitleBar.Loaded += AppTitleBar_Loaded;
             AppTitleBar.SizeChanged += AppTitleBar_SizeChanged;
+            
 
             PlayListDownload.OnEndAllDownload += (OnEndAllDownload_Event); ;
 
@@ -461,13 +462,14 @@ namespace VK_UI3
                 // Set the initial interactive regions.
                 SetRegionsForCustomTitleBar();
             }
+#if !DEBUG
+            checkUpdate();
+#endif
         }
 
         private void activated(object sender, WindowActivatedEventArgs args)
         {
-#if !DEBUG
-            checkUpdate();
-#endif
+
         }
 
         private void OnUpdateMica(object sender, EventArgs e)
@@ -542,9 +544,6 @@ namespace VK_UI3
                 var currentVersion = string.Format("{0}.{1}.{2}.{3}", version.Major, version.Minor, version.Build, version.Revision);
 
                 var appUpdater = new AppUpdater(currentVersion);
-
-
-
 
                 var updateAvailable = await appUpdater.CheckForUpdates();
 

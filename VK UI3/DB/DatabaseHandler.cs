@@ -1,7 +1,6 @@
 using SQLite;
 using System;
 using System.IO;
-using System.Management;
 using vkPosterBot.DB;
 using static VK_UI3.DB.AccountsDB;
 
@@ -73,25 +72,6 @@ namespace VK_UI3.DB
 
             return _db;
         }
-
-
-
-        private static string GetMotherboardSerialNumber()
-        {
-            string mbInfo = String.Empty;
-            ManagementScope scope = new ManagementScope("\\\\" + Environment.MachineName + "\\root\\cimv2");
-            scope.Connect();
-            ManagementObject wmiClass;
-            wmiClass = new ManagementObject(scope, new ManagementPath("Win32_BaseBoard.Tag=\"Base Board\""), new ObjectGetOptions());
-            foreach (PropertyData propData in wmiClass.Properties)
-            {
-                if (propData.Name == "SerialNumber")
-                    mbInfo = String.Format("{0,-25}{1}", propData.Name, Convert.ToString(propData.Value));
-            }
-            return mbInfo;
-        }
-
-
 
 
         public static void clearBD()

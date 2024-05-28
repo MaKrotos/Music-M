@@ -36,6 +36,7 @@
 	  <None Remove="Controls\Blocks\Ext\ListTracksFull.xaml" />
 	  <None Remove="Controls\Blocks\ListLinks.xaml" />
 	  <None Remove="Controls\Blocks\ListPlaylists.xaml" />
+	  <None Remove="Controls\Blocks\ListVideo.xaml" />
 	  <None Remove="Controls\Blocks\MixControl.xaml" />
 	  <None Remove="Controls\Blocks\OwnerCell.xaml" />
 	  <None Remove="Controls\Blocks\PlaceHolderBig.xaml" />
@@ -50,6 +51,7 @@
 	  <None Remove="Controls\TitleBlockControl.xaml" />
 	  <None Remove="Controls\TrackControl.xaml" />
 	  <None Remove="Controls\VibeControl.xaml" />
+	  <None Remove="Controls\VideoController.xaml" />
 	  <None Remove="Fonts\VKSansDisplay-Bold.ttf" />
 	  <None Remove="Fonts\VKSansDisplay-DemiBold.ttf" />
 	  <None Remove="Fonts\VKSansDisplay-Medium.ttf" />
@@ -138,6 +140,10 @@
     <Page Update="Controls\Blocks\Ext\ListTracksFull.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
+    <Page Update="Controls\Blocks\ListVideo.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Controls\Blocks\ListLinks.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
@@ -154,6 +160,9 @@
     </Page>
     <Page Update="Controls\BlockControl.xaml">
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Controls\VideoController.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
     <Page Update="Controls\LinksController.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
