@@ -6,9 +6,10 @@
     xmlns:custom="using:VK_UI3.Helpers.Animations"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:VK_UI3.Controls"
+        xmlns:localq="using:VK_UI3.Views.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Width="300"
-    Height="250"
+    Height="212"
     Margin="0,0,0,0"
     CornerRadius="8"
     Translation="0,0,8"
@@ -34,10 +35,12 @@
 
 
         <Grid
+            x:Name="GridVideo"
             Width="300"
             Height="150"
             Margin="0"
-            Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}">
+            Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
+            CornerRadius="4">
 
             <FontIcon
                 HorizontalAlignment="Center"
@@ -49,32 +52,68 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Stretch="UniformToFill" />
+
+            <Grid
+                x:Name="btnGrid"
+                Width="55"
+                Height="55"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="{ThemeResource SystemControlBackgroundAltMediumHighBrush}"
+                CornerRadius="100"
+                Opacity="0">
+                <FontIcon
+                    x:Name="PlayPause"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Glyph="&#xF5B0;" />
+            </Grid>
+
+            <localq:CustomVideoMedia x:Name="VideoSources" Opacity="0">
+                
+            </localq:CustomVideoMedia>
         </Grid>
 
-        <TextBlock
-            x:Name="MainText"
-            MaxWidth="250"
-            MaxHeight="20"
-            Margin="10"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            MaxLines="2"
-            TextTrimming="CharacterEllipsis"
-            TextWrapping="WrapWholeWords" />
-        <TextBlock
-            x:Name="SecondText"
-            Grid.Column="0"
-            MaxWidth="250"
-            MaxHeight="40"
-            Margin="10"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Stretch"
-            FontSize="11"
-            MaxLines="2"
-            Opacity="0.7"
-            Text="qqqq"
-            TextTrimming="CharacterEllipsis"
-            TextWrapping="Wrap" />
+
+        <StackPanel Margin="10,5,10,10">
+            <TextBlock
+                x:Name="MainText"
+                MaxWidth="300"
+                MaxHeight="20"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                MaxLines="1"
+                Text="Название"
+                TextTrimming="CharacterEllipsis"
+                TextWrapping="WrapWholeWords" />
+            <TextBlock
+                x:Name="SecondText"
+                Grid.Column="0"
+                MaxWidth="300"
+                MaxHeight="40"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Stretch"
+                FontSize="11"
+                MaxLines="1"
+                Opacity="0.7"
+                Text="Автор"
+                TextTrimming="CharacterEllipsis"
+                TextWrapping="Wrap"
+                Visibility="Visible" />
+            <TextBlock
+                x:Name="GenreText"
+                Grid.Column="0"
+                MaxWidth="300"
+                MaxHeight="40"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Stretch"
+                FontSize="11"
+                MaxLines="1"
+                Opacity="0.7"
+                Text="Жанр, 2023"
+                TextTrimming="CharacterEllipsis"
+                TextWrapping="Wrap" />
+        </StackPanel>
 
 
         <StackPanel.Resources>
@@ -120,7 +159,28 @@
                     </DoubleAnimation.EasingFunction>
                 </DoubleAnimation>
             </Storyboard>
+
+            <!--  Анимация прозрачности от 0 до 1  -->
+            <Storyboard x:Name="FadeInAnimationGridPlayIcon">
+                <DoubleAnimation
+                    Storyboard.TargetName="btnGrid"
+                    Storyboard.TargetProperty="Opacity"
+                    To="1"
+                    Duration="0:0:0.25" />
+            </Storyboard>
+            <!--  Анимация прозрачности от 1 до 0  -->
+            <Storyboard x:Name="FadeOutAnimationGridPlayIcon">
+                <DoubleAnimation
+                    Storyboard.TargetName="btnGrid"
+                    Storyboard.TargetProperty="Opacity"
+                    To="0"
+                    Duration="0:0:0.25" />
+            </Storyboard>
+
+
         </StackPanel.Resources>
+
+
 
     </StackPanel>
 </UserControl>

@@ -106,7 +106,7 @@ namespace VK_UI3.Views.Download
                     dx.Text = $"{playListDownload.downloaded}";
                     if (playListDownload.iVKGetAudio.countTracks != null && playListDownload.iVKGetAudio.countTracks != -1)
                     {
-                        dx.Text += $"из {playListDownload.iVKGetAudio.countTracks}";
+                        dx.Text += $" из {playListDownload.iVKGetAudio.countTracks}";
                     }
 
 

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<UserControl
+    x:Class="VK_UI3.Views.Controls.VideoView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:VK_UI3.Views.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Loaded="UserControl_Loaded"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <!--  Анимация прозрачности от 0 до 1  -->
+        <Storyboard x:Name="FadeInAnimationqualityBox">
+            <DoubleAnimation
+                Storyboard.TargetName="qualityBox"
+                Storyboard.TargetProperty="Opacity"
+                To="1"
+                Duration="0:0:0.25" />
+        </Storyboard>
+        <!--  Анимация прозрачности от 1 до 0  -->
+        <Storyboard x:Name="FadeOutAnimationqualityBox" Completed="FadeOutAnimationqualityBox_Completed">
+            <DoubleAnimation
+                Storyboard.TargetName="qualityBox"
+                Storyboard.TargetProperty="Opacity"
+                To="0"
+                Duration="0:0:0.25" />
+        </Storyboard>
+        <!--  Анимация прозрачности от 0 до 1  -->
+        <Storyboard x:Name="FadeInAnimationopenInBrowser">
+            <DoubleAnimation
+                Storyboard.TargetName="openInBrowser"
+                Storyboard.TargetProperty="Opacity"
+                To="1"
+                Duration="0:0:0.25" />
+        </Storyboard>
+        <!--  Анимация прозрачности от 1 до 0  -->
+        <Storyboard x:Name="FadeOutAnimationopenInBrowser" Completed="FadeOutAnimationopenInBrowser_Completed">
+            <DoubleAnimation
+                Storyboard.TargetName="openInBrowser"
+                Storyboard.TargetProperty="Opacity"
+                To="0"
+                Duration="0:0:0.25" />
+        </Storyboard>
+
+        <!--  Анимация прозрачности от 0 до 1  -->
+        <Storyboard x:Name="FadeInAnimationFullScreen">
+            <DoubleAnimation
+                Storyboard.TargetName="FullScreen"
+                Storyboard.TargetProperty="Opacity"
+                To="1"
+                Duration="0:0:0.25" />
+        </Storyboard>
+        <!--  Анимация прозрачности от 1 до 0  -->
+        <Storyboard x:Name="FadeOutAnimationFullScreen" Completed="FadeOutAnimationFullScreen_Completed">
+            <DoubleAnimation
+                Storyboard.TargetName="FullScreen"
+                Storyboard.TargetProperty="Opacity"
+                To="0"
+                Duration="0:0:0.25" />
+        </Storyboard>
+
+        <!--  Анимация прозрачности от 0 до 1  -->
+        <Storyboard x:Name="FadeInAnimationCloseBTN">
+            <DoubleAnimation
+                Storyboard.TargetName="CloseBTN"
+                Storyboard.TargetProperty="Opacity"
+                To="1"
+                Duration="0:0:0.25" />
+        </Storyboard>
+        <!--  Анимация прозрачности от 1 до 0  -->
+        <Storyboard x:Name="FadeOutAnimationCloseBTN" Completed="FadeOutAnimationCloseBTN_Completed">
+            <DoubleAnimation
+                Storyboard.TargetName="CloseBTN"
+                Storyboard.TargetProperty="Opacity"
+                To="0"
+                Duration="0:0:0.25" />
+        </Storyboard>
+    </UserControl.Resources>
+    <Grid
+        Background="Transparent"
+        PointerEntered="Grid_PointerEntered"
+        PointerExited="Grid_PointerExited">
+        <MediaPlayerElement
+            x:Name="VidePl"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            AreTransportControlsEnabled="True"
+            AutoPlay="True" />
+        <ComboBox
+            x:Name="qualityBox"
+            Margin="10"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            SelectionChanged="qualityBox_SelectionChanged"
+            Visibility="Collapsed" />
+        <StackPanel
+            Margin="10"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Orientation="Horizontal">
+            <Button
+                x:Name="openInBrowser"
+                Margin="10,0,0,0"
+                Click="openInBrowser_Click"
+                Visibility="Collapsed">
+
+
+                <FontIcon Glyph="&#xE909;" />
+            </Button>
+            <Button
+                x:Name="FullScreen"
+                Margin="10,0,0,0"
+                Click="FullScreen_Click"
+                Visibility="Collapsed">
+                <FontIcon Glyph="&#xE740;" />
+            </Button>
+
+            <Button
+                x:Name="CloseBTN"
+                Margin="10,0,0,0"
+                Click="CloseBTN_Click"
+                Visibility="Collapsed">
+                <FontIcon Glyph="&#xE711;" />
+            </Button>
+        </StackPanel>
+
+    </Grid>
+</UserControl>

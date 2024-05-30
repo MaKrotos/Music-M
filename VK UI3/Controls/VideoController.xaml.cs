@@ -1,6 +1,8 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media.Imaging;
 using MusicX.Core.Models;
 using MusicX.Services;
@@ -13,6 +15,8 @@ using VK_UI3.Controllers;
 using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
 using VK_UI3.Views;
+using VK_UI3.Views.Controls;
+using VK_UI3.Views.ModalsPages;
 using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
 using Windows.Media.Playlists;
@@ -50,24 +54,44 @@ namespace VK_UI3.Controls
                 imageVideo.Source = null;
                 AnimationsChangeImage.ChangeImageWithAnimation(video.Image.LastOrDefault().Url);
 
-
+                VideoSources.MediaPlayer.Pause();
+                VideoSources._storyboard.Pause();
+                VideoSources._storyboard2.Pause();
+                VideoSources.Opacity = 0;
+               
 
                 MainText.Text = video.Title;
-                ToolTip toolTip = new ToolTip();
-                toolTip.Content = $"{video.Title}";
-                if (video.Subtitle == null || video.Subtitle == "") {
-                    SecondText.Visibility = Visibility.Collapsed;
+         
+
+                if (video.MainArtists != null && video.MainArtists.Count != 0)
+                {
+                  
+                    string artists = string.Join(", ", video.MainArtists.Select(g => g.Name));
+                    SecondText.Text = artists;
+                    SecondText.Visibility = Visibility.Visible;
                 }
                 else
                 {
-                    SecondText.Visibility = Visibility.Visible;
-                    SecondText.Text = video.Subtitle;
-                    toolTip.Content += $"\n{video.Subtitle}";
+                    SecondText.Visibility = Visibility.Collapsed;
+                }
+                string textG = null;
+                if (video.Genres != null && video.Genres.Count != 0)
+                {
+                    textG = video.Genres[0].Name;
                 }
 
+                DateTime date = DateTime.FromFileTimeUtc(video.ReleaseDate);
+                if (textG == null)
+                {
 
+                    textG = date.Year.ToString();
+
+                }
+                else
+                {
+                    textG += ", " + date.Year.ToString();
+                }
       
-                ToolTipService.SetToolTip(this, toolTip);
  
                
             }
@@ -86,19 +110,67 @@ namespace VK_UI3.Controls
 
         private async void Grid_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
+            ContentDialog dialog = new CustomDialog();
 
+            dialog.Transitions = new TransitionCollection
+                {
+                    new PopupThemeTransition()
+                };
+
+            dialog.XamlRoot = this.XamlRoot;
+
+            var videoView = new VideoView(video.files.Quality, video.Player);
+            videoView.MaxHeight = 300;
+            dialog.Content = videoView;
+            dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+
+            EventHandler<TimeSpan> closeButtonClickedHandler = null;
+            closeButtonClickedHandler = (s, e) =>
+            {
+                if (dialog != null)
+                {
+                    dialog.Hide();
+                    videoView.CloseButtonClicked -= closeButtonClickedHandler;
+                    dialog = null;
+                }
+            };
+
+            videoView.CloseButtonClicked += closeButtonClickedHandler;
+
+            dialog.ShowAsync();
         }
 
         private void Grid_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
+            FadeOutAnimationGridPlayIcon.Pause();
+            FadeInAnimationGridPlayIcon.Begin();
             HideAnimation.Pause();
             ShowAnimation.Begin();
+
+            if (video.trailer == null) return;
+            var qa = video.trailer.Quality;
+            if (qa.Count == 0) return;
+
+            
+                var qualityList = qa.Keys.Select(k => int.Parse(k.TrimEnd('p'))).OrderBy(q => q).ToList();
+                var middleQuality = qualityList[qualityList.Count / 2];
+                var middleQualityUrl = qa[middleQuality + "p"];
+
+            VideoSources.setSource(middleQualityUrl);
+
+
+
         }
+        CustomVideoMedia customVideoMedia = null;
 
         private void Grid_PointerExited(object sender, PointerRoutedEventArgs e)
         {
+            FadeInAnimationGridPlayIcon.Pause();
+            FadeOutAnimationGridPlayIcon.Begin();
             ShowAnimation.Pause();
             HideAnimation.Begin();
+
+            if (customVideoMedia != null) customVideoMedia.hide();
         }
 
 

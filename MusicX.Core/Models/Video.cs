@@ -16,6 +16,11 @@ namespace MusicX.Core.Models
         public List<MainArtist> MainArtists { get; set; }
 
         [JsonProperty("subtitle")]
+
+        // Additional properties (for any data not explicitly declared)
+        [JsonExtensionData]
+        public Dictionary<string, object> AdditionalData { get; set; }
+
         public string Subtitle { get; set; }
 
         [JsonProperty("release_date")]
@@ -105,7 +110,16 @@ namespace MusicX.Core.Models
 
         [JsonProperty("uv_stats_place")]
         public string UvStatsPlace { get; set; }
+
+        [JsonProperty("files")]
+        public FileVideo files { get; set; }
+
+        [JsonProperty("trailer")]
+        public FileVideo? trailer { get; set; }
     }
+
+
+
 
     public class FirstFrame
     {

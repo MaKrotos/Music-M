@@ -55,7 +55,7 @@ namespace VK_UI3
             m_AppWindow = this.AppWindow;
 
             mainWindow = this;
-
+       
             contentFrame = ContentFrame;
             this.ExtendsContentIntoTitleBar = true;
             this.SetTitleBar(AppTitleBar);
@@ -82,10 +82,6 @@ namespace VK_UI3
             uI.ColorValuesChanged += UI_ColorValuesChanged; ;
 
 
-
-
-
-
             var navigationInfo = new NavigationInfo { SourcePageType = this };
 
             if (AccountsDB.GetAllAccounts().Count == 0)
@@ -110,8 +106,6 @@ namespace VK_UI3
 
 
             hvn = (HWND)WinRT.Interop.WindowNative.GetWindowHandle(this);
-
-
 
             AnimatedButton.AnimationCompleted += ResizeTabBar;
             DownLoadBTN.AnimationCompleted += ResizeTabBar;
@@ -243,7 +237,7 @@ namespace VK_UI3
                 args.Handled = true;
 
 
-                var dialog = new CustomDialog
+                var dialog = new ContentDialog
                 {
                     Title = "Загрузка еще не завершена",
                     Content = "Вы уверены, что хотите закрыть приложение?",
