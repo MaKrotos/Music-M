@@ -19,6 +19,8 @@ using VK_UI3.Views.Controls;
 using VK_UI3.Views.ModalsPages;
 using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
+using Windows.Media.Core;
+using Windows.Media.Playback;
 using Windows.Media.Playlists;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -40,8 +42,20 @@ namespace VK_UI3.Controls
 
             DataContextChanged += VideoController_DataContextChanged;
 
+            HideAnimationMediaP.Completed += HideAnimationMediaP_Completed;
+
 
         }
+
+        private void HideAnimationMediaP_Completed(object sender, object e)
+        {
+            if (ShowVidGid.Opacity == 1)
+            {
+                VideoSources.MediaPlayer.CurrentStateChanged -= MediaPlayer_CurrentStateChanged;
+                VideoSources.Source = null;
+            }
+        }
+
         public bool setCOlorTheme { get; set; } = false;
         MusicX.Core.Models.Video video = null;
         private void VideoController_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
@@ -54,18 +68,19 @@ namespace VK_UI3.Controls
                 imageVideo.Source = null;
                 AnimationsChangeImage.ChangeImageWithAnimation(video.Image.LastOrDefault().Url);
 
-                VideoSources.MediaPlayer.Pause();
-                VideoSources._storyboard.Pause();
-                VideoSources._storyboard2.Pause();
-                VideoSources.Opacity = 0;
-               
+
+                HideAnimationMediaP.Pause();
+                ShowAnimationMediaP.Pause();
+                ShowVidGid.Opacity = 1;
+                VideoSources.Source = null;
+
 
                 MainText.Text = video.Title;
-         
+
 
                 if (video.MainArtists != null && video.MainArtists.Count != 0)
                 {
-                  
+
                     string artists = string.Join(", ", video.MainArtists.Select(g => g.Name));
                     SecondText.Text = artists;
                     SecondText.Visibility = Visibility.Visible;
@@ -91,9 +106,9 @@ namespace VK_UI3.Controls
                 {
                     textG += ", " + date.Year.ToString();
                 }
-      
- 
-               
+
+
+
             }
         }
 
@@ -124,7 +139,7 @@ namespace VK_UI3.Controls
             dialog.Content = videoView;
             dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
 
-            EventHandler<TimeSpan> closeButtonClickedHandler = null;
+            EventHandler<VidArgs> closeButtonClickedHandler = null;
             closeButtonClickedHandler = (s, e) =>
             {
                 if (dialog != null)
@@ -132,6 +147,8 @@ namespace VK_UI3.Controls
                     dialog.Hide();
                     videoView.CloseButtonClicked -= closeButtonClickedHandler;
                     dialog = null;
+                    videoView.mediaPlayerElement.MediaPlayer.Pause();
+                    videoView.mediaPlayerElement.Source = null;
                 }
             };
 
@@ -142,8 +159,11 @@ namespace VK_UI3.Controls
 
         private void Grid_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
+            show = true;
             FadeOutAnimationGridPlayIcon.Pause();
             FadeInAnimationGridPlayIcon.Begin();
+
+
             HideAnimation.Pause();
             ShowAnimation.Begin();
 
@@ -151,17 +171,68 @@ namespace VK_UI3.Controls
             var qa = video.trailer.Quality;
             if (qa.Count == 0) return;
 
-            
+
+        
+
+            if (VideoSources.Source == null)
+            {
                 var qualityList = qa.Keys.Select(k => int.Parse(k.TrimEnd('p'))).OrderBy(q => q).ToList();
                 var middleQuality = qualityList[qualityList.Count / 2];
                 var middleQualityUrl = qa[middleQuality + "p"];
-
-            VideoSources.setSource(middleQualityUrl);
-
+                VideoSources.Source = MediaSource.CreateFromUri(new Uri(middleQualityUrl));
+          
+                VideoSources.MediaPlayer.CurrentStateChanged += MediaPlayer_CurrentStateChanged;
+                VideoSources.MediaPlayer.Play();
+            }
+            else
+            {
+                HideAnimationMediaP.Pause();
+                ShowAnimationMediaP.Begin();
+            }
 
 
         }
-        CustomVideoMedia customVideoMedia = null;
+
+        private void MediaPlayer_CurrentStateChanged(MediaPlayer sender, object args)
+        {
+            this.DispatcherQueue.TryEnqueue(async () =>
+            {
+                switch (VideoSources.MediaPlayer.CurrentState)
+                {
+                    case MediaPlayerState.Playing:
+                        if (show)
+                        {
+                            this.DispatcherQueue.TryEnqueue(async () =>
+                            {
+                                HideAnimationMediaP.Pause();
+                                ShowAnimationMediaP.Begin();
+                            });
+                        }
+                        else
+                        {
+                            this.DispatcherQueue.TryEnqueue(async () =>
+                            {
+                                ShowAnimationMediaP.Pause();
+                                HideAnimationMediaP.Begin();
+                            });
+                        }
+                        break;
+                    default:
+                        this.DispatcherQueue.TryEnqueue(async () =>
+                        {
+                            ShowAnimationMediaP.Pause();
+                            HideAnimationMediaP.Begin();
+                        });
+                        break;
+                }
+            });
+        }
+
+        bool show = false;
+
+      
+
+
 
         private void Grid_PointerExited(object sender, PointerRoutedEventArgs e)
         {
@@ -169,8 +240,11 @@ namespace VK_UI3.Controls
             FadeOutAnimationGridPlayIcon.Begin();
             ShowAnimation.Pause();
             HideAnimation.Begin();
+            show = false;
+            ShowAnimationMediaP.Pause();
+            HideAnimationMediaP.Begin();
 
-            if (customVideoMedia != null) customVideoMedia.hide();
+       
         }
 
 

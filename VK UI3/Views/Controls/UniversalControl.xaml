@@ -9,6 +9,7 @@
     Margin="0,0,0,0"
     mc:Ignorable="d">
 
+
     <UserControl.Resources>
         <DataTemplate x:Key="default">
             <local:PlaylistControl />

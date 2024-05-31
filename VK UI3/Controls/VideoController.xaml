@@ -6,10 +6,10 @@
     xmlns:custom="using:VK_UI3.Helpers.Animations"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:VK_UI3.Controls"
-        xmlns:localq="using:VK_UI3.Views.Controls"
+    xmlns:localq="using:VK_UI3.Views.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Width="300"
-    Height="212"
+    Height="230"
     Margin="0,0,0,0"
     CornerRadius="8"
     Translation="0,0,8"
@@ -37,41 +37,49 @@
         <Grid
             x:Name="GridVideo"
             Width="300"
-            Height="150"
+            Height="168.5"
             Margin="0"
             Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
             CornerRadius="4">
 
-            <FontIcon
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Glyph="&#xE714;" />
 
-            <Image
-                x:Name="imageVideo"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Stretch="UniformToFill" />
+            <MediaPlayerElement
+                x:Name="VideoSources"
+                CornerRadius="8"
+                Opacity="1" />
 
-            <Grid
-                x:Name="btnGrid"
-                Width="55"
-                Height="55"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Background="{ThemeResource SystemControlBackgroundAltMediumHighBrush}"
-                CornerRadius="100"
-                Opacity="0">
+
+            <Grid x:Name="ShowVidGid">
                 <FontIcon
-                    x:Name="PlayPause"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Glyph="&#xF5B0;" />
+                    Glyph="&#xE714;" />
+
+                <Image
+                    x:Name="imageVideo"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Stretch="UniformToFill" />
+
+                <Grid
+                    x:Name="btnGrid"
+                    Width="55"
+                    Height="55"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Background="{ThemeResource SystemControlBackgroundAltMediumHighBrush}"
+                    CornerRadius="100"
+                    Opacity="0">
+                    <FontIcon
+                        x:Name="PlayPause"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Glyph="&#xF5B0;" />
+                </Grid>
+
             </Grid>
 
-            <localq:CustomVideoMedia x:Name="VideoSources" Opacity="0">
-                
-            </localq:CustomVideoMedia>
+
         </Grid>
 
 
@@ -159,6 +167,31 @@
                     </DoubleAnimation.EasingFunction>
                 </DoubleAnimation>
             </Storyboard>
+
+
+            <Storyboard x:Name="ShowAnimationMediaP">
+                <DoubleAnimation
+                    Storyboard.TargetName="ShowVidGid"
+                    Storyboard.TargetProperty="Opacity"
+                    To="0"
+                    Duration="0:0:0.25">
+                    <DoubleAnimation.EasingFunction>
+                        <ExponentialEase EasingMode="EaseIn" />
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+            </Storyboard>
+            <Storyboard x:Name="HideAnimationMediaP">
+                <DoubleAnimation
+                    Storyboard.TargetName="ShowVidGid"
+                    Storyboard.TargetProperty="Opacity"
+                    To="1"
+                    Duration="0:0:0.25">
+                    <DoubleAnimation.EasingFunction>
+                        <ExponentialEase EasingMode="EaseIn" />
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+            </Storyboard>
+
 
             <!--  Анимация прозрачности от 0 до 1  -->
             <Storyboard x:Name="FadeInAnimationGridPlayIcon">

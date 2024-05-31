@@ -1,14 +1,11 @@
-﻿using Microsoft.UI.Xaml;
+﻿
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.Media.Core;
 using Windows.Media.Playback;
+
 
 namespace VK_UI3.Views.Controls
 {
@@ -20,10 +17,6 @@ namespace VK_UI3.Views.Controls
         public Storyboard _storyboard2;
         public CustomVideoMedia() : base()
         {
-
-    
-
-           
             this.Loaded += CustomVideoMedia_Loaded;
         }
 
@@ -39,17 +32,7 @@ namespace VK_UI3.Views.Controls
         private void CustomVideoMedia_Loaded(object sender, RoutedEventArgs e)
         {
         
-            this.MediaPlayer.IsMuted = true; // выключаем звук
-            _storyboard = new Storyboard();
-            _storyboard.Children.Add(Showanimation);
-            Storyboard.SetTarget(Showanimation, this);
-            Storyboard.SetTargetProperty(Showanimation, "Opacity");
-
-            _storyboard2 = new Storyboard();
-            _storyboard2.Children.Add(HideAnimation);
-            Storyboard.SetTarget(HideAnimation, this);
-            Storyboard.SetTargetProperty(HideAnimation, "Opacity");
-
+     
 
             _storyboard2.Completed += _storyboard2_Completed;
             this.MediaPlayer.AutoPlay = false; // включаем автозапуск
@@ -68,19 +51,6 @@ namespace VK_UI3.Views.Controls
                 HIDED.Invoke(this, EventArgs.Empty);
             }
         }
-
-        DoubleAnimation Showanimation = new DoubleAnimation
-        {
-            To = 1.0,
-            Duration = new Duration(TimeSpan.FromSeconds(1))
-        };
-
-        DoubleAnimation HideAnimation = new DoubleAnimation
-        {
-            From = 0.0,
-            To = 1.0,
-            Duration = new Duration(TimeSpan.FromSeconds(1))
-        };
 
 
         private void MediaPlayer_MediaOpened(MediaPlayer sender, object args)

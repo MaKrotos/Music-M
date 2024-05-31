@@ -77,7 +77,7 @@
         </Storyboard>
     </UserControl.Resources>
     <Grid
-        Background="Transparent"
+        Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"
         PointerEntered="Grid_PointerEntered"
         PointerExited="Grid_PointerExited">
         <MediaPlayerElement
