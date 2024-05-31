@@ -40,6 +40,7 @@
 	  <None Remove="Controls\Blocks\MixControl.xaml" />
 	  <None Remove="Controls\Blocks\OwnerCell.xaml" />
 	  <None Remove="Controls\Blocks\PlaceHolderBig.xaml" />
+	  <None Remove="Controls\Blocks\PlaceholderBlockControl.xaml" />
 	  <None Remove="Controls\Blocks\RecommsPlaylistBlock.xaml" />
 	  <None Remove="Controls\Blocks\RecomUsersControl.xaml" />
 	  <None Remove="Controls\Blocks\RemomendedUsersPlaylist.xaml" />
@@ -150,6 +151,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\Blocks\ListPlaylists.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\Blocks\PlaceholderBlockControl.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

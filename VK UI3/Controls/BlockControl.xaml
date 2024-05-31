@@ -104,7 +104,9 @@
         </DataTemplate>
 
 
-
+        <DataTemplate x:Key="placeholder">
+            <blocks:PlaceholderBlockControl />
+        </DataTemplate>
 
     </UserControl.Resources>
 

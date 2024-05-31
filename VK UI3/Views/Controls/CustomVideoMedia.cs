@@ -31,9 +31,6 @@ namespace VK_UI3.Views.Controls
 
         private void CustomVideoMedia_Loaded(object sender, RoutedEventArgs e)
         {
-        
-     
-
             _storyboard2.Completed += _storyboard2_Completed;
             this.MediaPlayer.AutoPlay = false; // включаем автозапуск
             this.MediaPlayer.MediaEnded += MediaPlayer_MediaEnded;
