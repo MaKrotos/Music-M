@@ -62,7 +62,8 @@ namespace VK_UI3.DownloadTrack
             this.iVKGetAudio = iVKGetAudio;
             this.dispatcherQueue = dispatcherQueue;
             if (iVKGetAudio is SectionAudio) return;
-            if (PlayListDownloadsList.Contains(iVKGetAudio)) return;
+            if (PlayListDownloadsList.Contains(iVKGetAudio)) 
+                return;
 
 
 

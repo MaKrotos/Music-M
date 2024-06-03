@@ -331,6 +331,7 @@ namespace VK_UI3.VKs.IVK
 
         public async Task<ExtendedAudio> GetTrackPlay()
         {
+            if (countTracks < currentTrack && countTracks != -1) return null;
             if (currentTrack == null)
                 currentTrack = 0;
             return await GetTrackPlayAsync((long)currentTrack);
@@ -345,22 +346,15 @@ namespace VK_UI3.VKs.IVK
         {
             while (tracI > listAudioTrue.Count() - 1)
             {
-                if (!getLoadedTracks)
-                {
-                    if (itsAll) return null;
-                    else
-                    {
-                        var tcsz = new TaskCompletionSource<bool>();
-                        tcs.Add(tcsz);
-                        GetTracks();
-                        await tcsz.Task;
-                    }
-                }
-
+                if (task == null)
+                    GetTracks();
+                if (task != null)
+                await task; 
+             
             }
             return listAudio[(int)tracI];
         }
-
+        public Task task = null;
         public abstract void GetTracks();
 
 

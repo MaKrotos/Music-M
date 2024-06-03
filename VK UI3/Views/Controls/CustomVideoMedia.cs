@@ -12,8 +12,7 @@ namespace VK_UI3.Views.Controls
     internal class CustomVideoMedia : MediaPlayerElement
     {
         public Storyboard _storyboard;
-  
- 
+
         public Storyboard _storyboard2;
         public CustomVideoMedia() : base()
         {

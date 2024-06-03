@@ -96,7 +96,7 @@ namespace VK_UI3.VKs.IVK
             if (getLoadedTracks) return;
             getLoadedTracks = true;
 
-            Task.Run(async () =>
+            task = Task.Run(async () =>
             {
                 
                     int count = 10;

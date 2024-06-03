@@ -108,6 +108,11 @@
             <blocks:PlaceholderBlockControl />
         </DataTemplate>
 
+        <DataTemplate x:Key="texts">
+            <blocks:TextsBlockControl />
+        </DataTemplate>
+
+
     </UserControl.Resources>
 
 

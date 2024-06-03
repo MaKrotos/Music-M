@@ -66,7 +66,7 @@ namespace VK_UI3.VKs.IVK
         {
             if (getLoadedTracks) return;
             getLoadedTracks = true;
-            Task.Run(async () =>
+            task = Task.Run(async () =>
             {
                 VkParameters keyValuePairs = new VkParameters();
                 keyValuePairs.Add("mix_id", mix_id);

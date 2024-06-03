@@ -53,7 +53,7 @@ namespace VK_UI3.VKs.IVK
 
             ResponseData a = null;
 
-            Task.Run(async () =>
+            task = Task.Run(async () =>
             {
                 if (getLoadedTracks)
                     return;

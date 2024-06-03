@@ -50,8 +50,11 @@ namespace VK_UI3.Controls
         private void HideAnimationMediaP_Completed(object sender, object e)
         {
             if (ShowVidGid.Opacity == 1)
-            {
-                VideoSources.MediaPlayer.CurrentStateChanged -= MediaPlayer_CurrentStateChanged;
+            { 
+                if (VideoSources.MediaPlayer != null)
+                {
+                    VideoSources.MediaPlayer.CurrentStateChanged -= MediaPlayer_CurrentStateChanged;
+                }
                 VideoSources.Source = null;
             }
         }

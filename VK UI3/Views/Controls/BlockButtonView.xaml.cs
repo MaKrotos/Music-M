@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
 using MusicX.Core.Models;
 using System;
 using System.Diagnostics;
@@ -6,8 +7,10 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using VK_UI3.Controllers;
 using VK_UI3.Helpers.Animations;
+using VK_UI3.Views.ModalsPages;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
+using VkNet.Model.Attachments;
 using WinUI3.Common;
 using Button = MusicX.Core.Models.Button;
 
@@ -105,12 +108,13 @@ namespace VK_UI3.Views.Controls
 
                 text.Text = txt;
                 symbolIcon.Symbol = icon;
-
+                firstRefresh = true;
             }
             else
             {
                 changeText.ChangeTextWithAnimation(txt);
                 changeIcon.ChangeSymbolIconWithAnimation(icon);
+
             }
         }
 
@@ -148,20 +152,45 @@ namespace VK_UI3.Views.Controls
                         }
                     case "create_playlist":
                         {
-                            /*
-                            var vkService = VK.vkService;
-                            var navigationService = StaticService.Container.GetRequiredService<NavigationService>();
-                            var viewModel = StaticService.Container.GetRequiredService<CreatePlaylistModalViewModel>();
-                            viewModel.IsEdit = false;
+                            ContentDialog dialog = new CustomDialog();
 
-                            if (!string.IsNullOrEmpty(Action.BlockId))
+                            dialog.Transitions = new TransitionCollection
+                                {
+                                    new PopupThemeTransition()
+                                };
+
+                            // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
+                            dialog.XamlRoot = this.XamlRoot;
+
+                            var a = new CreatePlayList();
+                            dialog.Content = a;
+                            dialog.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
+
+                            void CancelPressedHandler(object s, EventArgs e)
                             {
-                                viewModel.Tracks.AddRange(await vkService.LoadFullAudiosAsync(Action.BlockId).ToArrayAsync());
-                                viewModel.CreateIsEnable = true;
+                                if (dialog != null)
+                                    dialog.Hide();
+                                dialog = null;
+
+                                if (s != null && s is AudioPlaylist)
+                                {
+
+
+                                }
                             }
 
-                            navigationService.OpenModal<CreatePlaylistModal>(viewModel);
-                             */
+                            a.cancelPressed += CancelPressedHandler;
+
+
+                            void CloseHandler(ContentDialog sender, ContentDialogClosedEventArgs args)
+                            {
+
+                                a.cancelPressed -= CancelPressedHandler;
+                            }
+
+                            dialog.Closed += CloseHandler;
+
+                            dialog.ShowAsync();
                             break;
 
                         }

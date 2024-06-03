@@ -44,6 +44,7 @@
 	  <None Remove="Controls\Blocks\RecommsPlaylistBlock.xaml" />
 	  <None Remove="Controls\Blocks\RecomUsersControl.xaml" />
 	  <None Remove="Controls\Blocks\RemomendedUsersPlaylist.xaml" />
+	  <None Remove="Controls\Blocks\TextsBlockControl.xaml" />
 	  <None Remove="Controls\DefaultControl.xaml" />
 	  <None Remove="Controls\LinksController.xaml" />
 	  <None Remove="Controls\ListTracks.xaml" />
@@ -151,6 +152,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\Blocks\ListPlaylists.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\Blocks\TextsBlockControl.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

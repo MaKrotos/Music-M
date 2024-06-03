@@ -9,6 +9,7 @@ using VkNet.Model;
 using VkNet.Model.Attachments;
 using VkNet.Model.RequestParams;
 using VkNet.Utils;
+using Windows.ApplicationModel.UserDataTasks;
 
 namespace VK_UI3.VKs.IVK
 {
@@ -73,7 +74,7 @@ namespace VK_UI3.VKs.IVK
             if (getLoadedTracks) return;
             getLoadedTracks = true;
 
-            Task.Run(async () =>
+            task = Task.Run(async () =>
             {
                 int offset = listAudio.Count;
                 int count = 250;
@@ -112,6 +113,7 @@ namespace VK_UI3.VKs.IVK
 
                     getLoadedTracks = false;
                 }
+                task = null;
                 NotifyOnListUpdate();
             });
         }

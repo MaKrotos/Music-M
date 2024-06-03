@@ -237,7 +237,7 @@ namespace VK_UI3.VKs.IVK
 
             getLoadedTracks = true;
 
-            Task.Run(async () =>
+            task = Task.Run(async () =>
             {
                 int offset = listAudioTrue.Count;
                 int count = 100;

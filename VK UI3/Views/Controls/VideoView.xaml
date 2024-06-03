@@ -78,10 +78,11 @@
     </UserControl.Resources>
     <Grid
         Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"
-        PointerEntered="Grid_PointerEntered"
+        PointerMoved="Grid_PointerMoved"
         PointerExited="Grid_PointerExited">
         <MediaPlayerElement
             x:Name="VidePl"
+          
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             AreTransportControlsEnabled="True"

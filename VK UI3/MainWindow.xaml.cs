@@ -690,7 +690,7 @@ namespace VK_UI3
 
                 this.DispatcherQueue.TryEnqueue(async () =>
                 {
-                    var dialog = new CustomDialog
+                    var dialog = new ContentDialog
                     {
                         Title = "Необходимо загрузить расширение",
                         Content = "Для загрузки треков необходимо скачать расширение (≈80 мб)",
@@ -714,7 +714,8 @@ namespace VK_UI3
                     else
                     {
                         downloadFileWithProgress = null;
-
+                        PlayListDownload.PlayListDownloadsList.Clear();
+                        PlayListDownload.PlayListDownloads.Clear();
 
                     }
                 });

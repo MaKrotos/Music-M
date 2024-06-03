@@ -93,7 +93,6 @@ namespace VK_UI3.Controllers
                 if (iVKGetAudio.countTracks != 0)
                 {
                     return await iVKGetAudio.GetTrackPlay();
-
                 }
             return _trackDataThis;
         }
@@ -537,7 +536,7 @@ namespace VK_UI3.Controllers
         }
         public static ExtendedAudio PlayingTrack = null;
 
-        private async static Task PlayTrack(long? v = null)
+        private async static Task PlayTrack(long? v = 0)
         {
 
             if (v != null) iVKGetAudio.currentTrack = (long)v;

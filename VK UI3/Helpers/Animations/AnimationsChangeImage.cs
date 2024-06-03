@@ -185,9 +185,10 @@ namespace VK_UI3.Helpers.Animations
                 return null;
             }
             var fileName = Path.Combine(databaseFolderPath, GetHashString(newImageSourceUrl.ToString()));
+            var tempFileName = fileName + "temp";
 
             if (!Directory.Exists(databaseFolderPath)) Directory.CreateDirectory(databaseFolderPath);
-            BitmapImage bitmap = null ; 
+            BitmapImage bitmap = null;
             if (newImageSourceUrl.IsFile)
             {
                 var tcs = new TaskCompletionSource<BitmapImage>();
@@ -219,36 +220,38 @@ namespace VK_UI3.Helpers.Animations
 
                     if (buffer != null && buffer.Length > 0)
                     {
-                        await File.WriteAllBytesAsync(fileName, buffer);
+                        await File.WriteAllBytesAsync(tempFileName, buffer);
                         if (setColorTheme)
-                            ColorOpaquePartFastParallel(fileName);
+                            ColorOpaquePartFastParallel(tempFileName);
                         var tcs = new TaskCompletionSource<BitmapImage>();
+                        File.Move(tempFileName, fileName);
                         dispatcherQueue.TryEnqueue(() =>
                         {
                             bitmap = new BitmapImage(new Uri(fileName));
                             image = bitmap;
                             tcs.SetResult(bitmap);
                         });
-                        
+                       
+
                         _ = CheckAndDeleteOldFilesAsync(databaseFolderPath);
                         return await tcs.Task;
                     }
                     else
                     {
                         image = null;
-                
+
                         return null;
                     }
                 }
                 catch (Exception e)
                 {
                     image = null;
-               
+
                     // Если произошла ошибка при загрузке или сохранении изображения, возвращаем null
                     return null;
                 }
             }
-            
+
         }
 
         public static void ColorOpaquePartFastParallel(string imagePath)
@@ -326,9 +329,25 @@ namespace VK_UI3.Helpers.Animations
         {
             _ = Task.Run(async() =>
             {
+               var timeLastSetting= SettingsTable.GetSetting("timeLastClear");
+                if (timeLastSetting == null)
+                {
+               
+                    SettingsTable.SetSetting("timeLastClear", DateTime.Now.ToString());
+                    return;
+                }
+
+                DateTime timeLast = DateTime.Parse(timeLastSetting.settingValue);
+                if ((DateTime.Now - timeLast).TotalMinutes < 5)
+                {
+                    return;
+                }
+
+
+
                 int val = 100;
-                var a = SettingsTable.GetSetting("photoCacheSize");
-                if (a != null) val = int.Parse(a.settingValue);
+                var photoSizeCache = SettingsTable.GetSetting("photoCacheSize");
+                if (photoSizeCache != null) val = int.Parse(photoSizeCache.settingValue);
 
                 long maxDirectorySize = val * 1024 * 1024;
                 if (Directory.Exists(directoryPath))
@@ -351,6 +370,8 @@ namespace VK_UI3.Helpers.Animations
                             }
                         }
                     }
+
+                    SettingsTable.SetSetting("timeLastClear", DateTime.Now.ToString());
                 }
                 else
                 {

@@ -24,75 +24,60 @@ namespace VK_UI3.Views.Controls
     public sealed partial class VideoView : UserControl
     {
         public Dictionary<string, string> Quality;
+        public TimeSpan? setPosition = null;
         public string linkBrowser = null;
         public bool enableFullScreen { get; set; } = true;
-        public VideoView(Dictionary<string, string> quality, string linkBrowser = null)
+        public VideoView(Dictionary<string, string> quality, string linkBrowser = null, TimeSpan? setPosition = null)
         {
             this.InitializeComponent();
             Quality = quality;
             this.linkBrowser = linkBrowser;
+            this.setPosition = setPosition;
 
 
             this.KeyDown += VideoView_KeyDown;
+            timer.Interval = TimeSpan.FromSeconds(3);
+
+            timer.Tick += (s, e) =>
+            {
+                hidecontrols();
+            
+                timer.Stop();
+            };
         }
+
+   
 
         private void VideoView_KeyDown(object sender, KeyRoutedEventArgs e)
         {
             if (e.Key == VirtualKey.Escape)
             {
-                CloseButtonClicked?.Invoke(this, new VidArgs() {
-                
-                    position = VidePl.MediaPlayer.Position,
-                    playing = VidePl.MediaPlayer.CurrentState
-                });
+                var args = new VidArgs() { position = VidePl.MediaPlayer.Position, playing = VidePl.MediaPlayer.CurrentState };
+                this.VidePl.MediaPlayer.Pause();
+                this.VidePl.Source = null;
+                CloseButtonClicked?.Invoke(this, args);
             }
         }
 
         private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
         {
-            CloseButtonClicked?.Invoke(this, new VidArgs()
-            {
-
-                position = VidePl.MediaPlayer.Position,
-                playing = VidePl.MediaPlayer.CurrentState
-            });
+            var argss = new VidArgs() { position = VidePl.MediaPlayer.Position, playing = VidePl.MediaPlayer.CurrentState };
+            this.VidePl.MediaPlayer.Pause();
+            this.VidePl.Source = null;
+            CloseButtonClicked?.Invoke(this, argss);
         }
 
-        private void Grid_PointerEntered(object sender, PointerRoutedEventArgs e)
-        {
-            if (enableFullScreen)
-            {
-                FullScreen.Visibility = Visibility.Visible;
-                FadeOutAnimationFullScreen.Pause();
-                FadeInAnimationFullScreen.Begin();
-            }
-            if (linkBrowser != null)
-            {
-                openInBrowser.Visibility = Visibility.Visible;
-                FadeOutAnimationopenInBrowser.Pause();
-                FadeInAnimationopenInBrowser.Begin();
-            }
-            if (CloseButtonClicked != null)
-            {
-                CloseBTN.Visibility = Visibility.Visible;
-                FadeOutAnimationCloseBTN.Pause();
-                FadeInAnimationCloseBTN.Begin();
-            }
-
-
-            qualityBox.Visibility = Visibility.Visible;
-            FadeOutAnimationqualityBox.Pause();
-            FadeInAnimationqualityBox.Begin();
-
-
-        }
-        
+     
 
         private void Grid_PointerExited(object sender, PointerRoutedEventArgs e)
         {
+            hidecontrols();
+        }
+
+        private void hidecontrols()
+        {
             if (enableFullScreen)
             {
-
                 FadeInAnimationFullScreen.Pause();
                 FadeOutAnimationFullScreen.Begin();
             }
@@ -110,6 +95,8 @@ namespace VK_UI3.Views.Controls
 
             FadeInAnimationCloseBTN.Pause();
             FadeOutAnimationCloseBTN.Begin();
+
+            timer.Stop();
         }
 
         private void FadeOutAnimationopenInBrowser_Completed(object sender, object e)
@@ -159,6 +146,7 @@ namespace VK_UI3.Views.Controls
                 int middleIndex = qualityBox.Items.Count / 2;
                 qualityBox.SelectedIndex = middleIndex;
             }
+            if (setPosition != null) VidePl.MediaPlayer.Position = (TimeSpan) setPosition;
         }
 
         private bool wasPlaying; 
@@ -188,12 +176,10 @@ namespace VK_UI3.Views.Controls
             newWindow.SetTitleBar(null);
             newWindow.AppWindow.SetPresenter(AppWindowPresenterKind.FullScreen);
 
-            var vidv = new VideoView(Quality);
+            var vidv = new VideoView(Quality, linkBrowser, VidePl.MediaPlayer.Position);
 
             void Vidv_CloseButtonClicked(object sender, VidArgs e)
             {
-            
-
                 switch (e.playing)
                 {
                     case MediaPlayerState.Closed:
@@ -255,7 +241,11 @@ namespace VK_UI3.Views.Controls
             // Проверяем, является ли нажатая клавиша Esc
             if (e.Key == VirtualKey.Escape)
             {
-                CloseButtonClicked?.Invoke(this, new VidArgs() { position = VidePl.MediaPlayer.Position, playing = VidePl.MediaPlayer.CurrentState });
+                var args = new VidArgs() { position = VidePl.MediaPlayer.Position, playing = VidePl.MediaPlayer.CurrentState };
+                this.VidePl.MediaPlayer.Pause();
+                this.VidePl.Source = null;
+                CloseButtonClicked?.Invoke(this, args);
+           
             }
         }
 
@@ -268,15 +258,52 @@ namespace VK_UI3.Views.Controls
 
         private void CloseBTN_Click(object sender, RoutedEventArgs e)
         {
-          
-            CloseButtonClicked?.Invoke(this, new VidArgs() {
-                
-            });
+            var args = new VidArgs() { position = VidePl.MediaPlayer.Position, playing = VidePl.MediaPlayer.CurrentState };
+            this.VidePl.MediaPlayer.Pause();
+            this.VidePl.Source = null;
+            CloseButtonClicked?.Invoke(this, args);
+
         }
         public event EventHandler<VidArgs> CloseButtonClicked;
         private void FadeOutAnimationCloseBTN_Completed(object sender, object e)
         {
             CloseBTN.Visibility = Visibility.Collapsed;
+        }
+        DispatcherTimer timer = new DispatcherTimer();
+
+
+
+        private void Grid_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+
+            if (enableFullScreen)
+            {
+                FullScreen.Visibility = Visibility.Visible;
+                FadeOutAnimationFullScreen.Pause();
+                FadeInAnimationFullScreen.Begin();
+            }
+            if (linkBrowser != null)
+            {
+                openInBrowser.Visibility = Visibility.Visible;
+                FadeOutAnimationopenInBrowser.Pause();
+                FadeInAnimationopenInBrowser.Begin();
+            }
+            if (CloseButtonClicked != null)
+            {
+                CloseBTN.Visibility = Visibility.Visible;
+                FadeOutAnimationCloseBTN.Pause();
+                FadeInAnimationCloseBTN.Begin();
+            }
+
+
+            qualityBox.Visibility = Visibility.Visible;
+            FadeOutAnimationqualityBox.Pause();
+            FadeInAnimationqualityBox.Begin();
+
+
+
+            timer.Stop();
+            timer.Start();
         }
     }
 }
