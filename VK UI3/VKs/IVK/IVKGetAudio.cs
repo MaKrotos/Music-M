@@ -102,11 +102,8 @@ namespace VK_UI3.VKs.IVK
 
         public void PlayThis()
         {
-
-         
                 this.currentTrack = 0;
                 AudioPlayer.PlayList(this);
-            
         }
 
         // Добавляем делегат и событие
@@ -329,14 +326,6 @@ namespace VK_UI3.VKs.IVK
         }
 
 
-        public async Task<ExtendedAudio> GetTrackPlay()
-        {
-            if (countTracks < currentTrack && countTracks != -1) return null;
-            if (currentTrack == null)
-                currentTrack = 0;
-            return await GetTrackPlayAsync((long)currentTrack);
-        }
-
 
 
        public  List<TaskCompletionSource<bool>> tcs = new();
@@ -357,6 +346,14 @@ namespace VK_UI3.VKs.IVK
         public Task task = null;
         public abstract void GetTracks();
 
+
+        public async Task<ExtendedAudio> GetTrackPlay()
+        {
+            if (countTracks < currentTrack && countTracks != -1) return null;
+            if (currentTrack == null)
+                currentTrack = 0;
+            return await GetTrackPlayAsync((long)currentTrack);
+        }
 
         public void SaveToFile()
         {

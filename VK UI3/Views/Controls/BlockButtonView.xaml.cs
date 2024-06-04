@@ -144,7 +144,8 @@ namespace VK_UI3.Views.Controls
                         {
                             Task task = new Task(async () =>
                             {
-                                AudioPlayer.PlayList(new SectionAudio(Action.BlockId, this.DispatcherQueue));
+                                var section = new SectionAudio(Action.BlockId, this.DispatcherQueue);
+                                AudioPlayer.PlayList(section);
                             });
                             task.Start();
 

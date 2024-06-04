@@ -87,6 +87,9 @@ namespace VK_UI3.Controllers
             }
 
         }
+
+
+
         public static async Task<ExtendedAudio> _TrackDataThisGet()
         {
             if (iVKGetAudio != null)
@@ -539,10 +542,12 @@ namespace VK_UI3.Controllers
         private async static Task PlayTrack(long? v = 0)
         {
 
-            if (v != null) iVKGetAudio.currentTrack = (long)v;
+            if (v != null && iVKGetAudio.currentTrack == null) 
+                iVKGetAudio.currentTrack = (long)v;
 
             var trackdata = await _TrackDataThisGet();
-            if (trackdata == null) return;
+            if (trackdata == null) 
+                return;
 
             if (iVKGetAudio is PlayListVK)
             {
@@ -787,7 +792,6 @@ namespace VK_UI3.Controllers
         {
 
             iVKGetAudio = userAudio;
-       
             AudioPlayer.PlayTrack();
            
 
