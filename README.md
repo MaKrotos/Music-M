@@ -16,7 +16,15 @@
 
 ![image](https://github.com/MaKrotos/Music-M/assets/43302537/4c5cce83-a184-426a-8e5f-a4155e1aaf77)
 
+![image](https://github.com/MaKrotos/Music-M/assets/43302537/4b5737c2-524d-4f05-b70d-b471f7fe68b2)
 
+![image](https://github.com/MaKrotos/Music-M/assets/43302537/fcad0c31-41cf-44a1-9c16-64744a4b4967)
+
+![image](https://github.com/MaKrotos/Music-M/assets/43302537/208d0e34-ddab-46e5-94b1-7ec6cba638f6)
+
+![image](https://github.com/MaKrotos/Music-M/assets/43302537/3de988a3-07a1-4493-8497-53acf6f19d8d)
+
+![image](https://github.com/MaKrotos/Music-M/assets/43302537/d0816a57-be8b-4fc9-ab00-a26efee2a9ee)
 
 Отдельная благодарность [Fooxboy/MusicX-WPF](https://github.com/Fooxboy/MusicX-WPF)https://github.com/Fooxboy/MusicX-WPF
 Много чего скопипасчено именно от сюда.
