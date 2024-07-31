@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml.Media.Animation;
+using MusicX.Core.Models;
 using MusicX.Core.Services;
 using QRCoder;
 using System;
@@ -14,6 +15,7 @@ using VK_UI3.DB;
 using VK_UI3.Helpers;
 using VK_UI3.Views;
 using VK_UI3.Views.LoginWindow;
+using VkNet;
 using VkNet.Abstractions;
 using VkNet.AudioBypassService.Abstractions.Categories;
 using VkNet.AudioBypassService.Models.Auth;
@@ -784,11 +786,11 @@ namespace VK_UI3.VKs
             return api;
         }
 
-        public List<Audio> GetUserMusic()
+        public List<VkNet.Model.Attachments.Audio> GetUserMusic()
         {
 
             // Убедитесь, что результат Audio.Search не является null
-            VkCollection<Audio> audio;
+            VkCollection<VkNet.Model.Attachments.Audio> audio;
             try
             {
                 var audios =
@@ -930,6 +932,50 @@ namespace VK_UI3.VKs
                 var js = JsonObject.Parse(response.RawJson);
                 return js["upload_url"].ToString();
                 Console.WriteLine(response.ToString());
+            }
+            catch
+            (Exception e)
+            {
+
+            }
+
+            return null;
+
+        }
+
+
+        internal static async Task<string> deleteAllMusicFromProfile()
+        {
+
+            var parameters = new VkParameters
+            {
+
+
+            };
+            try
+            {
+                var offset = 0;
+                VkCollection<VkNet.Model.Attachments.Audio> audio;
+                do
+                {
+                    var param = new AudioGetParams()
+                    {
+                        OwnerId = AccountsDB.activeAccount.id,
+                        Offset = offset,
+                        Count = 6000
+
+                    };
+                    offset += 6000;
+                    audio = await api.Audio.GetAsync(param);
+
+                    foreach (var item in audio)
+                    {
+                       await api.Audio.DeleteAsync((long)item.Id, (long)item.OwnerId);
+                    }
+                    
+
+                } while (audio.Count > 0);
+
             }
             catch
             (Exception e)

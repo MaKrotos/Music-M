@@ -30,6 +30,9 @@
         <Border>
             <local:DownloadAllSetting />
         </Border>
+        <Border>
+            <local:DeleteAllAudioProfile />
+        </Border>
 
         <Border>
             <StackPanel>
