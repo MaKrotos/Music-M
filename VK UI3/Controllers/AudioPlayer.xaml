@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:helpers="using:VK_UI3.Helpers"
+    xmlns:constrols="using:VK_UI3.Controls"
     xmlns:local1="using:VK_UI3.Converters"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="pageRa"
@@ -17,9 +18,15 @@
     </Page.Resources>
 
     <Grid Padding="4">
+        <Grid.ContextFlyout>
+            <constrols:AudioControlFlyOut  x:Name="FlyOutControl" ></constrols:AudioControlFlyOut>
+        </Grid.ContextFlyout>
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
+
+
 
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Grid.ColumnDefinitions>

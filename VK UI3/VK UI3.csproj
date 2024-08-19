@@ -27,6 +27,7 @@
 	  <None Remove="Assets\SVGs\thumb-dislike.svg" />
 	  <None Remove="Assets\SVGs\thumbdislike.xaml" />
 	  <None Remove="Assets\SVGs\thumbdislikefill.xaml" />
+	  <None Remove="AudioControlFlyOut.xaml" />
 	  <None Remove="Controllers\NavMenuController.xaml" />
 	  <None Remove="Controllers\PlayListPage.xaml" />
 	  <None Remove="Controls\BannerControl.xaml" />
@@ -214,6 +215,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="Controls\Blocks\PlaceHolderBig.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="AudioControlFlyOut.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <None Update="Controls\ListPlaylists.xaml">

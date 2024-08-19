@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
+using MusicX.Shared.Player;
 using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
@@ -419,7 +420,7 @@ namespace VK_UI3.Controllers
             changeText.ChangeTextWithAnimation(TrackDataThis.audio.Artist);
             changeText2.ChangeTextWithAnimation(TrackDataThis.audio.Title);
 
-
+            FlyOutControl.dataTrack = TrackDataThis;
 
 
             if (bool.Parse(SettingsTable.GetSetting("shareFriend").settingValue))
@@ -541,14 +542,14 @@ namespace VK_UI3.Controllers
 
         private async static Task PlayTrack(long? v = 0)
         {
-
+           
             if (v != null && iVKGetAudio.currentTrack == null) 
                 iVKGetAudio.currentTrack = (long)v;
 
             var trackdata = await _TrackDataThisGet();
             if (trackdata == null) 
                 return;
-
+     
             if (iVKGetAudio is PlayListVK)
             {
                 VK.sendStartEvent((long)trackdata.audio.Id, (long)trackdata.audio.OwnerId, (iVKGetAudio as PlayListVK).playlist.Id);
@@ -797,5 +798,6 @@ namespace VK_UI3.Controllers
 
         }
 
+      
     }
 }

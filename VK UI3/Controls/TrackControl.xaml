@@ -11,7 +11,7 @@
     PointerEntered="UCcontrol_PointerEntered"
     PointerExited="UCcontrol_PointerExited"
     PointerPressed="UCcontrol_PointerPressed"
-    RightTapped="UCcontrol_RightTapped"
+  
     Translation="0,0,8"
     mc:Ignorable="d">
     <UserControl.Resources>
@@ -21,115 +21,7 @@
 
 
     <UserControl.ContextFlyout>
-        <MenuFlyout x:Name="flyOutm">
-            <MenuFlyoutItem
-                x:Name="EditTrack"
-                Click="EditTrack_Click"
-                Icon="Edit"
-                Text="Редактировать"
-                Visibility="Collapsed" />
-            <MenuFlyoutItem
-                x:Name="AddRemove"
-                Click="AddRemove_Click"
-                Icon="Add"
-                Text="Добавить к себе" />
-            <MenuFlyoutItem
-                x:Name="RemovePlayList"
-                Click="RemovePlayList_Click"
-                Icon="Delete"
-                Text="Удалить из плейлиста"
-                Visibility="Collapsed" />
-            <MenuFlyoutSubItem
-                x:Name="GoArtist"
-                Icon="ContactInfo"
-                Text="Перейти к исполнителю" />
-            <MenuFlyoutItem
-                x:Name="FlyGoAlbum"
-                Click="GoToAlbum"
-                Text="Перейти в альбом">
-                <MenuFlyoutItem.Icon>
-                    <FontIcon Glyph="&#xE93C;" />
-                </MenuFlyoutItem.Icon>
-            </MenuFlyoutItem>
-            <MenuFlyoutSubItem
-                x:Name="AddPlayList"
-                Icon="Add"
-                Text="Добавить в плейлист">
-                <MenuFlyoutItem
-                    x:Name="addToPlayListMore"
-                    Click="addToPlayListMore_Click"
-                    Text="Показать больше">
-                    <MenuFlyoutItem.Icon>
-                        <FontIcon Glyph="&#xE93C;" />
-                    </MenuFlyoutItem.Icon>
-                </MenuFlyoutItem>
-                <MenuFlyoutItem
-                    x:Name="CreatePlayListBTN"
-                    Click="CreatePlayListBTN_Click"
-                    Text="Создать">
-                    <MenuFlyoutItem.Icon>
-                        <FontIcon Glyph="&#xECC8;" />
-                    </MenuFlyoutItem.Icon>
-                </MenuFlyoutItem>
-            </MenuFlyoutSubItem>
-            <MenuFlyoutItem
-                x:Name="disText"
-                Click="DislikeClick"
-                Text="Не нравится">
-                <MenuFlyoutItem.Icon>
-                    <PathIcon Data="{x:Bind IconData, Mode=OneWay}" />
-                </MenuFlyoutItem.Icon>
-            </MenuFlyoutItem>
-            <MenuFlyoutItem
-                Click="AddArtistIgnore_Click"
-                Icon="BlockContact"
-                Text="Пропускать треки исполнителя" />
-            <MenuFlyoutSubItem
-                x:Name="DownloadFlyOut"
-                Icon="Download"
-                Text="Скачать">
-
-                <MenuFlyoutItem
-                    x:Name="PickFolderDownload"
-                    Click="PickFolderDownload_Click"
-                    Text="Выбрать папку">
-                    <MenuFlyoutItem.Icon>
-                        <FontIcon Glyph="&#xF12B;" />
-                    </MenuFlyoutItem.Icon>
-                </MenuFlyoutItem>
-            </MenuFlyoutSubItem>
-            <MenuFlyoutItem
-                Click="PlayNext_Click"
-                Icon="Play"
-                Text="Возпроизвести следующим" />
-            <MenuFlyoutItem
-                Click="AddToQueue_Click"
-                Icon="Add"
-                Text="Добавить в очередь" />
-            <MenuFlyoutItem
-                Click="CopyLink"
-                Icon="Link"
-                Text="Скопировать ссылку" />
-
-            <MenuFlyoutSubItem Icon="Share" Text="Отправить">
-                <MenuFlyoutItem
-                    x:Name="ShareFriendsList"
-                    Click="ShareFriendsList_Click"
-                    Text="Список друзей">
-                    <MenuFlyoutItem.Icon>
-                        <FontIcon Glyph="&#xE902;" />
-                    </MenuFlyoutItem.Icon>
-                </MenuFlyoutItem>
-                <MenuFlyoutItem
-                    x:Name="ShareDialogsList"
-                    Click="ShareDialogsList_Click"
-                    Text="Список диалогов">
-                    <MenuFlyoutItem.Icon>
-                        <FontIcon Glyph="&#xE8F2;" />
-                    </MenuFlyoutItem.Icon>
-                </MenuFlyoutItem>
-            </MenuFlyoutSubItem>
-        </MenuFlyout>
+        <local:AudioControlFlyOut  x:Name="FlyOutControl" ></local:AudioControlFlyOut>
     </UserControl.ContextFlyout>
 
     <UserControl.Shadow>
@@ -252,22 +144,6 @@
 
                 </StackPanel>
             </StackPanel>
-
-
-            <Button
-                x:Name="RecommendedAudio"
-                Margin="0,0,10,0"
-                HorizontalAlignment="Right"
-                Click="RecommendedAudio_Click"
-                FontSize="20"
-                Visibility="Collapsed">
-                <Button.Content>
-                    <SymbolIcon Symbol="Save" />
-                </Button.Content>
-                <ToolTipService.ToolTip>
-                    <ToolTip Content="Показать похожие треки" />
-                </ToolTipService.ToolTip>
-            </Button>
 
 
 
