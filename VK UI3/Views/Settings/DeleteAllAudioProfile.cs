@@ -50,6 +50,7 @@ namespace VK_UI3.Views.Settings
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             _= VKs.VK.deleteAllMusicFromProfile();
+            myFlyout.Hide();
         }
     }
 }

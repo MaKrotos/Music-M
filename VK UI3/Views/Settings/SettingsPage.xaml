@@ -33,6 +33,9 @@
         <Border>
             <local:DeleteAllAudioProfile />
         </Border>
+        <Border>
+            <local:ArchivateTracks />
+        </Border>
 
         <Border>
             <StackPanel>

@@ -3,4 +3,18 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 
 
+
+    <Style TargetType="local2:AudioControlFlyOut" xmlns:local2="using:VK_UI3.Controls.Blocks">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local2:AudioControlFlyOut">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
     xmlns:local="using:VK_UI3" />

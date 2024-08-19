@@ -15,10 +15,10 @@ namespace VK_UI3.Views.Settings
     {
         public PhotoCacheSize()
         {
-            this.ValueChanged += OnValueChanged;
+         
 
-            this.Minimum = 10;
-            this.Maximum = 1000;
+            this.Minimum = 50;
+            this.Maximum = 10000;
             this.StepFrequency = 10;
 
 
@@ -36,6 +36,8 @@ namespace VK_UI3.Views.Settings
             }
 
             this.Value = val;
+
+            this.ValueChanged += OnValueChanged;
         }
        
 

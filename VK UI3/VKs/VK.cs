@@ -944,21 +944,19 @@ namespace VK_UI3.VKs
         }
 
 
-        internal static async Task<string> deleteAllMusicFromProfile()
+        internal static async Task deleteAllMusicFromProfile()
         {
 
-            var parameters = new VkParameters
-            {
-
-
-            };
+           
             try
             {
                 var offset = 0;
+             
                 VkCollection<VkNet.Model.Attachments.Audio> audio;
+                List<VkNet.Model.Attachments.Audio> audios = new();
                 do
                 {
-                    var param = new AudioGetParams()
+                    AudioGetParams param = new AudioGetParams()
                     {
                         OwnerId = AccountsDB.activeAccount.id,
                         Offset = offset,
@@ -968,14 +966,17 @@ namespace VK_UI3.VKs
                     offset += 6000;
                     audio = await api.Audio.GetAsync(param);
 
-                    foreach (var item in audio)
-                    {
-                       await api.Audio.DeleteAsync((long)item.Id, (long)item.OwnerId);
-                    }
+                    audios.AddRange(audio);
+                    
                     
 
                 } while (audio.Count > 0);
 
+
+                foreach (var item in audios)
+                {
+                    await api.Audio.DeleteAsync((long)item.Id, (long)item.OwnerId);
+                }
             }
             catch
             (Exception e)
@@ -983,7 +984,6 @@ namespace VK_UI3.VKs
 
             }
 
-            return null;
 
         }
     }
