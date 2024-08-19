@@ -12,6 +12,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using VK_UI3.Controls;
 using VK_UI3.DB;
 using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
@@ -39,11 +40,19 @@ namespace VK_UI3.Controllers
 
         public static event EventHandler oniVKUpdate;
 
+        public static event EventHandler onClickonTrack;
 
         public static void NotifyoniVKUpdate()
         {
             oniVKUpdate.Invoke(null, EventArgs.Empty);
         }
+
+
+        public static void NotifyonClickonTrack()
+        {
+            onClickonTrack.Invoke(PlayingTrack, EventArgs.Empty);
+        }
+
 
         public MediaPlayer MediaPlayer
         {
@@ -567,7 +576,7 @@ namespace VK_UI3.Controllers
             var mediaPlaybackItem = new Windows.Media.Playback.MediaPlaybackItem(mediaSource);
 
 
-
+            PlayingTrack = trackdata;
 
             MediaItemDisplayProperties props = mediaPlaybackItem.GetDisplayProperties();
             props.Type = Windows.Media.MediaPlaybackType.Music;
@@ -797,7 +806,22 @@ namespace VK_UI3.Controllers
            
 
         }
-
+        
+        private void trackDoingBTN_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            if (PlayingTrack == null) return;
+            
+            
       
+            FlyOutControl.ShowAt(sender as Button);
+
+            
+        }
+
+        private void Grid_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            NotifyonClickonTrack();
+
+        }
     }
 }

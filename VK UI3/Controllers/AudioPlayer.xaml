@@ -17,7 +17,10 @@
         <local1:SecondsToTimeConverter x:Key="SecondsToTimeConverter" />
     </Page.Resources>
 
-    <Grid Padding="4">
+    <Grid 
+        Tapped="Grid_Tapped"
+        Padding="4">
+        
         <Grid.ContextFlyout>
             <constrols:AudioControlFlyOut  x:Name="FlyOutControl" ></constrols:AudioControlFlyOut>
         </Grid.ContextFlyout>
@@ -206,6 +209,17 @@
 
                     </Button>
 
+                    <Button
+                 x:Name="trackDoingBTN"
+                 Grid.Column="4"
+                 Width="25"
+                 Height="25"
+                 Margin="8,0,8,0"
+                 Padding="0"
+                 Background="Transparent"
+                 Tapped="trackDoingBTN_Tapped">
+                        <FontIcon Glyph="&#xE712;" />
+                    </Button>
 
 
 

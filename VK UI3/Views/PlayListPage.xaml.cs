@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using VK_UI3.Controllers;
@@ -36,6 +37,8 @@ namespace VK_UI3.Views
 
         private void PlayListPage_Unloaded(object sender, RoutedEventArgs e)
         {
+            AudioPlayer.onClickonTrack -= AudioPlayer_onClickonTrack;
+
             this.Loaded -= PlayListPage_Loaded;
             this.Unloaded -= PlayListPage_Unloaded;
             VK_UI3.Views.Upload.UploadTrack.addedTrack -= addedTrack;
@@ -389,7 +392,7 @@ namespace VK_UI3.Views
         private void PlayListPage_Loaded(object sender, RoutedEventArgs e)
         {
             // Находим ScrollViewer внутри ListView
-
+            AudioPlayer.onClickonTrack += AudioPlayer_onClickonTrack;
             scrollViewer = FindScrollViewer(TrackListView);
             if (scrollViewer != null)
             {
@@ -397,6 +400,33 @@ namespace VK_UI3.Views
                 scrollViewer.ViewChanged += ScrollViewer_ViewChanged; ;
             }
         }
+
+        private void AudioPlayer_onClickonTrack(object sender, EventArgs e)
+        {
+            var audio = sender as ExtendedAudio;
+            var ins = vkGetAudio.listAudio.IndexOf(audio);
+
+            if (ins < 0)
+            {
+                audio = vkGetAudio.listAudio.FirstOrDefault(a => a.audio.Id == audio.audio.Id && a.audio.OwnerId == audio.audio.OwnerId);
+                ins = vkGetAudio.listAudio.IndexOf(audio);
+            }
+
+            if (ins >= 0 && ins < TrackListView.Items.Count)
+            {
+                var container = TrackListView.ContainerFromIndex(ins) as ListViewItem;
+                if (container != null)
+                {
+                    var transform = container.TransformToVisual(TrackListView);
+                    var position = transform.TransformPoint(new Point(0, 0));
+                    double itemHeight = position.Y;
+
+                    scrollViewer.ChangeView(null, scrollViewer.VerticalOffset + itemHeight, null);
+                }
+            }
+        }
+
+
 
         bool blockLoad = false;
         private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
@@ -418,6 +448,7 @@ namespace VK_UI3.Views
                 LoadingIndicator.IsActive = true;
             }
         }
+
 
         private async void AddPlaylist_Click(object sender, RoutedEventArgs e)
         {
