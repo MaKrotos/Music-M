@@ -1,10 +1,14 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Media.Animation;
-using MusicX.Core.Models;
+using Microsoft.UI.Xaml.Media.Imaging;
 using MusicX.Core.Services;
 using QRCoder;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -15,15 +19,14 @@ using VK_UI3.DB;
 using VK_UI3.Helpers;
 using VK_UI3.Views;
 using VK_UI3.Views.LoginWindow;
-using VkNet;
 using VkNet.Abstractions;
 using VkNet.AudioBypassService.Abstractions.Categories;
 using VkNet.AudioBypassService.Models.Auth;
 using VkNet.AudioBypassService.Models.Ecosystem;
 using VkNet.Enums.Filters;
-using VkNet.Model.Attachments;
 using VkNet.Model.RequestParams;
 using VkNet.Utils;
+using Windows.Storage.Streams;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.Networking.WindowsWebServices;
@@ -39,7 +42,7 @@ namespace VK_UI3.VKs
         private readonly IEcosystemCategory _ecosystemCategory = App._host.Services.GetRequiredService<IEcosystemCategory>();
         private TaskCompletionSource<string>? _codeTask;
         private readonly IVkApiAuthAsync _vkApiAuth = App._host.Services.GetRequiredService<IVkApiAuthAsync>();
-        private readonly IVkApiAuthAsync _vkApi = App._host.Services.GetRequiredService<IVkApiAuthAsync>();
+        public readonly IVkApiAuthAsync _vkApi = App._host.Services.GetRequiredService<IVkApiAuthAsync>();
         public static readonly VkService vkService = App._host.Services.GetRequiredService<VkService>();
 
 
@@ -165,49 +168,43 @@ namespace VK_UI3.VKs
         }
 
 
-        private async Task LoadQrCode(bool forceRegenerate = false)
+        public async Task<AuthCodeResponse> LoadQrCode(DispatcherQueue dispatcherQueue, bool forceRegenerate = false)
         {
-            var (_, hash, _, url, _) = await _authCategory.GetAuthCodeAsync("VK M Player", forceRegenerate);
+            var result = await _authCategory.GetAuthCodeAsync("VK M Player", forceRegenerate);
             QRCodeGenerator generator = new QRCodeGenerator();
+            QRCodeData qrCodeData = generator.CreateQrCode(new PayloadGenerator.Url(result.AuthUrl), QRCodeGenerator.ECCLevel.Q);
+            QRCode qrCode = new QRCode(qrCodeData);
 
-            var qrCode = generator.CreateQrCode(new PayloadGenerator.Url(url)); /*
-            var xaml = new XamlQRCode(qrCode);
-            QrCode = xaml.GetGraphic(new(76, 76), new SolidColorBrush(Colors.Black), new SolidColorBrush(Colors.Transparent), false);
-
-            while (QrStatus != AuthCheckStatus.Ok)
+            using (Bitmap qrCodeImage = qrCode.GetGraphic(20))
             {
-                var response = await _authCategory.CheckAuthCodeAsync(hash);
-
-                QrStatus = response.Status;
-
-                switch (response.Status)
+                using (MemoryStream memory = new MemoryStream())
                 {
-                    case AuthCheckStatus.Continue or AuthCheckStatus.ConfirmOnPhone:
-                        await Task.Delay(5000);
-                        continue;
-                    case AuthCheckStatus.Expired:
-                        QrCode = null;
-                        break;
-                    case AuthCheckStatus.Ok:
-                        {
-                            if (response.SuperAppToken is not null)
-                            {
-                                var uuid = Guid.NewGuid().ToString().Replace("-", "");
-                                await _loginCategory.ConnectAsync(uuid);
-                                await _loginCategory.ConnectAuthCodeAsync(response.SuperAppToken, uuid);
-                            }
-                            else if (response.AccessToken is not null)
-                            {
-                                await _vkService.SetTokenAsync(response.AccessToken);
-                            }
+                    qrCodeImage.Save(memory, ImageFormat.Png);
+                    memory.Position = 0;
 
-                            LoggedIn?.Invoke(this, EventArgs.Empty);
-                            break;
-                        }
+                    // Преобразование MemoryStream в IRandomAccessStream
+                    InMemoryRandomAccessStream randomAccessStream = new InMemoryRandomAccessStream();
+                    using (DataWriter writer = new DataWriter(randomAccessStream.GetOutputStreamAt(0)))
+                    {
+                        writer.WriteBytes(memory.ToArray());
+                        await writer.StoreAsync();
+                    }
+
+                    var tcs = new TaskCompletionSource<object>();
+
+                    dispatcherQueue.TryEnqueue(async () =>
+                    {
+                        BitmapImage bitmapImage = new BitmapImage();
+                        await bitmapImage.SetSourceAsync(randomAccessStream);
+
+                        result.image = bitmapImage;
+                        tcs.SetResult(null);
+                    });
+
+                    await tcs.Task;
+                    return result;
                 }
             }
-
-            */
         }
 
         private EcosystemProfile Profile;

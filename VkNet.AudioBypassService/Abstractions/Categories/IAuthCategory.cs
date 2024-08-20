@@ -13,8 +13,10 @@ public interface IAuthCategory
 
     Task<AuthCodeResponse> GetAuthCodeAsync(string deviceName, bool forceRegenerate = true);
     
-    Task<AuthCheckResponse> CheckAuthCodeAsync(string authHash);
-    
+    Task<AuthCheckResponse> CheckAuthCodeAsync(string authHash, string token);
+
+    Task<string> connect_code_auth(string token, string uuid);
+
     [ItemCanBeNull] Task<TokenInfo> RefreshTokensAsync(string oldToken, string exchangeToken);
 
     Task<ExchangeTokenResponse> GetExchangeToken([CanBeNull] UsersFields fields = null);

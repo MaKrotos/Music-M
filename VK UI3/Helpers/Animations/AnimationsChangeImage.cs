@@ -57,6 +57,7 @@ namespace VK_UI3.Helpers.Animations
             this.imageBrushControl = imageBrushControl;
             this.dispatcherQueue = dispatcherQueue;
         }
+
         public void ChangeImageWithAnimation(string newImageSourceUrl, bool justDoIt = false, bool setColorTheme = false)
         {
             switch (newImageSourceUrl)
@@ -139,6 +140,47 @@ namespace VK_UI3.Helpers.Animations
             }
             storyboard.Begin();
         }
+
+
+        public void ChangeImageWithAnimation(BitmapImage getImageTask)
+        {
+            dispatcherQueue.TryEnqueue(async () =>
+            {
+                var animation = new DoubleAnimation
+                {
+                    From = (element as FrameworkElement).Opacity,
+                    To = 0.0,
+                    Duration = TimeSpan.FromMilliseconds(250),
+                };
+
+                Storyboard.SetTarget(animation, (element as FrameworkElement));
+                Storyboard.SetTargetProperty(animation, "Opacity");
+                storyboard.Stop();
+                storyboard.Children.Clear();
+                storyboard.Children.Add(animation);
+
+
+                EventHandler<object> storyboardCompletedHandler = null;
+
+                if (getImageTask != null)
+                {
+                    storyboardCompletedHandler = async (s, e) =>
+                    {
+                        // Отписка от события после его выполнения
+                        storyboard.Completed -= storyboardCompletedHandler;
+                        if (getImageTask != null)
+                            showImage(element as FrameworkElement, getImageTask);
+                    };
+                    storyboard.Completed -= storyboardCompletedHandler;
+                    storyboard.Completed += storyboardCompletedHandler;
+                }
+                storyboard.Begin();
+            });
+        }
+
+
+
+
 
         private void showImage(FrameworkElement element, BitmapImage image)
         {

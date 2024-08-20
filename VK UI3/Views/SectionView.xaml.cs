@@ -346,7 +346,7 @@ namespace VK_UI3.Views
             }
         }
 
-
+        
 
 
         private void scrollVIew_ViewChanged(ScrollView sender, object args)
@@ -368,6 +368,11 @@ namespace VK_UI3.Views
                     _ = LoadAsync();
                 }
             }
+        }
+
+        private void scrollVIew_PointerWheelChanged(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+
         }
     }
 

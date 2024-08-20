@@ -1,10 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Net.Http;
+using System.Security.Authentication;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using VkNet.Abstractions;
 using VkNet.Abstractions.Core;
 using VkNet.Abstractions.Utils;
@@ -13,6 +17,7 @@ using VkNet.Enums.Filters;
 using VkNet.Extensions.DependencyInjection;
 using VkNet.Utils;
 using IAuthCategory = VkNet.AudioBypassService.Abstractions.Categories.IAuthCategory;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace VkNet.AudioBypassService.Categories;
 
@@ -98,41 +103,93 @@ public partial class AuthCategory : IAuthCategory
         });
     }
 
-    public async Task<AuthCodeResponse> GetAuthCodeAsync(string deviceName, bool forceRegenerate = true)
+    
+
+    public async Task<string> connect_code_auth(string token, string uuid)
     {
-        try { 
-     
-                var a = await _apiInvoke.CallAsync<AuthCodeResponse>("auth.getAuthCode", new()
+        try
+        {
+    
+            using (var client = new HttpClient())
             {
-                { "device_name", "Windows NT 10.0; Win64; x64" },
-                { "force_regenerate", forceRegenerate },
-                { "auth_code_flow", false },
-                { "client_id", 7913379 },
+                var parameters = new Dictionary<string, string>
+            {
+                { "token", token },
+                { "uuid", uuid },
+                { "version", "1" },
+                { "app_id", "7913379" },
 
-                { "anonymous_token", _anonToken ?? await GetAnonTokenAsync() },
-                { "verification_hash", _authVerifyHash },
+            };
+           
 
-                { "is_switcher_flow", "" },
-                {"access_token", "" }
-            });
+                var content = new FormUrlEncodedContent(parameters);
+                var response = await client.PostAsync("https://login.vk.com/?act=connect_code_auth", content);
+                response.EnsureSuccessStatusCode();
+                var str = await response.Content.ReadAsStringAsync();
 
 
-            return a;
+
+                JsonSerializerOptions _jsonSerializerOptions = new(JsonSerializerDefaults.Web);
+                var (type, loginResponse) = JsonSerializer.Deserialize<LoginResponse<LoginResponseAccessToken>>(str, _jsonSerializerOptions);
+                JObject jo = JObject.Parse(str);
+                if (jo != null && jo["data"] != null && jo["data"]["access_token"] != null)
+                    return jo["data"]["access_token"].ToString();
+
+                return null;
+            }
         }
         catch (System.Exception ex)
         {
-
+            // Логирование ошибки
             return null;
         }
     }
 
-    public async Task<AuthCheckResponse> CheckAuthCodeAsync(string authHash)
+    public async Task<AuthCodeResponse> GetAuthCodeAsync(string deviceName, bool forceRegenerate = true)
     {
-        return await _apiInvoke.CallAsync<AuthCheckResponse>("auth.checkAuthCode", new()
+        try
+        {
+            string token = _anonToken ?? await GetAnonTokenAsync();
+            using (var client = new HttpClient())
+            {
+                var parameters = new Dictionary<string, string>
+            {
+                { "device_name", "Windows NT 10.0; Win64; x64" },
+                { "force_regenerate", forceRegenerate.ToString() },
+                { "auth_code_flow", "0" },
+                { "anonymous_token", _anonToken },
+                { "verification_hash", "" },
+                { "is_switcher_flow", "" },
+                { "access_token", "" }
+            };
+                client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");
+                client.DefaultRequestHeaders.Add("Origin", "https://id.vk.com");
+
+                var content = new FormUrlEncodedContent(parameters);
+                var response = await client.PostAsync("https://api.vk.com/method/auth.getAuthCode?v=5.207&client_id=7913379", content);
+                response.EnsureSuccessStatusCode();
+
+                var jsonResponse = JObject.Parse(await response.Content.ReadAsStringAsync())["response"];
+                var authCodeResponse = JsonSerializer.Deserialize<AuthCodeResponse>(jsonResponse.ToString());
+                authCodeResponse.Token = token;
+
+                return authCodeResponse;
+            }
+        }
+        catch (System.Exception ex)
+        {
+            // Логирование ошибки
+            return null;
+        }
+    }
+
+    public async Task<AuthCheckResponse> CheckAuthCodeAsync(string authHash, string token)
+    {
+        return  await _apiInvoke.CallAsync<AuthCheckResponse>("auth.checkAuthCode?v=5.207&client_id=7913379", new()
         {
             { "auth_hash", authHash },
-            { "client_id", 7913379 },
-            { "anonymous_token", _anonToken ?? await GetAnonTokenAsync() }
+            { "web_auth", 1 },
+            { "anonymous_token", token }
         }, true);
     }
 
@@ -180,6 +237,6 @@ public partial class AuthCategory : IAuthCategory
             PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
         };
         
-        return JsonSerializer.Deserialize<PasskeyBeginResponse>(response.Value, options);
+        return System.Text.Json.JsonSerializer.Deserialize<PasskeyBeginResponse>(response.Value, options);
     }
 }
