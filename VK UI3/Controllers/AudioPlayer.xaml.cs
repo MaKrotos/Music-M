@@ -50,8 +50,12 @@ namespace VK_UI3.Controllers
 
         public static void NotifyonClickonTrack()
         {
-            onClickonTrack.Invoke(PlayingTrack, EventArgs.Empty);
+            if (onClickonTrack != null)
+            {
+                onClickonTrack.Invoke(PlayingTrack, EventArgs.Empty);
+            }
         }
+
 
 
         public MediaPlayer MediaPlayer

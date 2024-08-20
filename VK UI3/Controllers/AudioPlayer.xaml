@@ -18,7 +18,6 @@
     </Page.Resources>
 
     <Grid 
-        Tapped="Grid_Tapped"
         Padding="4">
         
         <Grid.ContextFlyout>
@@ -265,6 +264,7 @@
 
 
             <Grid
+                Tapped="Grid_Tapped"
                 Grid.Column="0"
                 Width="60"
                 Height="60"
@@ -276,6 +276,7 @@
                 <Image x:Name="ImageThumb" />
             </Grid>
             <Grid
+                Tapped="Grid_Tapped"
                 Grid.Column="1"
                 Width="125"
                 MaxHeight="75"

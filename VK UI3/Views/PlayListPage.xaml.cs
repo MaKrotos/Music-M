@@ -35,13 +35,15 @@ namespace VK_UI3.Views
             descriptionText = new AnimationsChangeText(DescriptionText, this.DispatcherQueue);
         }
 
-        private void PlayListPage_Unloaded(object sender, RoutedEventArgs e)
+
+
+        private void desctruct() 
         {
             AudioPlayer.onClickonTrack -= AudioPlayer_onClickonTrack;
 
             this.Loaded -= PlayListPage_Loaded;
             this.Unloaded -= PlayListPage_Unloaded;
-            VK_UI3.Views.Upload.UploadTrack.addedTrack -= addedTrack;
+            Upload.UploadTrack.addedTrack -= addedTrack;
             if (scrollViewer != null) scrollViewer.ViewChanged -= ScrollViewer_ViewChanged;
             if (vkGetAudio != null)
             {
@@ -51,6 +53,12 @@ namespace VK_UI3.Views
                 vkGetAudio.onCountUpDated.RemoveHandler(VkGetAudio_onCountUpDated);
                 vkGetAudio.onInfoUpdated.RemoveHandler(VkGetAudio_onInfoUpdated);
             }
+           
+        }
+
+        private void PlayListPage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            desctruct();
         }
 
         public IVKGetAudio vkGetAudio = null;
@@ -77,16 +85,10 @@ namespace VK_UI3.Views
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
+            desctruct();
             base.OnNavigatedFrom(e);
 
-            if (vkGetAudio != null)
-            {
-                vkGetAudio.onPhotoUpdated.RemoveHandler(VkGetAudio_onPhotoUpdated);
-                vkGetAudio.onListUpdate -= (VkGetAudio_onListUpdate);
-                vkGetAudio.onNameUpdated.RemoveHandler(VkGetAudio_onNameUpdated);
-                vkGetAudio.onCountUpDated.RemoveHandler(VkGetAudio_onCountUpDated);
-                vkGetAudio.onInfoUpdated.RemoveHandler(VkGetAudio_onInfoUpdated);
-            }
+            
         }
 
         AudioPlaylist audioPlaylistOriginal;
