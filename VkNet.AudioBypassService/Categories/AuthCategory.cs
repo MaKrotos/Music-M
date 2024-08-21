@@ -118,11 +118,23 @@ public partial class AuthCategory : IAuthCategory
                 { "uuid", uuid },
                 { "version", "1" },
                 { "app_id", "7913379" },
-
+                { "flow_start_state", "" },
+                { "is_external_carousel", "" },
+                { "oauth_version", "" },
+                { "sid", "" },
+                { "oauth_force_hash", "0" },
+                { "is_registration", "0" },
+                { "oauth_response_type", "" },
+                { "vkid_oauth_hash", "" },
+                { "is_oauth_migrated_flow", "0" },
+                { "oauth_state", "" },
+                { "to", "aHR0cHM6Ly92ay5jb20=" }
             };
            
 
                 var content = new FormUrlEncodedContent(parameters);
+                client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");
+                client.DefaultRequestHeaders.Add("Origin", "https://id.vk.com");
                 var response = await client.PostAsync("https://login.vk.com/?act=connect_code_auth", content);
                 response.EnsureSuccessStatusCode();
                 var str = await response.Content.ReadAsStringAsync();
@@ -133,7 +145,14 @@ public partial class AuthCategory : IAuthCategory
                 var (type, loginResponse) = JsonSerializer.Deserialize<LoginResponse<LoginResponseAccessToken>>(str, _jsonSerializerOptions);
                 JObject jo = JObject.Parse(str);
                 if (jo != null && jo["data"] != null && jo["data"]["access_token"] != null)
+                {
+
+                    var next_url = jo["data"]["next_step_url"].ToString();
+                    var nextResponse = await client.GetAsync(next_url);
+                    nextResponse.EnsureSuccessStatusCode();
+
                     return jo["data"]["access_token"].ToString();
+                }
 
                 return null;
             }

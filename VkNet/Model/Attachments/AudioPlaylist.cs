@@ -29,7 +29,7 @@ namespace VkNet.Model.Attachments
 		/// Тип плейлиста.
 		/// </summary>
 		[JsonProperty("type")]
-		public long Type { get; set; }
+		public string Type { get; set; }
 
 		/// <summary>
 		/// Название плейлиста.

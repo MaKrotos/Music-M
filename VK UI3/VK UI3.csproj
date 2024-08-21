@@ -67,7 +67,6 @@
 	  <None Remove="Views\Download\DownloadFFmpegController.xaml" />
 	  <None Remove="Views\Download\DOwnloadsList.xaml" />
 	  <None Remove="Views\LoginWindow\AccountList.xaml" />
-	  <None Remove="Views\LoginWindow\QRCodeLogin.xaml" />
 	  <None Remove="Views\ModalsPages\CreatePlayList.xaml" />
 	  <None Remove="Views\ModalsPages\CustomDialog.xaml" />
 	  <None Remove="Views\ModalsPages\DownLoadFFMpeg.xaml" />
@@ -230,9 +229,6 @@
     <None Update="DownloadTrack\ffmpeg.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Page Update="Views\LoginWindow\QRCodeLogin.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Update="Views\Controls\CustomVideoTrailer.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

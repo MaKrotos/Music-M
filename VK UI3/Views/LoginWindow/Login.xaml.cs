@@ -56,10 +56,6 @@ namespace VK_UI3.Views.LoginWindow
 
 
 
-        private async void QRLogin(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(QRCodeLogin), this, new DrillInNavigationTransitionInfo());
-        }
 
 
 

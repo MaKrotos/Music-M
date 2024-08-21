@@ -330,12 +330,18 @@ namespace VK_UI3.Views
         {
             _ = Task.Run(async () =>
             {
-                var sectin = await VK.vkService.GetSectionAsync(sectionID);
-                this.waitParameters.section = sectin.Section;
-                this.DispatcherQueue.TryEnqueue(() =>
+                try
                 {
-                    frameSection.Navigate(typeof(SectionView), waitParameters.section, new DrillInNavigationTransitionInfo());
-                });
+                    var sectin = await VK.vkService.GetSectionAsync(sectionID);
+                    this.waitParameters.section = sectin.Section;
+                    this.DispatcherQueue.TryEnqueue(() =>
+                    {
+                        frameSection.Navigate(typeof(SectionView), waitParameters.section, new DrillInNavigationTransitionInfo());
+                    });
+                }
+                catch (Exception ex) {
+                
+                }
             });
         }
 

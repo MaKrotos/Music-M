@@ -54,15 +54,7 @@
                 Click="LoginButton_Click"
                 Content="Войти" />
 
-            <Button
-                Margin="0,10,0,0"
-                HorizontalAlignment="Stretch"
-                Click="QRLogin">
-                <StackPanel Orientation="Horizontal">
-                    <FontIcon Glyph="&#xED14;" />
-                    <TextBlock Margin="10,0,0,0" Text="Войти по QR коду"/>
-                </StackPanel>
-            </Button>
+            
 
             <Button
                 x:Name="BackBTN"

@@ -51,6 +51,7 @@
                 Text=""
                 TextAlignment="Center" />
             <Button
+                 Style="{StaticResource AccentButtonStyle}"
                 Margin="0,20,0,0"
                 HorizontalAlignment="Stretch"
                 Click="SubmitButton_Click"
