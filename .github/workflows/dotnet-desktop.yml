@@ -244,3 +244,13 @@ jobs:
         file_glob: true
       if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
 
+    - name: Отправить сообщение в Telegram
+      if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        RELEASE_URL: https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}
+      run: |
+        curl -s -X POST https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage -d chat_id=${TELEGRAM_CHAT_ID} -d text="Новый релиз: ${{ github.event.inputs.namevers }}\nВерсия: ${{ steps.get_version.outputs.VERSION }}\nОписание: ${{ github.event.inputs.descr }}\nSolution Name: ${{ env.Solution_Name }}\nСсылка на релиз: ${RELEASE_URL}"
+    
+
