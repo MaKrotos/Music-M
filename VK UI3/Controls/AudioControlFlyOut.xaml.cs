@@ -146,7 +146,7 @@ namespace VK_UI3.Controls
                 Windows.Storage.StorageFolder folder = await folderPicker.PickSingleFolderAsync();
                 if (folder != null)
                 {
-                    // Директория выбрана, можно продолжить работу с folder
+                    // Р”РёСЂРµРєС‚РѕСЂРёСЏ РІС‹Р±СЂР°РЅР°, РјРѕР¶РЅРѕ РїСЂРѕРґРѕР»Р¶РёС‚СЊ СЂР°Р±РѕС‚Сѓ СЃ folder
                     PathTable.AddPath(folder.Path);
 
                     IVKGetAudio iVKGetAudio = new SimpleAudio(this.DispatcherQueue);
@@ -163,7 +163,7 @@ namespace VK_UI3.Controls
                 }
                 else
                 {
-                    // Операция была отменена пользователем
+                    // РћРїРµСЂР°С†РёСЏ Р±С‹Р»Р° РѕС‚РјРµРЅРµРЅР° РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј
                 }
             }
             catch (Exception ex)
@@ -322,7 +322,7 @@ namespace VK_UI3.Controls
 
         private void SetIconDislike()
         {
-            // Загрузите ResourceDictionary из файла XAML внутри пакета .appx
+            // Р—Р°РіСЂСѓР·РёС‚Рµ ResourceDictionary РёР· С„Р°Р№Р»Р° XAML РІРЅСѓС‚СЂРё РїР°РєРµС‚Р° .appx
             var myResourceDictionary = new ResourceDictionary
             {
                 Source = new Uri("ms-appx:///Resource/icons.xaml", UriKind.Absolute)
@@ -333,8 +333,8 @@ namespace VK_UI3.Controls
                 : myResourceDictionary["Dislike"] as string;
 
             disText.Text = dataTrack.audio.Dislike
-                ? "Убрать дизлайк"
-                : "Не нравится";
+                ? "РЈР±СЂР°С‚СЊ РґРёР·Р»Р°Р№Рє"
+                : "РќРµ РЅСЂР°РІРёС‚СЃСЏ";
 
             var geometry = (Geometry)XamlReader.Load(
                 $"<Geometry xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>{data}</Geometry>");
@@ -355,7 +355,7 @@ namespace VK_UI3.Controls
             }
             else EditTrack.Visibility = Visibility.Collapsed;
             AddRemove.Visibility = Visibility.Visible;
-            AddRemove.Text = isOwner ? "Удалить" : "Добавить к себе";
+            AddRemove.Text = isOwner ? "РЈРґР°Р»РёС‚СЊ" : "Р”РѕР±Р°РІРёС‚СЊ Рє СЃРµР±Рµ";
             AddRemove.Icon = new SymbolIcon(isOwner ? Symbol.Delete : Symbol.Add);
 
             if (dataTrack.iVKGetAudio is PlayListVK aplaylist && aplaylist.playlist.Permissions.Edit)
@@ -442,7 +442,7 @@ namespace VK_UI3.Controls
                                    Text = album.Title,
                                    Icon = new FontIcon
                                    {
-                                       Glyph = "\uE142", // Замените на код глифа вашей иконки альбома
+                                       Glyph = "\uE142", // Р—Р°РјРµРЅРёС‚Рµ РЅР° РєРѕРґ РіР»РёС„Р° РІР°С€РµР№ РёРєРѕРЅРєРё Р°Р»СЊР±РѕРјР°
 
                                    }
                                };
