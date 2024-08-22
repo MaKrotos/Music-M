@@ -50,7 +50,7 @@ namespace VK_UI3.Controllers
 
         public static void NotifyonClickonTrack()
         {
-            if (onClickonTrack != null)
+            if (onClickonTrack != null && PlayingTrack != null)
             {
                 onClickonTrack.Invoke(PlayingTrack, EventArgs.Empty);
             }

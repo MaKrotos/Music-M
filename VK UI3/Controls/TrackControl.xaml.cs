@@ -262,6 +262,7 @@ namespace VK_UI3.Controls
         private void UCcontrol_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
             //FadeInAnimation.Begin();
+            if (dataTrack == null) return;
             if (dataTrack.audio.Url == null) return;
             entered = true;
 

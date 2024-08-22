@@ -128,7 +128,7 @@ namespace VK_UI3.Views
             {
                 this.Background = Application.Current.Resources["AcrylicBackgroundFillColorDefaultBrush"] as SolidColorBrush;
                 CreateButton.Visibility = Visibility.Collapsed;
-                this.Margin = new Thickness(-25);
+                //this.Margin = new Thickness(-25);
                 Cancel.Visibility = Visibility.Visible;
             }
         }

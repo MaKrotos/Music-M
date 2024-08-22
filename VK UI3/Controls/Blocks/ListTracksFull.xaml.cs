@@ -1,11 +1,16 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using MusicX.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using VK_UI3.Controllers;
 using VK_UI3.Helpers;
+using VK_UI3.Views;
 using VK_UI3.VKs.IVK;
+using Windows.Foundation;
 
 
 
@@ -20,13 +25,71 @@ namespace VK_UI3.Controls.Blocks
             InitializeComponent();
 
             this.DataContextChanged += ListTracks_DataContextChanged;
-
+            this.Loaded += ListTracksFull_Loaded;
             this.Unloaded += ListTracksFull_Unloaded;
 
         }
 
+        private void ListTracksFull_Loaded(object sender, RoutedEventArgs e)
+        {
+            AudioPlayer.onClickonTrack += AudioPlayer_onClickonTrack;
+        }
+
+        private T FindParentByName<T>(DependencyObject child, string name) where T : FrameworkElement
+        {
+            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
+
+            while (parentObject != null)
+            {
+                T parent = parentObject as T;
+                if (parent != null && parent.Name == name)
+                {
+                    return parent;
+                }
+                parentObject = VisualTreeHelper.GetParent(parentObject);
+            }
+
+            return null;
+        }
+
+
+
+        private void AudioPlayer_onClickonTrack(object sender, EventArgs e)
+        {
+
+            SectionView sectionPage = (FindParentByName<Page>(this, "SectionPage") as SectionView) ;
+           
+
+
+            var audio = sender as ExtendedAudio;
+            var ins = sectionAudio.listAudio.IndexOf(audio);
+
+            if (ins < 0)
+            {
+                audio = sectionAudio.listAudio.FirstOrDefault(a => a.audio.Id == audio.audio.Id && a.audio.OwnerId == audio.audio.OwnerId);
+                ins = sectionAudio.listAudio.IndexOf(audio);
+            }
+
+            if (ins >= 0 && ins < TrackListView.Items.Count)
+            {
+                var container = TrackListView.ContainerFromIndex(ins) as ListViewItem;
+                if (container != null)
+                {
+                    var transform = container.TransformToVisual(TrackListView);
+                    var position = transform.TransformPoint(new Point(0, 0));
+                    double itemHeight = position.Y;
+
+                    //scrollViewer.ChangeView(null, , null);
+                    sectionPage.ScrollToElement(DataContext as Block, itemHeight);
+                    //sectionPage.ScrollToElement(DataContext as Block, scrollViewer.VerticalOffset + itemHeight);
+                }
+            }
+        }
+
         private void ListTracksFull_Unloaded(object sender, RoutedEventArgs e)
         {
+            this.Loaded -= ListTracksFull_Loaded;
+            AudioPlayer.onClickonTrack -= AudioPlayer_onClickonTrack;
             this.DataContextChanged -= ListTracks_DataContextChanged;
             try
             {
@@ -84,7 +147,9 @@ namespace VK_UI3.Controls.Blocks
             foreach (var item in block.Audios)
             {
                 sectionAudio.listAudioTrue.Add(new ExtendedAudio(item, sectionAudio));
+                
             }
+            sectionAudio.countTracks = sectionAudio.listAudioTrue.Count;
             sectionAudio.Next = block.NextFrom;
         }
 

@@ -23,10 +23,10 @@ namespace VK_UI3.Views.Controls
             //    this.Loading += ListPlaylists_Loading;
             this.Loaded += ListPlaylists_Loaded;
             this.Unloaded += ListPlaylists_Unloaded;
-
+            gridView = gridV;
         }
         public ScrollViewer scrollVi { get { return gridV.scrollViewer; } }
-
+        public GridView gridView;
 
 
         public Action loadMore { get; set; } = nul;

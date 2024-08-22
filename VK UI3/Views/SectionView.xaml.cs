@@ -15,6 +15,7 @@ using VK_UI3.Controls.Blocks;
 using VK_UI3.Helpers;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
+using Windows.Foundation;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -51,8 +52,31 @@ namespace VK_UI3.Views
             this.scrollVIew.ViewChanged -= scrollVIew_ViewChanged;
         }
 
+        public void ScrollToElement(Block element, double point)
+        {
+            // Find the vertical position of the element
+            var ins = blocks.IndexOf(element);
+
+
+            if (ins >= 0 && ins < ListBlocks.Items.Count)
+            {
+                var container = ListBlocks.ContainerFromIndex(ins) as ListViewItem;
+                if (container != null)
+                {
+                    var transform = container.TransformToVisual(ListBlocks);
+                    var position = transform.TransformPoint(new Point(0, 0));
+                    double itemHeight = position.Y;
+
+
+                    scrollVIew.ScrollTo(0, scrollViewer.VerticalOffset + itemHeight + point - 5, new ScrollingScrollOptions(ScrollingAnimationMode.Enabled) {SnapPointsMode = ScrollingSnapPointsMode.Default});
+                }
+            }
+        }
+
+
         private void SectionView_Loaded(object sender, RoutedEventArgs e)
         {
+            scrollViewer =SmallHelpers.FindScrollViewer(scrollVIew);
             _ = Task.Run(async () =>
             {
                 if (this.section != null && this.section.Blocks != null && this.section.Blocks.Count != 0)
@@ -370,10 +394,7 @@ namespace VK_UI3.Views
             }
         }
 
-        private void scrollVIew_PointerWheelChanged(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-
-        }
+       
     }
 
 

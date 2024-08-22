@@ -103,10 +103,10 @@ namespace VK_UI3.VKs.IVK
                         throw;
                     }
 
-
+                   
                     resetEvent.WaitOne();
                 }
-            
+                this.countTracks = this.listAudioTrue.Count;
                 NotifyOnListUpdate();
             }).ContinueWith(t =>
                 {

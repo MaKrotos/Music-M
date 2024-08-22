@@ -8,13 +8,14 @@
     xmlns:c="using:VK_UI3.Views.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Padding="0"
+    x:Name="SectionPage"
     mc:Ignorable="d">
 
     <Page.Resources>
         <local:BlockTemplateSelector x:Key="SectionTemplateSelector" />
     </Page.Resources>
 
-    <ScrollView PointerWheelChanged="scrollVIew_PointerWheelChanged" x:Name="scrollVIew" ViewChanged="scrollVIew_ViewChanged">
+    <ScrollView x:Name="scrollVIew" ViewChanged="scrollVIew_ViewChanged">
         <ListView
             Padding="0,20,0,20"
             x:Name="ListBlocks"
@@ -29,7 +30,6 @@
                     Margin="20"
                     IsActive="True" />
             </ListView.Footer>
-
         </ListView>
 
     </ScrollView>

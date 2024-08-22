@@ -63,7 +63,7 @@ namespace VK_UI3.Views
                     var position = transform.TransformPoint(new Point(0, 0));
                     double itemHeight = position.Y;
 
-                    scrollViewer.ChangeView(null, scrollViewer.VerticalOffset + itemHeight, null);
+                    scrollViewer.ChangeView(null, scrollViewer.VerticalOffset + itemHeight - 5, null);
                 }
             }
         }

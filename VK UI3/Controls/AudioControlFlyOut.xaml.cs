@@ -238,6 +238,7 @@ namespace VK_UI3.Controls
 
             dialog.XamlRoot = this.XamlRoot;
             var a = new UserPlayList(dataTrack.audio);
+            
             dialog.Content = a;
 
             EventHandler handler = null;
@@ -270,6 +271,7 @@ namespace VK_UI3.Controls
 
             dialog.Shadow = null;
             dialog.BorderThickness = new Thickness(0);
+            a.Margin = new Thickness(15);
         }
         private void CreatePlayListBTN_Click(object sender, RoutedEventArgs e)
         {

@@ -369,12 +369,11 @@ namespace VK_UI3.Helpers.Animations
 
         private async Task CheckAndDeleteOldFilesAsync(string directoryPath)
         {
-            _ = Task.Run(async() =>
+            _ = Task.Run(async () =>
             {
-               var timeLastSetting= SettingsTable.GetSetting("timeLastClear");
+                var timeLastSetting = SettingsTable.GetSetting("timeLastClear");
                 if (timeLastSetting == null)
                 {
-               
                     SettingsTable.SetSetting("timeLastClear", DateTime.Now.ToString());
                     return;
                 }
@@ -384,8 +383,6 @@ namespace VK_UI3.Helpers.Animations
                 {
                     return;
                 }
-
-
 
                 int val = 100;
                 var photoSizeCache = SettingsTable.GetSetting("photoCacheSize");
@@ -403,7 +400,11 @@ namespace VK_UI3.Helpers.Animations
                         var orderedFiles = files.OrderBy(file => file.CreationTime);
                         foreach (var file in orderedFiles)
                         {
-                            
+                            if ((DateTime.Now - file.CreationTime).TotalMinutes < 5)
+                            {
+                                continue;
+                            }
+
                             directorySize -= file.Length;
                             file.Delete();
                             if (directorySize <= maxDirectorySize)
@@ -415,12 +416,9 @@ namespace VK_UI3.Helpers.Animations
 
                     SettingsTable.SetSetting("timeLastClear", DateTime.Now.ToString());
                 }
-                else
-                {
-
-                }
             });
         }
+
 
         private string GetHashString(string inputString)
         {
