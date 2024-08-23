@@ -27,6 +27,7 @@ namespace VK_UI3.Helpers.Animations
         public AnimatedSearch()
         {
             this.InitializeComponent();
+  
         }
 
 
@@ -41,8 +42,9 @@ namespace VK_UI3.Helpers.Animations
             set { SetValue(OriginalHeightProperty, value); }
         }
 
+        public string searchtext { get { return searchTXT.Text; }  set { searchTXT.Text = value;  } }
 
-
+        
 
         private CancellationTokenSource cts;
         public async Task AnimateSize(double? newHeight, TimeSpan duration)

@@ -80,9 +80,11 @@
         <DataTemplate x:Key="audio_stream_mixes_audio_stream_mix">
             <blocks:MixControl />
         </DataTemplate>
+        
         <DataTemplate x:Key="links">
             <blocks:ListLinks />
         </DataTemplate>
+
 
         <DataTemplate x:Key="action">
             <blocks:Buttons />
@@ -112,6 +114,12 @@
             <blocks:TextsBlockControl />
         </DataTemplate>
 
+        <DataTemplate x:Key="search_suggestions_list">
+            <blocks:SuggestionsList />
+        </DataTemplate>
+        <DataTemplate x:Key="search_suggestions">
+            <blocks:SuggestionsList />
+        </DataTemplate>
 
     </UserControl.Resources>
 

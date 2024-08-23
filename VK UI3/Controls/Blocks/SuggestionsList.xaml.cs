@@ -7,30 +7,38 @@ using static System.Net.Mime.MediaTypeNames;
 using VK_UI3.VKs;
 using System.Threading;
 using VK_UI3.VKs.IVK;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI;
 
 
 namespace VK_UI3.Controls.Blocks
 {
-    public sealed partial class ListPlaylists : UserControl, IBlockAdder
+    public sealed partial class SuggestionsList : UserControl, IBlockAdder
     {
 
-        ObservableCollection<Playlist> playlists = new();
-        public ListPlaylists()
+        ObservableCollection<Suggestion> Suggestions = new();
+
+    
+
+        public SuggestionsList()
         {
             this.InitializeComponent();
 
 
-            this.Loading += ListPlaylists_Loading;
-            this.Loaded += ListPlaylists_Loaded;
-            this.Unloaded += ListPlaylists_Unloaded;
-     
+            this.Loading += SuggestionsList_Loading;
+            this.Loaded += SuggestionsList_Loaded;
+            this.Unloaded += SuggestionsList_Unloaded;
+            
 
         }
+     
 
-        private void ListPlaylists_Loaded(object sender, RoutedEventArgs e)
+        private void SuggestionsList_Loaded(object sender, RoutedEventArgs e)
         {
+
             if (localBlock.Layout.Name == "categories_list")
             {
+
                 myControl.scrollVi.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
                 myControl.scrollVi.HorizontalScrollMode = ScrollMode.Disabled;
                 myControl.scrollVi.IsScrollInertiaEnabled = false;
@@ -39,7 +47,7 @@ namespace VK_UI3.Controls.Blocks
             }
             else
             {
-
+             
             }
 
             if (myControl.CheckIfAllContentIsVisible())
@@ -47,9 +55,9 @@ namespace VK_UI3.Controls.Blocks
 
         }
 
-        private void ListPlaylists_Unloaded(object sender, RoutedEventArgs e)
+        private void SuggestionsList_Unloaded(object sender, RoutedEventArgs e)
         {
-            this.Unloaded -= ListPlaylists_Unloaded;
+            this.Unloaded -= SuggestionsList_Unloaded;
             myControl.loadMore = null;
 
         }
@@ -72,11 +80,10 @@ namespace VK_UI3.Controls.Blocks
                 if (localBlock.NextFrom == null) return;
                 var a = await VK.vkService.GetSectionAsync(localBlock.Id, localBlock.NextFrom);
                 localBlock.NextFrom = a.Section.NextFrom;
-                if (a.Playlists == null) return;
                 this.DispatcherQueue.TryEnqueue(async () => {
-                    foreach (var item in a.Playlists)
+                    foreach (var item in a.Suggestions)
                     {
-                        playlists.Add(item);
+                        Suggestions.Add(item);
                     }
                     if (myControl.CheckIfAllContentIsVisible())
                         load();
@@ -90,49 +97,43 @@ namespace VK_UI3.Controls.Blocks
 
 
         Block localBlock;
-        private void ListPlaylists_Loading(FrameworkElement sender, object args)
+        private void SuggestionsList_Loading(FrameworkElement sender, object args)
         {
             try
             {
-
-
-            
-
-
-
                 if (DataContext is not Block block)
                     return;
-                playlists.Clear();
+                Suggestions.Clear();
                 localBlock = block;
-
                 switch (localBlock.Layout.Name)
                 {
                     case "list":
                         myControl.disableLoadMode = true;
+                        myControl.ItemTemplate = myControl.Resources["defaultTemplate"] as DataTemplate;
+                        break;
+                    case "categories_list":
+                        myControl.disableLoadMode = false;
+                        myControl.ItemTemplate = myControl.Resources["compactTemplate"] as DataTemplate;
                         break;
                     default:
                         myControl.loadMore = load;
-                        myControl.ItemsPanelTemplate = (ItemsPanelTemplate)Microsoft.UI.Xaml.Application.Current.Resources["GlobalItemsPanelTemplate"];
-
+                        myControl.ItemTemplate = myControl.Resources["defaultTemplate"] as DataTemplate;
+                        myControl.ItemsPanelTemplate = (ItemsPanelTemplate)myControl.Resources["default"];
+                        myControl.disableLoadMode = false;
                         break;
                 }
 
-                if (block.Meta != null && block.Meta.anchor == "vibes")
 
-                {
-                    myControl.ItemTemplate = this.Resources["compact"] as DataTemplate;
-                }
-                else
-                {
-                    myControl.ItemTemplate = this.Resources["default"] as DataTemplate;
-                }
+                // Применяем DataTemplate к свойству ItemTemplate UniversalControl
 
-                var pl = (DataContext as Block).Playlists;
+
+
+                var pl = (DataContext as Block).Suggestions;
 
 
                 foreach (var item in pl)
                 {
-                    playlists.Add(item);
+                    Suggestions.Add(item);
                 }
               
             }
@@ -148,10 +149,11 @@ namespace VK_UI3.Controls.Blocks
         {
             localBlock.NextFrom = block.NextFrom;
             this.DispatcherQueue.TryEnqueue(async () => {
-                foreach (var item in block.Playlists)
+                foreach (var item in block.Suggestions)
                 {
-                    playlists.Add(item);
+                    Suggestions.Add(item);
                 }
+              
             });
         }
     }

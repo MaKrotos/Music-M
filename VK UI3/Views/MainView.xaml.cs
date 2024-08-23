@@ -492,6 +492,11 @@ namespace VK_UI3.Views
         }
 
 
+        public void SearchSetText(string Text)
+        {
+            Search.searchtext = Text;
+        }
+
         public void showSearch() 
         {
             Search.Show();

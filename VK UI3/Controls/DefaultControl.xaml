@@ -12,6 +12,7 @@
 
         <TextBlock
             x:Name="block_not"
+            IsTextSelectionEnabled="True"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Text="Блок не реализован!" />
