@@ -60,6 +60,7 @@
 	  <None Remove="Fonts\VKSansDisplay-Medium.ttf" />
 	  <None Remove="Fonts\VKSansDisplay-Regular.ttf" />
 	  <None Remove="Helpers\Animations\AnimatedNavMenuController.xaml" />
+	  <None Remove="Helpers\Animations\AnimatedSearch.xaml" />
 	  <None Remove="Views\Controls\BlockButtonView.xaml" />
 	  <None Remove="Views\Controls\CustomVideoTrailer.xaml" />
 	  <None Remove="Views\Controls\UniversalControl.xaml" />
@@ -229,6 +230,9 @@
     <None Update="DownloadTrack\ffmpeg.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Update="Helpers\Animations\AnimatedSearch.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\Controls\CustomVideoTrailer.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

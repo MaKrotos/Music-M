@@ -29,6 +29,8 @@ namespace VK_UI3.Views
         public OpenedPlayList openedPlayList;
         public AudioPlaylist Playlist;
         public Object moreParams;
+        public MainView mainView;
+        public string searchText;
     }
 
     public sealed partial class WaitView : Microsoft.UI.Xaml.Controls.Page, IDisposable
@@ -173,7 +175,11 @@ namespace VK_UI3.Views
                     SectionType.None => loadSection(waitParameters.SectionID),
                     SectionType.Artist => LoadArtistSection(waitParameters.SectionID),
                     SectionType.UserSection => LoadUserCestion(waitParameters.SectionID),
-                    SectionType.Search => LoadSearchSection(waitParameters.SectionID),
+
+                    SectionType.Search => string.IsNullOrEmpty(waitParameters.searchText) ? 
+                                            loadSection(waitParameters.SectionID) : 
+                                            LoadSearchSection(waitParameters.searchText),
+
                     SectionType.PlayList => LoadPlayList(handlerContainer),
                     SectionType.UserPlayListList => UserPlayListList(),
                     SectionType.MyListAudio => LoadMyAudioList(handlerContainer),
@@ -182,6 +188,16 @@ namespace VK_UI3.Views
             
                     _ => throw new ArgumentOutOfRangeException()
                 }); ;
+
+                if (waitParameters.sectionType == SectionType.Search)
+                {
+                    MainView.mainView.showSearch();
+                }
+                else
+                {
+                    MainView.mainView.hideSearch();
+
+                }
             }
             finally
             {

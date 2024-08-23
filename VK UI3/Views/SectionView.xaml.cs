@@ -38,8 +38,6 @@ namespace VK_UI3.Views
         {
             this.InitializeComponent();
 
-
-
             this.Loaded += SectionView_Loaded;
             this.Unloaded += SectionView_Unloaded;
         }
@@ -216,7 +214,7 @@ namespace VK_UI3.Views
                     SectionType.None => loadSection(section.Id),
                     SectionType.Artist => LoadArtistSection(section.Id),
                     SectionType.Search => LoadSearchSection(section.Id),
-                    _ => throw new ArgumentOutOfRangeException()
+                    //_ => throw new ArgumentOutOfRangeException()
                 });
             }
             finally

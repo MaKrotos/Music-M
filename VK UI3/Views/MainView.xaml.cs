@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using MusicX.Core.Models;
 using MusicX.Core.Services;
+using Newtonsoft.Json.Bson;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -35,7 +36,7 @@ namespace VK_UI3.Views
     /// </summary>
     public sealed partial class MainView : Microsoft.UI.Xaml.Controls.Page, INotifyPropertyChanged
     {
-
+        public static MainView mainView;
         public static Frame frame;
         public MainView()
         {
@@ -44,6 +45,7 @@ namespace VK_UI3.Views
 
             // FramePlayer.RenderTransform = trans;
             frame = ContentFrame;
+            mainView = this;
 
             //OpenMyPage(SectionType.MyListAudio);
 
@@ -467,9 +469,37 @@ namespace VK_UI3.Views
         {
             var sectionView = new WaitParameters();
             sectionView.SectionID = sectionID;
-            sectionView.sectionType = sectionType;
-
+            if (sectionView.SectionID != "search")
+            {
+                sectionView.sectionType = sectionType;
+            }
+            else
+            {
+                sectionView.sectionType = SectionType.Search;
+            }
             frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
+        }
+
+        public static void OpenSearchSection(string searchString)
+        {
+            var sectionView = new WaitParameters();
+            sectionView.searchText = searchString;
+            sectionView.SectionID = "search";
+        
+            sectionView.sectionType = SectionType.Search;
+ 
+            frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
+        }
+
+
+        public void showSearch() 
+        {
+            Search.Show();
+        }
+
+        public void hideSearch()
+        {
+            Search.Hide();
         }
 
         private void NavWiv_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
@@ -508,6 +538,7 @@ namespace VK_UI3.Views
                         break;
 
                     case "параметры":
+                        mainView.hideSearch();
                         frame.Navigate(typeof(Settings.SettingsPage), null, new DrillInNavigationTransitionInfo());
                         break;
 
