@@ -26,6 +26,7 @@ namespace VK_UI3.VKs.IVK
         
             this.playlist = _playlist;
             getLoadedTracks = true;
+            DispatcherQueue = dispatcher;
             Task.Run(async () =>
             {
                
@@ -34,17 +35,11 @@ namespace VK_UI3.VKs.IVK
 
                     var p = await VK.vkService.GetPlaylistAsync(100, _playlist.Id, _playlist.AccessKey, _playlist.OwnerId);
 
-                    if (p.Playlist.MainArtists == null || p.Playlist.MainArtists.Count == 0)
+                    if ((p.Playlist.MainArtists == null || p.Playlist.MainArtists.Count == 0) && p.Playlist.OwnerId < 0 && p.Groups != null)
                     {
-                        if (p.Playlist.OwnerId < 0)
-                        {
-                            if (p.Groups != null)
-                            {
-                                p.Playlist.OwnerName = p.Groups[0].Name;
-
-                            }
-                        }
+                        p.Playlist.OwnerName = p.Groups[0].Name;
                     }
+
 
 
                     playlist = p.Playlist;
@@ -111,61 +106,32 @@ namespace VK_UI3.VKs.IVK
 
 
 
-                    foreach (var item in playlist.Audios)
-                        {
-                        ManualResetEvent resetEvent = new ManualResetEvent(false);
-                        DispatcherQueue.TryEnqueue(() =>
-                        {
-                            listAudioTrue.Add(new ExtendedAudio(item, this));
-                            // Сигнализировать ожидание
-                            resetEvent.Set();
-                            // Ждать сигнала
-                           
-                        });
-                        resetEvent.WaitOne();
-                    }
-                   
+                    listAudioTrue.AddRange(playlist.Audios.Select(item => new ExtendedAudio(item, this)));
 
 
 
                     if (playlist.Audios.Count == 0)
                     {
                         var res = await VK.vkService.AudioGetAsync(playlist.Id, playlist.OwnerId, playlist.AccessKey).ConfigureAwait(false);
-                      
-                        foreach (var item in res.Items)
-                        {
-                            ManualResetEvent resetEvent = new ManualResetEvent(false);
-                            DispatcherQueue.TryEnqueue(() =>
-                                {
-
-                                    listAudioTrue.Add(new ExtendedAudio(item, this));
-                                    // Сигнализировать ожидание
-                                    resetEvent.Set();
-                                    // Ждать сигнала
-
-
-
-                                });
-                            resetEvent.WaitOne();
-                        }
-                
+                        listAudioTrue.AddRange(res.Items.Select(item => new ExtendedAudio(item, this)));
                     }
-                    
 
 
-                    if (playlist.Plays > 1000 && playlist.Plays < 1000000)
-                    {
-                        Plays = Math.Round(playlist.Plays / 1000d, 2) + "К";
-                    }
-                    else if (playlist.Plays > 1000000)
+
+
+                    if (playlist.Plays > 1000000)
                     {
                         Plays = Math.Round(playlist.Plays / 1000000d, 2) + "М";
-
+                    }
+                    else if (playlist.Plays > 1000)
+                    {
+                        Plays = Math.Round(playlist.Plays / 1000d, 2) + "К";
                     }
                     else
                     {
                         Plays = playlist.Plays.ToString();
                     }
+
 
 
                 }
