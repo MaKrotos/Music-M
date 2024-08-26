@@ -251,6 +251,15 @@ jobs:
         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         RELEASE_URL: https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}
       run: |
-        curl -s -X POST https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage -d chat_id=${TELEGRAM_CHAT_ID} -d text="Новый релиз: ${{ github.event.inputs.namevers }}\nВерсия: ${{ steps.get_version.outputs.VERSION }}\nОписание: ${{ github.event.inputs.descr }}\nSolution Name: ${{ env.Solution_Name }}\nСсылка на релиз: ${RELEASE_URL}"
-    
-
+        pwsh -Command "
+        $telegramBotToken = '${{ secrets.TELEGRAM_BOT_TOKEN }}'
+        $telegramChatId = '${{ secrets.TELEGRAM_CHAT_ID }}'
+        $releaseUrl = 'https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}'
+        $message = 'Новый релиз: ${{ github.event.inputs.namevers }}`nВерсия: ${{ steps.get_version.outputs.VERSION }}`nОписание: ${{ github.event.inputs.descr }}`nSolution Name: ${{ env.Solution_Name }}`nСсылка на релиз: $releaseUrl'
+        $uri = 'https://api.telegram.org/bot' + $telegramBotToken + '/sendMessage'
+        $body = @{
+            chat_id = $telegramChatId
+            text = $message
+        }
+        Invoke-RestMethod -Uri $uri -Method Post -Body $body
+        "
