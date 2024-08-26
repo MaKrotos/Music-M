@@ -34,7 +34,9 @@
 	  <None Remove="Controls\BlockControl.xaml" />
 	  <None Remove="Controls\Blocks\ArtistBannerBlockControl.xaml" />
 	  <None Remove="Controls\Blocks\Buttons.xaml" />
+	  <None Remove="Controls\Blocks\CuratorBannerBlockControl.xaml" />
 	  <None Remove="Controls\Blocks\Ext\ListTracksFull.xaml" />
+	  <None Remove="Controls\Blocks\GroupsBlockControl.xaml" />
 	  <None Remove="Controls\Blocks\ListLinks.xaml" />
 	  <None Remove="Controls\Blocks\ListPlaylists.xaml" />
 	  <None Remove="Controls\Blocks\ListVideo.xaml" />
@@ -230,6 +232,9 @@
     <Page Update="AudioControlFlyOut.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="Controls\Blocks\CuratorBannerBlockControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <None Update="Controls\ListPlaylists.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
@@ -349,5 +354,13 @@
     <Resource Include="Fonts\VKSansDisplay-Regular.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <CustomAdditionalCompileInputs Remove="Controls\Blocks\GroupsBlockControl.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Remove="Controls\Blocks\GroupsBlockControl.xaml" />
   </ItemGroup>
 </Project>

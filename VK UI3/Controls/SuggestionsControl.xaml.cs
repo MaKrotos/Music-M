@@ -63,11 +63,6 @@ namespace VK_UI3.Controls
 
 
 
-                //ToolTipService.SetToolTip(this, toolTip);
-                // bool setCOlorTheme = false;
-                //  if (link.Title is "Недавнee" or "Плейлисты" or "Альбомы" or "Артисты и кураторы")
-                //      setCOlorTheme = true;
-
 
             }
         }
@@ -100,7 +95,7 @@ namespace VK_UI3.Controls
 
         private void Grid_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
-
+             
           
 
 
@@ -110,8 +105,7 @@ namespace VK_UI3.Controls
 
         private void Grid_PointerExited(object sender, PointerRoutedEventArgs e)
         {
-           // showLinkAnimation.Pause();
-           // HideLinkAnimation.Begin();
+
             ShowAnimation.Pause();
             HideAnimation.Begin();
         }

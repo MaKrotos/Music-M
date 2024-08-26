@@ -219,7 +219,10 @@ namespace VK_UI3.Views
                     foreach (var section in catalogs.Catalog.Sections)
                     {
                         var navSet = CreateNavSettings(section, icons);
-                        navSettings.Add(navSet);
+                        if (navSet != null)
+                        {
+                            navSettings.Add(navSet);
+                        }
                     }
                     int index = 0;
                     this.DispatcherQueue.TryEnqueue(async () =>
@@ -252,7 +255,7 @@ namespace VK_UI3.Views
                 }
                 catch (OperationCanceledException)
                 {
-                    // Задача была отменена
+
                 }
                 catch (Exception e)
                 {
@@ -315,7 +318,7 @@ namespace VK_UI3.Views
         }
 
 
-        private NavSettings CreateNavSettings(Section section, List<string> icons)
+        private NavSettings? CreateNavSettings(Section section, List<string> icons)
         {
             string icon;
 
@@ -344,6 +347,7 @@ namespace VK_UI3.Views
                     icon = "\uE11A"; // Find
                     break;
                 case "книги и шоу":
+                    return null;
                     icon = "\uE82D"; // Bookmarks
                     break;
                 default:

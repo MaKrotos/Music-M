@@ -121,6 +121,13 @@
             <blocks:SuggestionsList />
         </DataTemplate>
 
+
+        <DataTemplate x:Key="groups_items">
+            <blocks:GroupsBlockControl />
+        </DataTemplate>
+        <DataTemplate x:Key="curator_banner">
+            <blocks:CuratorBannerBlockControl />
+        </DataTemplate>
     </UserControl.Resources>
 
 
