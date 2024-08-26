@@ -10,16 +10,11 @@ jobs:
   send_telegram_message:
     runs-on: ubuntu-latest
     steps:
-      - name: Проверить релиз
-        id: check_release
-        run: echo "exists=false" # Здесь должна быть ваша логика проверки релиза
-
       - name: Получить версию
         id: get_version
-        run: echo "::set-output name=VERSION::1.0.0" # Здесь должна быть ваша логика получения версии
+        run: echo "::set-output name=VERSION::xxxx" # Версия всегда "xxxx"
 
       - name: Отправить сообщение в Telegram
-        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -29,7 +24,7 @@ jobs:
           $telegramBotToken = '${{ secrets.TELEGRAM_BOT_TOKEN }}'
           $telegramChatId = '${{ secrets.TELEGRAM_CHAT_ID }}'
           $releaseUrl = 'https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}'
-          $message = 'Новый релиз: ${{ github.event.inputs.namevers }}`nВерсия: ${{ steps.get_version.outputs.VERSION }}`nОписание: ${{ github.event.inputs.descr }}`nSolution Name: ${{ env.Solution_Name }}`nСсылка на релиз: $releaseUrl'
+          $message = 'Новый релиз: СтатичноеНазваниеРелиза`nВерсия: xxxx`nОписание: СтатичноеОписание`nSolution Name: СтатичноеНазваниеРешения`nСсылка на релиз: $releaseUrl'
           $uri = 'https://api.telegram.org/bot' + $telegramBotToken + '/sendMessage'
           $body = @{
               chat_id = $telegramChatId
