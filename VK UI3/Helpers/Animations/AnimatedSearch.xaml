@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <AutoSuggestBox PlaceholderText="Поиск музыки, плейлистов, исполнителей"
+    <AutoSuggestBox Margin="20" PlaceholderText="Поиск музыки, плейлистов, исполнителей"
      
         
         x:Name="searchTXT"

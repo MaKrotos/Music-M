@@ -348,7 +348,9 @@ namespace VK_UI3.Views
                     break;
                 case "книги и шоу":
                     return null;
-                    icon = "\uE82D"; // Bookmarks
+                    break;
+                case "радио":
+                    return null;
                     break;
                 default:
                     icon = icons[0];

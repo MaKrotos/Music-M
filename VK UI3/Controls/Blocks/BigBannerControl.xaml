@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<UserControl
+    x:Class="VK_UI3.Controls.Blocks.BigBannerControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:VK_UI3.Controls.Blocks"
+    xmlns:customV="using:VK_UI3.Views.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid
+        Height="600"
+        Margin="0,0,10,0"
+        CornerRadius="4">
+
+        <Grid
+            Height="450"
+            MaxHeight="450"
+            VerticalAlignment="Top"
+            CornerRadius="8">
+            <Image
+                x:Name="BannerImage"
+                Height="{Binding ElementName=ArtistBannerImage, Path=Width}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Stretch="UniformToFill" />
+            <Rectangle
+                Height="450"
+                Margin="0,0,-15,0"
+                Opacity="0.7"
+                Visibility="Visible">
+                <Rectangle.Fill>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Offset="0.1" Color="{ThemeResource SystemAltHighColor}" />
+                        <GradientStop Offset="1.5" Color="Transparent" />
+                    </LinearGradientBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+            <Grid Margin="20,0,0,0" VerticalAlignment="Center">
+
+                <StackPanel Margin="10" HorizontalAlignment="Left">
+                    <TextBlock
+                        x:Name="Title"
+                        FontSize="50"
+                        FontWeight="SemiBold"
+                        Opacity="0.7"
+                        Text="Название альбома" />
+
+                    <StackPanel Margin="0" HorizontalAlignment="Left">
+                        <TextBlock
+                            x:Name="SubTitle"
+                            FontSize="30"
+                            FontWeight="SemiBold"
+                            Opacity="0.7"
+                            Text="Исполнитель" />
+                        <TextBlock
+                            x:Name="Description"
+                            MaxWidth="600"
+                            FontFamily="{StaticResource VKSansRegular}"
+                            FontSize="20"
+                            Opacity="0.7"
+                            Text="Какое то описание от ВКонтакте, хз че они там выдадут"
+                            TextWrapping="Wrap" />
+
+
+                        <Button
+                            x:Name="ActionCuratorButton"
+                            Width="200"
+                            Margin="0,20,0,0"
+                            HorizontalAlignment="Left"
+                            Background="{StaticResource CustomAcrylicInAppBrush}"
+                            Click="ActionCuratorButton_Click">
+                            Открыть
+                        </Button>
+
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+        <customV:UniversalControl
+            x:Name="myControl"
+            VerticalAlignment="Bottom"
+            ItemsSource="{x:Bind banners}"
+            itsAll="true">
+
+            <customV:UniversalControl.ItemsPanelTemplate>
+                <ItemsPanelTemplate>
+                    <ItemsWrapGrid MaximumRowsOrColumns="1"/>
+                </ItemsPanelTemplate>
+            </customV:UniversalControl.ItemsPanelTemplate>
+
+
+
+
+        </customV:UniversalControl>
+
+
+    </Grid>
+</UserControl>

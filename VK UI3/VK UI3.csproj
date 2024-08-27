@@ -33,6 +33,7 @@
 	  <None Remove="Controls\BannerControl.xaml" />
 	  <None Remove="Controls\BlockControl.xaml" />
 	  <None Remove="Controls\Blocks\ArtistBannerBlockControl.xaml" />
+	  <None Remove="Controls\Blocks\BigBannerControl.xaml" />
 	  <None Remove="Controls\Blocks\Buttons.xaml" />
 	  <None Remove="Controls\Blocks\CuratorBannerBlockControl.xaml" />
 	  <None Remove="Controls\Blocks\Ext\ListTracksFull.xaml" />
@@ -145,6 +146,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Controls\Blocks\BigBannerControl.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Controls\Blocks\Ext\ListTracksFull.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>

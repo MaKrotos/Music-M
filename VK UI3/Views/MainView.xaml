@@ -85,7 +85,7 @@
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <animations:AnimatedSearch x:Name="Search" Margin="20,10,20,10"  OriginalHeight="40" Height="0" Grid.Row="0" ></animations:AnimatedSearch>
+                    <animations:AnimatedSearch x:Name="Search" Margin="0"  OriginalHeight="80" Height="0" Grid.Row="0" ></animations:AnimatedSearch>
                     <Frame x:Name="ContentFrame" Grid.Row="1">
                         <Frame.ContentTransitions>
                             <TransitionCollection>

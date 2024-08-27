@@ -24,7 +24,9 @@
                 Opacity="0.1" />
         </DataTemplate>
 
-
+        <DataTemplate x:Key="catalog_banners">
+            <blocks:BigBannerControl Margin="0 0 -10 0" />
+        </DataTemplate>
 
 
         <DataTemplate x:Key="music_audios_triple_stacked_slider">
