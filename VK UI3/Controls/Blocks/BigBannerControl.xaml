@@ -6,11 +6,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:VK_UI3.Controls.Blocks"
     xmlns:customV="using:VK_UI3.Views.Controls"
+    xmlns:customX="using:VK_UI3.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
     <Grid
-        Height="600"
+        Height="550"
         Margin="0,0,10,0"
         CornerRadius="4">
 
@@ -80,17 +81,24 @@
         </Grid>
 
         <customV:UniversalControl
+            CornerRadius="10"
             x:Name="myControl"
+            incrementalLoadingThreshold="100"
             VerticalAlignment="Bottom"
             ItemsSource="{x:Bind banners}"
             itsAll="true">
 
             <customV:UniversalControl.ItemsPanelTemplate>
                 <ItemsPanelTemplate>
-                    <ItemsWrapGrid MaximumRowsOrColumns="1"/>
+                    <ItemsWrapGrid MaximumRowsOrColumns="1" />
                 </ItemsPanelTemplate>
             </customV:UniversalControl.ItemsPanelTemplate>
 
+            <customV:UniversalControl.ItemTemplate>
+                <DataTemplate>
+                    <customX:BannerControl/>
+                </DataTemplate>
+            </customV:UniversalControl.ItemTemplate>
 
 
 

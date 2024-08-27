@@ -30,7 +30,6 @@
 	  <None Remove="AudioControlFlyOut.xaml" />
 	  <None Remove="Controllers\NavMenuController.xaml" />
 	  <None Remove="Controllers\PlayListPage.xaml" />
-	  <None Remove="Controls\BannerControl.xaml" />
 	  <None Remove="Controls\BlockControl.xaml" />
 	  <None Remove="Controls\Blocks\ArtistBannerBlockControl.xaml" />
 	  <None Remove="Controls\Blocks\BigBannerControl.xaml" />
@@ -66,6 +65,7 @@
 	  <None Remove="Fonts\VKSansDisplay-Regular.ttf" />
 	  <None Remove="Helpers\Animations\AnimatedNavMenuController.xaml" />
 	  <None Remove="Helpers\Animations\AnimatedSearch.xaml" />
+	  <None Remove="Views\Controls\BannerControlUnivers.xaml" />
 	  <None Remove="Views\Controls\BlockButtonView.xaml" />
 	  <None Remove="Views\Controls\CustomVideoTrailer.xaml" />
 	  <None Remove="Views\Controls\UniversalControl.xaml" />
@@ -207,9 +207,6 @@
     <Page Update="Controls\TrackControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Update="Controls\BannerControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Update="Controls\Blocks\ArtistBannerBlockControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -254,6 +251,10 @@
     </Page>
     <Page Update="Views\Controls\CustomVideoTrailer.xaml">
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Controls\BannerControlUnivers.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\Controls\UniversalControl.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>

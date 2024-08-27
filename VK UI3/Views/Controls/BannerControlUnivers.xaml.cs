@@ -8,17 +8,13 @@ using VK_UI3.VKs;
 using System.Threading;
 using VK_UI3.VKs.IVK;
 using System.Collections;
-using System.Net;
-using VK_UI3.Controls.Blocks;
-using Windows.Foundation;
 
 
 namespace VK_UI3.Views.Controls
 {
-    public sealed partial class UniversalControl : UserControl
+    public sealed partial class BannerControlUnivers : UserControl
     {
-        public bool disableLoadMode{ get { return gridV.disableLoadMode; } set { gridV.disableLoadMode = value; }  }
-        public UniversalControl()
+        public BannerControlUnivers()
         {
             this.InitializeComponent();
 
@@ -26,37 +22,10 @@ namespace VK_UI3.Views.Controls
             //    this.Loading += ListPlaylists_Loading;
             this.Loaded += ListPlaylists_Loaded;
             this.Unloaded += ListPlaylists_Unloaded;
-            gridView = gridV;
+        
         }
-        public ScrollViewer scrollVi { get { return gridV.scrollViewer; } }
+ 
         public GridView gridView;
-
-        public void scrollToIndex(int index)
-        {
-            if (index >= 0 && index < gridView.Items.Count)
-            {
-                this.DispatcherQueue.TryEnqueue(() => {
-                    var container = gridView.ContainerFromIndex(index) as GridViewItem;
-                    if (container != null)
-                    {
-                        var transform = container.TransformToVisual(this);
-                        var position = transform.TransformPoint(new Point(0, 0));
-                        double itemLeft = position.X;
-                        double itemRight = itemLeft + container.ActualWidth;
-                        double viewportWidth = scrollVi.ViewportWidth;
-
-                        if (itemLeft < scrollVi.HorizontalOffset || itemRight > scrollVi.HorizontalOffset + viewportWidth)
-                        {
-                            double newOffset = itemLeft < scrollVi.HorizontalOffset ? itemLeft : itemRight - viewportWidth;
-                            scrollVi.ChangeView(newOffset, null, null);
-                        }
-                    }
-                });
-            }
-        }
-
-
-
 
 
         public Action loadMore { get; set; } = nul;
@@ -85,49 +54,34 @@ namespace VK_UI3.Views.Controls
             set;
         }
 
-
-        public double incrementalLoadingThreshold
-        {
-            get;
-            set;
-        } = 0.5;
         public bool itsAll { get; set; }
 
 
         private void ListPlaylists_Loaded(object sender, RoutedEventArgs e)
         {
 
-            gridV.ItemsPanel = ItemsPanelTemplate;
-            gridV.ItemTemplate = ItemTemplate;
-            if (gridV.CheckIfAllContentIsVisible() && !disableLoadMode)
-                loadMore?.Invoke();
-            gridV.loadMore += load;
-            gridV.LeftChange += LeftChange;
-            gridV.RightChange += RightChange;
+        
         }
 
         private void ListPlaylists_Unloaded(object sender, RoutedEventArgs e)
         {
             this.Unloaded -= ListPlaylists_Unloaded;
  
-            gridV.loadMore -= load;
-            gridV.LeftChange -= LeftChange;
-            gridV.RightChange -= RightChange;
+          
         }
 
         private void load(object sender, EventArgs e)
         {
 
-            if (loadMore != null && !disableLoadMode)
-            loadMore?.Invoke();
+          
         }
 
         private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
         public bool CheckIfAllContentIsVisible()
         {
-            
-            return gridV.CheckIfAllContentIsVisible();
+
+            return false;
         }
 
         Block localBlock;
@@ -182,47 +136,22 @@ namespace VK_UI3.Views.Controls
      
         private void RightCh()
         {
-            if (gridV.showRight)
-            {
-                RightGrid.Visibility = Visibility.Visible;
-
-                FadeOutAnimationRightBTN.Pause();
-                FadeInAnimationRightBTN.Begin();
-
-            }
-            else
-            {
-                if (itsAll)
-                {
-                    FadeInAnimationRightBTN.Pause();
-                    FadeOutAnimationRightBTN.Begin();
-                }
-            }
+         
         }
         private void FadeOutAnimationRightBTN_Completed(object sender, object e)
         {
-            if (!gridV.showRight || !enterpoint)
-            {
-                RightGrid.Visibility = Visibility.Collapsed;
-            }
+           
         }
 
         private void FadeOutAnimationLeftBTN_Completed(object sender, object e)
         {
-            if (!gridV.showLeft || !enterpoint)
-            {
-                LeftGrid.Visibility = Visibility.Collapsed;
-            }
+        
 
         }
 
         private void gridCh_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            enterpoint = true;
-            var a = gridV.ShowLeftChecker;
-            a = gridV.ShowRightChecker;
-            LeftCh();
-            RightCh();
+    
         }
         bool enterpoint;
         private void gridCh_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
@@ -235,31 +164,19 @@ namespace VK_UI3.Views.Controls
         }
         private void LeftCh()
         {
-            if (gridV.showLeft)
-            {
-                LeftGrid.Visibility = Visibility.Visible;
 
-                FadeOutAnimationLeftBTN.Pause();
-                FadeInAnimationLeftBTN.Begin();
-            }
-            else
-            {
-                FadeInAnimationLeftBTN.Pause();
-                FadeOutAnimationLeftBTN.Begin();
-
-            }
         }
      
 
 
         private void ScrollRight_Click(object sender, RoutedEventArgs e)
         {
-            gridV.ScrollRight();
+          // gridV.ScrollRight();
         }
 
         private void ScrollLeft_Click(object sender, RoutedEventArgs e)
         {
-            gridV.ScrollLeft();
+         //   gridV.ScrollLeft();
         }
 
     }

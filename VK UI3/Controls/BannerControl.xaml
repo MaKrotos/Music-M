@@ -10,23 +10,29 @@
 
     <Grid
         x:Name="Card"
-        Margin="0,10,0,10"
-        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-        CornerRadius="4"
+        Width="220"
+        CornerRadius="8"
+        PointerEntered="Card_PointerEntered"
+        PointerExited="Card_PointerExited"
         Tapped="Card_Tapped">
-        <Grid>
-            <Rectangle
-                Height="200"
-                VerticalAlignment="Stretch"
-                RadiusX="5"
-                RadiusY="5">
-                <Rectangle.Fill>
-                    <ImageBrush x:Name="BannerCover" Stretch="UniformToFill" />
-                </Rectangle.Fill>
-            </Rectangle>
+
+
+
+
+
+
+        <Grid
+            Margin="2"
+            Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+            CornerRadius="8">
+            <Grid Height="100" VerticalAlignment="Stretch">
+
+                <Image x:Name="BannerCover" Stretch="UniformToFill" />
+
+            </Grid>
 
             <Rectangle
-                Height="45"
+                Height="0"
                 VerticalAlignment="Bottom"
                 Fill="Black"
                 Opacity="0.4" />
@@ -41,5 +47,35 @@
                 <TextBlock x:Name="BannerText" HorizontalAlignment="Center" />
             </StackPanel>
         </Grid>
+
+        <Grid
+            x:Name="BorderGrid"
+            BorderThickness="2"
+            CornerRadius="8"
+            BorderBrush="{ThemeResource AccentAAFillColorDefaultBrush}"
+            Opacity="0">
+            <Grid.Resources>
+                <!-- Анимация появления -->
+                <Storyboard x:Name="FadeInStoryboard">
+                    <DoubleAnimation
+                Storyboard.TargetName="BorderGrid"
+                Storyboard.TargetProperty="Opacity"
+      
+                To="1"
+                Duration="0:0:0.15" />
+                </Storyboard>
+
+                <!-- Анимация исчезновения -->
+                <Storyboard x:Name="FadeOutStoryboard">
+                    <DoubleAnimation
+                Storyboard.TargetName="BorderGrid"
+                Storyboard.TargetProperty="Opacity"
+        
+                To="0"
+                Duration="0:0:0.15" />
+                </Storyboard>
+            </Grid.Resources>
+        </Grid>
+
     </Grid>
 </UserControl>

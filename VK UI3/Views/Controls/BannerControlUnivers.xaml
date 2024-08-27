@@ -1,5 +1,5 @@
 <UserControl
-    x:Class="VK_UI3.Views.Controls.UniversalControl"
+    x:Class="VK_UI3.Views.Controls.BannerControlUnivers"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:customV="using:VK_UI3.Views.Controls"
@@ -29,34 +29,19 @@
         CornerRadius="8"
         PointerEntered="gridCh_PointerEntered"
         PointerExited="gridCh_PointerExited">
-        <customV:CustomGridView
+        <ScrollView
             x:Name="gridV"
             CornerRadius="8"
-            DataFetchSize="5000"
-            IncrementalLoadingThreshold="{x:Bind incrementalLoadingThreshold}"
             Margin="20,0,20,0"
-            ItemsSource="{x:Bind ItemsSource, Mode=OneWay}"
+   
             ScrollViewer.HorizontalScrollBarVisibility="Visible"
             ScrollViewer.HorizontalScrollMode="Enabled"
             ScrollViewer.IsScrollInertiaEnabled="False"
             ScrollViewer.VerticalScrollBarVisibility="Disabled"
             ScrollViewer.VerticalScrollMode="Disabled"
-            SelectionMode="None">
-
-
-            <GridView.ItemContainerStyle>
-                <Style TargetType="GridViewItem">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="GridViewItem">
-                                <ContentPresenter />
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </GridView.ItemContainerStyle>
-
-        </customV:CustomGridView>
+          >
+            
+        </ScrollView>
 
         <Grid
             x:Name="LeftGrid"
