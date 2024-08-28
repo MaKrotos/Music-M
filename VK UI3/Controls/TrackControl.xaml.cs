@@ -117,6 +117,14 @@ namespace VK_UI3.Controls
 
 
             Title.Text = dataTrack.audio.Title;
+            if (string.IsNullOrEmpty(dataTrack.audio.Subtitle))
+            {
+                colDefs.Width = new GridLength(0);
+            }
+            else
+            {
+                colDefs.Width = new GridLength(0.8, GridUnitType.Star);
+            }
             Subtitle.Text = dataTrack.audio.Subtitle;
             Artists.Text = dataTrack.audio.Artist;
 

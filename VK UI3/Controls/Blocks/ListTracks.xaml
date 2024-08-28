@@ -23,6 +23,7 @@
             <DataTemplate>
                 <custom:TrackControl
                     x:Name="trControl"
+                    MaxWidth="400"
                     MinWidth="300"
                     FocusVisualPrimaryBrush="Transparent"
                     FocusVisualSecondaryThickness="0" />

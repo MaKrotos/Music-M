@@ -56,7 +56,7 @@
                     TextTrimming="CharacterEllipsis"
                     TextWrapping="Wrap"
                     
-                    Margin="4,0,0,0" VerticalAlignment="Center"  x:Name="MainText" >Холод павлика</TextBlock>
+                    Margin="4,0,0,6" VerticalAlignment="Top"  x:Name="MainText" >Холод павлика</TextBlock>
 
                 <TextBlock 
                     

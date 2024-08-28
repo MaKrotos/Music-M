@@ -11,11 +11,14 @@
     mc:Ignorable="d">
 
     <Grid
-        Height="550"
+        
+        Height="510"
         Margin="0,0,10,0"
         CornerRadius="4">
 
         <Grid
+            
+            Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
             Height="450"
             MaxHeight="450"
             VerticalAlignment="Top"
@@ -45,6 +48,7 @@
                         x:Name="Title"
                         FontSize="50"
                         FontWeight="SemiBold"
+                        TextWrapping="Wrap"
                         Opacity="0.7"
                         Text="Название альбома" />
 
@@ -52,12 +56,14 @@
                         <TextBlock
                             x:Name="SubTitle"
                             FontSize="30"
+                             TextWrapping="Wrap"
                             FontWeight="SemiBold"
                             Opacity="0.7"
                             Text="Исполнитель" />
                         <TextBlock
                             x:Name="Description"
-                            MaxWidth="600"
+                           
+                           
                             FontFamily="{StaticResource VKSansRegular}"
                             FontSize="20"
                             Opacity="0.7"
@@ -80,7 +86,9 @@
             </Grid>
         </Grid>
 
+        
         <customV:UniversalControl
+           
             CornerRadius="10"
             x:Name="myControl"
             incrementalLoadingThreshold="100"

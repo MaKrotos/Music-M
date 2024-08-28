@@ -45,17 +45,41 @@ namespace VK_UI3.Views.Controls
                         double itemRight = itemLeft + container.ActualWidth;
                         double viewportWidth = scrollVi.ViewportWidth;
 
-                        if (itemLeft < scrollVi.HorizontalOffset || itemRight > scrollVi.HorizontalOffset + viewportWidth)
+                        if (itemLeft < 0 || itemRight > viewportWidth)
                         {
-                            double newOffset = itemLeft < scrollVi.HorizontalOffset ? itemLeft : itemRight - viewportWidth;
+                            double newOffset = itemLeft < 0 ? scrollVi.HorizontalOffset + itemLeft - 40 : scrollVi.HorizontalOffset + itemRight - viewportWidth;
                             scrollVi.ChangeView(newOffset, null, null);
                         }
+                    
                     }
                 });
             }
         }
 
 
+        public void scrollToIndexVertical(int index)
+        {
+            if (index >= 0 && index < gridView.Items.Count)
+            {
+                this.DispatcherQueue.TryEnqueue(() => {
+                    var container = gridView.ContainerFromIndex(index) as GridViewItem;
+                    if (container != null)
+                    {
+                        var transform = container.TransformToVisual(this);
+                        var position = transform.TransformPoint(new Point(0, 0));
+                        double itemTop = position.Y;
+                        double itemBottom = itemTop + container.ActualHeight;
+                        double viewportHeight = scrollVi.ViewportHeight;
+
+                        if (itemTop < 0 || itemBottom > viewportHeight)
+                        {
+                            double newOffset = itemTop < 0 ? scrollVi.VerticalOffset + itemTop - 40 : scrollVi.VerticalOffset + itemBottom - viewportHeight;
+                            scrollVi.ChangeView(null, newOffset, null);
+                        }
+                    }
+                });
+            }
+        }
 
 
 

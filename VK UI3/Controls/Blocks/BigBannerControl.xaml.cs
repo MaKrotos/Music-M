@@ -4,9 +4,13 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using MusicX.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Timers;
+using VK_UI3.Services;
+using VK_UI3.Views;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -82,9 +86,9 @@ namespace VK_UI3.Controls.Blocks
 
         private void OnTimedEvent(object sender, ElapsedEventArgs e)
         {
-            int l_last_index = lastIndex + 1;
+
             if (banners.Count == 0) return;
-            
+            int l_last_index = lastIndex + 1;
             if (l_last_index > banners.Count - 1)
                 l_last_index = 0;
             banners[l_last_index].invokeShowedClick(banners[l_last_index]);
@@ -154,7 +158,38 @@ namespace VK_UI3.Controls.Blocks
 
         private async void ActionCuratorButton_Click(object sender, RoutedEventArgs e)
         {
-            
+            try
+            {
+                if ((banners[lastIndex].catalogBanner.ClickAction?.Action ?? banners[lastIndex].catalogBanner.Buttons?.FirstOrDefault()?.Action) is not { } action)
+                    return;
+
+                var url = new Uri(action.Url);
+
+                if (url.Segments.LastOrDefault() is not { } lastSegment || !lastSegment.Contains('_'))
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        UseShellExecute = true,
+                        FileName = action.Url
+                    });
+                    return;
+                }
+
+                var data = lastSegment.Split("_");
+
+                var ownerId = long.Parse(data[0]);
+                var playlistId = long.Parse(data[1]);
+                var accessKey = data.Length == 2 ? string.Empty : data[2];
+
+
+                MainView.OpenPlayList(playlistId, ownerId, accessKey);
+            }
+            catch (Exception ex)
+            {
+
+               
+            }
+
         }
     }
 }

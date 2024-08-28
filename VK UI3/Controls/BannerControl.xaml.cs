@@ -51,10 +51,13 @@ namespace VK_UI3.Controls
             if (banner.selected)
             {
                 BorderGrid.Opacity = 1;
+                OpacGridit.Opacity = 1;
             }
             else
             {
                 BorderGrid.Opacity = 0;
+                OpacGridit.Opacity = 0;
+                
             }
         }
 
@@ -63,19 +66,21 @@ namespace VK_UI3.Controls
             if (!(sender is ExpBanner expBanner)) return;
             if (expBanner == Banner)
             {
-                this.DispatcherQueue.TryEnqueue(() => {
-                    FadeOutStoryboard.Pause();
-                    FadeInStoryboard.Begin();
-                });
+                if (!entered)
+                    this.DispatcherQueue.TryEnqueue(() => {
+                        FadeOutStoryboard.Pause();
+                        FadeInStoryboard.Begin();
+                    });
               
             }
             else
             {
-                this.DispatcherQueue.TryEnqueue(() =>
-                {
-                    FadeInStoryboard.Pause();
-                    FadeOutStoryboard.Begin();
-                });
+                if (!entered)
+                    this.DispatcherQueue.TryEnqueue(() =>
+                    {
+                        FadeInStoryboard.Pause();
+                        FadeOutStoryboard.Begin();
+                    });
             }
         }
 
@@ -83,16 +88,19 @@ namespace VK_UI3.Controls
 
         private void BannerControl_Unloaded(object sender, RoutedEventArgs e)
         {
-
-            this.Unloaded -= BannerControl_Unloaded;
-            this.DataContextChanged -= BannerControl_DataContextChanged;
-            Banner.showedClick -= Banner_showedClick;
-   
+            try
+            {
+                this.Unloaded -= BannerControl_Unloaded;
+                this.DataContextChanged -= BannerControl_DataContextChanged;
+                Banner.showedClick -= Banner_showedClick;
+            }
+            catch { }
 
         }
 
         Helpers.Animations.AnimationsChangeImage changeImage;
-      
+
+        bool entered = false;
 
    
 
@@ -117,13 +125,14 @@ namespace VK_UI3.Controls
 
         private void Card_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
+            entered = true;
             FadeOutStoryboard.Pause();
             FadeInStoryboard.Begin();
         }
 
         private void Card_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-
+            entered = false;
             if (Banner.selected) return;
             FadeInStoryboard.Pause();
             FadeOutStoryboard.Begin();

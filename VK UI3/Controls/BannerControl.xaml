@@ -23,7 +23,7 @@
 
         <Grid
             Margin="2"
-            Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+            Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
             CornerRadius="8">
             <Grid Height="100" VerticalAlignment="Stretch">
 
@@ -31,51 +31,98 @@
 
             </Grid>
 
-            <Rectangle
-                Height="0"
-                VerticalAlignment="Bottom"
-                Fill="Black"
-                Opacity="0.4" />
-            <StackPanel
-                Margin="0,0,0,5"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Bottom">
-                <TextBlock
-                    x:Name="BannerTitle"
-                    FontFamily="{StaticResource VKSansDemiBold}"
-                    FontWeight="SemiBold" />
-                <TextBlock x:Name="BannerText" HorizontalAlignment="Center" />
-            </StackPanel>
+            <Grid
+                x:Name="OpacGridit"
+                Background="{StaticResource CustomAcrylicInAppBrush}"
+                Opacity="0">
+
+                <Grid
+                    x:Name="stackText"
+                    Margin="10,0,0,10"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.RenderTransform>
+                        <TranslateTransform />
+                    </Grid.RenderTransform>
+                    <TextBlock
+                        x:Name="BannerTitle"
+                        Grid.Row="0"
+                        FontFamily="{StaticResource VKSansDemiBold}"
+                        FontWeight="SemiBold"
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        x:Name="BannerText"
+                        Grid.Row="1"
+                        HorizontalAlignment="Left"
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="Wrap" />
+                </Grid>
+
+
+            </Grid>
+
+
+
+
+
         </Grid>
 
         <Grid
             x:Name="BorderGrid"
+            BorderBrush="{ThemeResource AccentAAFillColorDefaultBrush}"
             BorderThickness="2"
             CornerRadius="8"
-            BorderBrush="{ThemeResource AccentAAFillColorDefaultBrush}"
-            Opacity="0">
-            <Grid.Resources>
-                <!-- Анимация появления -->
-                <Storyboard x:Name="FadeInStoryboard">
-                    <DoubleAnimation
-                Storyboard.TargetName="BorderGrid"
-                Storyboard.TargetProperty="Opacity"
-      
-                To="1"
-                Duration="0:0:0.15" />
-                </Storyboard>
+            Opacity="0" />
 
-                <!-- Анимация исчезновения -->
-                <Storyboard x:Name="FadeOutStoryboard">
-                    <DoubleAnimation
-                Storyboard.TargetName="BorderGrid"
-                Storyboard.TargetProperty="Opacity"
-        
-                To="0"
-                Duration="0:0:0.15" />
-                </Storyboard>
-            </Grid.Resources>
-        </Grid>
+        <Grid.Resources>
+            <!--  Анимация появления  -->
+            <Storyboard x:Name="FadeInStoryboard">
+                <DoubleAnimation
+                    Storyboard.TargetName="BorderGrid"
+                    Storyboard.TargetProperty="Opacity"
+                    To="1"
+                    Duration="0:0:0.15" />
+                <DoubleAnimation
+                    Storyboard.TargetName="OpacGridit"
+                    Storyboard.TargetProperty="Opacity"
+                    To="1"
+                    Duration="0:0:0.15" />
+                <DoubleAnimation
+                    Storyboard.TargetName="stackText"
+                    Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                    From="-100"
+                    To="1"
+                    Duration="0:0:0.25" />
+
+            </Storyboard>
+
+            <!--  Анимация исчезновения  -->
+            <Storyboard x:Name="FadeOutStoryboard">
+                <DoubleAnimation
+                    Storyboard.TargetName="BorderGrid"
+                    Storyboard.TargetProperty="Opacity"
+                    To="0"
+                    Duration="0:0:0.15" />
+                <DoubleAnimation
+                    Storyboard.TargetName="OpacGridit"
+                    Storyboard.TargetProperty="Opacity"
+                    To="0"
+                    Duration="0:0:0.15" />
+                <DoubleAnimation
+                    Storyboard.TargetName="stackText"
+                    Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                    To="-100"
+                    Duration="0:0:0.15" />
+            </Storyboard>
+        </Grid.Resources>
 
     </Grid>
 </UserControl>
