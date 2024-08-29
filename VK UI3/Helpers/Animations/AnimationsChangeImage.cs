@@ -14,6 +14,10 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using vkPosterBot.DB;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Collections;
+using System.Threading;
 
 namespace VK_UI3.Helpers.Animations
 {
@@ -218,43 +222,67 @@ namespace VK_UI3.Helpers.Animations
             storyboard.Begin();
         }
         BitmapImage image = null;
-        private async Task<BitmapImage> GetImageAsync(Uri newImageSourceUrl, bool setColorTheme)
-        {
 
+        private SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+
+        private async Task<BitmapImage> GetImageAsync(Uri newImageSourceUrl, bool setColorTheme, int repeat = 0)
+        {
             if (newImageSourceUrl == null)
             {
-                image = null;
                 return null;
             }
+
             var fileName = Path.Combine(databaseFolderPath, GetHashString(newImageSourceUrl.ToString()));
             var tempFileName = fileName + "temp";
 
-            if (!Directory.Exists(databaseFolderPath)) Directory.CreateDirectory(databaseFolderPath);
+            if (!Directory.Exists(databaseFolderPath))
+            {
+                Directory.CreateDirectory(databaseFolderPath);
+            }
             BitmapImage bitmap = null;
-            if (newImageSourceUrl.IsFile)
+
+            await _semaphore.WaitAsync();
+            try
             {
-                var tcs = new TaskCompletionSource<BitmapImage>();
-                dispatcherQueue.TryEnqueue(() =>
+                if (newImageSourceUrl.IsFile || File.Exists(fileName))
                 {
-                    bitmap = new BitmapImage(new Uri(fileName));
-                    image = bitmap;
-                    tcs.SetResult(bitmap);
-                });
-                return await tcs.Task;
-            }
-            else if (File.Exists(fileName))
-            {
-                var tcs = new TaskCompletionSource<BitmapImage>();
-                dispatcherQueue.TryEnqueue(() =>
+
+                    var tcs = new TaskCompletionSource<BitmapImage>();
+
+                    dispatcherQueue.TryEnqueue(() =>
+                    {
+                        bitmap = new BitmapImage(new Uri(fileName));
+                        image = bitmap;
+                        tcs.SetResult(image);
+                    });
+                    return await tcs.Task;
+                }
+
+                var taskDownload = DownloadImage(newImageSourceUrl, setColorTheme, fileName, tempFileName, repeat);
+                bitmap = await taskDownload;
+
+                if (bitmap != null)
                 {
-                    bitmap = new BitmapImage(new Uri(fileName));
-                    image = bitmap;
-                    tcs.SetResult(bitmap);
-                });
-                return await tcs.Task;
+                    Console.WriteLine($"Элемент с ключом '{newImageSourceUrl}' был загружен.");
+                }
+                else
+                {
+                    Console.WriteLine("Не удалось загрузить элемент с таким ключом.");
+                }
             }
-            else
+            finally
             {
+                _semaphore.Release();
+            }
+
+            return bitmap;
+        }
+
+
+        private async Task<BitmapImage> DownloadImage(Uri newImageSourceUrl, bool setColorTheme, string fileName, string tempFileName, int repeat = 0)
+        {
+            BitmapImage bitmap = null;
+
                 var httpClient = new HttpClient();
                 try
                 {
@@ -265,15 +293,14 @@ namespace VK_UI3.Helpers.Animations
                         await File.WriteAllBytesAsync(tempFileName, buffer);
                         if (setColorTheme)
                             ColorOpaquePartFastParallel(tempFileName);
-                        var tcs = new TaskCompletionSource<BitmapImage>();
                         File.Move(tempFileName, fileName);
+                        var tcs = new TaskCompletionSource<BitmapImage>();
                         dispatcherQueue.TryEnqueue(() =>
                         {
                             bitmap = new BitmapImage(new Uri(fileName));
                             image = bitmap;
-                            tcs.SetResult(bitmap);
+                            tcs.SetResult(image);
                         });
-                       
 
                         _ = CheckAndDeleteOldFilesAsync(databaseFolderPath);
                         return await tcs.Task;
@@ -281,19 +308,18 @@ namespace VK_UI3.Helpers.Animations
                     else
                     {
                         image = null;
-
                         return null;
                     }
                 }
                 catch (Exception e)
                 {
-                    image = null;
-
-                    // Если произошла ошибка при загрузке или сохранении изображения, возвращаем null
-                    return null;
+                    if (repeat >= 3)
+                    {
+                        return null;
+                    }
+                    return await DownloadImage(newImageSourceUrl, setColorTheme, fileName, tempFileName, repeat +=1);
                 }
-            }
-
+        
         }
 
         public static void ColorOpaquePartFastParallel(string imagePath)

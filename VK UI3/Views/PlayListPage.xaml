@@ -43,8 +43,8 @@
                             Height="200"
                             Margin="5"
                             Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-                            CornerRadius="8"
-                            Translation="0,0,8160">
+                            CornerRadius="4"
+                            Translation="0,0,10">
                             <FontIcon Glyph="&#xE90B;" />
                             <customs:GridImagesCustom
                                 x:Name="GridThumbs"

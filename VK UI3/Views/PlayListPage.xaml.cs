@@ -287,13 +287,16 @@ namespace VK_UI3.Views
                         UploadTrack.Visibility = Visibility.Visible;
                         VK_UI3.Views.Upload.UploadTrack.addedTrack += addedTrack;
                     }
-                    DescriptionText.Text = userAudio.user.Status;
-                    if (
-                        userAudio.user.Status != null &&
-                        (userAudio.user.Status.Equals("") || DescriptionText.Text == null)
-                        )
-                        DescriptionText.Visibility = Visibility.Collapsed;
 
+                    if (userAudio.user != null)
+                    {
+                        DescriptionText.Text = userAudio.user.Status;
+                        if (
+                                userAudio.user.Status != null &&
+                                (userAudio.user.Status.Equals("") || DescriptionText.Text == null)
+                            )
+                                DescriptionText.Visibility = Visibility.Collapsed;
+                    }
                 }
                 else
                 {

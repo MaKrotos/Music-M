@@ -8,6 +8,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
+    <UserControl.Shadow>
+        <ThemeShadow />
+    </UserControl.Shadow>
+
     <Grid
         x:Name="Card"
         Width="220"
@@ -23,9 +27,14 @@
 
         <Grid
             Margin="2"
-            Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
+            Padding="0"
+            Background="{StaticResource AcrylicBackgroundFillColorDefaultBrush}"
             CornerRadius="8">
-            <Grid Height="100" VerticalAlignment="Stretch">
+            <Grid
+               
+                Height="100"
+                VerticalAlignment="Stretch"
+                Translation="0,0,8">
 
                 <Image x:Name="BannerCover" Stretch="UniformToFill" />
 
@@ -34,11 +43,14 @@
             <Grid
                 x:Name="OpacGridit"
                 Background="{StaticResource CustomAcrylicInAppBrush}"
+                BorderBrush="{ThemeResource AccentAAFillColorDefaultBrush}"
+                BorderThickness="2"
+                CornerRadius="8"
                 Opacity="0">
 
                 <Grid
                     x:Name="stackText"
-                    Margin="10,0,0,10"
+                    Margin="10,0,10,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center">
                     <Grid.ColumnDefinitions>
@@ -60,6 +72,7 @@
                         TextWrapping="Wrap" />
                     <TextBlock
                         x:Name="BannerText"
+                       
                         Grid.Row="1"
                         HorizontalAlignment="Left"
                         TextTrimming="CharacterEllipsis"
@@ -75,21 +88,11 @@
 
         </Grid>
 
-        <Grid
-            x:Name="BorderGrid"
-            BorderBrush="{ThemeResource AccentAAFillColorDefaultBrush}"
-            BorderThickness="2"
-            CornerRadius="8"
-            Opacity="0" />
+
 
         <Grid.Resources>
             <!--  Анимация появления  -->
             <Storyboard x:Name="FadeInStoryboard">
-                <DoubleAnimation
-                    Storyboard.TargetName="BorderGrid"
-                    Storyboard.TargetProperty="Opacity"
-                    To="1"
-                    Duration="0:0:0.15" />
                 <DoubleAnimation
                     Storyboard.TargetName="OpacGridit"
                     Storyboard.TargetProperty="Opacity"
@@ -106,11 +109,6 @@
 
             <!--  Анимация исчезновения  -->
             <Storyboard x:Name="FadeOutStoryboard">
-                <DoubleAnimation
-                    Storyboard.TargetName="BorderGrid"
-                    Storyboard.TargetProperty="Opacity"
-                    To="0"
-                    Duration="0:0:0.15" />
                 <DoubleAnimation
                     Storyboard.TargetName="OpacGridit"
                     Storyboard.TargetProperty="Opacity"

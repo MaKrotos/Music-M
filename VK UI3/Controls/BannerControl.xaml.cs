@@ -50,14 +50,11 @@ namespace VK_UI3.Controls
             changeImage.ChangeImageWithAnimation(banner.catalogBanner.Images.Last().Url);
             if (banner.selected)
             {
-                BorderGrid.Opacity = 1;
                 OpacGridit.Opacity = 1;
             }
             else
             {
-                BorderGrid.Opacity = 0;
-                OpacGridit.Opacity = 0;
-                
+                OpacGridit.Opacity = 0;            
             }
         }
 

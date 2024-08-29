@@ -1,6 +1,7 @@
 using SQLite;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace VK_UI3.DB
 {
@@ -62,7 +63,13 @@ namespace VK_UI3.DB
                 var old = _activeAccount;
                 _activeAccount = value;
                 if (_activeAccount != null && value != null && value.Token != null)
+                {
                     ChanhgeActiveAccount?.Invoke(null, null);
+                }
+                else
+                {
+                    ActivateAccount(_activeAccount.id);
+                }
             }
         }
 
