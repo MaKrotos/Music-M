@@ -555,9 +555,28 @@ namespace VK_UI3.Controllers
 
         private async static Task PlayTrack(long? v = 0)
         {
-           
+            if (iVKGetAudio.listAudio.Count == 0)
+            {
+                var tcs = new TaskCompletionSource<bool>();
+                EventHandler handler = null;
+                handler = (sender, args) =>
+                {
+                    iVKGetAudio.onListUpdate -= handler;
+                    tcs.SetResult(true);
+                };
+                iVKGetAudio.onListUpdate += handler;
+
+                iVKGetAudio.GetTracks();
+                await tcs.Task;
+                
+            }
+
+            if (iVKGetAudio.listAudio.Count == 0) return;
+
             if (v != null && iVKGetAudio.currentTrack == null) 
                 iVKGetAudio.currentTrack = (long)v;
+
+           
 
             var trackdata = await _TrackDataThisGet();
             if (trackdata == null) 
@@ -804,11 +823,26 @@ namespace VK_UI3.Controllers
 
         internal static async void PlayList(IVKGetAudio userAudio)
         {
+            if (userAudio.listAudio.Count == 0)
+            {
+                var tcs = new TaskCompletionSource<bool>();
+                EventHandler handler = null;
+                handler = (sender, args) =>
+                {
+                    userAudio.onListUpdate -= handler;
+                    tcs.SetResult(true);
+                };
+                userAudio.onListUpdate += handler;
+
+                userAudio.GetTracks();
+                await tcs.Task;
+
+            }
+
+            if (userAudio.listAudio.Count == 0) return;
 
             iVKGetAudio = userAudio;
             AudioPlayer.PlayTrack();
-           
-
         }
         
         private void trackDoingBTN_Tapped(object sender, TappedRoutedEventArgs e)
