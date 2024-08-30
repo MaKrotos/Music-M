@@ -220,7 +220,7 @@ namespace VK_UI3.DownloadTrack
                     {
                         PlayListDownloads.Remove(this);
                         PlayListDownloadsList.Remove(iVKGetAudio);
-                        //if (iVKGetAudio.listAudio.Count() == downloaded && iVKGetAudio.itsAll) 
+                        if (PlayListDownloads.Count == 0) 
                             EndAllDownload();
                     });
 
