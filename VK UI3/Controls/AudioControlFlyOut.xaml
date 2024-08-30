@@ -67,6 +67,7 @@
         </MenuFlyoutItem.Icon>
     </MenuFlyoutItem>
     <MenuFlyoutItem
+    x:Name="AddArtistIgnore"
     Click="AddArtistIgnore_Click"
     Icon="BlockContact"
     Text="Пропускать треки исполнителя" />

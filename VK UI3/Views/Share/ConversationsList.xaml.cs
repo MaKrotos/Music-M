@@ -159,7 +159,7 @@ namespace VK_UI3.Views.Share
 
             var a = (await VK.api.Messages.GetConversationsAsync(parameters));
 
-            if (a.Count < off) itsAll = true;
+            if (a.Items.Count < off) itsAll = true;
 
             addItems(a);
 

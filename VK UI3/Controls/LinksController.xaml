@@ -26,7 +26,7 @@
         Margin="0"
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
-        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
+        Background="{ThemeResource LayerFillColorAlt}"
         CornerRadius="8"
         PointerEntered="Grid_PointerEntered"
         PointerExited="Grid_PointerExited"
@@ -38,6 +38,7 @@
         </Grid.ColumnDefinitions>
 
         <Grid
+             Background="{ThemeResource LayerFillColorAltBrush}"
             Grid.Column="0"
             Width="40"
             Height="40"

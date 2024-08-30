@@ -109,6 +109,19 @@ namespace VK_UI3.Controls
 
         public void AddArtistIgnore_Click(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrEmpty(dataTrack.audio.Artist)) 
+                return;
+            var skipPerf = new DB.SkipPerformerDB();
+            if (
+                skipPerf.skipIsSet(dataTrack.audio.Artist)
+                )
+            {
+                skipPerf.DelPerformer(dataTrack.audio.Artist);
+            }
+            else
+            {
+                skipPerf.createSkip(dataTrack.audio.Artist);
+            }
         }
         private async void RemovePlayList_Click(object sender, RoutedEventArgs e)
         {
@@ -371,15 +384,31 @@ namespace VK_UI3.Controls
                 RemovePlayList.Visibility = Visibility.Collapsed;
             }
 
-
+            if (string.IsNullOrEmpty(dataTrack.audio.Artist))
+            {
+                AddArtistIgnore.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                AddArtistIgnore.Visibility = Visibility.Visible;
+                if (new DB.SkipPerformerDB().skipIsSet(dataTrack.audio.Artist))
+                {
+                    AddArtistIgnore.Icon = new SymbolIcon(Symbol.Delete);
+                    AddArtistIgnore.Text = "Не пропускать треки исполнителя";
+                }
+                else
+                {
+                    AddArtistIgnore.Icon = new SymbolIcon(Symbol.BlockContact);
+                    AddArtistIgnore.Text = "Пропускать треки исполнителя";
+                  
+                }
+            }
             if ((dataTrack.audio.MainArtists == null) || (!dataTrack.audio.MainArtists.Any()))
             {
                 this.Items.Remove(GoArtist);
             }
             else
             {
-
-
                 GoArtist.Items.Clear();
                 foreach (var artist in dataTrack.audio.MainArtists)
                 {

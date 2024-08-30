@@ -589,7 +589,7 @@ namespace VK_UI3.Controllers
             else
                 VK.sendStartEvent((long)trackdata.audio.Id, (long)trackdata.audio.OwnerId);
 
-            if (trackdata.audio.Url == null)
+            if (trackdata.audio.Url == null || new DB.SkipPerformerDB().skipIsSet(trackdata.audio.Artist))
             {
 
                 PlayNextTrack();

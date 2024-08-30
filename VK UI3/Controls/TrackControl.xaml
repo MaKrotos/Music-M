@@ -61,7 +61,7 @@
                     Height="45"
                     Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}"
                     CornerRadius="5">
-                    <FontIcon Glyph="&#xEC4F;" />
+                    <FontIcon Foreground="{ThemeResource TextOnAccentFillColorSelectedText}" Glyph="&#xEC4F;" />
 
                     <Grid x:Name="ImageThumbGrid">
                         <Image x:Name="ImageThumb" Opacity="0" />
@@ -73,7 +73,7 @@
                         Background="{StaticResource CustomAcrylicInAppBrush}"
                         CornerRadius="0"
                         Opacity="0">
-                        <SymbolIcon x:Name="PlayBTN" Symbol="Play" />
+                        <SymbolIcon Foreground="{ThemeResource TextOnAccentFillColorSelectedText}" x:Name="PlayBTN" Symbol="Play" />
                         <Grid.Resources>
                             <!--  Анимация прозрачности от 0 до 1  -->
                             <Storyboard x:Name="FadeInAnimationGridPlayIcon">

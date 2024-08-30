@@ -8,13 +8,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <AutoSuggestBox Margin="20" PlaceholderText="Поиск музыки, плейлистов, исполнителей"
+    <AutoSuggestBox Margin="20,5,20,5" PlaceholderText="Поиск музыки, плейлистов, исполнителей"
      
         
         x:Name="searchTXT"
         QueryIcon="Find"
         QuerySubmitted="AutoSuggestBox_QuerySubmitted"
         HorizontalAlignment="Stretch"
-        VerticalAlignment="Center"
+        VerticalAlignment="Bottom"
         />
 </Grid>

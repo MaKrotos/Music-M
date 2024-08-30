@@ -20,18 +20,12 @@
         PointerExited="Card_PointerExited"
         Tapped="Card_Tapped">
 
-
-
-
-
-
         <Grid
             Margin="2"
             Padding="0"
             Background="{StaticResource AcrylicBackgroundFillColorDefaultBrush}"
             CornerRadius="8">
             <Grid
-               
                 Height="100"
                 VerticalAlignment="Stretch"
                 Translation="0,0,8">
@@ -68,15 +62,19 @@
                         Grid.Row="0"
                         FontFamily="{StaticResource VKSansDemiBold}"
                         FontWeight="SemiBold"
+                        Foreground="{ThemeResource TextOnAccentFillColorSelectedText}"
                         TextTrimming="CharacterEllipsis"
                         TextWrapping="Wrap" />
                     <TextBlock
                         x:Name="BannerText"
-                       
                         Grid.Row="1"
+                        Opacity="0.7"
+                        FontSize="14"
                         HorizontalAlignment="Left"
+                        Foreground="{ThemeResource TextOnAccentFillColorSelectedText}"
                         TextTrimming="CharacterEllipsis"
                         TextWrapping="Wrap" />
+                   
                 </Grid>
 
 

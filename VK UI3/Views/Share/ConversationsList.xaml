@@ -57,7 +57,7 @@
                 Click="Cancel_Click"
                 Visibility="Collapsed">
                 <StackPanel Orientation="Horizontal">
-                    <FontIcon Glyph="&#xE711;" />
+                    <FontIcon  Glyph="&#xE711;" />
                     <TextBlock Margin="5,0,0,0">Отмена</TextBlock>
                 </StackPanel>
             </Button>
