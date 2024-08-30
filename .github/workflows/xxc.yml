@@ -43,7 +43,7 @@ jobs:
           $telegramBotToken = '${{ secrets.TELEGRAM_BOT_TOKEN }}'
           $telegramChatId = '${{ secrets.TELEGRAM_CHAT_ID }}'
           $releaseUrl = 'https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}'
-          $message = "<b>🎉 Новый релиз:</b> ${{ github.event.inputs.namevers }}</br></br></br></br><b>📦 Версия:</b> ${{ steps.get_version.outputs.VERSION }}\n<b>📝 Описание:</b> ${{ github.event.inputs.descr }}\n<b>🔧 Solution Name:</b> ${{ env.Solution_Name }}\n<b>🔗 Ссылка на релиз:</b> <a href='$releaseUrl'>$releaseUrl</a>"
+          $message = "<b>🎉 Новый релиз:</b> ${{ github.event.inputs.namevers }}>>>><b>📦 Версия:</b> ${{ steps.get_version.outputs.VERSION }}\n<b>📝 Описание:</b> ${{ github.event.inputs.descr }}\n<b>🔧 Solution Name:</b> ${{ env.Solution_Name }}\n<b>🔗 Ссылка на релиз:</b> <a href='$releaseUrl'>$releaseUrl</a>"
           $uri = 'https://api.telegram.org/bot' + $telegramBotToken + '/sendMessage'
           $body = @{
               chat_id = $telegramChatId
