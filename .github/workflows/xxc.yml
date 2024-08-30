@@ -35,29 +35,30 @@ jobs:
 
           
       - name: Отправить сообщение в Telegram 2
-              env:
-                TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-                TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-                RELEASE_URL: https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}
-              run: |
-                $telegramBotToken = '${{ secrets.TELEGRAM_BOT_TOKEN }}'
-                $telegramChatId = '${{ secrets.TELEGRAM_CHAT_ID }}'
-                $releaseUrl = 'https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}'
-                $message = @"
-                <b>🎉 Новый релиз:</b> ${{ github.event.inputs.namevers }}
-                <b>📦 Версия:</b> ${{ steps.get_version.outputs.VERSION }}
-                <b>📝 Описание:</b> ${{ github.event.inputs.descr }}
-                <b>🔧 Solution Name:</b> ${{ env.Solution_Name }}
-                <b>🔗 Ссылка на релиз:</b> <a href='$releaseUrl'>$releaseUrl</a>
-                "@
-                $uri = 'https://api.telegram.org/bot' + $telegramBotToken + '/sendMessage'
-                $body = @{
-                    chat_id = $telegramChatId
-                    text = $message
-                    parse_mode = 'HTML'
-                }
-                $bodyJson = $body | ConvertTo-Json -Compress
-                Invoke-RestMethod -Uri $uri -Method Post -Body $bodyJson -ContentType 'application/json'
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RELEASE_URL: https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}
+        run: |
+          $telegramBotToken = '${{ secrets.TELEGRAM_BOT_TOKEN }}'
+          $telegramChatId = '${{ secrets.TELEGRAM_CHAT_ID }}'
+          $releaseUrl = 'https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}'
+          $message = @"
+          <b>🎉 Новый релиз:</b> ${{ github.event.inputs.namevers }}
+          <b>📦 Версия:</b> ${{ steps.get_version.outputs.VERSION }}
+          <b>📝 Описание:</b> ${{ github.event.inputs.descr }}
+          <b>🔧 Solution Name:</b> ${{ env.Solution_Name }}
+          <b>🔗 Ссылка на релиз:</b> <a href='$releaseUrl'>$releaseUrl</a>
+          "@
+          $uri = 'https://api.telegram.org/bot' + $telegramBotToken + '/sendMessage'
+          $body = @{
+              chat_id = $telegramChatId
+              text = $message
+              parse_mode = 'HTML'
+          }
+          $bodyJson = $body | ConvertTo-Json -Compress
+          Invoke-RestMethod -Uri $uri -Method Post -Body $bodyJson -ContentType 'application/json'
+
 
 
 
