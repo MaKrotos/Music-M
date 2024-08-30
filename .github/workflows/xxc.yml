@@ -31,8 +31,6 @@ jobs:
           }
           $bodyJson = $body | ConvertTo-Json -Compress
           Invoke-RestMethod -Uri $uri -Method Post -Body $bodyJson -ContentType 'application/json'
-
-
           
       - name: Отправить сообщение в Telegram 2
         env:
@@ -48,32 +46,14 @@ jobs:
           <b>📦 Версия:</b> ${{ steps.get_version.outputs.VERSION }}
           <b>📝 Описание:</b> ${{ github.event.inputs.descr }}
           <b>🔧 Solution Name:</b> ${{ env.Solution_Name }}
+          <b>🔗 <a href='$releaseUrl'>Ссылка на релиз</a></b>
           "@
           $uri = 'https://api.telegram.org/bot' + $telegramBotToken + '/sendMessage'
           $body = @{
               chat_id = $telegramChatId
               text = $message
               parse_mode = 'HTML'
-              reply_markup = @{
-                  inline_keyboard = @(
-                      @(
-                          @{
-                              text = "Ссылка на релиз"
-                              url = $releaseUrl
-                          }
-                      )
-                  )
-              }
           }
           $bodyJson = $body | ConvertTo-Json -Compress
           Invoke-RestMethod -Uri $uri -Method Post -Body $bodyJson -ContentType 'application/json'
-
-
-
-
-
-
-
-
-
 
