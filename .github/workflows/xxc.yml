@@ -34,13 +34,12 @@ jobs:
 
 
           
-      - name: Отправить сообщение в Telegram
+      - name: Отправить сообщение в Telegram 2
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           RELEASE_URL: https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}
         run: |
-          pwsh -Command "
           $telegramBotToken = '${{ secrets.TELEGRAM_BOT_TOKEN }}'
           $telegramChatId = '${{ secrets.TELEGRAM_CHAT_ID }}'
           $releaseUrl = 'https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}'
@@ -51,5 +50,6 @@ jobs:
               text = $message
               parse_mode = 'Markdown'
           }
-          Invoke-RestMethod -Uri $uri -Method Post -Body $body
-          "
+          $bodyJson = $body | ConvertTo-Json -Compress
+          Invoke-RestMethod -Uri $uri -Method Post -Body $bodyJson -ContentType 'application/json'
+
