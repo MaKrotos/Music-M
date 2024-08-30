@@ -55,16 +55,19 @@ jobs:
               text = $message
               parse_mode = 'HTML'
               reply_markup = @{
-                  inline_keyboard = @(@(
-                      @{
-                          text = "Ссылка на релиз"
-                          url = $releaseUrl
-                      }
-                  ))
+                  inline_keyboard = @(
+                      @(
+                          @{
+                              text = "Ссылка на релиз"
+                              url = $releaseUrl
+                          }
+                      )
+                  )
               }
           }
           $bodyJson = $body | ConvertTo-Json -Compress
           Invoke-RestMethod -Uri $uri -Method Post -Body $bodyJson -ContentType 'application/json'
+
 
 
 
