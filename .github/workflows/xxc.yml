@@ -43,15 +43,16 @@ jobs:
           $telegramBotToken = '${{ secrets.TELEGRAM_BOT_TOKEN }}'
           $telegramChatId = '${{ secrets.TELEGRAM_CHAT_ID }}'
           $releaseUrl = 'https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}'
-          $message = "🎉 *Новый релиз:* ${{ github.event.inputs.namevers }}\\n📦 *Версия:* ${{ steps.get_version.outputs.VERSION }}\\n📝 *Описание:* ${{ github.event.inputs.descr }}\\n🔧 *Solution Name:* ${{ env.Solution_Name }}\\n🔗 Ссылка на релиз: $releaseUrl"
+          $message = "<b>🎉 Новый релиз:</b> ${{ github.event.inputs.namevers }}\n<b>📦 Версия:</b> ${{ steps.get_version.outputs.VERSION }}\n<b>📝 Описание:</b> ${{ github.event.inputs.descr }}\n<b>🔧 Solution Name:</b> ${{ env.Solution_Name }}\n<b>🔗 Ссылка на релиз:</b> <a href='$releaseUrl'>$releaseUrl</a>"
           $uri = 'https://api.telegram.org/bot' + $telegramBotToken + '/sendMessage'
           $body = @{
               chat_id = $telegramChatId
               text = $message
-              parse_mode = 'MarkdownV2'
+              parse_mode = 'HTML'
           }
           $bodyJson = $body | ConvertTo-Json -Compress
           Invoke-RestMethod -Uri $uri -Method Post -Body $bodyJson -ContentType 'application/json'
+
 
 
 
