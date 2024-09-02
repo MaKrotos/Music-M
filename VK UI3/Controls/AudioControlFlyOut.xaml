@@ -25,6 +25,16 @@
     Icon="Delete"
     Text="Удалить из плейлиста"
     Visibility="Collapsed" />
+    <MenuFlyoutItem
+    x:Name="ShowAsse"
+    Click="ShowAsse_Click"
+ 
+    Text="Показать похожие"
+    Visibility="Visible" >
+        <MenuFlyoutItem.Icon>
+            <FontIcon Glyph="&#xE7B3;" />
+        </MenuFlyoutItem.Icon>
+    </MenuFlyoutItem>
     <MenuFlyoutSubItem
     x:Name="GoArtist"
     Icon="ContactInfo"

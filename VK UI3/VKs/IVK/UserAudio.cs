@@ -69,54 +69,63 @@ namespace VK_UI3.VKs.IVK
                 return null;
         }
 
+        private static SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+
         public override void GetTracks()
         {
-            if (getLoadedTracks) return;
-            getLoadedTracks = true;
+            semaphore.Wait(); // ќжидает освобождени€ семафора
 
-            task = Task.Run(async () =>
+            try
             {
-                int offset = listAudio.Count;
-                int count = 250;
+                if (getLoadedTracks) return;
+                getLoadedTracks = true;
 
-                if (countTracks > listAudio.Count)
+                task = Task.Run(async () =>
                 {
-                    VkCollection<Audio> audios;
+                    int offset = listAudio.Count;
+                    int count = 250;
 
-
-                    audios = api.Audio.GetAsync(new AudioGetParams
+                    if (countTracks > listAudio.Count)
                     {
-                        OwnerId = int.Parse(id),
-                        Offset = offset,
-                        Count = count
-                    }).Result;
+                        VkCollection<Audio> audios;
 
-
-                    ManualResetEvent resetEvent = new ManualResetEvent(false);
-
-                    foreach (var item in audios)
-                    {
-                        ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
-
-                        DispatcherQueue.TryEnqueue(() =>
+                        audios = api.Audio.GetAsync(new AudioGetParams
                         {
-                            listAudio.Add(extendedAudio);
-                            resetEvent.Set(); // —игнализирует о завершении задачи
-                        });
+                            OwnerId = int.Parse(id),
+                            Offset = offset,
+                            Count = count
+                        }).Result;
 
-                        resetEvent.WaitOne(); // ќжидает сигнала о завершении задачи
-                        resetEvent.Reset(); // —брасывает событие дл€ следующей итерации
+                        ManualResetEvent resetEvent = new ManualResetEvent(false);
+
+                        foreach (var item in audios)
+                        {
+                            ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
+
+                            DispatcherQueue.TryEnqueue(() =>
+                            {
+                                listAudio.Add(extendedAudio);
+                                resetEvent.Set(); // —игнализирует о завершении задачи
+                            });
+
+                            resetEvent.WaitOne(); // ќжидает сигнала о завершении задачи
+                            resetEvent.Reset(); // —брасывает событие дл€ следующей итерации
+                        }
+
+                        if (countTracks == listAudio.Count()) itsAll = true;
+
+                        getLoadedTracks = false;
                     }
-
-                    if (countTracks == listAudio.Count()) itsAll = true;
-
-
-                    getLoadedTracks = false;
-                }
-                task = null;
-                NotifyOnListUpdate();
-            });
+                    task = null;
+                    NotifyOnListUpdate();
+                });
+            }
+            finally
+            {
+                semaphore.Release(); // ќсвобождает семафор
+            }
         }
+
 
     }
 }

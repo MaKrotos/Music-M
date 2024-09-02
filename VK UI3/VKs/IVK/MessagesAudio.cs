@@ -91,14 +91,19 @@ namespace VK_UI3.VKs.IVK
             return null;
         }
         string nextFrom = null;
+        private static SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+
         public override void GetTracks()
         {
-            if (getLoadedTracks) return;
-            getLoadedTracks = true;
+            semaphore.Wait(); // ќжидает освобождени€ семафора
 
-            task = Task.Run(async () =>
+            try
             {
-                
+                if (getLoadedTracks) return;
+                getLoadedTracks = true;
+
+                task = Task.Run(async () =>
+                {
                     int count = 10;
                     VkCollection<Audio> audios;
 
@@ -119,21 +124,26 @@ namespace VK_UI3.VKs.IVK
                         DispatcherQueue.TryEnqueue(() =>
                         {
                             listAudio.Add(extendedAudio);
-                            resetEvent.Set(); // —игнализирует о завершении задачи
+                            resetEvent.Set();
                         });
 
-                        resetEvent.WaitOne(); // ќжидает сигнала о завершении задачи
-                        resetEvent.Reset(); // —брасывает событие дл€ следующей итерации
+                        resetEvent.WaitOne(); 
+                        resetEvent.Reset(); 
                     }
 
                     if (nextFrom == null) itsAll = true;
 
-
                     getLoadedTracks = false;
-               
-                NotifyOnListUpdate();
-            });
+
+                    NotifyOnListUpdate();
+                });
+            }
+            finally
+            {
+                semaphore.Release(); 
+            }
         }
+
 
     }
 }

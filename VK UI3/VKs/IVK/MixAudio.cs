@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.Controllers;
 using VkNet.Model.Attachments;
@@ -62,33 +63,45 @@ namespace VK_UI3.VKs.IVK
             return null;
         }
 
+        private static SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+
         public override void GetTracks()
         {
-            if (getLoadedTracks) return;
-            getLoadedTracks = true;
-            task = Task.Run(async () =>
+            semaphore.Wait(); // Ожидает освобождения семафора
+
+            try
             {
-                VkParameters keyValuePairs = new VkParameters();
-                keyValuePairs.Add("mix_id", mix_id);
-                keyValuePairs.Add("count", 50);
+                if (getLoadedTracks) return;
+                getLoadedTracks = true;
 
-                try
+                task = Task.Run(async () =>
                 {
-                    var a = await VK.api.CallAsync("audio.getStreamMixAudios", keyValuePairs);
-                    List<Audio> audios = JsonConvert.DeserializeObject<List<Audio>>(a.RawJson);
-                    foreach (var item in audios)
+                    VkParameters keyValuePairs = new VkParameters();
+                    keyValuePairs.Add("mix_id", mix_id);
+                    keyValuePairs.Add("count", 50);
+
+                    try
                     {
-                        listAudioTrue.Add(new Helpers.ExtendedAudio(item, this));
+                        var a = await VK.api.CallAsync("audio.getStreamMixAudios", keyValuePairs);
+                        List<Audio> audios = JsonConvert.DeserializeObject<List<Audio>>(a.RawJson);
+                        foreach (var item in audios)
+                        {
+                            listAudioTrue.Add(new Helpers.ExtendedAudio(item, this));
+                        }
                     }
-                }
-                catch (Exception e)
-                {
-                }
-                getLoadedTracks = false;
-                NotifyOnListUpdate();
-            });
-
+                    catch (Exception e)
+                    {
+                    }
+                    getLoadedTracks = false;
+                    NotifyOnListUpdate();
+                });
+            }
+            finally
+            {
+                semaphore.Release(); 
+            }
         }
+
 
     }
 }

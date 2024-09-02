@@ -38,13 +38,15 @@ namespace VK_UI3.VKs.IVK
         }
         public override List<string> getPhotosList()
         {
-            return null;
+            return new List<string>() { photoUri.ToString() };
         }
 
         public override Uri getPhoto()
         {
             return null;
         }
+
+        private static SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
         public override void GetTracks()
         {
@@ -53,23 +55,21 @@ namespace VK_UI3.VKs.IVK
 
             task = Task.Run(async () =>
             {
-                int offset = listAudio.Count;
-                int count = 250;
-
-                if (countTracks > listAudio.Count)
+                await semaphore.WaitAsync();
+                try
                 {
-                    VkCollection<Audio> audios;
+                    uint? offset = (uint?)listAudio.Count;
+                    uint? count = 250;
 
+                    VkCollection<Audio> audios;
                     if (string.IsNullOrEmpty(targetAudio))
                     {
-                        audios = await api.Audio.GetRecommendationsAsync(userId: long.Parse(base.id), count: (uint?)count, offset: (uint?)offset, shuffle: false);
+                        audios = await VK.api.Audio.GetRecommendationsAsync(userId: long.Parse(base.id), count: count, offset: offset, shuffle: false);
                     }
                     else
                     {
-                        audios = await api.Audio.GetRecommendationsAsync(targetAudio: targetAudio, count: (uint?)count, offset: (uint?)offset, shuffle: false);
+                        audios = await VK.api.Audio.GetRecommendationsAsync(targetAudio: targetAudio, count: count, offset: offset, shuffle: false);
                     }
-
-
 
                     ManualResetEvent resetEvent = new ManualResetEvent(false);
 
@@ -83,19 +83,24 @@ namespace VK_UI3.VKs.IVK
                             resetEvent.Set();
                         });
 
-                        resetEvent.WaitOne(); 
-                        resetEvent.Reset(); 
+                        resetEvent.WaitOne();
+                        resetEvent.Reset();
                     }
 
                     if (countTracks == listAudio.Count()) itsAll = true;
 
-
                     getLoadedTracks = false;
+                    NotifyOnListUpdate();
                 }
+                finally
+                {
+                    semaphore.Release();
+                }
+
                 task = null;
-                NotifyOnListUpdate();
             });
         }
+
 
     }
 }

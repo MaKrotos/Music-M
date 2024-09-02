@@ -185,7 +185,8 @@ namespace VK_UI3.Views
                     SectionType.MyListAudio => LoadMyAudioList(handlerContainer),
                     SectionType.ConversDialogs => LoadDialogs(),
                     SectionType.LoadFriends => LoadFriends(),
-            
+                    SectionType.CustomIVKGetAudio => LoadCustomiVKGetAudio(handlerContainer),
+
                     _ => throw new ArgumentOutOfRangeException()
                 }); ;
 
@@ -329,11 +330,11 @@ namespace VK_UI3.Views
 
             handlerContainer.Handler = (sender, e) =>
             {
-                //    iVKGetAudio.onListUpdate.RemoveHandler(handlerContainer.Handler);
+
                 this.DispatcherQueue.TryEnqueue(async () =>
                 {
 
-                    handlerContainer.Handler = null; // Освободить ссылку на обработчик
+                    handlerContainer.Handler = null;
                     frameSection.Navigate(typeof(PlayListPage), waitParameters.iVKGetAudio, new DrillInNavigationTransitionInfo());
                 });
                 waitParameters.iVKGetAudio.onListUpdate -= (handlerContainer.Handler);
@@ -341,6 +342,34 @@ namespace VK_UI3.Views
 
             waitParameters.iVKGetAudio.onListUpdate += (handlerContainer.Handler);
         }
+
+        private async Task LoadCustomiVKGetAudio(HandlerContainer handlerContainer)
+        {
+            if (waitParameters.iVKGetAudio.listAudio.Count == 0)
+            {
+                handlerContainer.Handler = async (sender, e) =>
+                {
+                    this.DispatcherQueue.TryEnqueue(async () =>
+                    {
+
+                        handlerContainer.Handler = null;
+                        frameSection.Navigate(typeof(PlayListPage), waitParameters.iVKGetAudio, new DrillInNavigationTransitionInfo());
+                    });
+                    waitParameters.iVKGetAudio.onListUpdate -= handlerContainer.Handler;
+                };
+
+                waitParameters.iVKGetAudio.GetTracks();
+                waitParameters.iVKGetAudio.onListUpdate += handlerContainer.Handler;
+            }
+            else
+            {
+                this.DispatcherQueue.TryEnqueue(async () =>
+                {
+                    frameSection.Navigate(typeof(PlayListPage), waitParameters.iVKGetAudio, new DrillInNavigationTransitionInfo());
+                });
+            }
+        }
+
 
         private async Task loadSection(string sectionID, bool showTitle = false)
         {

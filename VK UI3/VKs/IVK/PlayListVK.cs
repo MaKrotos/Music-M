@@ -189,54 +189,61 @@ namespace VK_UI3.VKs.IVK
             return null;
         }
 
+        private static SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+
         public override void GetTracks()
         {
-            if (getLoadedTracks) return;
+            semaphore.Wait(); // Ожидает освобождения семафора
 
-            if (listAudio.Count >= playlist.Count || itsAll)
+            try
             {
-                itsAll = true;
-                NotifyOnListUpdate();
-                return;
-            }
-            
+                if (getLoadedTracks) return;
 
-            getLoadedTracks = true;
-
-            task = Task.Run(async () =>
-            {
-                int offset = listAudioTrue.Count;
-                int count = 100;
-
-
-                if (countTracks > listAudio.Count)
+                if (listAudio.Count >= playlist.Count || itsAll)
                 {
-                    var response = await VK.vkService.AudioGetAsync(playlist.Id, playlist.OwnerId, playlist.AccessKey, listAudioTrue.Count, count);
-
-
-                    foreach (var item in response.Items)
-                    {
-                        ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
-                        ManualResetEvent resetEvent = new ManualResetEvent(false);
-
-                        DispatcherQueue.TryEnqueue(() =>
-                        {
-                            listAudioTrue.Add(extendedAudio);
-                            resetEvent.Set();
-                        });
-
-                        resetEvent.WaitOne();
-                    }
-
-
-                    if (countTracks == listAudio.Count()) itsAll = true;
-
-
-                    getLoadedTracks = false;
+                    itsAll = true;
+                    NotifyOnListUpdate();
+                    return;
                 }
-                NotifyOnListUpdate();
-            });
+
+                getLoadedTracks = true;
+
+                task = Task.Run(async () =>
+                {
+                    int offset = listAudioTrue.Count;
+                    int count = 100;
+
+                    if (countTracks > listAudio.Count)
+                    {
+                        var response = await VK.vkService.AudioGetAsync(playlist.Id, playlist.OwnerId, playlist.AccessKey, listAudioTrue.Count, count);
+
+                        foreach (var item in response.Items)
+                        {
+                            ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
+                            ManualResetEvent resetEvent = new ManualResetEvent(false);
+
+                            DispatcherQueue.TryEnqueue(() =>
+                            {
+                                listAudioTrue.Add(extendedAudio);
+                                resetEvent.Set();
+                            });
+
+                            resetEvent.WaitOne();
+                        }
+
+                        if (countTracks == listAudio.Count()) itsAll = true;
+
+                        getLoadedTracks = false;
+                    }
+                    NotifyOnListUpdate();
+                });
+            }
+            finally
+            {
+                semaphore.Release(); // Освобождает семафор
+            }
         }
+
 
         public override List<string> getPhotosList()
         {

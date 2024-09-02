@@ -440,7 +440,13 @@ namespace VK_UI3.Views
             sectionView.openedPlayList = openedPlayList;
             frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
         }
-
+        public static void OpenIVkAudio(IVKGetAudio iVKGetAudio)
+        {
+            var waitParameters = new WaitParameters();
+            waitParameters.sectionType = SectionType.CustomIVKGetAudio;
+            waitParameters.iVKGetAudio = iVKGetAudio;
+            frame.Navigate(typeof(WaitView), waitParameters, new DrillInNavigationTransitionInfo());
+        }
 
         public static void OpenPlayList(AudioPlaylist playlist)
         {

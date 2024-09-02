@@ -130,6 +130,7 @@ namespace VK_UI3.Views
             MessConv,
             ConversDialogs,
             LoadFriends,
+            CustomIVKGetAudio,
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

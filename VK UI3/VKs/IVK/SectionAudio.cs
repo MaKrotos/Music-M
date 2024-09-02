@@ -43,86 +43,87 @@ namespace VK_UI3.VKs.IVK
         {
             return new List<string>();
         }
-        private static SemaphoreSlim semaphore = new SemaphoreSlim(1);
+        private static SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+
+
         public override void GetTracks()
         {
-            if (getLoadedTracks) 
-                return;
-            if (itsAll) 
-                return;
+            semaphore.Wait(); // Ожидает освобождения семафора
 
-
-
-            ResponseData a = null;
-
-            task = Task.Run(async () =>
+            try
             {
-                try
+                if (getLoadedTracks)
+                    return;
+                if (itsAll)
+                    return;
+
+                ResponseData a = null;
+
+                task = Task.Run(async () =>
                 {
-                    if (getLoadedTracks)
-                        return;
-                    getLoadedTracks = true;
-
-                    a = await VK.vkService.GetSectionAsync(id, Next);
-
-                    if (a.Section != null)
+                    try
                     {
-                        if (a.Section.NextFrom == null)
-                        {
-                            itsAll = true;
+                        if (getLoadedTracks)
+                            return;
+                        getLoadedTracks = true;
 
+                        a = await VK.vkService.GetSectionAsync(id, Next);
+
+                        if (a.Section != null)
+                        {
+                            if (a.Section.NextFrom == null)
+                            {
+                                itsAll = true;
+                            }
+                            Next = a.Section.NextFrom;
                         }
-                        Next = a.Section.NextFrom;
-                    }
 
-                    var audios = a.Audios;
+                        var audios = a.Audios;
 
-                    if (audios.Count == 0)
-                    {
-                        countTracks = listAudio.Count;
-                        itsAll = true;
-                    }
-                    foreach (var item in audios)
-                    {
-                        ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
-                        ManualResetEvent resetEvent = new ManualResetEvent(false);
-
-                        try
+                        if (audios.Count == 0)
                         {
-                            bool isEnqueued = DispatcherQueue.TryEnqueue(() =>
-                            {
-                                listAudio.Add(extendedAudio);
-                                resetEvent.Set();
-                            });
+                            countTracks = listAudio.Count;
+                            itsAll = true;
+                        }
+                        foreach (var item in audios)
+                        {
+                            ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
+                            ManualResetEvent resetEvent = new ManualResetEvent(false);
 
-                            if (!isEnqueued)
+                            try
                             {
-                                // Действия при неудачной попытке добавления в очередь
-                                Console.WriteLine("TryEnqueue не удалось добавить задачу в очередь.");
+                                bool isEnqueued = DispatcherQueue.TryEnqueue(() =>
+                                {
+                                    listAudio.Add(extendedAudio);
+                                    resetEvent.Set();
+                                });
+
+                                if (!isEnqueued)
+                                {
+                                    // Действия при неудачной попытке добавления в очередь
+                                    Console.WriteLine("TryEnqueue не удалось добавить задачу в очередь.");
+                                }
+
+                            }
+                            catch
+                            {
+                                throw;
                             }
 
+                            resetEvent.WaitOne();
                         }
-                        catch
-                        {
-                            throw;
-                        }
-
-
-                        resetEvent.WaitOne();
+                        this.countTracks = this.listAudioTrue.Count;
+                        NotifyOnListUpdate();
                     }
-                    this.countTracks = this.listAudioTrue.Count;
-                    NotifyOnListUpdate();
-                }
-                catch
-                {
-                    NotifyOnListUpdate();
-                }
-            }).ContinueWith(t =>
+                    catch
+                    {
+                        NotifyOnListUpdate();
+                    }
+                }).ContinueWith(t =>
                 {
                     if (t.IsFaulted)
                     {
                         getLoadedTracks = false;
-
                         Console.WriteLine(t.Exception.Message);
                     }
                     else
@@ -130,8 +131,12 @@ namespace VK_UI3.VKs.IVK
                         getLoadedTracks = false;
                     }
                 });
-
-
+            }
+            finally
+            {
+                semaphore.Release(); // Освобождает семафор
+            }
         }
+
     }
 }
