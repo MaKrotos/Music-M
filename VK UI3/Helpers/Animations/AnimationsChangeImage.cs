@@ -13,11 +13,9 @@ using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using vkPosterBot.DB;
-using System.Collections.Generic;
 using System.Collections.Concurrent;
-using System.Collections;
 using System.Threading;
+using VK_UI3.DB;
 
 namespace VK_UI3.Helpers.Animations
 {

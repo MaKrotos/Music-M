@@ -21,10 +21,8 @@ using VK_UI3.DB;
 using VK_UI3.DownloadTrack;
 using VK_UI3.Views;
 using VK_UI3.Views.LoginWindow;
-using VK_UI3.Views.ModalsPages;
 using VK_UI3.Views.Upload;
 using VK_UI3.VKs;
-using vkPosterBot.DB;
 using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
@@ -115,6 +113,8 @@ namespace VK_UI3
 
             UploadTrack.UploadsTracks.CollectionChanged += UploadsTracks_CollectionChanged;
 
+          
+
             this.Activated += activated;
 
 
@@ -123,6 +123,10 @@ namespace VK_UI3
 
         private void UploadsTracks_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
+            this.DispatcherQueue.TryEnqueue(() => {
+                App.Current.RequestedTheme = (DB.SettingsTable.GetSetting("SetLightColor") == null) ? ApplicationTheme.Dark : ApplicationTheme.Light;
+
+            });
             if (sender is ObservableCollection<UploadTrack> traks)
             {
                 if (traks.Count > 0)

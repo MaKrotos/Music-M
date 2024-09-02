@@ -1,7 +1,7 @@
 using SQLite;
 using VK_UI3.DB;
 
-namespace vkPosterBot.DB
+namespace VK_UI3.DB
 {
     public class SettingsTable
     {

@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using vkPosterBot.DB;
+using VK_UI3.DB;
 
 namespace VK_UI3.DownloadTrack
 {

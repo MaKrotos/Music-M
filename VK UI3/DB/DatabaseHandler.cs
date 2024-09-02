@@ -1,7 +1,6 @@
 using SQLite;
 using System;
 using System.IO;
-using vkPosterBot.DB;
 using static VK_UI3.DB.AccountsDB;
 
 namespace VK_UI3.DB

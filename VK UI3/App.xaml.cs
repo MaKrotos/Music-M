@@ -89,6 +89,8 @@ namespace VK_UI3
         public App()
         {
             this.InitializeComponent();
+            thisApp = this;
+            Application.Current.RequestedTheme = ApplicationTheme.Dark;
         }
 
 
@@ -103,7 +105,8 @@ namespace VK_UI3
         {
             const string mutexName = "VKMMaKrotosApp";
             bool createdNew;
-
+            
+            setThemeApp();
             _mutex = new Mutex(true, mutexName, out createdNew);
             if (!createdNew)
             {
@@ -144,9 +147,18 @@ namespace VK_UI3
             m_window.Activate();
 
             this.UnhandledException += App_UnhandledException;
+
+            
             //   await (appUpdater.CheckForUpdaterBool)
         }
+        private static App thisApp;
 
+        public static void setThemeApp() 
+        {
+            //thisApp.RequestedTheme = ApplicationTheme.Light;
+
+            //thisApp.RequestedTheme = (DB.SettingsTable.GetSetting("SetLightColor") == null) ? ApplicationTheme.Light : ApplicationTheme.Dark;
+        }
 
         private void M_window_Closed(object sender, WindowEventArgs args)
         {

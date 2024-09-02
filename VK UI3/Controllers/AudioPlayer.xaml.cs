@@ -19,7 +19,6 @@ using VK_UI3.Helpers.Animations;
 using VK_UI3.Views;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
-using vkPosterBot.DB;
 using Windows.Media.Playback;
 using Windows.Storage.Streams;
 

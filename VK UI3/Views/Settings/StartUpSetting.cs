@@ -10,8 +10,6 @@ namespace VK_UI3.Views.Settings
     {
         public StartUpSetting()
         {
-
-
             this.Content = "Добавить приложение в автозагрузку";
 
             this.Checked += StartUpSetting_Checked;
@@ -20,16 +18,13 @@ namespace VK_UI3.Views.Settings
 
             // Получение стиля из ресурсов
             Style style = Application.Current.Resources["DefaultCheckBoxStyle"] as Style;
-
+            
             // Установка стиля
             this.Style = style;
         }
 
         private void StartUpSetting_Loaded(object sender, RoutedEventArgs e)
         {
-
-
-
             this.DispatcherQueue.TryEnqueue(async () =>
             {
                 this.IsChecked = await Helpers.StartupManager.IsAppInStartupAsync();

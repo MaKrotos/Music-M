@@ -7,9 +7,9 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using VK_UI3.DB;
 using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
-using vkPosterBot.DB;
 
 namespace VK_UI3.DownloadTrack
 {
