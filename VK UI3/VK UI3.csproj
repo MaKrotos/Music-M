@@ -114,6 +114,7 @@
     <PackageReference Include="QRCoder" Version="1.5.1" />
     <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
     <PackageReference Include="TagLibSharp" Version="2.3.0" />
+    <PackageReference Include="WinUICommunity.Components" Version="6.9.0" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 

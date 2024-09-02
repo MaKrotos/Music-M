@@ -149,7 +149,7 @@ namespace VK_UI3.Controls
         private async void ShowAsse_Click(object sender, RoutedEventArgs e)
         {
             var rec =  new Recommendations(this.dataTrack.audio.FullId, this.DispatcherQueue);
-            rec.name = $"Похоже на {this.dataTrack.audio.Title} от {this.dataTrack.audio.Artist}";
+            rec.name = $"Похоже на \"{this.dataTrack.audio.Title}\" от {this.dataTrack.audio.Artist}";
             rec.photoUri = new Uri(
                 this.dataTrack.audio.Album.Thumb.Photo1200 ??
                 this.dataTrack.audio.Album.Thumb.Photo600 ??
