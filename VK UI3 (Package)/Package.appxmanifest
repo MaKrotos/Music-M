@@ -13,7 +13,7 @@
   <Identity
     Name="FDW.VKM"
     Publisher="CN=FDW"
-    Version="0.2.0.1" />
+    Version="0.2.0.2" />
 
   <mp:PhoneIdentity PhoneProductId="b7c1f34e-9025-4935-9d7a-7d0a632a368d" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
