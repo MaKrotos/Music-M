@@ -75,6 +75,11 @@
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
 
+                    <NavigationViewItem Content="Миксы">
+                        <NavigationViewItem.Icon>
+                            <FontIcon Glyph="&#xE93E;" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
                     <NavigationViewItemSeparator />
                     <NavigationViewItemHeader />
 

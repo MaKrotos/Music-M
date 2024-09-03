@@ -292,24 +292,24 @@ namespace VK_UI3.Views
             try
             {
                 return new List<string>
-        {
-            "\uE142", // MusicInfo
-            "\uE189", // Audio
-            "\uE102", // Play
-            "\uE103", // Pause
-            "\uE101", // Stop
-            "\uE100", // Forward
-            "\uE106", // Back
-            "\uE108", // Previous
-            "\uE107", // Next
-            "\uE767", // Volume
-            "\uE74F", // Mute
-            "\uE10C", // More
-            "\uE158", // Pictures
-            "\uE707", // Map
-            "\uE787", // CalendarDay
-            "\uE141", // Bookmarks
-        };
+                {
+                    "\uE142", // MusicInfo
+                    "\uE189", // Audio
+                    "\uE102", // Play
+                    "\uE103", // Pause
+                    "\uE101", // Stop
+                    "\uE100", // Forward
+                    "\uE106", // Back
+                    "\uE108", // Previous
+                    "\uE107", // Next
+                    "\uE767", // Volume
+                    "\uE74F", // Mute
+                    "\uE10C", // More
+                    "\uE158", // Pictures
+                    "\uE707", // Map
+                    "\uE787", // CalendarDay
+                    "\uE141", // Bookmarks
+                };
             }
             catch (Exception e)
             {
@@ -567,6 +567,9 @@ namespace VK_UI3.Views
                         OpenMyPage(SectionType.ConversDialogs);
                         break;
 
+                    case "миксы":
+                        OpenMyPage(SectionType.Mixes);
+                        break;
 
                     default:
                         var Item = NavWiv.SelectedItem as NavMenuController;

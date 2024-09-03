@@ -62,6 +62,7 @@ namespace VK_UI3.Controls.Blocks
 
         }
 
+
         private void MixControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             var a = args.NewValue;
