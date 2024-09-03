@@ -287,7 +287,7 @@ namespace VK_UI3.VKs.IVK
         public async Task<ExtendedAudio> getNextTrackForPlay()
         {
 
-            if (currentTrack >= countTracks - 1)
+            if (currentTrack >= countTracks - 1 && countTracks != -1)
                 currentTrack = 0;
             else
             {

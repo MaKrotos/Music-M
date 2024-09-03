@@ -9,59 +9,65 @@
     Margin="0,8,0,0"
     mc:Ignorable="d">
 
-    <winui:OpacityMaskView>
-        <winui:OpacityMaskView.OpacityMask>
-            <LinearGradientBrush MappingMode="RelativeToBoundingBox" StartPoint="0,0" EndPoint="0,1">
-                <GradientStop Offset="0" Color="#FFFFFFFF" />
-                <GradientStop Offset="0" Color="#FFFFFFFF" />
-                <GradientStop Offset="0.25" Color="#FFFFFFFF" />
-                <GradientStop Offset="0.55" Color="#FFFFFFFF" />
-                <GradientStop Offset="0.95" Color="#00FFFFFF" />
-                <GradientStop Offset="1" Color="#00FFFFFF" />
-            </LinearGradientBrush>
-        </winui:OpacityMaskView.OpacityMask>
-        <Grid
-            x:Name="ArtistBanner"
-            Margin="10"
-            CornerRadius="4">
 
+    <Grid
+        x:Name="ArtistBanner"
+        Margin="10"
+        CornerRadius="4">
 
-            <Grid Height="450" MaxHeight="450">
-                <Image
-                    x:Name="ArtistBannerImage"
-                    Height="{Binding ElementName=ArtistBannerImage, Path=Width}"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Stretch="UniformToFill" />
-            </Grid>
-
-            <Rectangle
-                Height="450"
-                Margin="0,0,-15,0"
-                Opacity="0.7"
-                Visibility="Visible">
-                <Rectangle.Fill>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                        <GradientStop Offset="0.1" Color="{ThemeResource SystemAltHighColor}" />
-                        <GradientStop Offset="1.5" Color="Transparent" />
+        <winui:OpacityMaskView>
+            <winui:OpacityMaskView.OpacityMask>
+                <LinearGradientBrush MappingMode="RelativeToBoundingBox" StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Offset="0" Color="#FFFFFFFF" />
+                    <GradientStop Offset="0.05" Color="#FFFFFFFF" />
+                    <GradientStop Offset="0.55" Color="#FFFFFFFF" />
+                    <GradientStop Offset="0.95" Color="#00FFFFFF" />
+                    <GradientStop Offset="1" Color="#00FFFFFF" />
+                </LinearGradientBrush>
+            </winui:OpacityMaskView.OpacityMask>
+            <winui:OpacityMaskView>
+                <winui:OpacityMaskView.OpacityMask>
+                    <LinearGradientBrush MappingMode="RelativeToBoundingBox" StartPoint="1,1" EndPoint="0,1">
+                        <GradientStop Offset="0" Color="#FFFFFFFF" />
+                        <GradientStop Offset="0.05" Color="#FFFFFFFF" />
+                        <GradientStop Offset="0.30" Color="#FFFFFFFF" />
+                        <GradientStop Offset="0.95" Color="#00FFFFFF" />
+                        <GradientStop Offset="1" Color="#00FFFFFF" />
                     </LinearGradientBrush>
-                </Rectangle.Fill>
-            </Rectangle>
+                </winui:OpacityMaskView.OpacityMask>
 
-            <StackPanel
-                x:Name="MainPanel"
-                Margin="30,0,0,10"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                Orientation="Vertical">
-                <TextBlock
-                    x:Name="ArtistText"
-                    FontFamily="{StaticResource VKSansBold}"
-                    FontSize="50"
-                    FontWeight="Bold"
-                    Text="Artist text" />
-                <Grid x:Name="ActionsGrid" HorizontalAlignment="Left" />
-            </StackPanel>
-        </Grid>
-    </winui:OpacityMaskView>
+                <Grid Height="450" MaxHeight="450">
+                    <Image
+                        x:Name="ArtistBannerImage"
+                        Height="{Binding ElementName=ArtistBannerImage, Path=Width}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Stretch="UniformToFill" />
+                </Grid>
+            </winui:OpacityMaskView>
+        </winui:OpacityMaskView>
+        <Rectangle
+            Height="450"
+            Margin="0,0,-15,0"
+            Opacity="0.7"
+            Visibility="Visible">
+           
+        </Rectangle>
+
+        <StackPanel
+            x:Name="MainPanel"
+            Margin="30,0,0,10"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Orientation="Vertical">
+            <TextBlock
+                x:Name="ArtistText"
+                FontFamily="{StaticResource VKSansBold}"
+                FontSize="50"
+                FontWeight="Bold"
+                Text="Artist text" />
+            <Grid x:Name="ActionsGrid" HorizontalAlignment="Left" />
+        </StackPanel>
+    </Grid>
+
 </UserControl>

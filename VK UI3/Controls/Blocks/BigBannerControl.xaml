@@ -11,116 +11,120 @@
     xmlns:winui="using:WinUICommunity"
     mc:Ignorable="d">
 
-   
+
+    <Grid
+        Height="510"
+        Margin="0,0,10,0"
+        CornerRadius="4">
+
         <Grid
-            Height="510"
-            Margin="0,0,10,0"
-            CornerRadius="4">
+            Height="450"
+            MaxHeight="450"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Top"
+            CornerRadius="8">
+            <winui:OpacityMaskView HorizontalAlignment="Stretch">
+                <winui:OpacityMaskView.OpacityMask>
+                    <LinearGradientBrush MappingMode="RelativeToBoundingBox" StartPoint="1,0" EndPoint="1,1">
+                        <GradientStop Offset="0" Color="#FFFFFFFF" />
+                        <GradientStop Offset="0.05" Color="#FFFFFFFF" />
+                        <GradientStop Offset="0.55" Color="#FFFFFFFF" />
+                        <GradientStop Offset="0.95" Color="#00FFFFFF" />
+                        <GradientStop Offset="1" Color="#00FFFFFF" />
+                    </LinearGradientBrush>
+                </winui:OpacityMaskView.OpacityMask>
 
-        <winui:OpacityMaskView>
-            <winui:OpacityMaskView.OpacityMask>
-                <LinearGradientBrush MappingMode="RelativeToBoundingBox" StartPoint="0,0" EndPoint="0,1">
-                    <GradientStop Offset="0" Color="#FFFFFFFF" />
-                    <GradientStop Offset="0.05" Color="#FFFFFFFF" />
-                    <GradientStop Offset="0.25" Color="#FFFFFFFF" />
-                    <GradientStop Offset="0.55" Color="#FFFFFFFF" />
-                    <GradientStop Offset="0.95" Color="#00FFFFFF" />
-                    <GradientStop Offset="1" Color="#00FFFFFF" />
-                </LinearGradientBrush>
-            </winui:OpacityMaskView.OpacityMask>
-            <Grid
-                Height="450"
-                MaxHeight="450"
-                VerticalAlignment="Top"
-                Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-                CornerRadius="8">
-                <Image
-                    x:Name="BannerImage"
-                    Height="{Binding ElementName=ArtistBannerImage, Path=Width}"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Stretch="UniformToFill" />
-                <Rectangle
-                    Height="450"
-                    Margin="0,0,-15,0"
-                    Opacity="0.7"
-                    Visibility="Visible">
-                    <Rectangle.Fill>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                            <GradientStop Offset="0.1" Color="{ThemeResource SystemAltHighColor}" />
-                            <GradientStop Offset="1.5" Color="Transparent" />
+                <winui:OpacityMaskView HorizontalAlignment="Stretch">
+                    <winui:OpacityMaskView.OpacityMask>
+                        <LinearGradientBrush MappingMode="RelativeToBoundingBox" StartPoint="1,1" EndPoint="0,1">
+                            <GradientStop Offset="0" Color="#FFFFFFFF" />
+                            <GradientStop Offset="0.05" Color="#FFFFFFFF" />
+                            <GradientStop Offset="0.30" Color="#FFFFFFFF" />
+                            <GradientStop Offset="0.95" Color="#00FFFFFF" />
+                            <GradientStop Offset="1" Color="#00FFFFFF" />
                         </LinearGradientBrush>
-                    </Rectangle.Fill>
-                </Rectangle>
-                <Grid Margin="20,0,0,0" VerticalAlignment="Center">
+                    </winui:OpacityMaskView.OpacityMask>
+                    <Grid Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}">
+                        <Image
+                            x:Name="BannerImage"
+                            Height="{Binding ElementName=ArtistBannerImage, Path=Width}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Stretch="UniformToFill" />
 
-                    <StackPanel Margin="10" HorizontalAlignment="Left">
+                    </Grid>
+                </winui:OpacityMaskView>
+            </winui:OpacityMaskView>
+
+            <Grid Margin="20,0,0,0" VerticalAlignment="Center">
+
+                <StackPanel Margin="10" HorizontalAlignment="Left">
+                    <TextBlock
+                        x:Name="Title"
+                        FontSize="50"
+                        FontWeight="SemiBold"
+                        Opacity="0.7"
+                        Text="Название альбома"
+                        TextWrapping="Wrap" />
+
+                    <StackPanel Margin="0" HorizontalAlignment="Left">
                         <TextBlock
-                            x:Name="Title"
-                            FontSize="50"
+                            x:Name="SubTitle"
+                            FontSize="30"
                             FontWeight="SemiBold"
                             Opacity="0.7"
-                            Text="Название альбома"
+                            Text="Исполнитель"
+                            TextWrapping="Wrap" />
+                        <TextBlock
+                            x:Name="Description"
+                            FontFamily="{StaticResource VKSansRegular}"
+                            FontSize="20"
+                            Opacity="0.7"
+                            Text=""
                             TextWrapping="Wrap" />
 
-                        <StackPanel Margin="0" HorizontalAlignment="Left">
-                            <TextBlock
-                                x:Name="SubTitle"
-                                FontSize="30"
-                                FontWeight="SemiBold"
-                                Opacity="0.7"
-                                Text="Исполнитель"
-                                TextWrapping="Wrap" />
-                            <TextBlock
-                                x:Name="Description"
-                                FontFamily="{StaticResource VKSansRegular}"
-                                FontSize="20"
-                                Opacity="0.7"
-                                Text=""
-                                TextWrapping="Wrap" />
 
+                        <Button
+                            x:Name="ActionCuratorButton"
+                            Width="200"
+                            Margin="0,20,0,0"
+                            HorizontalAlignment="Left"
+                            Background="{StaticResource AcrylicBackgroundFillColorDefaultBrush}"
+                            Click="ActionCuratorButton_Click">
+                            Открыть
+                        </Button>
 
-                            <Button
-                                x:Name="ActionCuratorButton"
-                                Width="200"
-                                Margin="0,20,0,0"
-                                HorizontalAlignment="Left"
-                                Background="{StaticResource CustomAcrylicInAppBrush}"
-                                Click="ActionCuratorButton_Click">
-                                Открыть
-                            </Button>
-
-                        </StackPanel>
                     </StackPanel>
-                </Grid>
+                </StackPanel>
             </Grid>
-        </winui:OpacityMaskView>
+        </Grid>
+
 
         <customV:UniversalControl
-                x:Name="myControl"
-                VerticalAlignment="Bottom"
-                CornerRadius="10"
-                ItemsSource="{x:Bind banners}"
-                incrementalLoadingThreshold="100"
-                itsAll="true">
+            x:Name="myControl"
+            VerticalAlignment="Bottom"
+            CornerRadius="10"
+            ItemsSource="{x:Bind banners}"
+            incrementalLoadingThreshold="100"
+            itsAll="true">
 
-                <customV:UniversalControl.ItemsPanelTemplate>
-                    <ItemsPanelTemplate>
-                        <ItemsWrapGrid MaximumRowsOrColumns="1" />
-                    </ItemsPanelTemplate>
-                </customV:UniversalControl.ItemsPanelTemplate>
+            <customV:UniversalControl.ItemsPanelTemplate>
+                <ItemsPanelTemplate>
+                    <ItemsWrapGrid MaximumRowsOrColumns="1" />
+                </ItemsPanelTemplate>
+            </customV:UniversalControl.ItemsPanelTemplate>
 
-                <customV:UniversalControl.ItemTemplate>
-                    <DataTemplate>
-                        <customX:BannerControl />
-                    </DataTemplate>
-                </customV:UniversalControl.ItemTemplate>
-
-
-
-            </customV:UniversalControl>
+            <customV:UniversalControl.ItemTemplate>
+                <DataTemplate>
+                    <customX:BannerControl />
+                </DataTemplate>
+            </customV:UniversalControl.ItemTemplate>
 
 
-        </Grid>
-  
+
+        </customV:UniversalControl>
+
+
+    </Grid>
+
 </UserControl>

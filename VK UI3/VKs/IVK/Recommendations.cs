@@ -27,7 +27,7 @@ namespace VK_UI3.VKs.IVK
 
         public override long? getCount()
         {
-            return null;
+            return -1;
         }
 
         public User user;

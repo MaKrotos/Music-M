@@ -301,6 +301,11 @@ namespace VK_UI3.Controls
         {
             if (e.GetCurrentPoint(sender as UIElement).Properties.IsLeftButtonPressed)
             {
+                if (dataTrack.PlayThis && AudioPlayer.mediaPlayer.CurrentState != Windows.Media.Playback.MediaPlayerState.Paused)
+                {
+                    AudioPlayer.mediaPlayer.Pause();
+                    return;
+                }
                 dataTrack.iVKGetAudio.currentTrack = dataTrack.NumberInList;
                 AudioPlayer.PlayList(dataTrack.iVKGetAudio);
             }

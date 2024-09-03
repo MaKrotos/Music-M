@@ -27,6 +27,7 @@ namespace VK_UI3.Views.Controls
             InvokeCommand = new RelayCommand(Invoke);
             changeIcon = new AnimationsChangeIcon(symbolIcon);
             changeText = new AnimationsChangeText(text, this.DispatcherQueue);
+            this.Background = (Microsoft.UI.Xaml.Media.Brush)App.Current.Resources["AcrylicBackgroundFillColorDefaultBrush"];
         }
 
         AnimationsChangeIcon changeIcon;
