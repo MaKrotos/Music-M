@@ -24,6 +24,7 @@ namespace VK_UI3.DB
 
             public string AnonToken { get; set; } = null;
             public string DeviceId { get; set; } = null;
+            public String? BoomToken { get; set; } = null;
 
             internal void Update()
             {

@@ -56,6 +56,7 @@ namespace VK_UI3.VKs
 
         public static readonly BoomService boomService = App._host.Services.GetRequiredService<BoomService>();
 
+
         public static readonly SafeBoomService safeBoomService = new SafeBoomService(boomService);
 
 
@@ -739,7 +740,26 @@ namespace VK_UI3.VKs
             return hResult.Succeeded;
         }
 
+        public static async Task BoomUpdateToken()
+        {
+            try
+            {
+                var boomVkToken = await vkService.GetBoomToken();
 
+                var boomToken = await boomService.AuthByTokenAsync(boomVkToken.Token, boomVkToken.Uuid);
+
+                DB.AccountsDB.activeAccount.BoomToken = boomToken.AccessToken;
+                DB.AccountsDB.activeAccount.Update();
+
+                boomService.SetToken(boomToken.AccessToken);
+            }
+            catch (Exception ex)
+            {
+
+
+            }
+        }
+       
 
         /*
 

@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
+using MusicX.Core.Exceptions.Boom;
 using MusicX.Core.Models;
 using System;
 using System.Threading.Tasks;
@@ -186,6 +187,7 @@ namespace VK_UI3.Views
                     SectionType.ConversDialogs => LoadDialogs(),
                     SectionType.LoadFriends => LoadFriends(),
                     SectionType.CustomIVKGetAudio => LoadCustomiVKGetAudio(handlerContainer),
+                    SectionType.Mixes => LoadMixesPage(handlerContainer),
 
                     _ => throw new ArgumentOutOfRangeException()
                 }); ;
@@ -206,6 +208,7 @@ namespace VK_UI3.Views
             }
         }
 
+    
 
         private async Task LoadDialogs()
         {
@@ -368,8 +371,41 @@ namespace VK_UI3.Views
                     frameSection.Navigate(typeof(PlayListPage), waitParameters.iVKGetAudio, new DrillInNavigationTransitionInfo());
                 });
             }
+
+
+
         }
 
+        private async Task LoadMixesPage(HandlerContainer handlerContainer)
+        {
+            try
+            {
+
+
+     
+
+                MixPageParametres mixPageParametres = new MixPageParametres();
+                mixPageParametres.artists = await VKs.VK.boomService.GetArtistsAsync();
+                mixPageParametres.Tags = await VKs.VK.boomService.GetTagsAsync();
+
+                this.DispatcherQueue.TryEnqueue(() =>
+                {
+                    frameSection.Navigate(typeof(MixPage), mixPageParametres, new DrillInNavigationTransitionInfo());
+                });
+
+            }
+            catch (UnauthorizedException)
+            {
+
+
+                await VKs.VK.BoomUpdateToken();
+                LoadMixesPage(handlerContainer);
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
 
         private async Task loadSection(string sectionID, bool showTitle = false)
         {
@@ -384,8 +420,9 @@ namespace VK_UI3.Views
                         frameSection.Navigate(typeof(SectionView), waitParameters.section, new DrillInNavigationTransitionInfo());
                     });
                 }
-                catch (Exception ex) {
-                
+                catch (Exception ex)
+                {
+
                 }
             });
         }
