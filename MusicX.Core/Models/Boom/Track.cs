@@ -4,14 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VkNet.Model.Attachments;
 
 namespace MusicX.Core.Models.Boom
 {
-    public class Track
+    public class Track : Audio
     {
-        [JsonProperty("isExplicit")]
-        public bool IsExplicit { get; set; }
-
         [JsonProperty("size")]
         public int Size { get; set; }
 
@@ -42,8 +40,6 @@ namespace MusicX.Core.Models.Boom
         [JsonProperty("isRestricted")]
         public bool IsRestricted { get; set; }
 
-        [JsonProperty("duration")]
-        public int Duration { get; set; }
 
         [JsonProperty("counts")]
         public Counts Counts { get; set; }

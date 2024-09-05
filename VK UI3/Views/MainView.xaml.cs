@@ -567,10 +567,7 @@ namespace VK_UI3.Views
                         OpenMyPage(SectionType.ConversDialogs);
                         break;
 
-                    case "миксы":
-                        OpenMyPage(SectionType.Mixes);
-                        break;
-
+               
                     default:
                         var Item = NavWiv.SelectedItem as NavMenuController;
                         OpenSection(Item.navSettings.section.Id);

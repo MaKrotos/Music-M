@@ -86,9 +86,9 @@ namespace VK_UI3.Controls
                 }
                 else
                 {
-                    MoreButton.Visibility = Visibility.Visible;
+                    MoreFontIcon.Visibility = Visibility.Visible;
 
-                    MoreButton.Content = block.Buttons[0].Title;
+                    //MoreButton.Content = block.Buttons[0].Title;
 
                     return;
 

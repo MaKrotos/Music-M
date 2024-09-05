@@ -18,81 +18,27 @@
 
     <Grid>
 
-        <Grid
-            x:Name="columns"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Opacity="0">
-            <Grid.Triggers>
-                <EventTrigger RoutedEvent="Grid.Loaded">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation
-                                Storyboard.TargetName="columns"
-                                Storyboard.TargetProperty="Opacity"
-                                To="1.0"
-                                Duration="0:0:2" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Grid.Triggers>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <palks:Palka
-                Grid.Column="0"
-                Width="50"
-                Height="200"
-                Margin="20"
-                Background="Red"
-                CornerRadius="25"
-                Max="1.3"
-                Min="0.2"
-                Seconds="0.25" />
-            <palks:Palka
-                Grid.Column="1"
-                Width="50"
-                Height="200"
-                Margin="20"
-                Background="Blue"
-                CornerRadius="25"
-                Max="1.3"
-                Min="0.2"
-                Seconds="0.25" />
-            <palks:Palka
-                Grid.Column="2"
-                Width="50"
-                Height="200"
-                Margin="20"
-                Background="Green"
-                CornerRadius="25"
-                Max="1.3"
-                Min="0.2"
-                Seconds="0.25" />
-            <palks:Palka
-                Grid.Column="3"
-                Width="50"
-                Height="200"
-                Margin="20"
-                Background="Yellow"
-                CornerRadius="25"
-                Max="1.3"
-                Min="0.2"
-                Seconds="0.25" />
-        </Grid>
-
-        <Grid
-            Background="{StaticResource SystemControlChromeMediumLowAcrylicElementMediumBrush}"
-            CornerRadius="10"
-            Opacity="80">
+        <Grid CornerRadius="10" Opacity="80">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
 
 
             </Grid.RowDefinitions>
+
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="1,0" EndPoint="0,1">
+                    <GradientStop Offset="0" Color="#eb54bd" />
+                    <GradientStop x:Name="leftC" Offset="0.4" Color="#0077ff" />
+
+                    <GradientStop Offset="0.5" Color="#0077ff" />
+                    <GradientStop x:Name="rightC" Offset="0.85" Color="#0077ff" />
+
+                    <GradientStop Offset="1" Color="#13c286" />
+                </LinearGradientBrush>
+            </Grid.Background>
+       
+
+
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Button
                     Grid.Row="0"
@@ -104,10 +50,14 @@
                     Click="Button_Click"
                     CornerRadius="50">
                     <Button.Content>
-                        <FontIcon Margin="2.5,0,0,0" FontSize="30" Glyph="&#xE768;" />
+                        <FontIcon
+                            Margin="2.5,0,0,0"
+                            FontSize="30"
+                            Glyph="&#xE768;" />
                     </Button.Content>
                 </Button>
                 <TextBlock
+                        FontSize="40"
                     Grid.Row="1"
                     Margin="10"
                     HorizontalAlignment="Center"
@@ -115,11 +65,12 @@
                     Слушать VK Mix
                 </TextBlock>
                 <TextBlock
+                   FontSize="20"
                     Grid.Row="1"
                     Margin="10"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Opacity="0.4">
+                    Opacity="0.8">
                     Плейлист, который подстраивается под Ваши вкусы
                 </TextBlock>
 

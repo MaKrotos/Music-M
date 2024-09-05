@@ -187,7 +187,7 @@ namespace VK_UI3.Views
                     SectionType.ConversDialogs => LoadDialogs(),
                     SectionType.LoadFriends => LoadFriends(),
                     SectionType.CustomIVKGetAudio => LoadCustomiVKGetAudio(handlerContainer),
-                    SectionType.Mixes => LoadMixesPage(handlerContainer),
+  
 
                     _ => throw new ArgumentOutOfRangeException()
                 }); ;
@@ -376,37 +376,7 @@ namespace VK_UI3.Views
 
         }
 
-        private async Task LoadMixesPage(HandlerContainer handlerContainer)
-        {
-            try
-            {
-
-
-     
-
-                MixPageParametres mixPageParametres = new MixPageParametres();
-                mixPageParametres.artists = await VKs.VK.boomService.GetArtistsAsync();
-                mixPageParametres.Tags = await VKs.VK.boomService.GetTagsAsync();
-
-                this.DispatcherQueue.TryEnqueue(() =>
-                {
-                    frameSection.Navigate(typeof(MixPage), mixPageParametres, new DrillInNavigationTransitionInfo());
-                });
-
-            }
-            catch (UnauthorizedException)
-            {
-
-
-                await VKs.VK.BoomUpdateToken();
-                LoadMixesPage(handlerContainer);
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }
-
+   
         private async Task loadSection(string sectionID, bool showTitle = false)
         {
             _ = Task.Run(async () =>

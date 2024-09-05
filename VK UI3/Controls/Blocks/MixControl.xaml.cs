@@ -1,11 +1,9 @@
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
 using MusicX.Core.Models;
 using System;
 using VK_UI3.Controllers;
-using VK_UI3.Helpers.Animations;
 using VK_UI3.VKs.IVK;
 using Windows.UI;
 
@@ -47,8 +45,15 @@ namespace VK_UI3.Controls.Blocks
 
         private void MixControl_Loaded(object sender, RoutedEventArgs e)
         {
-
+            AnimateGradientStops();
         }
+
+        private void AnimateGradientStops()
+        {
+
+         
+        }
+
 
         private void MixControl_Unloaded(object sender, RoutedEventArgs e)
         {
@@ -81,6 +86,7 @@ namespace VK_UI3.Controls.Blocks
         Random random = new Random();
         private void MixControl_Loading(FrameworkElement sender, object args)
         {
+            /*
             foreach (var child in columns.Children)
             {
                 if (child is Palka palka)
@@ -90,6 +96,7 @@ namespace VK_UI3.Controls.Blocks
                     palka.Background = new SolidColorBrush(colors[colorIndex]);
                 }
             }
+            */
             AudioPlayer.oniVKUpdate += AudioPlayer_oniVKUpdate;
 
         }
@@ -106,6 +113,7 @@ namespace VK_UI3.Controls.Blocks
             && mixAudio.mix_id == block.Audio_Stream_Mixes_Ids[0]
             )
             {
+                /*
                 this.DispatcherQueue.TryEnqueue(() =>
                 {
 
@@ -117,9 +125,11 @@ namespace VK_UI3.Controls.Blocks
                         }
                     }
                 });
+                */
             }
             else
             {
+                /*
                 this.DispatcherQueue.TryEnqueue(() =>
                 {
                     foreach (var child in columns.Children)
@@ -130,8 +140,13 @@ namespace VK_UI3.Controls.Blocks
                         }
                     }
                 });
+                */
             }
         }
+
+
+
+      
 
         private void UserControl_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {

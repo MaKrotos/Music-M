@@ -73,7 +73,6 @@
 	  <None Remove="Views\Download\DownloadFFmpegController.xaml" />
 	  <None Remove="Views\Download\DOwnloadsList.xaml" />
 	  <None Remove="Views\LoginWindow\AccountList.xaml" />
-	  <None Remove="Views\MixPage.xaml" />
 	  <None Remove="Views\ModalsPages\CreatePlayList.xaml" />
 	  <None Remove="Views\ModalsPages\CustomDialog.xaml" />
 	  <None Remove="Views\ModalsPages\DownLoadFFMpeg.xaml" />
@@ -106,7 +105,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" /> 
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.2.0" /> 
     <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.106">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -248,9 +248,6 @@
     <None Update="DownloadTrack\ffmpeg.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Page Update="Views\MixPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Update="Helpers\Animations\AnimatedSearch.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
