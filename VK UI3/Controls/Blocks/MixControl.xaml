@@ -6,6 +6,7 @@
     xmlns:local="using:VK_UI3.Controls.Blocks"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:palks="using:VK_UI3.Helpers.Animations"
+    xmlns:winui="using:WinUICommunity"
     Height="300"
     Margin="0,8,0,0"
     Background="Transparent"
@@ -16,66 +17,99 @@
 
 
 
-    <Grid>
-
-        <Grid CornerRadius="10" Opacity="80">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
+    <Grid CornerRadius="10">
 
 
-            </Grid.RowDefinitions>
-
-            <Grid.Background>
-                <LinearGradientBrush StartPoint="1,0" EndPoint="0,1">
-                    <GradientStop Offset="0" Color="#eb54bd" />
-                    <GradientStop x:Name="leftC" Offset="0.4" Color="#0077ff" />
-
-                    <GradientStop Offset="0.5" Color="#0077ff" />
-                    <GradientStop x:Name="rightC" Offset="0.85" Color="#0077ff" />
-
-                    <GradientStop Offset="1" Color="#13c286" />
+        <winui:OpacityMaskView
+            Grid.Row="0"
+            Grid.Column="0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+            <winui:OpacityMaskView.OpacityMask>
+                <LinearGradientBrush MappingMode="RelativeToBoundingBox" StartPoint="1,0.2" EndPoint="1,1">
+                    <GradientStop Offset="0" Color="#FFFFFFFF" />
+                    <GradientStop Offset="0.05" Color="#FFFFFFFF" />
+                    <GradientStop Offset="0.55" Color="#FFFFFFFF" />
+                    <GradientStop Offset="0.95" Color="#00FFFFFF" />
+                    <GradientStop Offset="1" Color="#00FFFFFF" />
                 </LinearGradientBrush>
-            </Grid.Background>
-       
+            </winui:OpacityMaskView.OpacityMask>
 
+            <winui:OpacityMaskView HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <winui:OpacityMaskView.OpacityMask>
+                    <LinearGradientBrush MappingMode="RelativeToBoundingBox" StartPoint="1,0" EndPoint="0,1">
+                        <GradientStop Offset="0" Color="#FFFFFFFF" />
+                        <GradientStop Offset="0.05" Color="#FFFFFFFF" />
+                        <GradientStop Offset="0.30" Color="#FFFFFFFF" />
+                        <GradientStop Offset="0.95" Color="#00FFFFFF" />
+                        <GradientStop Offset="1" Color="#00FFFFFF" />
+                    </LinearGradientBrush>
+                </winui:OpacityMaskView.OpacityMask>
 
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button
+                <StackPanel
                     Grid.Row="0"
-                    Width="75"
-                    Height="75"
-                    Padding="0"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Click="Button_Click"
-                    CornerRadius="50">
-                    <Button.Content>
-                        <FontIcon
-                            Margin="2.5,0,0,0"
-                            FontSize="30"
-                            Glyph="&#xE768;" />
-                    </Button.Content>
-                </Button>
-                <TextBlock
-                        FontSize="40"
-                    Grid.Row="1"
-                    Margin="10"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
-                    Слушать VK Mix
-                </TextBlock>
-                <TextBlock
-                   FontSize="20"
-                    Grid.Row="1"
-                    Margin="10"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Opacity="0.8">
-                    Плейлист, который подстраивается под Ваши вкусы
-                </TextBlock>
+                    Grid.Column="0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch">
+                    <StackPanel.Background>
+                        <LinearGradientBrush StartPoint="1,0" EndPoint="0,1">
+                            <GradientStop Offset="0" Color="#eb54bd" />
+                            <GradientStop x:Name="leftC" Offset="0.4" Color="#0077ff" />
+                            <GradientStop Offset="0.5" Color="#0077ff" />
+                            <GradientStop x:Name="rightC" Offset="0.55" Color="#0077ff" />
+                            <GradientStop Offset="1" Color="#13c286" />
+                        </LinearGradientBrush>
+                    </StackPanel.Background>
+                </StackPanel>
+            </winui:OpacityMaskView>
 
-            </StackPanel>
-        </Grid>
+        </winui:OpacityMaskView>
+
+
+
+        <StackPanel
+            Grid.Row="0"
+            Grid.Column="0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+            <Button
+                Grid.Row="0"
+                Width="75"
+                Height="75"
+                Padding="0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="{ThemeResource LayerOnMicaBaseAltFillColorTertiaryBrush}"
+                Click="Button_Click"
+                CornerRadius="50">
+                <Button.Content>
+                    <FontIcon
+                        Margin="2.5,0,0,0"
+                        FontSize="30"
+                        Glyph="&#xE768;" />
+                </Button.Content>
+            </Button>
+            <TextBlock
+                Grid.Row="1"
+                Margin="10"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                 TextWrapping="Wrap"
+                FontSize="40">
+                Слушать VK Mix
+            </TextBlock>
+            <TextBlock
+                Grid.Row="1"
+                Margin="10"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                TextWrapping="Wrap"
+                FontSize="20"
+                Opacity="0.8">
+                Плейлист, который подстраивается под Ваши вкусы
+            </TextBlock>
+
+        </StackPanel>
 
     </Grid>
 </UserControl>

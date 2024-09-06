@@ -56,7 +56,7 @@
                 </winui:OpacityMaskView>
             </winui:OpacityMaskView>
 
-            <Grid Margin="20,0,0,0" VerticalAlignment="Center">
+            <Grid Margin="20,0,0,70" VerticalAlignment="Bottom">
 
                 <StackPanel Margin="10" HorizontalAlignment="Left">
                     <TextBlock

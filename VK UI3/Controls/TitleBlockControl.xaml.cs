@@ -71,7 +71,7 @@ namespace VK_UI3.Controls
                     ButtonsGrid.Visibility = Visibility.Visible;
                     //  TitleButtons.Text = block.Buttons[0].Title;
                     Buttons.Visibility = Visibility.Visible;
-                    MoreButton.Visibility = Visibility.Collapsed;
+                    MoreFontIcon.Visibility = Visibility.Collapsed;
 
                     foreach (var option in block.Actions[0].Options)
                     {
@@ -104,7 +104,7 @@ namespace VK_UI3.Controls
                         ButtonsGrid.Visibility = Visibility.Visible;
                         // TitleButtons.Text = block.Actions[0].Title;
                         Buttons.Visibility = Visibility.Visible;
-                        MoreButton.Visibility = Visibility.Collapsed;
+                        MoreFontIcon.Visibility = Visibility.Collapsed;
 
 
                         foreach (var option in block.Actions[0].Options)
@@ -120,9 +120,9 @@ namespace VK_UI3.Controls
                     }
                     else
                     {
-                        MoreButton.Visibility = Visibility.Visible;
+                        MoreFontIcon.Visibility = Visibility.Visible;
 
-                        MoreButton.Content = block.Actions[0].Title;
+                        //MoreButton.Content = block.Actions[0].Title;
 
 
                         return;
@@ -138,36 +138,7 @@ namespace VK_UI3.Controls
 
 
 
-        private async void MoreButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is not Block block)
-                return;
-            try
-            {
-
-
-                if (block.Actions.Count > 0)
-                {
-                    var bnt = block.Actions[0];
-
-                    MainView.OpenSection(bnt.SectionId);
-                    return;
-                }
-
-                var button = block.Buttons[0];
-
-                MainView.OpenSection(button.SectionId);
-            }
-            catch (Exception ex)
-            {
-
-
-
-            }
-
-
-        }
-
+   
         bool isProgrammingChange = true;
         private async void ButtonsComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -204,6 +175,57 @@ namespace VK_UI3.Controls
 
 
             //throw new NotImplementedException();
+        }
+
+        private void Grid_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if (DataContext is not Block block)
+                return;
+            try
+            {
+                if (block.Actions.Count == 0 && (block.Buttons == null || block.Buttons.Count == 0)) return;
+
+                if (block.Actions.Count > 0)
+                {
+                    var bnt = block.Actions[0];
+
+                    MainView.OpenSection(bnt.SectionId);
+                    return;
+                }
+
+                var button = block.Buttons[0];
+
+                MainView.OpenSection(button.SectionId);
+            }
+            catch (Exception ex)
+            {
+
+
+
+            }
+
+
+
+        }
+
+        private void Grid_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if (DataContext is not Block block)
+                return;
+            if (block.Actions.Count == 0 && (block.Buttons == null || block.Buttons.Count == 0)) return;
+            MoveLeftStoryboard.Pause();
+
+            MoveRightStoryboard.Begin();
+        }
+
+        private void Grid_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if (DataContext is not Block block)
+                return;
+            if (block.Actions.Count == 0 && (block.Buttons == null || block.Buttons.Count == 0)) return;
+            MoveRightStoryboard.Pause();
+            MoveLeftStoryboard.Begin();
+
         }
     }
 

@@ -11,22 +11,29 @@
     mc:Ignorable="d">
     <Grid x:Name="TitleBlock" HorizontalAlignment="Stretch">
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+        
 
         <StackPanel CornerRadius="10" Orientation="Horizontal">
-
             <StackPanel>
-                <Grid Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" CornerRadius="8">
-                    <Grid Translation="0,0,10" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}">
+                <Grid
+                    x:Name="GridAnimXed"
+                    CornerRadius="8"
+                    PointerEntered="Grid_PointerEntered"
+                    PointerExited="Grid_PointerExited"
+                    PointerPressed="Grid_PointerPressed">
+                    <Grid.RenderTransform>
+                        <CompositeTransform x:Name="GridTransform" />
+                    </Grid.RenderTransform>
+                    <Grid
+                        x:Name="BackgrD"
+                        Opacity="0.45"
+                        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
+                        Translation="0,0,10">
                         <Grid.Shadow>
                             <ThemeShadow />
                         </Grid.Shadow>
-                       
-                    </Grid>
 
+                    </Grid>
                     <StackPanel
                         Grid.Column="0"
                         Margin="10,4,10,4"
@@ -59,11 +66,42 @@
 
                         <FontIcon
                             x:Name="MoreFontIcon"
+                            Foreground="{ThemeResource AccentAAFillColorDefaultBrush}"
                             Margin="0,6,0,0"
                             VerticalAlignment="Center"
-                            Glyph="&#xE76C;" />
+                            Glyph="&#xE76C;"
+                            Visibility="Collapsed" />
+
 
                     </StackPanel>
+                    <Grid.Resources>
+                        <Storyboard x:Name="MoveRightStoryboard">
+                            <DoubleAnimation
+                                Storyboard.TargetName="GridTransform"
+                                Storyboard.TargetProperty="TranslateX"
+                                To="30"
+                                Duration="0:0:0.175" />
+                            <DoubleAnimation
+                                Storyboard.TargetName="BackgrD"
+                                Storyboard.TargetProperty="Opacity"
+                                To="1"
+                                Duration="0:0:0.175" />
+                        </Storyboard>
+                        <Storyboard x:Name="MoveLeftStoryboard">
+                            <DoubleAnimation
+                                Storyboard.TargetName="GridTransform"
+                                Storyboard.TargetProperty="TranslateX"
+                                To="0"
+                                Duration="0:0:0.175" />
+                            <DoubleAnimation
+                                Storyboard.TargetName="BackgrD"
+                                Storyboard.TargetProperty="Opacity"
+                                To="0.45"
+                                Duration="0:0:0.175" />
+                        </Storyboard>
+                    </Grid.Resources>
+
+
                 </Grid>
                 <TextBlock
                     x:Name="Subtitle"
@@ -71,21 +109,11 @@
                     VerticalAlignment="Bottom"
                     Opacity="0.4"
                     Text="Subtitle"
-                    Visibility="Visible">
-                    1qs
-                </TextBlock>
+                    Visibility="Collapsed" />
 
             </StackPanel>
 
-            <Button
-                x:Name="MoreButton"
-                Grid.Column="1"
-                Height="30"
-                Margin="0,0,0,0"
-                Padding="8,0"
-                HorizontalAlignment="Right"
-                Click="MoreButton_Click"
-                Visibility="Collapsed" />
+
         </StackPanel>
 
 

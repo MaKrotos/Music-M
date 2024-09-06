@@ -58,9 +58,10 @@
             x:Name="MainPanel"
             Margin="30,0,0,10"
             HorizontalAlignment="Left"
-            VerticalAlignment="Center"
+            VerticalAlignment="Bottom"
             Orientation="Vertical">
             <TextBlock
+                  TextWrapping="Wrap"
                 x:Name="ArtistText"
                 FontFamily="{StaticResource VKSansBold}"
                 FontSize="50"

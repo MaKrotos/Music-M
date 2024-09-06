@@ -42,6 +42,7 @@
             ScrollViewer.VerticalScrollBarVisibility="Disabled"
             ScrollViewer.VerticalScrollMode="Disabled"
             SelectionMode="None">
+            
 
 
             <GridView.ItemContainerStyle>
