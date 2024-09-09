@@ -63,6 +63,7 @@ namespace VK_UI3.Controls
                 BadgeHeader.Text = block.Badge.Text;
                 BadgeHeader.Visibility = Visibility.Visible;
             }
+           
 
             if (block.Buttons != null && block.Buttons.Count > 0) //ios
             {
@@ -87,7 +88,7 @@ namespace VK_UI3.Controls
                 else
                 {
                     MoreFontIcon.Visibility = Visibility.Visible;
-
+                    BackgrD.Opacity = 0.45;
                     //MoreButton.Content = block.Buttons[0].Title;
 
                     return;
@@ -121,7 +122,7 @@ namespace VK_UI3.Controls
                     else
                     {
                         MoreFontIcon.Visibility = Visibility.Visible;
-
+                        BackgrD.Opacity = 0.45;
                         //MoreButton.Content = block.Actions[0].Title;
 
 
@@ -183,7 +184,7 @@ namespace VK_UI3.Controls
                 return;
             try
             {
-                if (block.Actions.Count == 0 && (block.Buttons == null || block.Buttons.Count == 0)) return;
+                if (block.Actions.Count == 0 || string.IsNullOrEmpty(block.Actions[0].SectionId)) return;
 
                 if (block.Actions.Count > 0)
                 {
@@ -212,7 +213,7 @@ namespace VK_UI3.Controls
         {
             if (DataContext is not Block block)
                 return;
-            if (block.Actions.Count == 0 && (block.Buttons == null || block.Buttons.Count == 0)) return;
+            if (block.Actions.Count == 0 || string.IsNullOrEmpty(block.Actions[0].SectionId)) return;
             MoveLeftStoryboard.Pause();
 
             MoveRightStoryboard.Begin();
@@ -222,7 +223,7 @@ namespace VK_UI3.Controls
         {
             if (DataContext is not Block block)
                 return;
-            if (block.Actions.Count == 0 && (block.Buttons == null || block.Buttons.Count == 0)) return;
+            if (block.Actions.Count == 0 || string.IsNullOrEmpty(block.Actions[0].SectionId)) return;
             MoveRightStoryboard.Pause();
             MoveLeftStoryboard.Begin();
 
