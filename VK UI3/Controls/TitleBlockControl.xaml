@@ -26,9 +26,9 @@
                     </Grid.RenderTransform>
                     <Grid
                         x:Name="BackgrD"
-                        Opacity="0"
+                        Opacity="0.45"
                         Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-                        Translation="0,0,10">
+                        Translation="0,0,20">
                         <Grid.Shadow>
                             <ThemeShadow />
                         </Grid.Shadow>
@@ -67,7 +67,7 @@
                         <FontIcon
                             x:Name="MoreFontIcon"
                             Foreground="{ThemeResource AccentAAFillColorDefaultBrush}"
-                            Margin="0,6,0,0"
+                            Margin="0,0,0,0"
                             VerticalAlignment="Center"
                             Glyph="&#xE76C;"
                             Visibility="Collapsed" />

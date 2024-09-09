@@ -81,6 +81,7 @@ namespace VK_UI3.Controls.Blocks
                 var a = await VK.vkService.GetSectionAsync(localBlock.Id, localBlock.NextFrom);
                 localBlock.NextFrom = a.Section.NextFrom;
                 this.DispatcherQueue.TryEnqueue(async () => {
+                    if (a.Videos == null) return;
                     foreach (var item in a.Videos)
                     {
                         video.Add(item);
