@@ -87,6 +87,8 @@
 	  <None Remove="Views\Share\ShareControllers\ConvController.xaml" />
 	  <None Remove="Views\Share\ShareControllers\FriendsList.xaml" />
 	  <None Remove="Views\Share\ShareControllers\UserControllers.xaml" />
+	  <None Remove="Views\Tasks\TaskController.xaml" />
+	  <None Remove="Views\Tasks\TaskList.xaml" />
 	  <None Remove="Views\Upload\UploadController.xaml" />
 	  <None Remove="Views\Upload\UploadList.xaml" />
 	  <None Remove="Views\UserPlayList.xaml" />
@@ -309,6 +311,13 @@
     </Page>
     <Page Update="Views\ModalsPages\CreatePlayList.xaml">
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Tasks\TaskController.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Tasks\TaskList.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
     <Page Update="Views\Upload\UploadController.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>

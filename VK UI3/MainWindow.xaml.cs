@@ -110,6 +110,7 @@ namespace VK_UI3
             BackBTN.AnimationCompleted += ResizeTabBar;
             ProfilesBTN.AnimationCompleted += ResizeTabBar;
             UploadBTN.AnimationCompleted += ResizeTabBar;
+            VK_UI3.Views.Tasks.Task.tasks.CollectionChanged += Tasks_CollectionChanged;
 
             UploadTrack.UploadsTracks.CollectionChanged += UploadsTracks_CollectionChanged;
 
@@ -119,6 +120,19 @@ namespace VK_UI3
 
 
 
+        }
+
+        private void Tasks_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (VK_UI3.Views.Tasks.Task.tasks.Count == 0)
+            {
+                TasksBTN.HideButton();
+              
+            }
+            else
+            {
+                TasksBTN.ShowButton();
+            }
         }
 
         private void UploadsTracks_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

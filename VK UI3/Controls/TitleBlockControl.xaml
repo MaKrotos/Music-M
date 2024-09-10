@@ -26,7 +26,7 @@
                     </Grid.RenderTransform>
                     <Grid
                         x:Name="BackgrD"
-                        Opacity="0.45"
+                        Opacity="0"
                         Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
                         Translation="0,0,20">
                         <Grid.Shadow>

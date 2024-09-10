@@ -7,6 +7,7 @@
     xmlns:custom="using:VK_UI3.Views.Download"
     xmlns:customBTN="using:VK_UI3.Helpers.Animations"
     xmlns:customLogin="using:VK_UI3.Views.LoginWindow"
+        xmlns:customTasks="using:VK_UI3.Views.Tasks"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:VK_UI3"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -186,6 +187,28 @@
                         </Flyout>
                     </Button.Flyout>
                     <FontIcon FontSize="16" Glyph="&#xE896;" />
+                </customBTN:AnimatedButton>
+
+                <customBTN:AnimatedButton
+                    x:Name="TasksBTN"
+                    Grid.Column="5"
+                    Width="0"
+                    Height="0"
+                    Margin="0,0,0,5"
+                    Padding="0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Background="Transparent"
+                    CornerRadius="5"
+                    OriginalHeight="25"
+                    OriginalMargin="5,0,0,5"
+                    OriginalWidth="35">
+                    <Button.Flyout>
+                        <Flyout>
+                            <customTasks:TaskList />
+                        </Flyout>
+                    </Button.Flyout>
+                    <FontIcon FontSize="16" Glyph="&#xF133;" />
                 </customBTN:AnimatedButton>
 
 
