@@ -3,6 +3,8 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using VK_UI3.Controllers;
 using VK_UI3.DB;
@@ -394,6 +396,17 @@ namespace VK_UI3.Controls
                 if (index != -1)
                     _PlaylistItems.RemoveAt(index);
             });
+        }
+
+        private async void GenerateAlbum_Click(object sender, RoutedEventArgs e)
+        {
+
+            var pla = await VK.vkService.GetPlaylistAsync(1000, _PlayList.Id, _PlayList.AccessKey, _PlayList.OwnerId);
+
+            List<Audio> track_playlist = new List<VkNet.Model.Attachments.Audio>(pla.Audios.Cast<VkNet.Model.Attachments.Audio>().ToList());
+            var Generator = new Services.GeneratorAlbumVK(track_playlist);
+            Generator.GenerateAsync();
+
         }
     }
 }

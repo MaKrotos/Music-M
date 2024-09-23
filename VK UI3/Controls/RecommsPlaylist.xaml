@@ -6,10 +6,11 @@
     xmlns:custom="using:VK_UI3.Helpers.Animations"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:VK_UI3.Controls"
+    xmlns:customFlyout="using:VK_UI3.Views.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Width="198"
     Height="250"
-    Margin="3,0,4,6"
+    Margin="3,0,4,0"
     CornerRadius="8"
     PointerEntered="UserControl_PointerEntered"
     PointerExited="UserControl_PointerExited"
@@ -22,7 +23,7 @@
     </UserControl.Shadow>
 
     <UserControl.ContextFlyout>
-        <MenuFlyout x:Name="flyOutm">
+        <customFlyout:CustomFlyout x:Name="flyOutm">
             <MenuFlyoutItem
                 x:Name="AddRemove"
                 Click="AddRemove_Click"
@@ -38,7 +39,7 @@
                 Click="DeleteAlbum_Click"
                 Icon="Delete"
                 Text="Удалить" />
-        </MenuFlyout>
+        </customFlyout:CustomFlyout>
     </UserControl.ContextFlyout>
 
     <Grid Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" CornerRadius="8">

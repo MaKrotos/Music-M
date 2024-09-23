@@ -369,9 +369,12 @@ namespace VK_UI3.Views
 
         private void VkGetAudio_onListUpdate(object sender, EventArgs e)
         {
-            blockLoad = false;
-            if (vkGetAudio.itsAll)
-                LoadingIndicator.Visibility = Visibility.Collapsed;
+            this.DispatcherQueue.TryEnqueue(() => {
+                blockLoad = false;
+                if (vkGetAudio.itsAll)
+                    LoadingIndicator.Visibility = Visibility.Collapsed;
+            });
+       
         }
 
 

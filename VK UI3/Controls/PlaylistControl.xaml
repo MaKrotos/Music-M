@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:custom="using:VK_UI3.Helpers.Animations"
+    xmlns:customFlyout="using:VK_UI3.Views.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:VK_UI3.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -18,7 +19,7 @@
     mc:Ignorable="d">
 
     <UserControl.ContextFlyout>
-        <MenuFlyout x:Name="flyOutm">
+        <customFlyout:CustomFlyout x:Name="flyOutm">
             <MenuFlyoutItem
                 x:Name="AddRemove"
                 Click="AddRemove_Click"
@@ -34,7 +35,15 @@
                 Click="DeleteAlbum_Click"
                 Icon="Delete"
                 Text="Удалить" />
-        </MenuFlyout>
+            <MenuFlyoutItem
+                x:Name="GenerateAlbum"
+                Click="GenerateAlbum_Click"
+                Text="Сгенерировать альбом">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xEB44;" />
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+        </customFlyout:CustomFlyout>
     </UserControl.ContextFlyout>
 
 

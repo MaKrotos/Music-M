@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using TagLib.Ape;
 using VK_UI3.DB;
 using VkNet;
+using VkNet.Model.Attachments;
 using VkNet.Model.RequestParams;
 using VkNet.Utils;
 
@@ -91,5 +92,8 @@ namespace VK_UI3.VKs
 
 
         }
+    
+      
+    
     }
 }
