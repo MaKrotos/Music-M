@@ -7,66 +7,118 @@ using System.Threading.Tasks;
 
 namespace VK_UI3.Views.Tasks
 {
-    enum Statuses
+
+
+    public class ProgressEventArgs : EventArgs
+    {
+        public int Processed { get; }
+        public int Total { get; }
+
+        public ProgressEventArgs(int processed, int total)
+        {
+            Processed = processed;
+            Total = total;
+        }
+    }
+
+    public abstract class TaskAction
+    {
+        public event EventHandler<ProgressEventArgs> ProgressChanged;
+        public event EventHandler Cancelled;
+        public event EventHandler Completed;
+        public event EventHandler<StatusChangedEventArgs> StatusChanged;
+
+      
+
+        protected virtual void OnProgressChanged(ProgressEventArgs e)
+        {
+            ProgressChanged?.Invoke(this, e);
+        }
+        protected virtual void OnCancelled(EventArgs e)
+        {
+            Cancelled?.Invoke(this, e);
+        }
+        protected virtual void OnCompleted(EventArgs e)
+        {
+            Completed?.Invoke(this, e);
+        }
+        protected virtual void OnStatusChanged(StatusChangedEventArgs e)
+        {
+            StatusChanged?.Invoke(this, e);
+        }
+
+        private Statuses _status;
+        public Statuses Status
+        {
+            get => _status;
+            set
+            {
+                if (_status != value)
+                {
+                    _status = value;
+                    OnStatusChanged(new StatusChangedEventArgs(_status));
+                }
+            }
+        }
+        
+
+        private int _progress;
+        internal static ObservableCollection<TaskAction> tasks = new ObservableCollection<TaskAction>();
+        public string nameTask { get; set; }
+        public string taskID { get; set; }  
+        protected TaskAction(int total, string nameTask, string taskID)
+        {
+            this.total = total;
+            this.nameTask = nameTask;
+            this.taskID = taskID;
+            bool exists = tasks.Any(task => task.taskID == this.taskID);
+        
+            if (exists)
+                return;
+
+            tasks.Add(this);
+        }
+
+        public int total { get; set; }
+
+        public int Progress
+        {
+            get => _progress;
+            set
+            {
+                if (_progress != value)
+                {
+                    _progress = value;
+                    OnProgressChanged(new ProgressEventArgs(_progress, total));
+                }
+            }
+        }
+        public abstract void onClick();
+        public abstract void Cancel();
+        public abstract void Pause();
+        public abstract void Resume();
+    }
+
+    public class StatusChangedEventArgs : EventArgs
+    {
+        public Statuses Status { get; }
+
+        public StatusChangedEventArgs(Statuses status)
+        {
+            Status = status;
+        }
+    }
+
+
+    public enum Statuses
     {
         Resume,
         Pause,
         Completed,
-        error
+        Error,
+        Cancelled
     }
-    internal class Task
-    {
-        public static ObservableCollection<Task> tasks = new ObservableCollection<Task>();
 
-        public Task(string name, string description, int maxTaskDoing)
-        {
-            Name = name;
-            Description = description;
-            this.maxTaskDoing = maxTaskDoing;
-            Status = Statuses.Resume;
-            doingStatus = 0;
-            tasks.Add(this);
-        }
+   
 
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public int maxTaskDoing { get; set; }
-        private int _doingStatus { get; set; }
-        public int doingStatus { get { return _doingStatus; } set { _doingStatus = value; onStatusUpdate?.Invoke(this, EventArgs.Empty); } }
-
-        private Statuses _Status;
-        public Statuses Status { get { return _Status; } set {
-
-                _Status = value;
-                onStatusUpdate?.Invoke(this, EventArgs.Empty);
-
-            }
-        }
-
-
-
-
-        public event EventHandler Cancel;
-        public event EventHandler onStatusUpdate;
-        public event EventHandler onDoingStatusUpdate;
-        public event EventHandler ClickTask;
-
-        public void ClickTaskInvoke() {
-            ClickTask?.Invoke(this, EventArgs.Empty);
-        }
-        public void CancelTask() { 
-            this.Status = Statuses.Pause;
-            Cancel?.Invoke(this, EventArgs.Empty);  
-        }
-
-        internal void Resume()
-        {
-           
-        }
-
-        internal void Pause()
-        {
-           
-        }
-    }
 }

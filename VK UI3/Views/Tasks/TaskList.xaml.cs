@@ -18,25 +18,25 @@ namespace VK_UI3.Views.Tasks
 
             this.Loading += DownloadsList_Loading;
             this.Unloaded += DownloadsList_Unloaded;
-            foreach (var task in Task.tasks)
+            foreach (var task in TaskAction.tasks)
             {
                 tasks.Add(task);
             }
-            Task.tasks.CollectionChanged += Tasks_CollectionChanged;
+            TaskAction.tasks.CollectionChanged += Tasks_CollectionChanged;
         }
 
         private void Tasks_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
             {
-                foreach (Task newTask in e.NewItems)
+                foreach (TaskAction newTask in e.NewItems)
                 {
                     tasks.Add(newTask);
                 }
             }
             else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
             {
-                foreach (Task oldTask in e.OldItems)
+                foreach (TaskAction oldTask in e.OldItems)
                 {
                     tasks.Remove(oldTask);
                 }
@@ -44,7 +44,7 @@ namespace VK_UI3.Views.Tasks
         }
 
 
-        ObservableCollection<Task> tasks = new ObservableCollection<Task>();
+        ObservableCollection<TaskAction> tasks = new ObservableCollection<TaskAction>();
         private void DownloadsList_Unloaded(object sender, RoutedEventArgs e)
         {
            

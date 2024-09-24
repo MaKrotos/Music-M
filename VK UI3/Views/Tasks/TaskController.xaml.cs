@@ -28,8 +28,8 @@ namespace VK_UI3.Views.Tasks
         {
             if (_task != null)
             {
-                _task.onDoingStatusUpdate -= (OnDoingStatusUpdate);
-                _task.onStatusUpdate -= (OnDoingStatusUpdate);
+                _task.StatusChanged -= (OnDoingStatusUpdate);
+                _task.ProgressChanged -= (OnDoingStatusUpdate);
 
             }
         }
@@ -42,17 +42,17 @@ namespace VK_UI3.Views.Tasks
                 animationsChangeFontIcon = new Helpers.Animations.AnimationsChangeFontIcon(PlayIcon, this.DispatcherQueue);
         }
 
-        Task _task { get; set; }
+        TaskAction _task { get; set; }
         private void DownloadController_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             if (DataContext == null) return;
             if (_task != null)
             {
-                _task.onDoingStatusUpdate -= PlayListDownload_onDoingStatusUpdate;
-                _task.onStatusUpdate -= (OnDoingStatusUpdate);
+                _task.ProgressChanged -= PlayListDownload_onDoingStatusUpdate;
+                _task.StatusChanged -= (OnDoingStatusUpdate);
             }
-            _task = (DataContext as Task);
-            DownloadTitle.Text = _task.Name;
+            _task = (DataContext as TaskAction);
+            DownloadTitle.Text = _task.nameTask;
 
             if (DownloadTitle.Text.Length > 20)
             {
@@ -60,15 +60,15 @@ namespace VK_UI3.Views.Tasks
             }
 
 
-            _task.onDoingStatusUpdate += PlayListDownload_onDoingStatusUpdate;
-            _task.onStatusUpdate += (OnDoingStatusUpdate);
+            _task.ProgressChanged += PlayListDownload_onDoingStatusUpdate;
+            _task.StatusChanged += (OnDoingStatusUpdate);
 
-            string original = _task.Name;
+            string original = _task.nameTask;
             if (original.Length > 20)
             {
                 original = "..." + original.Substring(original.Length - 20);
             }
-            DownloadProgressBar.Maximum = _task.maxTaskDoing;
+            DownloadProgressBar.Maximum = _task.total;
             pathText.Text = original + "\\...";
             updateUI();
         }
@@ -93,11 +93,11 @@ namespace VK_UI3.Views.Tasks
 
 
 
-                    if (_task.Status == Statuses.Pause|| _task.Status == Statuses.error)
+                    if (_task.Status == Statuses.Pause|| _task.Status == Statuses.Error)
                     {
                         {
                             animationsChangeFontIcon.ChangeFontIconWithAnimation("\uF5B0");
-                            if ((_task.Status == Statuses.error))
+                            if ((_task.Status == Statuses.Error))
                                 DownloadProgressBar.ShowPaused = true;
                         }
                     }
@@ -105,14 +105,14 @@ namespace VK_UI3.Views.Tasks
                     {
                         animationsChangeFontIcon.ChangeFontIconWithAnimation("\uE769");
 
-                        if (!(_task.Status == Statuses.error))
+                        if (!(_task.Status == Statuses.Error))
                             DownloadProgressBar.ShowPaused = false;
                     }
-                    dx.Text = $"{_task.doingStatus}";
+                    dx.Text = $"{_task.Progress}";
                    
-                    dx.Text += $" из {_task.doingStatus}";
+                    dx.Text += $" из {_task.total}";
                
-                    DownloadProgressBar.Value = _task.doingStatus;
+                    DownloadProgressBar.Value = _task.Progress;
                 }
                 catch { }
             });
@@ -120,12 +120,12 @@ namespace VK_UI3.Views.Tasks
  
         private void UCcontrol_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            _task.ClickTaskInvoke();
+            _task.onClick();
         }
 
         private void Cancel_clicked(object sender, RoutedEventArgs e)
         {
-            _task.CancelTask();
+            _task.Cancel();
         }
 
         private void PlayPause_clicked(object sender, RoutedEventArgs e)

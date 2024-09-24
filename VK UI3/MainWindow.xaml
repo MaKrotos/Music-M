@@ -196,7 +196,7 @@
                     Height="0"
                     Margin="0,0,0,5"
                     Padding="0"
-                    HorizontalAlignment="Right"
+                    HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     Background="Transparent"
                     CornerRadius="5"
