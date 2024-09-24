@@ -83,7 +83,13 @@ namespace VK_UI3.Controls
                 dataTrack = (DataContext as ExtendedAudio);
                 string? newLink = "";
                 if (dataTrack.audio.Album != null && dataTrack.audio.Album.Thumb != null)
-                    newLink = dataTrack.audio.Album.Thumb.Photo270 ??
+                    newLink = 
+                    dataTrack.audio.Thumb.Photo270 ??
+                    dataTrack.audio.Thumb.Photo300 ??
+                    dataTrack.audio.Thumb.Photo600 ??
+                    dataTrack.audio.Thumb.Photo34 ??
+
+                    dataTrack.audio.Album.Thumb.Photo270 ??
                     dataTrack.audio.Album.Thumb.Photo300 ??
                     dataTrack.audio.Album.Thumb.Photo600 ??
                     dataTrack.audio.Album.Thumb.Photo34 ??
@@ -112,7 +118,33 @@ namespace VK_UI3.Controls
                 this.Opacity = 1;
             }
 
-           
+            if (!(dataTrack.audio.AudioChartInfo is null))
+            {
+                switch (dataTrack.audio.AudioChartInfo.State)
+                {
+                    case ChartState.Crown:
+                        this.chartState.Text = "👑";
+                        break;
+                    case ChartState.New_Release:
+                        this.chartState.Text = "🆕";
+                        break;
+                  
+                    case ChartState.Moved_up:
+                        this.chartState.Text = "👆";
+                        break;
+                    case ChartState.Moved_down:
+                        this.chartState.Text = "👇";
+                        break;
+                    default:
+                        this.chartState.Text = "";
+                        break;
+                }
+
+            }
+            else
+            {
+                this.chartState.Text = "";
+            }
 
 
 
@@ -189,7 +221,7 @@ namespace VK_UI3.Controls
             }
         }
 
-      
+
 
         protected void OnPropertyChanged(string propertyName)
         {
@@ -316,12 +348,12 @@ namespace VK_UI3.Controls
 
 
 
-      
-     
- 
-        
 
-      
+
+
+
+
+
 
     }
 }

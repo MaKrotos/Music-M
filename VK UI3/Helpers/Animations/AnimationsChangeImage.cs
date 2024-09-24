@@ -81,7 +81,7 @@ namespace VK_UI3.Helpers.Animations
         public void ChangeImageWithAnimation(Uri? newImageSourceUrl, bool justDoIt = false, bool setColorTheme = false)
         {
 
-            if (imageSourceNow != null && imageSourceNow == newImageSourceUrl && !justDoIt)
+            if (imageSourceNow != null && imageSourceNow.Equals(newImageSourceUrl) && !justDoIt)
                 return;
 
             Task<BitmapImage> GetImageTask = null ;

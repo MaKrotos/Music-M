@@ -35,7 +35,12 @@ namespace VK_UI3.Controls
         private void RecomUsersControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             if (DataContext == null) return;
-            _PlayList = (DataContext as RecommendedPlaylist);
+            var pl = (DataContext as RecommendedPlaylist);
+            
+            if (_PlayList != null && pl.Id == _PlayList.Id) 
+                return; 
+
+                _PlayList = (DataContext as RecommendedPlaylist);
 
             animationsChangeImage = new Helpers.Animations.AnimationsChangeImage(AvatarImage, this.DispatcherQueue);
 
@@ -48,6 +53,8 @@ namespace VK_UI3.Controls
         ObservableCollection<ExtendedAudio> extendedAudios = new ObservableCollection<ExtendedAudio>();
         private void update()
         {
+            
+
             playListVK = new PlayListVK(_PlayList, DispatcherQueue);
             double percentage;
             if (double.TryParse(_PlayList.Percentage.Replace(".", ","), out percentage))

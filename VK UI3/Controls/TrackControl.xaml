@@ -67,7 +67,7 @@
                         <Image x:Name="ImageThumb" Opacity="0" />
                     </Grid>
 
-
+                    <TextBlock x:Name="chartState"  Margin="2,0,0,0" FontSize="13"></TextBlock>
                     <Grid
                         x:Name="GridPlayIcon"
                         Background="{StaticResource CustomAcrylicInAppBrush}"

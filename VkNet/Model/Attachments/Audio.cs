@@ -165,14 +165,32 @@ namespace VkNet.Model.Attachments
 		[JsonProperty("track_code")]
 		public string TrackCode { get; set; }
 
-	#region Методы
 
-		/// <summary>
-		/// Разобрать из json.
-		/// </summary>
-		/// <param name="response"> Ответ сервера. </param>
-		/// <returns> </returns>
-		public static Audio FromJson(VkResponse response)
+        [JsonProperty("audio_chart_info")]
+		public	AudioChartInfo AudioChartInfo { get; set; }
+
+        [JsonProperty("thumb")]
+        public AudioCover Thumb { get; set; }
+
+
+        /*
+		 * "[ads, {
+		  ""content_id"": ""-2001619099_128619099"",
+		  ""duration"": ""171"",
+		  ""account_age_type"": ""3"",
+		  ""puid1"": ""554"",
+		  ""puid22"": ""14""
+		}]"
+		 */
+
+        #region Методы
+
+        /// <summary>
+        /// Разобрать из json.
+        /// </summary>
+        /// <param name="response"> Ответ сервера. </param>
+        /// <returns> </returns>
+        public static Audio FromJson(VkResponse response)
 		{
 			return new Audio
 			{
@@ -213,6 +231,8 @@ namespace VkNet.Model.Attachments
 				? FromJson(response)
 				: null;
 		}
+
+
 
 	#endregion
 	}

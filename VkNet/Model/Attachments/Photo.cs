@@ -77,12 +77,6 @@ namespace VkNet.Model.Attachments
 		public Uri Photo130 { get; set; }
 
 		/// <summary>
-		/// <c>Uri</c> фотографии с максимальным размером 200x200px.
-		/// </summary>
-		[JsonProperty("photo_200")]
-		public Uri Photo200 { get; set; }
-
-		/// <summary>
 		/// <c>Uri</c> фотографии с максимальным размером 604x604px.
 		/// </summary>
 		[JsonProperty("photo_604")]
@@ -123,6 +117,57 @@ namespace VkNet.Model.Attachments
 		/// </summary>
 		[JsonProperty("url")]
 		public Uri Url { get; set; }
+
+
+        /// <summary>
+        /// <c>Uri</c> фотографии с максимальным размером 34x34px.
+        /// </summary>
+        [JsonProperty("photo_34")]
+        public Uri Photo34 { get; set; }
+
+        /// <summary>
+        /// <c>Uri</c> фотографии с максимальным размером 68x68px.
+        /// </summary>
+        [JsonProperty("photo_68")]
+        public Uri Photo68 { get; set; }
+
+        /// <summary>
+        /// <c>Uri</c> фотографии с максимальным размером 135x135px.
+        /// </summary>
+        [JsonProperty("photo_135")]
+        public Uri Photo135 { get; set; }
+
+        /// <summary>
+        /// <c>Uri</c> фотографии с максимальным размером 200x200px.
+        /// </summary>
+        [JsonProperty("photo_200")]
+        public Uri Photo200 { get; set; }
+
+        /// <summary>
+        /// <c>Uri</c> фотографии с максимальным размером 270x270px.
+        /// </summary>
+        [JsonProperty("photo_270")]
+        public Uri Photo270 { get; set; }
+
+        /// <summary>
+        /// <c>Uri</c> фотографии с максимальным размером 300x300px.
+        /// </summary>
+        [JsonProperty("photo_300")]
+        public Uri Photo300 { get; set; }
+
+        /// <summary>
+        /// <c>Uri</c> фотографии с максимальным размером 600x600px.
+        /// </summary>
+        [JsonProperty("photo_600")]
+        public Uri Photo600 { get; set; }
+
+        /// <summary>
+        /// <c>Uri</c> фотографии с максимальным размером 1200x1200px.
+        /// </summary>
+        [JsonProperty("photo_1200")]
+        public Uri Photo1200 { get; set; }
+
+
 
         /// <summary>
         /// Просто получить чертово фото.
