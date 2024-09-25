@@ -58,7 +58,7 @@ namespace VkNet.Model
 				AccessKey = response["access_key"],
 			};
 		}
-
-	#endregion
-	}
+        public string ToOwnerIdString() => $"{OwnerId}_{Id}";
+        #endregion
+    }
 }

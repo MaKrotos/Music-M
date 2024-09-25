@@ -22,7 +22,9 @@ namespace VK_UI3.Views.Tasks
             this.Loaded += DownloadController_Loaded;
             this.Unloaded += DownloadController_Unloaded;
 
+            animationsChangeText = new AnimationsChangeText(dx, this.DispatcherQueue);
         }
+        Helpers.Animations.AnimationsChangeText animationsChangeText;
 
         private void DownloadController_Unloaded(object sender, RoutedEventArgs e)
         {
@@ -35,11 +37,13 @@ namespace VK_UI3.Views.Tasks
         }
 
         Helpers.Animations.AnimationsChangeFontIcon animationsChangeFontIcon = null;
-
+        Helpers.Animations.AnimationsChangeFontIcon animationsChangeFontIconCancel = null;
         private void DownloadController_Loaded(object sender, RoutedEventArgs e)
         {
             if (animationsChangeFontIcon == null)
                 animationsChangeFontIcon = new Helpers.Animations.AnimationsChangeFontIcon(PlayIcon, this.DispatcherQueue);
+            if (animationsChangeFontIconCancel == null)
+                animationsChangeFontIconCancel = new Helpers.Animations.AnimationsChangeFontIcon(CancelIcon, this.DispatcherQueue);
         }
 
         TaskAction _task { get; set; }
@@ -75,7 +79,7 @@ namespace VK_UI3.Views.Tasks
 
         private void PlayListDownload_onDoingStatusUpdate(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            updateUI();
         }
 
         private void OnDoingStatusUpdate(object sender, EventArgs e)
@@ -93,31 +97,62 @@ namespace VK_UI3.Views.Tasks
 
 
 
-                    if (_task.Status == Statuses.Pause|| _task.Status == Statuses.Error)
+                    switch (_task.Status)
                     {
-                        {
-                            animationsChangeFontIcon.ChangeFontIconWithAnimation("\uF5B0");
-                            if ((_task.Status == Statuses.Error))
+                        case Statuses.Resume:
+                            {
+                                animationsChangeFontIcon.ChangeFontIconWithAnimation("\uE769");
+                                DownloadProgressBar.ShowPaused = false;
+                                DownloadProgressBar.ShowError = false;
+                            }
+                            break;
+                        case Statuses.Pause:
+                            {
+                                animationsChangeFontIcon.ChangeFontIconWithAnimation("\uF5B0");
                                 DownloadProgressBar.ShowPaused = true;
-                        }
+                                DownloadProgressBar.ShowError = false;
+                            }
+                            break;
+                        case Statuses.Completed:
+                            {
+                                animationsChangeFontIcon.ChangeFontIconWithAnimation("\uF5B0");
+                                animationsChangeFontIconCancel.ChangeFontIconWithAnimation("\uE74D");
+                            }
+                            break;
+                        case Statuses.Error:
+                            {
+                                animationsChangeFontIconCancel.ChangeFontIconWithAnimation("\uE74D");
+                                animationsChangeFontIcon.ChangeFontIconWithAnimation("\uF5B0");
+                                DownloadProgressBar.ShowPaused = false;
+                                DownloadProgressBar.ShowError = true;
+                            }
+                            break;
+                        case Statuses.Cancelled:
+                            {
+                                animationsChangeFontIconCancel.ChangeFontIconWithAnimation("\uE74D");
+                                animationsChangeFontIcon.ChangeFontIconWithAnimation("\uF5B0");
+                                DownloadProgressBar.ShowPaused = false;
+                                DownloadProgressBar.ShowError = true;
+                            }
+                            break;
+                    }
+                    string txt = "";
+                    if (_task.Status != Statuses.Completed)
+                    {
+                         txt = $"{_task.Progress} из {_task.total}";
                     }
                     else
                     {
-                        animationsChangeFontIcon.ChangeFontIconWithAnimation("\uE769");
-
-                        if (!(_task.Status == Statuses.Error))
-                            DownloadProgressBar.ShowPaused = false;
+                        txt = "✔";
                     }
-                    dx.Text = $"{_task.Progress}";
-                   
-                    dx.Text += $" из {_task.total}";
+                    animationsChangeText.ChangeTextWithAnimation(txt);
                
                     DownloadProgressBar.Value = _task.Progress;
                 }
                 catch { }
             });
         }
- 
+
         private void UCcontrol_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             _task.onClick();
@@ -125,7 +160,12 @@ namespace VK_UI3.Views.Tasks
 
         private void Cancel_clicked(object sender, RoutedEventArgs e)
         {
-            _task.Cancel();
+            if (_task.Status == Statuses.Error || _task.Status == Statuses.Completed) {
+                _task.delete();
+            }
+            {
+                _task.Cancel();
+            }   
         }
 
         private void PlayPause_clicked(object sender, RoutedEventArgs e)

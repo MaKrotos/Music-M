@@ -173,6 +173,7 @@ namespace VkNet.Model.Attachments
         public AudioCover Thumb { get; set; }
 
 
+
         /*
 		 * "[ads, {
 		  ""content_id"": ""-2001619099_128619099"",

@@ -404,7 +404,7 @@ namespace VK_UI3.Controls
             var pla = await VK.vkService.GetPlaylistAsync(1000, _PlayList.Id, _PlayList.AccessKey, _PlayList.OwnerId);
 
             List<Audio> track_playlist = new List<VkNet.Model.Attachments.Audio>(pla.Audios.Cast<VkNet.Model.Attachments.Audio>().ToList());
-            var Generator = new Services.GeneratorAlbumVK(track_playlist);
+            var Generator = new Services.GeneratorAlbumVK(track_playlist, _PlayList.Id.ToString());
             Generator.GenerateAsync();
 
         }

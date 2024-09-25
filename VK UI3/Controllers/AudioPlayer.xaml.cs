@@ -597,7 +597,13 @@ namespace VK_UI3.Controllers
             var mediaSource = Windows.Media.Core.MediaSource.CreateFromUri(new Uri(trackdata.audio.Url.ToString()));
             var mediaPlaybackItem = new Windows.Media.Playback.MediaPlaybackItem(mediaSource);
 
-
+            ExtendedAudio preTrack = null;
+            int? secDurPre = null;
+            if (PlayingTrack != null)
+            {
+                preTrack = PlayingTrack;
+                secDurPre = (int) mediaPlayer.Position.TotalSeconds;
+            }
             PlayingTrack = trackdata;
 
             MediaItemDisplayProperties props = mediaPlaybackItem.GetDisplayProperties();
@@ -629,6 +635,8 @@ namespace VK_UI3.Controllers
 
             mediaPlayer.Source = mediaPlaybackItem;
             mediaPlayer.Play();
+
+            _= KrotosVK.sendVKAudioPlayStat(trackdata, preTrack, secDurPre);
 
             iVKGetAudio.ChangePlayAudio(trackdata);
             

@@ -71,7 +71,7 @@
                 Padding="0"
                 Background="Transparent"
                 Click="Cancel_clicked">
-                <FontIcon FontSize="16" Glyph="&#xE711;" />
+                <FontIcon x:Name="CancelIcon" FontSize="16" Glyph="&#xE711;" />
             </Button>
 
 

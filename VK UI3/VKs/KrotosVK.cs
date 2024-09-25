@@ -1,4 +1,7 @@
-﻿using System;
+﻿using MusicX.Core.Models;
+using MusicX.Core.Services;
+using MusicX.Shared.Player;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -86,13 +89,56 @@ namespace VK_UI3.VKs
             {
 
             }
+        }
+
+        public static async Task sendVKAudioPlayStat(Helpers.ExtendedAudio trackdata, Helpers.ExtendedAudio Pretrackdata = null, int? secDurPre = null) {
 
 
 
+            var startPlay = new PlayTrackEvent
+            {
+                Event = "music_start_playback",
+                AudioId = trackdata.audio.FullId,
+                Uuid = Guid.NewGuid().GetHashCode(),
+                StartTime = "0",
+                Shuffle = "false",
+                Reason = "auto",
+                PlaybackStartedAt = "0",
+                TrackCode = trackdata.audio.TrackCode,
+                Repeat = "all",
+                State = "app",
+            
+                PlaylistId = trackdata.audio.Album?.ToOwnerIdString()!
+            };
 
+            var queue = new List<TrackEvent>(2) { startPlay };
+
+            if (Pretrackdata != null)
+            {
+                startPlay.PrevAudioId = Pretrackdata.audio.Album?.ToOwnerIdString();
+
+                queue.Add(new StopTrackEvent
+                {
+                    Event = "music_stop_playback",
+                    Uuid = Guid.NewGuid().GetHashCode(),
+                    Shuffle = "false",
+                    Reason = "new",
+                    AudioId = trackdata.audio.FullId,
+                    StartTime = "0",
+                    PlaybackStartedAt = "0",
+                    TrackCode = trackdata.audio.TrackCode,
+                    StreamingType = "online",
+                    Duration = (secDurPre ?? Pretrackdata.audio.Duration).ToString(),
+                    Repeat = "all",
+                    State = "app",
+                   // Source = Pretrackdata.ParentBlockId!,
+                    PlaylistId = Pretrackdata.audio.Album?.ToOwnerIdString()!
+                });
+            }
+
+            await VK.vkService.StatsTrackEvents(queue);
 
         }
-    
       
     
     }

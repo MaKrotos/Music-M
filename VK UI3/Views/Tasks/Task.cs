@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VkNet.Model.RequestParams.Ads;
 
 namespace VK_UI3.Views.Tasks
 {
@@ -30,19 +31,19 @@ namespace VK_UI3.Views.Tasks
 
       
 
-        protected virtual void OnProgressChanged(ProgressEventArgs e)
+        protected void OnProgressChanged(ProgressEventArgs e)
         {
             ProgressChanged?.Invoke(this, e);
         }
-        protected virtual void OnCancelled(EventArgs e)
+        protected void OnCancelled(EventArgs e)
         {
             Cancelled?.Invoke(this, e);
         }
-        protected virtual void OnCompleted(EventArgs e)
+        protected void OnCompleted(EventArgs e)
         {
             Completed?.Invoke(this, e);
         }
-        protected virtual void OnStatusChanged(StatusChangedEventArgs e)
+        protected void OnStatusChanged(StatusChangedEventArgs e)
         {
             StatusChanged?.Invoke(this, e);
         }
@@ -53,6 +54,7 @@ namespace VK_UI3.Views.Tasks
             get => _status;
             set
             {
+                if (_status == Statuses.Completed) return;
                 if (_status != value)
                 {
                     _status = value;
@@ -97,6 +99,19 @@ namespace VK_UI3.Views.Tasks
         public abstract void Cancel();
         public abstract void Pause();
         public abstract void Resume();
+
+        public void delete() 
+        {
+            if (Status != Statuses.Error && Status != Statuses.Completed && Status != Statuses.Cancelled)
+            {
+                Cancel();
+            }
+            ProgressChanged = null;
+            Cancelled = null;
+            Completed = null;
+            StatusChanged = null;
+            tasks.Remove(this);
+        }
     }
 
     public class StatusChangedEventArgs : EventArgs

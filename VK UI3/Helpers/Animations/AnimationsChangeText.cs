@@ -37,7 +37,7 @@ namespace VK_UI3.Helpers.Animations
                 {
                     From = textBlockControl.Opacity,
                     To = 0.0,
-                    Duration = TimeSpan.FromMilliseconds(50),
+                    Duration = TimeSpan.FromMilliseconds(250),
                 };
 
                 // Set the target of the animation
@@ -72,7 +72,7 @@ namespace VK_UI3.Helpers.Animations
             {
                 From = textBlockControl.Opacity,
                 To = opac,
-                Duration = TimeSpan.FromMilliseconds(500),
+                Duration = TimeSpan.FromMilliseconds(250),
             };
             // Set the target of the animation
             Storyboard.SetTarget(animation, textBlockControl);
