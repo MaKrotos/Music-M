@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using VK_UI3.Views;
 using VK_UI3.Views.Tasks;
 using VK_UI3.VKs;
+using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
 
 namespace VK_UI3.Services
@@ -13,21 +14,105 @@ namespace VK_UI3.Services
     public class GeneratorAlbumVK : TaskAction
     {
         List<Audio> audios;
+        IVKGetAudio iVKGetAudio;
         int count = 1000;
         private string name;
         private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        private CancellationToken cancellationToken;
+        private TaskCompletionSource<bool> pauseTcs = new TaskCompletionSource<bool>();
+        AudioPlaylist audioPlaylist = null;
+        private bool isPaused = false;
+        private object pauseLock = new object();
+        private int deepGen = 1;
 
-        public GeneratorAlbumVK(List<Audio> audios, string unicId, int count = 1000, string name = null) : base(audios.Count, "Генерация плейлиста", unicId)
+        public GeneratorAlbumVK(List<Audio> audios, string unicId, int count = 1000, string name = null, int deepGen = 1) : base(audios.Count, "Генерация плейлиста", unicId, name)
         {
             this.audios = audios;
             base.total = audios.Count();
             this.count = count;
             this.name = name;
-            this.cancellationToken = cancellationTokenSource.Token;
+            this.deepGen = deepGen;
         }
 
+        public GeneratorAlbumVK(IVKGetAudio audios, string unicId, int count = 1000, string name = null, int deepGen = 1) : base((int?) (audios.countTracks) ?? 0, "Генерация плейлиста", unicId, name)
+        {
+            this.iVKGetAudio = audios;
+            base.total = (int?) (iVKGetAudio.countTracks) ?? 0;
+            this.count = count;
+            this.name = name;
+            this.deepGen = deepGen;
+        }
+
+
+
         public async Task GenerateAsync()
+        {
+            if (audios != null)
+            {
+                genByList();
+                return;
+            }
+            if (iVKGetAudio != null)
+            {
+                getedListAsync();
+            }
+            return;
+        }
+
+        private async Task getedListAsync()
+        {
+            var need = CalculateTracksToLoad(deepGen, (int) iVKGetAudio.countTracks);
+
+            while (iVKGetAudio.listAudio.Count > need && !iVKGetAudio.itsAll)
+            {
+                await CheckForPauseAsync();
+                var tcs = new TaskCompletionSource<bool>();
+                EventHandler handler = null;
+                handler = (sender, args) =>
+                {
+                    iVKGetAudio.onListUpdate -= handler;
+                    tcs.SetResult(true);
+                };
+                iVKGetAudio.onListUpdate += handler;
+
+                iVKGetAudio.GetTracks();
+                await tcs.Task;
+            }
+            audios.AddRange(iVKGetAudio.listAudio.Select(item => item.audio));
+
+            this.genByList();
+        }
+
+        private int CalculateTracksToLoad(int deepGen, int iVKGetAudioCount)
+        {
+            int minTracks = 200;
+            int maxTracks = 1000;
+
+            // Если количество треков не определено, используем максимум
+            if (iVKGetAudioCount == -1)
+            {
+                iVKGetAudioCount = maxTracks;
+            }
+
+            // Если total не задан, используем минимум
+            if (total == -1)
+            {
+                total = minTracks;
+            }
+
+            // Рассчитываем количество треков для подгрузки
+            int tracksToLoad = Math.Min(total, iVKGetAudioCount);
+
+            // Учитываем глубину генерации
+            tracksToLoad = (int)(tracksToLoad * (deepGen / 100.0));
+
+            // Убедимся, что количество треков не меньше минимума
+            tracksToLoad = Math.Max(tracksToLoad, minTracks);
+
+            return tracksToLoad;
+        }
+
+
+        public async Task genByList()
         {
             try
             {
@@ -38,6 +123,8 @@ namespace VK_UI3.Services
                     if (base.Status == Statuses.Cancelled) break;
 
                     cancellationToken.ThrowIfCancellationRequested();
+
+                    await CheckForPauseAsync();
 
                     var audiosRec = await VK.api.Audio.GetRecommendationsAsync(targetAudio: item.FullId, count: 100, offset: 0, shuffle: false);
 
@@ -72,7 +159,8 @@ namespace VK_UI3.Services
                 {
                     var sortedMapRecs = mapRecs.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
                     IEnumerable<string> top1000Tracks = sortedMapRecs.Keys.Take(this.count);
-                    audioPlaylist = await VK.api.Audio.CreatePlaylistAsync(DB.AccountsDB.activeAccount.id, "Сгенерированный", audioIds: top1000Tracks);
+
+                     audioPlaylist = await VK.api.Audio.CreatePlaylistAsync(DB.AccountsDB.activeAccount.id, name ?? "Сгенерированный", audioIds: top1000Tracks);
                     base.Status = Statuses.Completed;
                 }
                 else
@@ -90,7 +178,15 @@ namespace VK_UI3.Services
                 base.Status = Statuses.Error;
             }
         }
-        AudioPlaylist audioPlaylist = null;
+
+        private async Task CheckForPauseAsync()
+        {
+            if (isPaused)
+            {
+                await pauseTcs.Task;
+            }
+        }
+
         public override void Cancel()
         {
             base.Status = Statuses.Cancelled;
@@ -101,16 +197,28 @@ namespace VK_UI3.Services
 
         public override void Pause()
         {
-            base.Status = Statuses.Pause;
-            cancellationTokenSource.Cancel();
+            lock (pauseLock)
+            {
+                if (!isPaused)
+                {
+                    isPaused = true;
+                    pauseTcs = new TaskCompletionSource<bool>();
+                    base.Status = Statuses.Pause;
+                }
+            }
         }
 
         public override void Resume()
         {
-            base.Status = Statuses.Resume;
-            cancellationTokenSource = new CancellationTokenSource();
-            cancellationToken = cancellationTokenSource.Token;
-            GenerateAsync();
+            lock (pauseLock)
+            {
+                if (isPaused)
+                {
+                    isPaused = false;
+                    pauseTcs.SetResult(true);
+                    base.Status = Statuses.Resume;
+                }
+            }
         }
 
         public override void onClick()
@@ -119,6 +227,5 @@ namespace VK_UI3.Services
             { MainView.OpenPlayList(audioPlaylist); }
         }
     }
-
 
 }

@@ -28,8 +28,13 @@
                 <TextBlock
                     x:Name="DownloadTitle"
                     Grid.Column="0"
-                    Text="" />
-                <TextBlock x:Name="pathText" Opacity="0.5" />
+                    Text=""
+                    TextTrimming="CharacterEllipsis"
+                    TextWrapping="NoWrap" />
+                <TextBlock
+                    x:Name="pathText"
+                    Opacity="0.5"
+                    TextTrimming="CharacterEllipsis" />
             </StackPanel>
             <TextBlock
                 x:Name="dx"
@@ -49,6 +54,7 @@
                 x:Name="DownloadProgressBar"
                 Grid.Column="0"
                 Margin="0,10,10,10"
+                Foreground="LightBlue"
                 Value="0" />
 
             <Button
@@ -71,7 +77,10 @@
                 Padding="0"
                 Background="Transparent"
                 Click="Cancel_clicked">
-                <FontIcon x:Name="CancelIcon" FontSize="16" Glyph="&#xE711;" />
+                <FontIcon
+                    x:Name="CancelIcon"
+                    FontSize="16"
+                    Glyph="&#xE711;" />
             </Button>
 
 

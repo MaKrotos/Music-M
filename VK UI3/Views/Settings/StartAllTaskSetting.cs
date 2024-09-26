@@ -8,13 +8,13 @@ using VK_UI3.DownloadTrack;
 
 namespace VK_UI3.Views.Settings
 {
-    public sealed class StartAllTaskSetting : CheckBox
+    public sealed class DownloadAllSetting : CheckBox
     {
-        public StartAllTaskSetting()
+        public DownloadAllSetting()
         {
 
 
-            this.Content = "Запускать все таски автоматически";
+            this.Content = "Запускать параллельное скачивание автоматически";
 
             this.Checked += StartUpSetting_Checked;
             this.Unchecked += StartUpSetting_Unchecked;
@@ -31,22 +31,23 @@ namespace VK_UI3.Views.Settings
         {
             this.DispatcherQueue.TryEnqueue(async () =>
             {
-                var set = SettingsTable.GetSetting("TaskALL");
+                var set = SettingsTable.GetSetting("downloadALL");
                 this.IsChecked = set != null;
             });
         }
 
         private void StartUpSetting_Unchecked(object sender, RoutedEventArgs e)
         {
-            SettingsTable.RemoveSetting("TaskALL");
+            SettingsTable.RemoveSetting("downloadALL");
             PlayListDownload.ResumeOnlyFirst();
 
         }
 
         private void StartUpSetting_Checked(object sender, RoutedEventArgs e)
         {
-            SettingsTable.SetSetting("TaskALL", "1");
+            SettingsTable.SetSetting("downloadALL", "1");
             PlayListDownload.ResumeAll();
+
         }
     }
 }

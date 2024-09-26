@@ -67,13 +67,13 @@ namespace VK_UI3.Views.Tasks
             _task.ProgressChanged += PlayListDownload_onDoingStatusUpdate;
             _task.StatusChanged += (OnDoingStatusUpdate);
 
-            string original = _task.nameTask;
+            string original = _task.subTextTask;
             if (original.Length > 20)
             {
                 original = "..." + original.Substring(original.Length - 20);
             }
             DownloadProgressBar.Maximum = _task.total;
-            pathText.Text = original + "\\...";
+            pathText.Text = original + "...";
             updateUI();
         }
 

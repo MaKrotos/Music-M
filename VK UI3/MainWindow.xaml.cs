@@ -122,16 +122,23 @@ namespace VK_UI3
 
         }
 
+        public void ShowTaskFlyOut()
+        {
+
+            TasksBTN.Flyout.ShowAt(TasksBTN);
+        }
+
         private void Tasks_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (VK_UI3.Views.Tasks.TaskAction.tasks.Count == 0)
             {
                 TasksBTN.HideButton();
-              
+                TasksBTN.Flyout.Hide();
             }
             else
             {
                 TasksBTN.ShowButton();
+                TasksBTN.Flyout.ShowAt(TasksBTN);
             }
         }
 
