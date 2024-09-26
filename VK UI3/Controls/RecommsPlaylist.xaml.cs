@@ -353,9 +353,7 @@ namespace VK_UI3.Controls
         {
             ContentDialog dialog = new CustomDialog();
 
-            // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
             dialog.XamlRoot = this.XamlRoot;
-            // Add transitions (e.g., PopupThemeTransition)
             dialog.Transitions = new TransitionCollection
                 {
                     new PopupThemeTransition()

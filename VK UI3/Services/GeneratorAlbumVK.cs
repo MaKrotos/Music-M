@@ -1,8 +1,10 @@
-﻿using System;
+﻿using MusicX.Core.Models.Genius;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using VK_UI3.DB;
 using VK_UI3.Views;
 using VK_UI3.Views.Tasks;
 using VK_UI3.VKs;
@@ -23,26 +25,42 @@ namespace VK_UI3.Services
         private bool isPaused = false;
         private object pauseLock = new object();
         private int deepGen = 1;
+        private string description;
 
-        public GeneratorAlbumVK(List<Audio> audios, string unicId, int count = 1000, string name = null, int deepGen = 1) : base(audios.Count, "Генерация плейлиста", unicId, name)
+        public string CoverPath { get; private set; }
+
+        public GeneratorAlbumVK(List<Audio> audios, string unicId = null, int count = 1000, string name = null, int deepGen = 1, string description = null, bool noDiscover = true, string CoverPath = null) : base(audios.Count, "Генерация плейлиста", unicId, name)
         {
             this.audios = audios;
             base.total = audios.Count();
             this.count = count;
             this.name = name;
             this.deepGen = deepGen;
+            this.description = description;
+            this.CoverPath = CoverPath;
         }
 
-        public GeneratorAlbumVK(IVKGetAudio audios, string unicId, int count = 1000, string name = null, int deepGen = 1) : base((int?) (audios.countTracks) ?? 0, "Генерация плейлиста", unicId, name)
+        public GeneratorAlbumVK(IVKGetAudio audios, string unicId = null, string name = null, int deepGen = 1, string description = null, bool noDiscover = true, string CoverPath = null) : base((int?) (audios.countTracks) ?? 0, "Генерация плейлиста", unicId, name)
         {
             this.iVKGetAudio = audios;
-            base.total = (int?) (iVKGetAudio.countTracks) ?? 0;
-            this.count = count;
+            base.total = (int?)(iVKGetAudio.countTracks) ?? 0;
             this.name = name;
             this.deepGen = deepGen;
+            this.description = description;
+            this.CoverPath = CoverPath;
         }
 
+        private async Task UploadCoverPlaylist()
+        {
+            if (!string.IsNullOrEmpty(CoverPath))
+            {
+                var uploadServer = await VK.vkService.GetPlaylistCoverUploadServerAsync(AccountsDB.activeAccount.id, audioPlaylist.Id);
 
+                var image = await VK.vkService.UploadPlaylistCoverAsync(uploadServer, CoverPath);
+
+                await VK.vkService.SetPlaylistCoverAsync(audioPlaylist.OwnerId, audioPlaylist.Id, image.Hash, image.Photo);
+            }
+        }
 
         public async Task GenerateAsync()
         {
@@ -62,7 +80,7 @@ namespace VK_UI3.Services
         {
             var need = CalculateTracksToLoad(deepGen, (int) iVKGetAudio.countTracks);
 
-            while (iVKGetAudio.listAudio.Count > need && !iVKGetAudio.itsAll)
+            while (iVKGetAudio.listAudio.Count < need && !iVKGetAudio.itsAll)
             {
                 await CheckForPauseAsync();
                 var tcs = new TaskCompletionSource<bool>();
@@ -77,8 +95,9 @@ namespace VK_UI3.Services
                 iVKGetAudio.GetTracks();
                 await tcs.Task;
             }
+            audios = new List<Audio>();
             audios.AddRange(iVKGetAudio.listAudio.Select(item => item.audio));
-
+            total = audios.Count();
             this.genByList();
         }
 
@@ -93,11 +112,7 @@ namespace VK_UI3.Services
                 iVKGetAudioCount = maxTracks;
             }
 
-            // Если total не задан, используем минимум
-            if (total == -1)
-            {
-                total = minTracks;
-            }
+           
 
             // Рассчитываем количество треков для подгрузки
             int tracksToLoad = Math.Min(total, iVKGetAudioCount);
@@ -116,6 +131,7 @@ namespace VK_UI3.Services
         {
             try
             {
+                if (total == 0) Cancel(); 
                 var mapRecs = new Dictionary<string, int>();
 
                 foreach (var item in audios)
@@ -160,7 +176,8 @@ namespace VK_UI3.Services
                     var sortedMapRecs = mapRecs.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
                     IEnumerable<string> top1000Tracks = sortedMapRecs.Keys.Take(this.count);
 
-                     audioPlaylist = await VK.api.Audio.CreatePlaylistAsync(DB.AccountsDB.activeAccount.id, name ?? "Сгенерированный", audioIds: top1000Tracks);
+                    audioPlaylist = await VK.api.Audio.CreatePlaylistAsync(DB.AccountsDB.activeAccount.id, name ?? "Сгенерированный", audioIds: top1000Tracks, description: description);
+                    await UploadCoverPlaylist();
                     base.Status = Statuses.Completed;
                 }
                 else

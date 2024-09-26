@@ -1,12 +1,15 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
+using MusicX.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using VK_UI3.DB;
+using VK_UI3.Services;
 using VK_UI3.VKs;
+using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
@@ -23,13 +26,18 @@ namespace VK_UI3.Views.ModalsPages
     /// </summary>
     public sealed partial class CreatePlayList : Microsoft.UI.Xaml.Controls.Page
     {
-        public CreatePlayList(AudioPlaylist audioPlaylist)
+        private bool genByPlayList = false;
+        string genBy = null;
+        string unicid = null;
+        public CreatePlayList(AudioPlaylist audioPlaylist, bool genByPlayList = false, string genBy = null, string unicID = null)
         {
             this.InitializeComponent();
             this.Loaded += CreatePlayList_Loaded;
             this.audioPlaylist = audioPlaylist;
+            this.genByPlayList = genByPlayList;
+            this.unicid = unicID;
         }
-        public CreatePlayList(AudioPlaylist audioPlaylist, Audio audio)
+        public CreatePlayList(AudioPlaylist audioPlaylist, VkNet.Model.Attachments.Audio audio)
         {
             this.InitializeComponent();
             this.Loaded += CreatePlayList_Loaded;
@@ -37,7 +45,7 @@ namespace VK_UI3.Views.ModalsPages
             this.audio = audio;
         }
 
-        public CreatePlayList(Audio audio)
+        public CreatePlayList(VkNet.Model.Attachments.Audio audio)
         {
             this.InitializeComponent();
             this.Loaded += CreatePlayList_Loaded;
@@ -49,6 +57,15 @@ namespace VK_UI3.Views.ModalsPages
             this.Loaded += CreatePlayList_Loaded;
         }
 
+        public CreatePlayList(IVKGetAudio iVKGetAudio, string genBy, string unicID)
+        {
+            this.InitializeComponent();
+            this.iVKGetAudio = iVKGetAudio;
+            this.genBy = genBy;
+            this.unicid = unicID;
+            this.Loaded += CreatePlayList_Loaded;
+        }
+
         public EventHandler cancelPressed;
 
         public UIElement GetFirstChild()
@@ -57,26 +74,50 @@ namespace VK_UI3.Views.ModalsPages
             return MainGrid;
         }
         AudioPlaylist audioPlaylist { get; set; } = null;
-        Audio audio { get; set; } = null;
+        VkNet.Model.Attachments.Audio audio { get; set; } = null;
 
         private void CreatePlayList_Loaded(object sender, RoutedEventArgs e)
         {
             animationsChangeImage = new Helpers.Animations.AnimationsChangeImage(PlaylistImage, this.DispatcherQueue);
 
-            if (audioPlaylist != null)
+            if (audioPlaylist != null && !genByPlayList)
             {
                 animationsChangeImage.ChangeImageWithAnimation(audioPlaylist.Cover);
                 this.Title.Text = audioPlaylist.Title;
                 this.Description.Text = audioPlaylist.Description;
                 this.HideFromSearch.IsOn = audioPlaylist.No_discover;
-                //this.HideFromSearch = audioPlaylist.hid
+         
 
+            }
+            else
+            if (iVKGetAudio != null || genByPlayList)
+            {
+                SaveBTN.Content = "Генерировать";
+                if (
+                    iVKGetAudio != null   
+                )
+                {
+                    GenText.Visibility = Visibility.Visible;
+                    GenValue.Visibility = Visibility.Visible;
+                }
+                if (!string.IsNullOrEmpty(genBy))
+                {
+                    Title.Text = genBy;
+                    Description.Text = $"Сгенерированный плейлист с помощью VK M Desktop на основе {genBy}";
+                }
+                else
+                {
+                    Title.Text = "Сгенерированный плейлист";
+                    Description.Text = $"Сгенерированный плейлист с помощью VK M Desktop";
+                }
             }
             else
             {
 
                 SaveBTN.Content = "Создать";
             }
+
+           
         }
 
         string CoverPath;
@@ -109,12 +150,6 @@ namespace VK_UI3.Views.ModalsPages
 
         private async Task create()
         {
-            if (string.IsNullOrEmpty(Title.Text) || string.IsNullOrWhiteSpace(Title.Text))
-            {
-
-                return;
-            }
-
 
             if (audio == null)
             {
@@ -131,8 +166,34 @@ namespace VK_UI3.Views.ModalsPages
             cancelPressed?.Invoke(audioPlaylist, EventArgs.Empty);
         }
 
+        private async Task createGenerateAsync()
+        {
+            if (iVKGetAudio != null)
+            {
+                new GeneratorAlbumVK(iVKGetAudio, name: Title.Text, deepGen: (int)GenValue.Value, description: Description.Text, noDiscover: HideFromSearch.IsOn, CoverPath: CoverPath).GenerateAsync();
+                
+            }
+            else
+            {
+
+                if (audioPlaylist != null)
+                {
+                    var pla = await VK.vkService.GetPlaylistAsync(1000, audioPlaylist.Id, audioPlaylist.AccessKey, audioPlaylist.OwnerId);
+                    List<VkNet.Model.Attachments.Audio> track_playlist = new List<VkNet.Model.Attachments.Audio>(pla.Audios.Cast<VkNet.Model.Attachments.Audio>().ToList());
+
+                  
+
+                   
+
+                    if (pla != null) {
+                        new GeneratorAlbumVK(track_playlist, name: Title.Text, deepGen: 100, description: Description.Text, noDiscover: HideFromSearch.IsOn, CoverPath: CoverPath).GenerateAsync();
+                    }
+                }
+            }
+        }
 
         Helpers.Animations.AnimationsChangeImage animationsChangeImage;
+        private IVKGetAudio iVKGetAudio;
 
         private async void PlaylistImage_Drop(object sender, DragEventArgs e)
         {
@@ -208,6 +269,18 @@ namespace VK_UI3.Views.ModalsPages
 
         private async void SaveBTN_Click(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrEmpty(Title.Text) || string.IsNullOrWhiteSpace(Title.Text))
+            {
+                return;
+            }
+
+            if (iVKGetAudio != null || genByPlayList)
+            {
+                createGenerateAsync();
+                cancelPressed?.Invoke(audioPlaylist, EventArgs.Empty);
+                return;
+            } 
+            else
             if (audioPlaylist == null)
             {
 

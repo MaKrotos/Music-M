@@ -8,7 +8,6 @@ using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using MusicX.Core.Models;
 using MusicX.Core.Services;
-using Newtonsoft.Json.Bson;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,9 +19,11 @@ using VK_UI3.Controllers;
 using VK_UI3.DB;
 using VK_UI3.Helpers.Animations;
 using VK_UI3.Services;
+using VK_UI3.Views.ModalsPages;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
+using Windows.Media.Playlists;
 using static VK_UI3.DB.AccountsDB;
 using static VK_UI3.Views.SectionView;
 
@@ -92,6 +93,58 @@ namespace VK_UI3.Views
             }
         }
 
+
+        public void openGenerator(IVKGetAudio iVKGetAudio , string unicID, string genBy = "genBy")
+        {
+            var a = new CreatePlayList(iVKGetAudio, genBy, unicID);
+            OpenGenerator(a);
+
+        }
+        public void openGenerator(AudioPlaylist playList, string unicID, string genBy = null)
+        {
+            var a = new CreatePlayList(playList, true, genBy, unicID);
+            OpenGenerator(a);
+        }
+        private void OpenGenerator(CreatePlayList createPlayList)
+        {
+
+            ContentDialog dialog = new CustomDialog();
+
+            dialog.XamlRoot = this.XamlRoot;
+            dialog.Transitions = new TransitionCollection
+                {
+                new PopupThemeTransition()
+                };
+
+        
+
+            dialog.Content = createPlayList;
+            dialog.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
+            EventHandler cancelPressedHandler = null;
+            cancelPressedHandler = (s, e) =>
+            {
+                try
+                {
+                    if (dialog != null)
+                        dialog.Hide();
+                    dialog = null;
+                }
+                catch
+                {
+
+                }
+                finally
+                {
+                    createPlayList.cancelPressed -= cancelPressedHandler;
+                }
+            };
+
+            createPlayList.cancelPressed += cancelPressedHandler;
+
+
+            dialog.ShowAsync();
+
+        }
 
 
         private static DispatcherQueue dispatcherQueue = null;
@@ -468,7 +521,7 @@ namespace VK_UI3.Views
         {
             var sectionView = new WaitParameters();
             sectionView.sectionType = SectionType.PlayList;
-            Playlist playlist = new Playlist();
+            MusicX.Core.Models.Playlist playlist = new MusicX.Core.Models.Playlist();
             playlist.Id = AlbumID;
             playlist.OwnerId = AlbumOwnerID;
             playlist.AccessKey = AlbumAccessKey;

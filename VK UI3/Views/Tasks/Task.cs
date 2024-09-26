@@ -108,6 +108,7 @@ namespace VK_UI3.Views.Tasks
             if (exists)
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                Cancel();
                 return;
             }
 

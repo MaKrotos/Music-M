@@ -31,6 +31,9 @@
             <local:DownloadAllSetting />
         </Border>
         <Border>
+            <local:StartAllTaskSetting />
+        </Border>
+        <Border>
             <local:DeleteAllAudioProfile />
         </Border>
         <Border>

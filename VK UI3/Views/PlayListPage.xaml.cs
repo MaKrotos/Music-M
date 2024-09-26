@@ -715,5 +715,11 @@ namespace VK_UI3.Views
         {
             MainView.OpenSection((vkGetAudio as PlayListVK).playlist.OwnerId.ToString(), SectionView.SectionType.UserSection);
         }
+
+        private void GeneratePlayList_Click(object sender, RoutedEventArgs e)
+        {
+            MainView.mainView.openGenerator(iVKGetAudio: this.vkGetAudio, unicID: $"generate_iVKget_{this.vkGetAudio.name}", $"genBy {this.vkGetAudio.name}");
+
+        }
     }
 }

@@ -18,11 +18,8 @@
             Padding="10,35,10,30"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-
             CornerRadius="8">
 
-
-            <!--  Добавляем кнопку "Назад"  -->
 
             <StackPanel
                 HorizontalAlignment="Center"
@@ -46,18 +43,35 @@
                     <SymbolIcon Symbol="Edit" />
                 </Grid>
                 <TextBox
-                    Margin="0,10,0,0"
+                     Width="300"
                     x:Name="Title"
+                    Margin="0,10,0,0"
                     Header="Название"
                     MaxLength="1024" />
                 <TextBox
-                    Margin="0,10,0,0"
+                     Width="300"
                     x:Name="Description"
+                    Margin="0,10,0,0"
                     AcceptsReturn="True"
                     Header="Описание"
                     MaxLength="1024"
                     TextWrapping="Wrap" />
-                <ToggleSwitch  Margin="0,10,0,0" x:Name="HideFromSearch" Header="Скрыть из поиска и рекомендаций" />
+
+
+                <TextBlock x:Name="GenText" Margin="0,10,0,0" Visibility="Collapsed">Глубина генерации</TextBlock>
+                <Slider
+                    x:Name="GenValue"
+                    Margin="0,0,0,0"
+                    Maximum="100"
+                    Minimum="1"
+                    StepFrequency="1"
+                    Visibility="Collapsed"
+                    Value="50" />
+
+                <ToggleSwitch
+                    x:Name="HideFromSearch"
+                    Margin="0,10,0,0"
+                    Header="Скрыть из поиска и рекомендаций" />
                 <StackPanel
                     Margin="0,0,0,0"
                     HorizontalAlignment="Right"

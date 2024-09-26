@@ -64,17 +64,14 @@
 
 
                             <Grid
-                                Opacity="0.9"
                                 Margin="10"
                                 Padding="10"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Bottom"
-                                
                                 Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"
-                                CornerRadius="4">
-                                <FontIcon
-                                    x:Name="FontIconTypeVk"
-                                    Glyph="&#xE93C;" />
+                                CornerRadius="4"
+                                Opacity="0.9">
+                                <FontIcon x:Name="FontIconTypeVk" Glyph="&#xE93C;" />
                             </Grid>
                         </Grid>
                         <StackPanel
@@ -334,6 +331,24 @@
                                 <StackPanel Orientation="Horizontal">
                                     <SymbolIcon Symbol="Upload" />
                                     <TextBlock Margin="10,0,0,0" Text="Загрузить свою" />
+                                </StackPanel>
+                            </Button.Content>
+
+
+                        </Button>
+
+                        <Button
+                            x:Name="GeneratePlayList"
+                            Width="170"
+                            Margin="0,0,0,0"
+                            HorizontalAlignment="Left"
+                            Click="GeneratePlayList_Click"
+                 >
+
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <FontIcon Glyph="&#xEB44;" />
+                                    <TextBlock FontSize="10" HorizontalAlignment="Center" TextWrapping="Wrap" Margin="10,2.5,0,0" Text="Сгенерировать плейлист" />
                                 </StackPanel>
                             </Button.Content>
 

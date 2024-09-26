@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
+using MusicX.Core.Models;
 using SetupLib;
 using System;
 using System.Collections.Generic;
@@ -21,10 +22,13 @@ using VK_UI3.DB;
 using VK_UI3.DownloadTrack;
 using VK_UI3.Views;
 using VK_UI3.Views.LoginWindow;
+using VK_UI3.Views.ModalsPages;
 using VK_UI3.Views.Upload;
 using VK_UI3.VKs;
+using VK_UI3.VKs.IVK;
 using Windows.ApplicationModel;
 using Windows.Foundation;
+using Windows.Media.Playlists;
 using Windows.UI.ViewManagement;
 using Windows.Win32;
 using Windows.Win32.Foundation;
@@ -170,64 +174,7 @@ namespace VK_UI3
             SetRegionsForCustomTitleBar();
         }
 
-        public void AnimateButtonShow(Button button)
-        {
-            DoubleAnimation widthAnimation = new DoubleAnimation
-            {
-                From = 0,
-                To = 35,
-                Duration = new Duration(TimeSpan.FromSeconds(0.1))
-            };
-
-            DoubleAnimation heightAnimation = new DoubleAnimation
-            {
-                From = 0,
-                To = 35,
-                Duration = new Duration(TimeSpan.FromSeconds(0.1))
-            };
-
-            Storyboard.SetTarget(widthAnimation, button);
-            Storyboard.SetTargetProperty(widthAnimation, "Width");
-
-            Storyboard.SetTarget(heightAnimation, button);
-            Storyboard.SetTargetProperty(heightAnimation, "Height");
-
-            Storyboard storyboard = new Storyboard();
-            storyboard.Children.Add(widthAnimation);
-            storyboard.Children.Add(heightAnimation);
-
-            storyboard.Begin();
-        }
-
-        public void AnimateButtonHide(Button button)
-        {
-            DoubleAnimation widthAnimation = new DoubleAnimation
-            {
-                From = 0,
-                To = button.ActualWidth,
-                Duration = new Duration(TimeSpan.FromSeconds(0.1))
-            };
-
-            DoubleAnimation heightAnimation = new DoubleAnimation
-            {
-                From = 0,
-                To = button.ActualHeight,
-                Duration = new Duration(TimeSpan.FromSeconds(0.1))
-            };
-
-            Storyboard.SetTarget(widthAnimation, button);
-            Storyboard.SetTargetProperty(widthAnimation, "Width");
-
-            Storyboard.SetTarget(heightAnimation, button);
-            Storyboard.SetTargetProperty(heightAnimation, "Height");
-
-            Storyboard storyboard = new Storyboard();
-            storyboard.Children.Add(widthAnimation);
-            storyboard.Children.Add(heightAnimation);
-
-            storyboard.Begin();
-        }
-
+  
 
 
 
@@ -428,38 +375,7 @@ namespace VK_UI3
         }
 
 
-        public async Task AnimateButtonSize(Button button, double newWidth, double newHeight, TimeSpan duration)
-        {
-            // Сохраните исходные размеры кнопки
-            double originalWidth = button.Width;
-            double originalHeight = button.Height;
-
-            // Вычислите шаги изменения размера
-            double widthStep = (newWidth - originalWidth) / duration.TotalMilliseconds;
-            double heightStep = (newHeight - originalHeight) / duration.TotalMilliseconds;
-
-            // Создайте таймер для анимации
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-
-            while (stopwatch.Elapsed < duration)
-            {
-                // Вычислите новые размеры
-                double elapsedMilliseconds = stopwatch.Elapsed.TotalMilliseconds;
-                button.Width = originalWidth + widthStep * elapsedMilliseconds;
-                button.Height = originalHeight + heightStep * elapsedMilliseconds;
-
-                // Обновите интерфейс
-                await Task.Delay(1);
-            }
-
-            // Установите окончательные размеры
-            button.Width = newWidth;
-            button.Height = newHeight;
-
-            stopwatch.Stop();
-        }
-
+    
         private Windows.Graphics.RectInt32 GetRect(Rect bounds, double scale)
         {
             return new Windows.Graphics.RectInt32(
@@ -707,6 +623,9 @@ namespace VK_UI3
 
             onDownloadClicked?.RaiseEvent(this, EventArgs.Empty);
         }
+       
+
+
 
         internal async Task requstDownloadFFMpegAsync()
         {

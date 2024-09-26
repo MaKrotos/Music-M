@@ -400,12 +400,8 @@ namespace VK_UI3.Controls
 
         private async void GenerateAlbum_Click(object sender, RoutedEventArgs e)
         {
-
-            var pla = await VK.vkService.GetPlaylistAsync(1000, _PlayList.Id, _PlayList.AccessKey, _PlayList.OwnerId);
-
-            List<Audio> track_playlist = new List<VkNet.Model.Attachments.Audio>(pla.Audios.Cast<VkNet.Model.Attachments.Audio>().ToList());
-            var Generator = new Services.GeneratorAlbumVK(track_playlist, _PlayList.Id.ToString());
-            Generator.GenerateAsync();
+            MainView.mainView.openGenerator(_PlayList, unicID: $"playlist_{_PlayList.OwnerId}_{_PlayList.Id}", genBy: $"genBy {_PlayList.Title}");
+         
 
         }
     }

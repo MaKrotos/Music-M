@@ -38,7 +38,7 @@
             <MenuFlyoutItem
                 x:Name="GenerateAlbum"
                 Click="GenerateAlbum_Click"
-                Text="Сгенерировать альбом">
+                Text="Сгенерировать плейлист">
                 <MenuFlyoutItem.Icon>
                     <FontIcon Glyph="&#xEB44;" />
                 </MenuFlyoutItem.Icon>
