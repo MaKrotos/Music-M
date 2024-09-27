@@ -103,15 +103,17 @@ namespace VK_UI3.Views.Tasks
             this.total = total;
             this.nameTask = nameTask;
             this.taskID = taskID;
-            bool exists = tasks.Any(task => task.taskID == this.taskID);
 
-            if (exists)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                Cancel();
-                return;
+            if (!(taskID is null)) {
+                bool exists = tasks.Any(task => task.taskID == this.taskID);
+
+                if (exists)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    Cancel();
+                    return;
+                }
             }
-
             var set = SettingsTable.GetSetting("TaskALL");
             bool startAuto = set != null;
             if (!startAuto)

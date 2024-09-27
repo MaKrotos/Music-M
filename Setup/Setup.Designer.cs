@@ -71,7 +71,7 @@
             label2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label2.AutoSize = true;
             label2.FlatStyle = FlatStyle.Flat;
-            label2.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            label2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             label2.Location = new Point(18, 83);
             label2.Name = "label2";
             label2.Size = new Size(121, 15);
@@ -83,8 +83,8 @@
             label3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label3.AutoSize = true;
             label3.FlatStyle = FlatStyle.System;
-            label3.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label3.Location = new Point(18, 98);
+            label3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label3.Location = new Point(20, 98);
             label3.Name = "label3";
             label3.Size = new Size(118, 15);
             label3.TabIndex = 7;
@@ -95,8 +95,8 @@
             label4.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label4.AutoSize = true;
             label4.FlatStyle = FlatStyle.System;
-            label4.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label4.Location = new Point(18, 149);
+            label4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label4.Location = new Point(20, 149);
             label4.Name = "label4";
             label4.Size = new Size(74, 15);
             label4.TabIndex = 8;
@@ -107,7 +107,7 @@
             label5.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label5.AutoSize = true;
             label5.FlatStyle = FlatStyle.System;
-            label5.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            label5.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             label5.Location = new Point(18, 354);
             label5.Name = "label5";
             label5.Size = new Size(91, 15);
@@ -122,6 +122,7 @@
             label1.Size = new Size(374, 67);
             label1.TabIndex = 5;
             label1.Text = resources.GetString("label1.Text");
+            label1.Click += label1_Click;
             // 
             // label6
             // 

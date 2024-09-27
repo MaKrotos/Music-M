@@ -35,6 +35,7 @@ namespace VK_UI3.Views.ModalsPages
             this.Loaded += CreatePlayList_Loaded;
             this.audioPlaylist = audioPlaylist;
             this.genByPlayList = genByPlayList;
+            this.genBy = genBy;
             this.unicid = unicID;
         }
         public CreatePlayList(AudioPlaylist audioPlaylist, VkNet.Model.Attachments.Audio audio)
@@ -170,7 +171,7 @@ namespace VK_UI3.Views.ModalsPages
         {
             if (iVKGetAudio != null)
             {
-                new GeneratorAlbumVK(iVKGetAudio, name: Title.Text, deepGen: (int)GenValue.Value, description: Description.Text, noDiscover: HideFromSearch.IsOn, CoverPath: CoverPath).GenerateAsync();
+                new GeneratorAlbumVK(iVKGetAudio, name: Title.Text, deepGen: (int)GenValue.Value, description: Description.Text, noDiscover: HideFromSearch.IsOn, CoverPath: CoverPath, unicId: unicid).GenerateAsync();
                 
             }
             else
@@ -186,7 +187,7 @@ namespace VK_UI3.Views.ModalsPages
                    
 
                     if (pla != null) {
-                        new GeneratorAlbumVK(track_playlist, name: Title.Text, deepGen: 100, description: Description.Text, noDiscover: HideFromSearch.IsOn, CoverPath: CoverPath).GenerateAsync();
+                        new GeneratorAlbumVK(track_playlist, name: Title.Text, deepGen: 100, description: Description.Text, noDiscover: HideFromSearch.IsOn, CoverPath: CoverPath, unicId: unicid).GenerateAsync();
                     }
                 }
             }
