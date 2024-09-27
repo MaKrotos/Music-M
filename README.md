@@ -1,4 +1,15 @@
-[Скачать установщик](https://github.com/MaKrotos/Music-M/releases/download/0.1.5.2/Setup.VK.M.exe)
+## Установщики
+
+[X64 - полная версия установщика](https://github.com/MaKrotos/Music-M/releases/download/0.2.0.5/Setup.FULL.exe) - подойдёт большинству, автоматическая установка библиотек
+
+[X64 - урезанная версия установщика ](https://github.com/MaKrotos/Music-M/releases/download/0.2.0.5/Setup.SLIM.exe) - подойдёт большинству, придётся ручками ставить библиотеку .NET
+
+
+[ARM64 - полная версия установщика](https://github.com/MaKrotos/Music-M/releases/download/0.2.0.5/Setup.ARM64.FULL.exe) - подойдёт владельцам процессора ARM64, автоматическая установка библиотек
+
+[ARM64 - урезанная версия установщика](https://github.com/MaKrotos/Music-M/releases/download/0.2.0.5/Setup.ARM64.SLIM.exe) - подойдёт владельцам процессора ARM64, придётся ручками ставить библиотеку .NET
+
+## Скриншоты
 
 ![image](https://github.com/user-attachments/assets/ef6c8e24-87e2-41d6-811d-642ee336c58e)
 
@@ -18,6 +29,6 @@
 
 ![image](https://github.com/user-attachments/assets/0b479ed4-3099-4b7b-a7c8-771a88f2ef00)
 
-
+## Благодарочка
 Отдельная благодарность [Fooxboy/MusicX-WPF](https://github.com/Fooxboy/MusicX-WPF)https://github.com/Fooxboy/MusicX-WPF
 Много чего скопипасчено именно отсюда.
