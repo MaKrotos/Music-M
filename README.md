@@ -11,23 +11,18 @@
 
 ## Скриншоты
 
-![image](https://github.com/user-attachments/assets/ef6c8e24-87e2-41d6-811d-642ee336c58e)
+![image](https://github.com/user-attachments/assets/7f22792e-cefe-4136-b29f-0ef0e0db4ec1)
+![image](https://github.com/user-attachments/assets/483167fc-7120-470d-a45b-6a1733bd0f2c)
+![image](https://github.com/user-attachments/assets/27abe36a-bcf5-40b4-a981-3249be744375)
+![image](https://github.com/user-attachments/assets/5f0a71cc-244c-4f32-b780-564ae7e74a3d)
 
-![image](https://github.com/user-attachments/assets/1716280d-db7f-49f4-a93d-a5e09dd79577)
+![image](https://github.com/user-attachments/assets/dc820258-2525-45d9-aa9a-fb727d73a4ba)
+![image](https://github.com/user-attachments/assets/5b36c720-d1f0-42d8-8424-720e1e34fff7)
+![image](https://github.com/user-attachments/assets/23ebf9cc-6315-4506-b49f-ca1539c85c50)
+![image](https://github.com/user-attachments/assets/4129533a-3356-41d0-a9f5-0504daa2ae5f)
+![image](https://github.com/user-attachments/assets/42c6dabd-4897-41c2-ad99-1e30ee3c531f)
 
-![image](https://github.com/user-attachments/assets/de413da7-3837-4eb8-9fc9-ccbacb70ed02)
 
-![image](https://github.com/user-attachments/assets/08a88b05-35bb-4d82-b9dc-07cf38897496)
-
-![image](https://github.com/user-attachments/assets/8b8dcf2b-8556-4de5-8ca3-e7cd3a87fa96)
-
-![image](https://github.com/user-attachments/assets/73edf40b-7bc8-4aef-9719-ccb1a161ab79)
-
-![image](https://github.com/user-attachments/assets/6adf4758-60c0-4154-9001-702d58d4cb52)
-
-![image](https://github.com/user-attachments/assets/cd2a2db3-411d-4e7a-9438-0e71e8ad187d)
-
-![image](https://github.com/user-attachments/assets/0b479ed4-3099-4b7b-a7c8-771a88f2ef00)
 
 ## Благодарочка
 Отдельная благодарность [Fooxboy/MusicX-WPF](https://github.com/Fooxboy/MusicX-WPF)https://github.com/Fooxboy/MusicX-WPF
