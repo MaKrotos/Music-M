@@ -16,6 +16,7 @@
 
     <StackPanel
         Height="70"
+        Background="Transparent"
         Padding="0"
         Orientation="Horizontal">
         <Grid Padding="0">

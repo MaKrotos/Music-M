@@ -43,6 +43,7 @@
             <StackPanel
                 Grid.Column="2"
                 Padding="0,0,0,-4"
+                
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch">
                 <StackPanel
@@ -289,14 +290,16 @@
                     x:Name="TitleTextBlock"
                     Grid.Row="0"
                     VerticalAlignment="Bottom"
-                    Opacity="0.7"
+                    Opacity="1"
+    
                     TextTrimming="CharacterEllipsis"
                     TextWrapping="Wrap" />
                 <TextBlock
                     x:Name="ArtistTextBlock"
                     Grid.Row="1"
                     VerticalAlignment="Top"
-                    Opacity="0.7"
+                    Opacity="0.6"
+             
                     TextTrimming="CharacterEllipsis"
                     TextWrapping="Wrap" />
 

@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Octokit" Version="9.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\SetupLib\SetupLib.csproj" />
   </ItemGroup>
 

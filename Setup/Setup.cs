@@ -48,11 +48,11 @@ namespace Setup
             if (!a)
             {
                 var result = MessageBox.Show(
-                 $"Необходимо установить .NET веерсии минимум {RuntimeInformation.FrameworkDescription}",
-                 "Установить?",
-                 MessageBoxButtons.YesNo,
-                 MessageBoxIcon.Question
-                 );
+                     $"Необходимо установить .NET версии минимум {RuntimeInformation.FrameworkDescription}",
+                     "Установить?",
+                     MessageBoxButtons.YesNo,
+                     MessageBoxIcon.Question
+                );
 
                 if (result == DialogResult.Yes)
                 {
