@@ -82,7 +82,11 @@
         <DataTemplate x:Key="audio_stream_mixes_audio_stream_mix">
             <blocks:MixControl />
         </DataTemplate>
-        
+
+        <DataTemplate x:Key="audio_stream_mixes_audio_stream_mix_interactive">
+            <blocks:MixControl />
+        </DataTemplate>
+
         <DataTemplate x:Key="links">
             <blocks:ListLinks />
         </DataTemplate>
