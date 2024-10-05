@@ -11,17 +11,20 @@
 
 ## Скриншоты
 
-![image](https://github.com/user-attachments/assets/7f22792e-cefe-4136-b29f-0ef0e0db4ec1)
-![image](https://github.com/user-attachments/assets/483167fc-7120-470d-a45b-6a1733bd0f2c)
-![image](https://github.com/user-attachments/assets/27abe36a-bcf5-40b4-a981-3249be744375)
-![image](https://github.com/user-attachments/assets/5f0a71cc-244c-4f32-b780-564ae7e74a3d)
+![image](https://github.com/user-attachments/assets/fb425acc-5ba4-40f2-902e-70d8bede0cb4)
 
-![image](https://github.com/user-attachments/assets/dc820258-2525-45d9-aa9a-fb727d73a4ba)
-![image](https://github.com/user-attachments/assets/5b36c720-d1f0-42d8-8424-720e1e34fff7)
-![image](https://github.com/user-attachments/assets/23ebf9cc-6315-4506-b49f-ca1539c85c50)
-![image](https://github.com/user-attachments/assets/4129533a-3356-41d0-a9f5-0504daa2ae5f)
-![image](https://github.com/user-attachments/assets/42c6dabd-4897-41c2-ad99-1e30ee3c531f)
+![image](https://github.com/user-attachments/assets/42962243-14a0-4172-9a3a-b2600125c430)
 
+![image](https://github.com/user-attachments/assets/fecf16a3-49e8-4050-a81e-bce662949047)
+![image](https://github.com/user-attachments/assets/3931a4b6-98aa-4ba4-863a-207429adffa5)
+
+![image](https://github.com/user-attachments/assets/3fe75446-3f1b-4971-83d8-14bea8618e0c)
+
+![image](https://github.com/user-attachments/assets/f1a27167-4f88-4b18-98ad-9f705066c731)
+![image](https://github.com/user-attachments/assets/a3e6c2ae-fadf-4b25-b285-38a8fc82e45e)
+![image](https://github.com/user-attachments/assets/0ad71d45-6eef-43e6-bedc-c5477e5e45ff)
+![image](https://github.com/user-attachments/assets/e4567ee6-aeb6-4ea2-b39a-69267e057db5)
+![image](https://github.com/user-attachments/assets/81eb1fbd-edce-4f42-b50a-a36966b4d84d)
 
 
 ## Благодарочка
