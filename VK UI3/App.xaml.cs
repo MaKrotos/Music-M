@@ -19,7 +19,6 @@ using VkNet.AudioBypassService.Abstractions;
 using VkNet.AudioBypassService.Extensions;
 using VkNet.AudioBypassService.Models.Auth;
 using VkNet.Extensions.DependencyInjection;
-using Windows.ApplicationModel;
 using Windows.Win32;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -167,14 +166,6 @@ namespace VK_UI3
 
                 var setting = DB.SettingsTable.GetSetting("UserUniqID");
                 string UserUniqID;
-
-                string appVersion = string.Format("{0}.{1}.{2}.{3}",
-                      Package.Current.Id.Version.Major,
-                      Package.Current.Id.Version.Minor,
-                      Package.Current.Id.Version.Build,
-                      Package.Current.Id.Version.Revision);
-
-                EventParams eventParamsVersion = new EventParams("versionApp", appVersion);
                 if (setting == null)
                 {
                     UserUniqID = Helpers.SmallHelpers.GenerateRandomString(100);
@@ -182,24 +173,20 @@ namespace VK_UI3
 
                     EventParams eventParams = new EventParams("userID", UserUniqID);
 
-                  
-
-                    Event @event = new Event("First Run", DateTime.Now, eventParams: new List<EventParams>() { eventParams, eventParamsVersion });
+                    Event @event = new Event("First Run", DateTime.Now, eventParams: new List<EventParams>() { eventParams });
 
                     _ = StatSlyLib.StatSLY.SendEvent(@event);
                 }
                 else
                 {
-
                     UserUniqID = setting.settingValue;
                 }
 
                 {
                     EventParams eventParams = new EventParams("userID", UserUniqID);
 
-                    Event @event = new Event("Run App", DateTime.Now, eventParams: new List<EventParams>() { eventParams, eventParamsVersion });
+                    Event @event = new Event("Run App", DateTime.Now, eventParams: new List<EventParams>() { eventParams });
 
-                    
                     _ = StatSlyLib.StatSLY.SendEvent(@event);
                 }
             }
