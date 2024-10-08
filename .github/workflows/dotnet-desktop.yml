@@ -66,6 +66,16 @@ jobs:
         $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
 
+    - name: Обновить TOKEN_STAT_SLY
+      run: |
+        $repoName = "${{ github.repository }}".Split('/')[1]
+        $content = Get-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs"
+        $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', "${{ secrets.TOKEN_STAT_SLY }}"
+        Set-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs" -Value $updatedContent
+        Write-Output $updatedContent
+    
+
+
     - name: Display disk tree
       run: |
         Get-ChildItem -Recurse | Sort-Object Length -Descending
@@ -113,12 +123,6 @@ jobs:
         $password = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -Force -AsPlainText
         Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation Cert:\LocalMachine\My -Password $password
 
-    - name: Обновить TOKEN_STAT_SLY
-      run: |
-        $repoName = "${{ github.repository }}".Split('/')[1]
-        $content = Get-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs"
-        $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', "${{ secrets.TOKEN_STAT_SLY }}"
-        Set-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs" -Value $updatedContent
 
 
 
