@@ -66,6 +66,12 @@ jobs:
         $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
 
+    - name: Обновить TOKEN_STAT_SLY
+      run: |
+        $content = Get-Content -Path "D:\a\$repoName\$repoName\VKU3\VK UI3\StaticParams.cs"
+        $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', "`" + $env:TOKEN_STAT_SLY + "`"
+        Set-Content -Path "D:\a\$repoName\$repoName\VKU3\VK UI3\StaticParams.cs" -Value $updatedContent
+
 
     # Install the .NET Core workload
     - name: Install .NET Core
@@ -108,12 +114,6 @@ jobs:
         $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
         $password = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -Force -AsPlainText
         Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation Cert:\LocalMachine\My -Password $password
-
-    - name: Обновить TOKEN_STAT_SLY
-      run: |
-        $content = Get-Content -Path "D:\a\$repoName\$repoName\VKU3\VK UI3\StaticParams.cs"
-        $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', "`" + ${{ secrets.TOKEN_STAT_SLY }} + "`"
-        Set-Content -Path "D:\a\$repoName\$repoName\VKU3\VK UI3\StaticParams.cs" -Value $updatedContent
 
     # Create the app package by building and packaging the project
     - name: Create the app package
