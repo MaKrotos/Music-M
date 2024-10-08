@@ -5,7 +5,9 @@ using Microsoft.UI.Xaml;
 using MusicX.Core.Services;
 using MusicX.Services;
 using NLog;
+using StatSlyLib.Models;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,7 +19,6 @@ using VkNet.AudioBypassService.Abstractions;
 using VkNet.AudioBypassService.Extensions;
 using VkNet.AudioBypassService.Models.Auth;
 using VkNet.Extensions.DependencyInjection;
-using Windows.ApplicationModel.Activation;
 using Windows.Win32;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -61,6 +62,8 @@ namespace VK_UI3
             services.AddSingleton<UserRadioService>();
             services.AddSingleton<BoomService>();
 
+            
+
             services.AddSingleton<ICustomSectionsService, CustomSectionsService>();
 
             var container = StaticService.Container = services.BuildServiceProvider();
@@ -103,9 +106,12 @@ namespace VK_UI3
         /// <param name="args">Details about the launch request and process.</param>
         protected override async void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
+            statSlyRun();
+
             const string mutexName = "VKMMaKrotosApps";
             bool createdNew;
-            
+
+         
             setThemeApp();
             _mutex = new Mutex(true, mutexName, out createdNew);
             if (!createdNew)
@@ -151,6 +157,44 @@ namespace VK_UI3
             
             //   await (appUpdater.CheckForUpdaterBool)
         }
+
+        private async Task statSlyRun()
+        {
+            try
+            {
+                StatSlyLib.StatSLY.SetToken(StaticParams.tokenStatSly);
+
+                var setting = DB.SettingsTable.GetSetting("UserUniqID");
+                string UserUniqID;
+                if (setting == null)
+                {
+                    UserUniqID = Helpers.SmallHelpers.GenerateRandomString(100);
+                    DB.SettingsTable.SetSetting("UserUniqID", UserUniqID);
+
+                    EventParams eventParams = new EventParams("userID", UserUniqID);
+
+                    Event @event = new Event("First Run", DateTime.Now, eventParams: new List<EventParams>() { eventParams });
+
+                    _ = StatSlyLib.StatSLY.SendEvent(@event);
+                }
+                else
+                {
+                    UserUniqID = setting.settingValue;
+                }
+
+                {
+                    EventParams eventParams = new EventParams("userID", UserUniqID);
+
+                    Event @event = new Event("Run App", DateTime.Now, eventParams: new List<EventParams>() { eventParams });
+
+                    _ = StatSlyLib.StatSLY.SendEvent(@event);
+                }
+            }
+            catch (Exception e)
+            { 
+            }
+        }
+
         private static App thisApp;
 
         public static void setThemeApp() 

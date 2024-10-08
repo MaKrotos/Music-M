@@ -18,6 +18,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Setup", "Setup\Setup.csproj", "{3140B7E1-7834-410E-82B5-959B3978FA08}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VK UI3", "VK UI3\VK UI3.csproj", "{721CA9F4-7889-4694-B939-A1A1D3CC2C6D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CC7E35BF-30FE-4BCE-B773-74DD4D6F6761} = {CC7E35BF-30FE-4BCE-B773-74DD4D6F6761}
+	EndProjectSection
 EndProject
 Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "VK UI3 (Package)", "VK UI3 (Package)\VK UI3 (Package).wapproj", "{3074CE09-1E1F-4A30-A782-0D2641345E9D}"
 EndProject
@@ -31,6 +34,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignalR.Protobuf", "SignalR.Protobuf\SignalR.Protobuf.csproj", "{66D4F221-B4ED-46E9-A2DA-ABF8EFE99490}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VkNet", "VkNet\VkNet.csproj", "{C56E0370-C83F-4E89-9A24-AC50E10360C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatSlyLib", "StatSlyLib\StatSlyLib.csproj", "{CC7E35BF-30FE-4BCE-B773-74DD4D6F6761}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -212,6 +217,22 @@ Global
 		{C56E0370-C83F-4E89-9A24-AC50E10360C5}.Release|x64.Build.0 = Release|Any CPU
 		{C56E0370-C83F-4E89-9A24-AC50E10360C5}.Release|x86.ActiveCfg = Release|Any CPU
 		{C56E0370-C83F-4E89-9A24-AC50E10360C5}.Release|x86.Build.0 = Release|Any CPU
+		{CC7E35BF-30FE-4BCE-B773-74DD4D6F6761}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC7E35BF-30FE-4BCE-B773-74DD4D6F6761}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC7E35BF-30FE-4BCE-B773-74DD4D6F6761}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{CC7E35BF-30FE-4BCE-B773-74DD4D6F6761}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{CC7E35BF-30FE-4BCE-B773-74DD4D6F6761}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CC7E35BF-30FE-4BCE-B773-74DD4D6F6761}.Debug|x64.Build.0 = Debug|Any CPU
+		{CC7E35BF-30FE-4BCE-B773-74DD4D6F6761}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CC7E35BF-30FE-4BCE-B773-74DD4D6F6761}.Debug|x86.Build.0 = Debug|Any CPU
+		{CC7E35BF-30FE-4BCE-B773-74DD4D6F6761}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC7E35BF-30FE-4BCE-B773-74DD4D6F6761}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC7E35BF-30FE-4BCE-B773-74DD4D6F6761}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{CC7E35BF-30FE-4BCE-B773-74DD4D6F6761}.Release|ARM64.Build.0 = Release|Any CPU
+		{CC7E35BF-30FE-4BCE-B773-74DD4D6F6761}.Release|x64.ActiveCfg = Release|Any CPU
+		{CC7E35BF-30FE-4BCE-B773-74DD4D6F6761}.Release|x64.Build.0 = Release|Any CPU
+		{CC7E35BF-30FE-4BCE-B773-74DD4D6F6761}.Release|x86.ActiveCfg = Release|Any CPU
+		{CC7E35BF-30FE-4BCE-B773-74DD4D6F6761}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

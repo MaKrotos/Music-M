@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "VK UI3": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "TOKEN_STAT_SLY": "2ABUoUQmLNH0pGvjHLq6lA9x7lxOmcOtRctpwsq7fKRZ9IPIz6H8yfkSNrJq"
+      }
+    }
+  }
+}
