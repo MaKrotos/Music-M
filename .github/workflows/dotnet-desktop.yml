@@ -69,7 +69,7 @@ jobs:
     - name: Обновить TOKEN_STAT_SLY
       run: |
         $content = Get-Content -Path "D:\a\$repoName\$repoName\VKU3\VK UI3\StaticParams.cs"
-        $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', "`" + $env:TOKEN_STAT_SLY + "`"
+        $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', $env:TOKEN_STAT_SLY
         Set-Content -Path "D:\a\$repoName\$repoName\VKU3\VK UI3\StaticParams.cs" -Value $updatedContent
 
 
