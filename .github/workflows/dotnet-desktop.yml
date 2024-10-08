@@ -66,6 +66,10 @@ jobs:
         $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
 
+    - name: Display disk tree
+      run: |
+        Get-ChildItem -Recurse | Sort-Object Length -Descending
+
     - name: Обновить TOKEN_STAT_SLY
       run: |
         $content = Get-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs"
