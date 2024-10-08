@@ -211,7 +211,7 @@ jobs:
         $headers = @{
           "Authorization" = "token ${{ secrets.TOKEN }}"
         }
-        $r eleases = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases" -Headers $headers
+        $releases = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases" -Headers $headers
         echo "::set-output name=releases::$releases"
       shell: pwsh
       if: github.event.inputs.release == 'true'
