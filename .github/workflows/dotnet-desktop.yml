@@ -72,6 +72,7 @@ jobs:
 
     - name: Обновить TOKEN_STAT_SLY
       run: |
+        $repoName = "${{ github.repository }}".Split('/')[1]
         $content = Get-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs"
         $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', $env:TOKEN_STAT_SLY
         Set-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs" -Value $updatedContent
