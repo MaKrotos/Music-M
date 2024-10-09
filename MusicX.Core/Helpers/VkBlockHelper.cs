@@ -88,7 +88,7 @@ namespace MusicX.Core.Helpers
             }
 
             response.Section.Blocks.RemoveAll(block =>
-                block is { DataType: "radiostations" } or { Layout.Title: "Радиостанции" or "Эфиры" } ||
+                block is { DataType: "radiostations" or "empty" } or { Layout.Title: "Радиостанции" or "Эфиры" or "Популярные подкасты" } ||
                 (
                     block is { Banners.Count: > 0 } &&
                     block.Banners.RemoveAll(banner => banner.ClickAction?.Action.Url.Contains("subscription") is true ||
@@ -102,9 +102,11 @@ namespace MusicX.Core.Helpers
                     block.Links.RemoveAll(link => link.Url.Contains("audio_offline") ||
                                                   link.Url.Contains("radiostations") ||
                                                   link.Url.Contains("music_transfer") ||
+                                                  link.Url.Contains("no_music_content") ||
                                                   link.Url.Contains("subscription")) > 0 &&
                     block.Links.Count == 0
-                )
+                ) ||
+                    (block.Url != null && block.Url.Contains("no_music_content")) 
             );
 
             for (var i = 0; i < response.Section.Blocks.Count; i++)

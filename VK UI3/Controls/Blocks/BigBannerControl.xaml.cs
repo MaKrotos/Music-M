@@ -86,7 +86,6 @@ namespace VK_UI3.Controls.Blocks
 
         private void OnTimedEvent(object sender, ElapsedEventArgs e)
         {
-
             if (banners.Count == 0) return;
             int l_last_index = lastIndex + 1;
             if (l_last_index > banners.Count - 1)
@@ -100,18 +99,25 @@ namespace VK_UI3.Controls.Blocks
         {
             if (DataContext is Block block)
             {
-
-                foreach (var item in block.Banners)
+                if (block.Banners.Count() < 2)
                 {
-                    ExpBanner banner = new ExpBanner(item);
-                    if (banners.Count == 0)
-                    {
-                        banner.selected = true;
-                    }
-                    banner.showedClick += Banner_showedClick;
-                    banners.Add(banner);
+
+                    timer.Stop();
+                    myControl.Visibility = Visibility.Collapsed;
                 }
-             
+                else
+                {
+                    foreach (var item in block.Banners)
+                    {
+                        ExpBanner banner = new ExpBanner(item);
+                        if (banners.Count == 0)
+                        {
+                            banner.selected = true;
+                        }
+                        banner.showedClick += Banner_showedClick;
+                        banners.Add(banner);
+                    }
+                }
             }
             else return;
 
@@ -121,6 +127,14 @@ namespace VK_UI3.Controls.Blocks
             this.Description.Text = block.Banners[0].SubText;
             changeImage.ChangeImageWithAnimation(block.Banners[0].Images.Last().Url);
 
+            if ((banners[lastIndex].catalogBanner.ClickAction?.Action ?? banners[lastIndex].catalogBanner.Buttons?.FirstOrDefault()?.Action) is not { } action)
+            {
+                ActionCuratorButton.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                ActionCuratorButton.Visibility = Visibility.Visible;
+            }
 
         }
         Helpers.Animations.AnimationsChangeText titleText;
@@ -187,7 +201,11 @@ namespace VK_UI3.Controls.Blocks
             catch (Exception ex)
             {
 
-               
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = banners[lastIndex].catalogBanner.ClickAction?.Action.Url,
+                    UseShellExecute = true
+                });
             }
 
         }

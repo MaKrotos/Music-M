@@ -16,6 +16,7 @@ using VK_UI3.Views;
 using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
 using Windows.Media.Playlists;
+using static VK_UI3.Views.SectionView;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -94,6 +95,7 @@ namespace VK_UI3.Controls
                     else
                     {
                         imageLink.Visibility = Visibility.Collapsed;
+                    
                     }
 
                 }
@@ -161,11 +163,28 @@ namespace VK_UI3.Controls
                     }
 
 
-                    Process.Start(new ProcessStartInfo
+                 
+                }
+
+                if (link.Meta.ContentType is "audio_playlists" or "audio_albums")
+                {
+                    if (IsAlbumUrl(link.Url) || IsPlaylistUrl(link.Url))
                     {
-                        FileName = link.Url,
-                        UseShellExecute = true
-                    });
+                        var splited = link.Url.ToString().Split("/");
+                        splited = splited.Last().Split("_");
+
+                      
+
+                        MainView.OpenPlayList(
+                            long.Parse(splited[1]),
+                            long.Parse(splited[0]),
+                            splited[2]
+                            );
+
+                        return;
+                    }
+
+
                 }
 
                 if (link.Meta.ContentType == "curator")
@@ -174,13 +193,47 @@ namespace VK_UI3.Controls
                     var curator = await VKs.VK.vkService.GetAudioCuratorAsync(link.Meta.TrackCode, link.Url);
 
                     MainView.OpenSection(curator.Catalog.DefaultSection);
-
+                    return;
                 }
+
+               
+
+                if (link.Url.Equals("https://vk.com/audio?catalog=my_audios"))
+                {
+                    MainView.OpenMyPage(SectionType.MyListAudio);
+                    return;
+                }
+
+                {
+                    var music = await VKs.VK.vkService.GetAudioCatalogAsync(link.Url);
+                    MainView.OpenSection(music.Catalog.DefaultSection);
+                    return;
+                }
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = link.Url,
+                    UseShellExecute = true
+                });
             }
             catch (Exception ex)
             {
-
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = link.Url,
+                    UseShellExecute = true
+                });
             }
+        }
+
+
+        static bool IsAlbumUrl(string url)
+        {
+            return Regex.IsMatch(url, @"https://vk.com/music/album/-\d+_\d+_[a-z0-9]+$");
+        }
+
+        static bool IsPlaylistUrl(string url)
+        {
+            return Regex.IsMatch(url, @"https://vk.com/music/playlist/\d+_\d+_[a-z0-9]+$");
         }
 
         private void Grid_PointerEntered(object sender, PointerRoutedEventArgs e)

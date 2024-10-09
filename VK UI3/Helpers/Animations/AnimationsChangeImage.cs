@@ -65,6 +65,10 @@ namespace VK_UI3.Helpers.Animations
             switch (newImageSourceUrl)
             {
                 case null:
+                    dispatcherQueue.TryEnqueue(async () =>
+                    {
+                        hideAnimation(null);
+                    });
                     return;
                 case "null":
                     dispatcherQueue.TryEnqueue(async () =>

@@ -123,6 +123,7 @@ namespace VK_UI3.Controls
         private void Card_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             entered = true;
+            if (Banner.selected) return;
             FadeOutStoryboard.Pause();
             FadeInStoryboard.Begin();
         }

@@ -93,6 +93,7 @@
                             Click="ActionCuratorButton_Click">
                             Открыть
                         </Button>
+                        <Grid x:Name="ActionsGrid" HorizontalAlignment="Left" />
 
                     </StackPanel>
                 </StackPanel>
