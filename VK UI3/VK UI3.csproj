@@ -70,6 +70,7 @@
 	  <None Remove="Helpers\Animations\AnimatedSearch.xaml" />
 	  <None Remove="Views\Controls\BannerControlUnivers.xaml" />
 	  <None Remove="Views\Controls\BlockButtonView.xaml" />
+	  <None Remove="Views\Controls\ChoosenControl.xaml" />
 	  <None Remove="Views\Controls\CustomVideoTrailer.xaml" />
 	  <None Remove="Views\Controls\UniversalControl.xaml" />
 	  <None Remove="Views\Download\DownloadController.xaml" />
@@ -254,6 +255,9 @@
     <None Update="DownloadTrack\ffmpeg.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\Controls\ChoosenControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Helpers\Animations\AnimatedSearch.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
