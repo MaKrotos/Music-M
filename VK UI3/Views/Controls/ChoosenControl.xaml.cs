@@ -60,11 +60,13 @@ namespace VK_UI3.Views.Controls
 
         private void ChoosenControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            this.Unloaded -= ChoosenControl_Unloaded;
-            this.Loading -= ChoosenControl_Loading;
             this.Loaded -= ChoosenControl_Loaded; ;
+            this.Loading -= ChoosenControl_Loading; ;
+            this.Unloaded -= ChoosenControl_Unloaded;
+            this.SizeChanged -= ChoosenControl_SizeChanged;
         }
 
+        public event EventHandler onChangeSelected;
 
 
         private BlockSizing _sizeBlock = BlockSizing.FilledSize;
@@ -159,6 +161,8 @@ namespace VK_UI3.Views.Controls
 
                 AnimateCanvasMove(x, y, 200);
                 AnimateCanvasResize(width, height, 200);
+
+                onChangeSelected.Invoke(null, EventArgs.Empty);
             }
         }
 

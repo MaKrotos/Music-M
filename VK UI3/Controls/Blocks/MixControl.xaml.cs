@@ -1,11 +1,20 @@
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media;
 using MusicX.Core.Models;
 using System;
 using VK_UI3.Controllers;
+using VK_UI3.Helpers.Animations;
+using VK_UI3.Views.ModalsPages;
 using VK_UI3.VKs.IVK;
 using Windows.UI;
+using MvvmHelpers.Commands;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+using WinRT.Interop;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -41,6 +50,32 @@ namespace VK_UI3.Controls.Blocks
             this.Loaded += MixControl_Loaded;
             this.Unloaded += MixControl_Unloaded;
             this.DataContextChanged += MixControl_DataContextChanged;
+            ChoosenControl.onChangeSelected += ChoosenControl_onChangeSelected;
+            upTextBoxAnim = new AnimationsChangeText(upTextBox, this.DispatcherQueue);
+            DownTextBoxAnim = new AnimationsChangeText(downTextBox, this.DispatcherQueue);
+
+        }
+
+        AnimationsChangeText upTextBoxAnim;
+        AnimationsChangeText DownTextBoxAnim;
+        private ImmutableDictionary<string, ImmutableArray<string>>? _options;
+        private void ChoosenControl_onChangeSelected(object sender, EventArgs e)
+        {
+            if (ChoosenControl.choosen == 0)
+            {
+                _= settingBTN.ShowButton();
+
+                DownTextBoxAnim.ChangeTextWithAnimation("Музыкальные рекомендации для Вас");
+                upTextBoxAnim.ChangeTextWithAnimation("Слушать VK микс");
+            }
+            else
+            {
+               
+               _= settingBTN.HideButton();
+               DownTextBoxAnim.ChangeTextWithAnimation("Любимые треки из Вашей колелкции");
+               upTextBoxAnim.ChangeTextWithAnimation("Слушать мои треки");
+
+            }
         }
 
         private void MixControl_Loaded(object sender, RoutedEventArgs e)
@@ -110,7 +145,7 @@ namespace VK_UI3.Controls.Blocks
         {
             if (block == null) return;
             if (AudioPlayer.iVKGetAudio != null && AudioPlayer.iVKGetAudio is MixAudio mixAudio
-            && mixAudio.mix_id == block.Audio_Stream_Mixes_Ids[0]
+            && mixAudio.data.Id == block.Audio_Stream_Mixes_Ids[0]
             )
             {
                 /*
@@ -155,8 +190,70 @@ namespace VK_UI3.Controls.Blocks
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            var mixID = "common";
+            if (ChoosenControl.choosen != 0)
+            {
+                mixID = "my_music";
+            }
 
-            new MixAudio(block.Audio_Stream_Mixes_Ids[0], this.DispatcherQueue);
+         
+            new MixAudio(
+                   new MixOptions(mixID, Options: _options)
+                , this.DispatcherQueue);
+        }
+
+        private async void settingBTN_Click(object sender, RoutedEventArgs e)
+        {
+            ContentDialog dialog = new CustomDialog();
+
+            dialog.Transitions = new TransitionCollection
+             {
+                 new PopupThemeTransition()
+             };
+
+            // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
+            dialog.XamlRoot = this.XamlRoot;
+
+
+            var a = new SettingMix();
+            await a.LoadSettings("common");
+            dialog.Content = a;
+            dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+
+            a.ApplyCommand = new AsyncCommand(async () =>
+            {
+                SetOptions(a.Categories);
+                dialog.Hide();
+
+            });
+            a.ResetCommand = new AsyncCommand(async () =>
+            {
+                _options = null;
+                dialog.Hide();
+
+                
+            });
+            new MixAudio(
+                   new MixOptions("common", Options: _options)
+                , this.DispatcherQueue);
+            dialog.ShowAsync();
+
+        }
+        private void SetOptions(IEnumerable<MixSettingsCategoryViewModel> categories)
+        {
+            var builder = ImmutableDictionary<string, ImmutableArray<string>>.Empty.ToBuilder();
+
+            foreach (var category in categories)
+            {
+                foreach (var option in category.Options.Where(b => b.Selected))
+                {
+                    builder[category.Id] = builder.TryGetValue(category.Id, out var value)
+                        ? value.Add(option.Id)
+                        : [option.Id];
+                }
+            }
+
+            _options = builder.Count == 0 ? null : builder.ToImmutable();
         }
     }
 }

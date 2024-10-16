@@ -81,6 +81,7 @@
 	  <None Remove="Views\ModalsPages\CustomDialog.xaml" />
 	  <None Remove="Views\ModalsPages\DownLoadFFMpeg.xaml" />
 	  <None Remove="Views\ModalsPages\EditTrack.xaml" />
+	  <None Remove="Views\ModalsPages\SettingMix.xaml" />
 	  <None Remove="Views\SectionView.xaml" />
 	  <None Remove="Views\Settings\SettingsPage.xaml" />
 	  <None Remove="Views\Share\ConversationsList.xaml" />
@@ -119,6 +120,7 @@
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.240829007" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1" />
     <PackageReference Include="QRCoder" Version="1.6.0" />
+    <PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
     <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
     <PackageReference Include="TagLibSharp" Version="2.3.0" />
     <PackageReference Include="WinUICommunity.Components" Version="6.9.0" />
@@ -255,6 +257,9 @@
     <None Update="DownloadTrack\ffmpeg.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\ModalsPages\SettingMix.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\Controls\ChoosenControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

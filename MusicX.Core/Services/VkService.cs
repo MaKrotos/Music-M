@@ -1,11 +1,14 @@
 ﻿using MusicX.Core.Helpers;
 using MusicX.Core.Models;
 using MusicX.Core.Models.General;
+using MusicX.Core.Models.Mix;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Net.Http.Headers;
+using System.Text.Json;
 using VkNet.Abstractions;
 using VkNet.Abstractions.Core;
 using VkNet.AudioBypassService.Abstractions;
@@ -24,7 +27,7 @@ namespace MusicX.Core.Services
         public readonly IVkApiCategories vkApi;
         private readonly IVkApiInvoke apiInvoke;
         private readonly Logger logger;
-        private readonly string vkApiVersion = "5.500";
+        private readonly string vkApiVersion = "8.100";
 
         public bool IsAuth = false;
         private readonly IVkTokenStore tokenStore;
@@ -33,6 +36,31 @@ namespace MusicX.Core.Services
         private readonly ICustomSectionsService _customSectionsService;
         private readonly IDeviceIdStore _deviceIdStore;
         private readonly ITokenRefreshHandler _tokenRefreshHandler;
+
+        public async Task<MixSettingsRoot> GetStreamMixSettings(string mixId)
+        {
+            try
+            {
+                var parameters = new VkParameters
+                {
+
+                    {"device_id", await _deviceIdStore.GetDeviceIdAsync()},
+
+                    {"mix_id", mixId},
+                };
+
+                var model = await apiInvoke.CallAsync<MixSettingsRoot>("audio.getStreamMixSettings", parameters);
+
+                return model;
+            }
+            catch (Exception ex)
+            {
+                logger.Error("VK API ERROR:");
+                logger.Error(ex, ex.Message);
+                throw;
+            }
+
+        }
 
         public VkService(Logger logger, IVkApiCategories vkApi, IVkApiInvoke apiInvoke, IVkApiVersionManager versionManager,
                          IVkTokenStore tokenStore, IVkApiAuthAsync auth, IVkApi api, ICustomSectionsService customSectionsService, IDeviceIdStore deviceIdStore, ITokenRefreshHandler tokenRefreshHandler)
@@ -119,6 +147,35 @@ namespace MusicX.Core.Services
            
 
         }
+        private readonly JsonSerializerOptions _jsonSerializerOptions = new(JsonSerializerDefaults.Web);
+        public async Task<List<Audio>> GetStreamMixAudios(string mixId = "common", int append = 0, int count = 50, ImmutableDictionary<string, ImmutableArray<string>>? options = null)
+        {
+            try
+            {
+                var parameters = new VkParameters
+                {
+
+                    {"device_id", await _deviceIdStore.GetDeviceIdAsync()},
+
+                    {"mix_id", mixId},
+                    {"append", append},
+                    {"count", count},
+                    {"options", options == null ? null : System.Text.Json.JsonSerializer.Serialize(options, _jsonSerializerOptions)}
+                };
+
+                var model = await apiInvoke.CallAsync<List<Audio>>("audio.getStreamMixAudios", parameters);
+
+                return model;
+            }
+            catch (Exception ex)
+            {
+                logger.Error("VK API ERROR:");
+                logger.Error(ex, ex.Message);
+                throw;
+            }
+
+        }
+
 
         public async Task<ResponseData> GetAudioCatalogAsync(string url = null)
         {

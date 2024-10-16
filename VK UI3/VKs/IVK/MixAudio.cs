@@ -1,7 +1,9 @@
 using Microsoft.UI.Dispatching;
+using MusicX.Core.Services;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,25 +13,46 @@ using VkNet.Utils;
 
 namespace VK_UI3.VKs.IVK
 {
+    public record MixOptions(string Id, int Append = 0, ImmutableDictionary<string, ImmutableArray<string>>? Options = null)
+    {
+        public override int GetHashCode()
+        {
+            var hashCode = new HashCode();
+
+            hashCode.Add(Id);
+            hashCode.Add(Append);
+            if (Options is not null)
+                foreach (var (key, values) in Options)
+                {
+                    hashCode.Add(key);
+                    foreach (var item in values)
+                    {
+                        hashCode.Add(item);
+                    }
+                }
+
+            return hashCode.ToHashCode();
+        }
+    }
+
+
     public class MixAudio : IVKGetAudio
     {
-        public string mix_id;
-        public MixAudio(string mix_id, DispatcherQueue dispatcher) : base(dispatcher)
+        public MixOptions data;
+        public MixAudio(MixOptions data, DispatcherQueue dispatcher) : base(dispatcher)
         {
-            this.mix_id = mix_id;
-            //Ќу никто ж не будет слушать столько, да?
+            this.data = data;
+
             this.countTracks = -1;
       
             Task.Run(async () =>
             {
-                VkParameters keyValuePairs = new VkParameters();
-                keyValuePairs.Add("mix_id", mix_id);
-                keyValuePairs.Add("count", 50);
+              
 
                 try
                 {
-                    var a = await VK.api.CallAsync("audio.getStreamMixAudios", keyValuePairs);
-                    List<Audio> audios = JsonConvert.DeserializeObject<List<Audio>>(a.RawJson);
+                    var audios = await VK.vkService.GetStreamMixAudios(data.Id, data.Append, options: data.Options);
+                 
                     foreach (var item in audios)
                     {
                         listAudioTrue.Add(new Helpers.ExtendedAudio(item, this));
@@ -76,15 +99,12 @@ namespace VK_UI3.VKs.IVK
 
                 task = Task.Run(async () =>
                 {
-                    VkParameters keyValuePairs = new VkParameters();
-                    keyValuePairs.Add("mix_id", mix_id);
-                    keyValuePairs.Add("count", 50);
+                  
 
                     try
                     {
-                        var a = await VK.api.CallAsync("audio.getStreamMixAudios", keyValuePairs);
-                        List<Audio> audios = JsonConvert.DeserializeObject<List<Audio>>(a.RawJson);
-                        foreach (var item in audios)
+                        var tracks = await VK.vkService.GetStreamMixAudios(data.Id, data.Append, options: data.Options);
+                        foreach (var item in tracks)
                         {
                             listAudioTrue.Add(new Helpers.ExtendedAudio(item, this));
                         }

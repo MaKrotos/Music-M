@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:custom="using:VK_UI3.Views.Controls"
+    xmlns:customBTN="using:VK_UI3.Helpers.Animations"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:VK_UI3.Controls.Blocks"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -91,26 +92,51 @@
                 </Button.Content>
             </Button>
             <TextBlock
+                x:Name="upTextBox"
                 Grid.Row="1"
                 Margin="10"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 FontSize="40"
                 TextWrapping="Wrap">
-                Слушать VK Mix
+                Слушать VK микс
             </TextBlock>
-            <custom:ChoosenControl>
-                <custom:ChoosenControl.Buttons>
+            <customBTN:AnimatedButton
+                x:Name="settingBTN"
+                Click="settingBTN_Click"
+                Grid.Column="4"
+                Width="200"
+                Height="30"
+                Margin="0,0,0,5"
+                Padding="0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                CornerRadius="5"
+                OriginalHeight="30"
+                OriginalMargin="5,5,5,5"
+                OriginalWidth="200">
 
-                    <Button>
-                        VK Микс
-                    </Button>
-                    <Button Width="auto">
-                        Моя музыка
-                    </Button>
-                </custom:ChoosenControl.Buttons>
-            </custom:ChoosenControl>
+                <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE713;" />
+                    <TextBlock Margin="10,0,0,0">Настроить</TextBlock>
+                </StackPanel>
+            </customBTN:AnimatedButton>
+           
+                <custom:ChoosenControl Margin="0,5,0,0" Width="300" x:Name="ChoosenControl">
+                    <custom:ChoosenControl.Buttons>
+
+                        <Button>
+                            VK Микс
+                        </Button>
+                        <Button Width="auto">
+                            Моя музыка
+                        </Button>
+                        
+                    </custom:ChoosenControl.Buttons>
+                </custom:ChoosenControl>
+      
             <TextBlock
+                x:Name="downTextBox"
                 Grid.Row="1"
                 Margin="10"
                 HorizontalAlignment="Center"
@@ -118,7 +144,7 @@
                 FontSize="20"
                 Opacity="0.8"
                 TextWrapping="Wrap">
-                Плейлист, который подстраивается под Ваши вкусы
+                Музыкальные рекомендации для Вас
             </TextBlock>
 
         </StackPanel>
