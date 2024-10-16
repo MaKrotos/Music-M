@@ -103,7 +103,6 @@
             </TextBlock>
             <customBTN:AnimatedButton
                 x:Name="settingBTN"
-                Click="settingBTN_Click"
                 Grid.Column="4"
                 Width="200"
                 Height="30"
@@ -111,30 +110,45 @@
                 Padding="0"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
+                Click="settingBTN_Click"
                 CornerRadius="5"
                 OriginalHeight="30"
                 OriginalMargin="5,5,5,5"
                 OriginalWidth="200">
 
-                <StackPanel Orientation="Horizontal">
-                    <FontIcon Glyph="&#xE713;" />
-                    <TextBlock Margin="10,0,0,0">Настроить</TextBlock>
-                </StackPanel>
-            </customBTN:AnimatedButton>
-           
-                <custom:ChoosenControl Margin="0,5,0,0" Width="300" x:Name="ChoosenControl">
-                    <custom:ChoosenControl.Buttons>
+                <Grid
+                    Width="200"
+                    Height="30"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                    <StackPanel
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <FontIcon Glyph="&#xE713;" />
+                        <TextBlock Margin="10,0,0,0">Настроить</TextBlock>
+                    </StackPanel>
+                </Grid>
 
-                        <Button>
-                            VK Микс
-                        </Button>
-                        <Button Width="auto">
-                            Моя музыка
-                        </Button>
-                        
-                    </custom:ChoosenControl.Buttons>
-                </custom:ChoosenControl>
-      
+
+            </customBTN:AnimatedButton>
+
+            <custom:ChoosenControl
+                x:Name="ChoosenControl"
+                Width="300"
+                Margin="0,5,0,0">
+                <custom:ChoosenControl.Buttons>
+
+                    <Button>
+                        VK Микс
+                    </Button>
+                    <Button Width="auto">
+                        Моя музыка
+                    </Button>
+
+                </custom:ChoosenControl.Buttons>
+            </custom:ChoosenControl>
+
             <TextBlock
                 x:Name="downTextBox"
                 Grid.Row="1"

@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using WinRT.Interop;
+using MusicX.Core.Models.Mix;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -222,7 +223,7 @@ namespace VK_UI3.Controls.Blocks
 
             a.ApplyCommand = new AsyncCommand(async () =>
             {
-                SetOptions(a.Categories);
+                SetOptions(a.mixCategories);
                 dialog.Hide();
 
             });
@@ -239,7 +240,7 @@ namespace VK_UI3.Controls.Blocks
             dialog.ShowAsync();
 
         }
-        private void SetOptions(IEnumerable<MixSettingsCategoryViewModel> categories)
+        private void SetOptions(IEnumerable<MixCategory> categories)
         {
             var builder = ImmutableDictionary<string, ImmutableArray<string>>.Empty.ToBuilder();
 

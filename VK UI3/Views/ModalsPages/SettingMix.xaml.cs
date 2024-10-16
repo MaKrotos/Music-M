@@ -39,7 +39,7 @@ namespace VK_UI3.Views.ModalsPages
 
         public bool IsLoading { get; set; }
 
-        public ObservableCollection<MixSettingsCategoryViewModel> Categories { get; set; } = [];
+    
 
         public ICommand? ApplyCommand { get; set; }
         public ICommand? ResetCommand { get; set; }
@@ -60,86 +60,22 @@ namespace VK_UI3.Views.ModalsPages
             IsLoading = false;
             Title = settings.Settings.Title;
             Subtitle = settings.Settings.Subtitle;
-            Categories = new(settings.Settings.Categories.Select(b => new MixSettingsCategoryViewModel(b)));
-        }
-    }
 
-
-
-
-    public class MyTemplateSelector : DataTemplateSelector
-    {
-        public DataTemplate PicturedButtonTemplate { get; set; }
-        public DataTemplate ButtonTemplate { get; set; }
-
-        protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
-        {
-            var viewModel = item as MixSettingsCategoryViewModel;
-            if (viewModel != null)
+            foreach (var item in settings.Settings.Categories)
             {
-                if (viewModel.Type == "pictured_button_horizontal_group")
-                {
-                    return PicturedButtonTemplate;
-                }
-                else if (viewModel.Type == "button_horizontal_group")
-                {
-                    return ButtonTemplate;
-                }
+                this.DispatcherQueue.TryEnqueue(() => {
+                  
+                    mixCategories.Add(item);
+
+                    });
             }
-            return base.SelectTemplateCore(item, container);
         }
+        public ObservableCollection<MixCategory> mixCategories = new ObservableCollection<MixCategory>();
     }
 
-    public class MixSettingsCategoryViewModel : Grid
-    {
-        public string Title { get; set; }
-        public string Id { get; set; }
-        public string Type { get; set; }
-        public ObservableCollection<MixSettingsOptionViewModel> Options { get; set; }
+   
 
-        public MixSettingsCategoryViewModel(MixCategory category)
-        {
-            Title = category.Title;
-            Id = category.Id;
-            Type = category.Type;
-            Options = new(category.Options.Select(o => new MixSettingsOptionViewModel(o)));
-        }
-    }
 
-    public class MixSettingsOptionViewModel : Grid
-    {
-        public string Title { get; set; }
-        public string Id { get; set; }
 
-        public byte[]? Icon { get; set; }
-
-        public bool Selected { get; set; }
-
-        public MixSettingsOptionViewModel(MixOption option)
-        {
-            Title = option.Title;
-            Id = option.Id;
-            if (!string.IsNullOrEmpty(option.IconUri))
-                Load(option.IconUri);
-        }
-
-        private async Task Load(string uri)
-        {
-            using var httpClient = new HttpClient(new HttpClientHandler
-            {
-                AutomaticDecompression = DecompressionMethods.All
-            });
-
-            await using var stream = await httpClient.GetStreamAsync(uri);
-
-            var jsonObject = await JsonNode.ParseAsync(stream);
-
-            if (jsonObject is null) return;
-
-            var base64Image = jsonObject["assets"]![0]!["p"]!.AsValue().ToString();
-
-            Icon = Convert.FromBase64String(base64Image["data:image/png;base64,".Length..]);
-        }
-    }
 
 }
