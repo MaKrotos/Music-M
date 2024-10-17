@@ -28,12 +28,17 @@ namespace VK_UI3.Views.ModalsPages.MixControls
             this.InitializeComponent();
             this.Loaded += SImpleStack_Loaded;
             this.DataContextChanged += SImpleStack_DataContextChanged;
+        
         }
+        MixCategory mixCategory;
 
         private void SImpleStack_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             if (DataContext is MixCategory mixcat)
             {
+                if (mixCategory == mixcat) return;
+                mixOptions.Clear();
+                mixCategory = mixcat;
                 foreach (var opt in mixcat.Options)
                 {
                     mixOptions.Add(opt);
@@ -69,8 +74,8 @@ namespace VK_UI3.Views.ModalsPages.MixControls
 
         public UIElement GetElement(ElementFactoryGetArgs args)
         {
-            var mixOption = args.Data as MixCategory;
-            if (mixOption?.Type == "pictured_button_horizontal_group")
+            var mixOption = args.Data as MixOption;
+            if (mixOption?.IconUri != null)
             {
                 return (UIElement)StringTemplate.LoadContent();
             }

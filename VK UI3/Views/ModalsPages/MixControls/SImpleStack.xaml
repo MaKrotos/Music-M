@@ -22,23 +22,30 @@
 
     </UserControl.Resources>
 
-    <Grid>
-        <ScrollViewer>
+    <Grid  HorizontalAlignment="Center" VerticalAlignment="Center">
 
 
 
-            <muxc:ItemsRepeater x:Name="StaggeredRepeater" ItemsSource="{x:Bind mixOptions, Mode=OneWay}">
-                <muxc:ItemsRepeater.Layout>
-                    <controls:WrapLayout
-                        HorizontalSpacing="10"
-                        Orientation="Horizontal"
-                        VerticalSpacing="10" />
-                </muxc:ItemsRepeater.Layout>
-                <muxc:ItemsRepeater.ItemTemplate>
-                    <local:CustomElementFactory DefaultTemplate="{StaticResource DefaultTemplate}" StringTemplate="{StaticResource StringTemplate}" />
-                </muxc:ItemsRepeater.ItemTemplate>
-            </muxc:ItemsRepeater>
+        
+        <muxc:ItemsRepeater 
+            Width="auto"
+            x:Name="StaggeredRepeater"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+        
+            ItemsSource="{x:Bind mixOptions, Mode=OneWay}">
+            <muxc:ItemsRepeater.Layout>
+                <controls:StaggeredLayout
+                    ColumnSpacing="10"
+                    DesiredColumnWidth="85"
+                    RowSpacing="10" />
 
-        </ScrollViewer>
+            </muxc:ItemsRepeater.Layout>
+            <muxc:ItemsRepeater.ItemTemplate>
+                <local:CustomElementFactory DefaultTemplate="{StaticResource DefaultTemplate}" StringTemplate="{StaticResource StringTemplate}" />
+            </muxc:ItemsRepeater.ItemTemplate>
+        </muxc:ItemsRepeater>
+
+
     </Grid>
 </UserControl>

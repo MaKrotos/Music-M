@@ -5,11 +5,13 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using MusicX.Core.Models.Mix;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using VK_UI3.Helpers.Animations;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
@@ -23,6 +25,46 @@ namespace VK_UI3.Views.ModalsPages.MixControls
         public PicturedButton()
         {
             this.InitializeComponent();
+            this.DataContextChanged += PicturedButton_DataContextChanged;
+            animationsChangeLottie = new AnimationsChangeLottie(animPlayer, LottieVisualSource, this.DispatcherQueue);
+        }
+        MixOption mixOption = null;
+        AnimationsChangeLottie animationsChangeLottie;
+        private void PicturedButton_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            if (DataContext == null || !(DataContext is MixOption mixopt)) return;
+            if (mixOption == mixopt) return;
+
+            mixOption = mixopt;
+            animationsChangeLottie.ChangeImageWithAnimation(mixopt.IconUri);
+        }
+
+
+        private async void PlayLottieAnimation()
+        {
+            Player.Pause();
+            Player.PlayAsync(fromProgress: 0, toProgress: 1, looped: false);
+            
+        }
+
+        private async void PlayLottieAnimationReverse()
+        {
+
+            Player.Pause();
+            Player.PlayAsync(fromProgress: 0, toProgress: -1, looped: false);
+            
+        }
+
+        private void ToggleButton_Checked(object sender, RoutedEventArgs e)
+        {
+            PlayLottieAnimation();
+        }
+
+        private void ToggleButton_Unchecked(object sender, RoutedEventArgs e)
+        {
+            PlayLottieAnimationReverse();
+
+
         }
     }
 }
