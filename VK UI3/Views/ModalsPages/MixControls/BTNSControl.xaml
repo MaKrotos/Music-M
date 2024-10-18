@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<UserControl
+    x:Class="VK_UI3.Views.ModalsPages.MixControls.BTNSControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:WinUIGallery="using:WinUIGallery.Common"
+    xmlns:controls="using:VK_UI3.WinUI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:VK_UI3.Views.ModalsPages.MixControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d">
+
+    <Grid
+        x:Name="MainGrid"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Center">
+        <ScrollViewer>
+
+
+
+
+            <muxc:ItemsRepeater x:Name="StaggeredRepeater" ItemsSource="{x:Bind mixOptions, Mode=OneWay}">
+                <muxc:ItemsRepeater.Layout>
+                    <WinUIGallery:ActivityFeedLayout ColumnSpacing="8" MinItemSize="100,30" />
+                </muxc:ItemsRepeater.Layout>
+                <muxc:ItemsRepeater.ItemTemplate>
+                    <DataTemplate>
+                        <ToggleButton
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Content="{Binding Title}"
+                            IsChecked="{Binding Selected}" />
+                    </DataTemplate>
+                </muxc:ItemsRepeater.ItemTemplate>
+
+            </muxc:ItemsRepeater>
+        </ScrollViewer>
+
+    </Grid>
+</UserControl>

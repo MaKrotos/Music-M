@@ -205,39 +205,43 @@ namespace VK_UI3.Controls.Blocks
 
         private async void settingBTN_Click(object sender, RoutedEventArgs e)
         {
-            ContentDialog dialog = new CustomDialog();
-
-            dialog.Transitions = new TransitionCollection
-             {
-                 new PopupThemeTransition()
-             };
-
-            // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
-            dialog.XamlRoot = this.XamlRoot;
-
-
-            var a = new SettingMix();
-            await a.LoadSettings("common");
-            dialog.Content = a;
-            dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
-
-            a.ApplyCommand = new AsyncCommand(async () =>
+            try
             {
-                SetOptions(a.mixCategories);
-                dialog.Hide();
+                ContentDialog dialog = new CustomDialog();
 
-            });
-            a.ResetCommand = new AsyncCommand(async () =>
-            {
-                _options = null;
-                dialog.Hide();
+                    dialog.Transitions = new TransitionCollection
+                 {
+                     new PopupThemeTransition()
+                 };
 
-                
-            });
-            new MixAudio(
-                   new MixOptions("common", Options: _options)
-                , this.DispatcherQueue);
-            dialog.ShowAsync();
+                // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
+                dialog.XamlRoot = this.XamlRoot;
+
+
+                var a = new SettingMix();
+                await a.LoadSettings("common");
+                dialog.Content = a;
+                dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+
+                a.ApplyCommand = new AsyncCommand(async () =>
+                {
+                    SetOptions(a.mixCategories);
+                    dialog.Hide();
+
+                });
+                a.ResetCommand = new AsyncCommand(async () =>
+                {
+                    _options = null;
+                    dialog.Hide();
+
+
+                });
+                new MixAudio(
+                       new MixOptions("common", Options: _options)
+                    , this.DispatcherQueue);
+                dialog.ShowAsync();
+            }
+            catch (Exception xe) { }
 
         }
         private void SetOptions(IEnumerable<MixCategory> categories)

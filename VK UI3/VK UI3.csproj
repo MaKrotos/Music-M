@@ -12,6 +12,7 @@
     <UseWinUI>true</UseWinUI>
     <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+    <UserSecretsId>645ec4a4-9b68-4fbd-bdfd-4f49ee06b285</UserSecretsId>
   </PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
 		<DefineConstants>X64</DefineConstants>
@@ -81,9 +82,10 @@
 	  <None Remove="Views\ModalsPages\CustomDialog.xaml" />
 	  <None Remove="Views\ModalsPages\DownLoadFFMpeg.xaml" />
 	  <None Remove="Views\ModalsPages\EditTrack.xaml" />
+	  <None Remove="Views\ModalsPages\MixControls\BTNSControl.xaml" />
 	  <None Remove="Views\ModalsPages\MixControls\PicturedButton.xaml" />
+	  <None Remove="Views\ModalsPages\MixControls\PicturedControl.xaml" />
 	  <None Remove="Views\ModalsPages\MixControls\SimpleButtons.xaml" />
-	  <None Remove="Views\ModalsPages\MixControls\SImpleStack.xaml" />
 	  <None Remove="Views\ModalsPages\SettingMix.xaml" />
 	  <None Remove="Views\SectionView.xaml" />
 	  <None Remove="Views\Settings\SettingsPage.xaml" />
@@ -113,7 +115,9 @@
 	  </Content>
 	</ItemGroup>
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.LayoutTransformControl" Version="8.1.240916" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.1.240916" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" Version="8.1.240916" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.1.240916" />
     <PackageReference Include="CommunityToolkit.WinUI.Lottie" Version="8.1.240821" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
@@ -263,8 +267,13 @@
     <None Update="DownloadTrack\ffmpeg.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Page Update="Views\ModalsPages\MixControls\SImpleStack.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Update="Views\ModalsPages\MixControls\PicturedControl.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\ModalsPages\MixControls\BTNSControl.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\ModalsPages\MixControls\SimpleButtons.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -73,7 +73,23 @@ namespace VK_UI3.Views.ModalsPages
         public ObservableCollection<MixCategory> mixCategories = new ObservableCollection<MixCategory>();
     }
 
-   
+
+    public class MyTemplateSelector : DataTemplateSelector
+    {
+        public DataTemplate PicturedButtonTemplate { get; set; }
+        public DataTemplate SimpleButtonTemplate { get; set; }
+
+        protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
+        {
+            var category = item as MixCategory;
+            if (category != null)
+            {
+                return category.Type == "pictured_button_horizontal_group" ?
+                    PicturedButtonTemplate : SimpleButtonTemplate;
+            }
+            return base.SelectTemplateCore(item, container);
+        }
+    }
 
 
 

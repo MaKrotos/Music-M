@@ -20,16 +20,22 @@ using Windows.Foundation.Collections;
 
 namespace VK_UI3.Views.ModalsPages.MixControls
 {
-    public sealed partial class SImpleStack : UserControl
+    public sealed partial class PicturedControl : UserControl
     {
    
-        public SImpleStack()
+        public PicturedControl()
         {
             this.InitializeComponent();
-            this.Loaded += SImpleStack_Loaded;
             this.DataContextChanged += SImpleStack_DataContextChanged;
-        
+            this.Unloaded += PicturedControl_Unloaded;
         }
+
+        private void PicturedControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            this.DataContextChanged -= SImpleStack_DataContextChanged;
+            this.Unloaded -= PicturedControl_Unloaded;
+        }
+
         MixCategory mixCategory;
 
         private void SImpleStack_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
@@ -50,43 +56,10 @@ namespace VK_UI3.Views.ModalsPages.MixControls
         }
         ObservableCollection<MixOption> mixOptions = new ObservableCollection<MixOption>();
 
-        private void SImpleStack_Loaded(object sender, RoutedEventArgs e)
-        {
-            
-        }
+       
     }
 
-    public class TypeTemplateSelector : DataTemplateSelector
-    {
-        public DataTemplate? StringTemplate { get; set; }
-        public DataTemplate? DefaultTemplate { get; set; }
-
-        protected override DataTemplate? SelectTemplateCore(object item, DependencyObject container)
-        {
-            var mixOption = item as MixCategory;
-            return mixOption?.Type == "pictured_button_horizontal_group" ? StringTemplate : DefaultTemplate;
-        }
-    }
-    public class CustomElementFactory : IElementFactory
-    {
-        public DataTemplate? StringTemplate { get; set; }
-        public DataTemplate? DefaultTemplate { get; set; }
-
-        public UIElement GetElement(ElementFactoryGetArgs args)
-        {
-            var mixOption = args.Data as MixOption;
-            if (mixOption?.IconUri != null)
-            {
-                return (UIElement)StringTemplate.LoadContent();
-            }
-            return (UIElement)DefaultTemplate.LoadContent();
-        }
-
-        public void RecycleElement(ElementFactoryRecycleArgs args)
-        {
-            // Optional: Add recycling logic here if needed
-        }
-    }
+  
 
 
 }

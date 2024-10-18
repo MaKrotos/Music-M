@@ -22,6 +22,18 @@ namespace VK_UI3.Views.ModalsPages.MixControls
 {
     public sealed partial class PicturedButton : UserControl
     {
+
+        private void EnsurePlaying()
+        {
+
+
+            Player.Pause();
+                    _ = Player.PlayAsync(fromProgress: 0, toProgress: 1, looped: false);
+                
+            
+        }
+
+
         public PicturedButton()
         {
             this.InitializeComponent();
@@ -40,31 +52,18 @@ namespace VK_UI3.Views.ModalsPages.MixControls
         }
 
 
-        private async void PlayLottieAnimation()
-        {
-            Player.Pause();
-            Player.PlayAsync(fromProgress: 0, toProgress: 1, looped: false);
-            
-        }
-
-        private async void PlayLottieAnimationReverse()
-        {
-
-            Player.Pause();
-            Player.PlayAsync(fromProgress: 0, toProgress: -1, looped: false);
-            
-        }
+     
 
         private void ToggleButton_Checked(object sender, RoutedEventArgs e)
         {
-            PlayLottieAnimation();
+            Player.PlaybackRate = 1;
+            EnsurePlaying();
         }
 
         private void ToggleButton_Unchecked(object sender, RoutedEventArgs e)
         {
-            PlayLottieAnimationReverse();
-
-
+            Player.PlaybackRate = -1;
+            EnsurePlaying();
         }
     }
 }
