@@ -14,21 +14,17 @@ Music M - По сути своей адаптация VK X и Music X, пере�
 
 ## Скриншоты
 ![image](https://github.com/user-attachments/assets/6525ad2f-18c8-48c4-8605-ad68c118702a)
+![image](https://github.com/user-attachments/assets/89689566-7940-4dae-861f-4eae2fb8afd5)
 
-![image](https://github.com/user-attachments/assets/fb425acc-5ba4-40f2-902e-70d8bede0cb4)
-
-![image](https://github.com/user-attachments/assets/42962243-14a0-4172-9a3a-b2600125c430)
-
-![image](https://github.com/user-attachments/assets/fecf16a3-49e8-4050-a81e-bce662949047)
-![image](https://github.com/user-attachments/assets/3931a4b6-98aa-4ba4-863a-207429adffa5)
-
-![image](https://github.com/user-attachments/assets/3fe75446-3f1b-4971-83d8-14bea8618e0c)
-
-![image](https://github.com/user-attachments/assets/f1a27167-4f88-4b18-98ad-9f705066c731)
-![image](https://github.com/user-attachments/assets/a3e6c2ae-fadf-4b25-b285-38a8fc82e45e)
-![image](https://github.com/user-attachments/assets/0ad71d45-6eef-43e6-bedc-c5477e5e45ff)
-![image](https://github.com/user-attachments/assets/e4567ee6-aeb6-4ea2-b39a-69267e057db5)
-![image](https://github.com/user-attachments/assets/81eb1fbd-edce-4f42-b50a-a36966b4d84d)
+![image](https://github.com/user-attachments/assets/ca2eae3c-443e-464d-a04e-eace7d4cba2b)
+![image](https://github.com/user-attachments/assets/db59c45b-9101-44aa-bfac-df29ec0d88f4)
+![image](https://github.com/user-attachments/assets/4f5fec4d-d0af-4082-84b7-ea6b3d015cb4)
+![image](https://github.com/user-attachments/assets/af681632-263c-438d-a138-e91975220fd3)
+![image](https://github.com/user-attachments/assets/3766499d-052d-435c-a673-808e8bfbc315)
+![image](https://github.com/user-attachments/assets/228499f9-a7d7-492a-ace6-5329b02e1bdb)
+![image](https://github.com/user-attachments/assets/7fb9122a-88ed-4042-96ae-288949a884b0)
+![image](https://github.com/user-attachments/assets/e98cbf79-a4a6-434c-b382-089c9abe7ffd)
+![image](https://github.com/user-attachments/assets/b859710a-fc2c-4ac0-865f-90d2cbe36816)
 
 
 ## Благодарочка
