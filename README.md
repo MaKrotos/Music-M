@@ -13,6 +13,7 @@ Music M - По сути своей адаптация VK X и Music X, пере�
 [ARM64 - урезанная версия установщика](https://github.com/MaKrotos/Music-M/releases/download/0.2.0.5/Setup.ARM64.SLIM.exe) - подойдёт владельцам процессора ARM64, придётся ручками ставить библиотеку .NET
 
 ## Скриншоты
+![image](https://github.com/user-attachments/assets/6525ad2f-18c8-48c4-8605-ad68c118702a)
 
 ![image](https://github.com/user-attachments/assets/fb425acc-5ba4-40f2-902e-70d8bede0cb4)
 
