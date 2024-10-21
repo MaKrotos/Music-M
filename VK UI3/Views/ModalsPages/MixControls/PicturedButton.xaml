@@ -18,7 +18,7 @@
             Unchecked="ToggleButton_Unchecked"
             Width="80"
             Height="80"
-            IsChecked="{Binding Selected}">
+            IsChecked="{Binding Selected, Mode=TwoWay}">
 
             <Grid
                 Padding="0"

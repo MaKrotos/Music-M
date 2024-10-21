@@ -8,10 +8,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-    <Grid HorizontalAlignment="Center"   Background="Aqua" >
+    <Grid HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"    >
         <ToggleButton
             HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"
             Content="{Binding Title}"
-            IsChecked="{Binding Selected}" />
+            
+            IsChecked="{Binding Selected, Mode=TwoWay}" />
     </Grid>
 </UserControl>

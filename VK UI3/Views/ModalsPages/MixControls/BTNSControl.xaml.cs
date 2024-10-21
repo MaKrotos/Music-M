@@ -37,7 +37,7 @@ namespace VK_UI3.Views.ModalsPages.MixControls
         }
 
 
-        MixCategory mixCategory;
+        public MixCategory mixCategory;
 
         private void SImpleStack_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
@@ -45,6 +45,7 @@ namespace VK_UI3.Views.ModalsPages.MixControls
             {
                 if (mixCategory == mixcat) return;
                 mixOptions.Clear();
+                TitleText.Text = mixcat.Title;
                 mixCategory = mixcat;
                 foreach (var opt in mixcat.Options)
                 {

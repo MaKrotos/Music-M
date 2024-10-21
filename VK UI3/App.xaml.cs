@@ -19,6 +19,7 @@ using VkNet.AudioBypassService.Abstractions;
 using VkNet.AudioBypassService.Extensions;
 using VkNet.AudioBypassService.Models.Auth;
 using VkNet.Extensions.DependencyInjection;
+using Windows.ApplicationModel;
 using Windows.Win32;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -183,9 +184,24 @@ namespace VK_UI3
                 }
 
                 {
-                    EventParams eventParams = new EventParams("userID", UserUniqID);
+                    var packageVersion = Package.Current.Id.Version;
+                    var version = $"{packageVersion.Major}.{packageVersion.Minor}.{packageVersion.Build}.{packageVersion.Revision}";
+               
 
-                    Event @event = new Event("Run App", DateTime.Now, eventParams: new List<EventParams>() { eventParams });
+                    var listParams = new List<EventParams>
+                    {
+                        new EventParams("userID", UserUniqID),
+                        new EventParams("versionAPP", version)
+                    };
+
+
+                    Event @event = new Event("Run App", DateTime.Now, eventParams: listParams);
+
+
+
+
+
+
 
                     _ = StatSlyLib.StatSLY.SendEvent(@event);
                 }

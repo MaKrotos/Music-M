@@ -183,7 +183,7 @@ namespace WinUIGallery.Common
 
             // Calculate and return the size of all the content (realized or not) by figuring out
             // what the bottom/right position of the last item would be.
-            var extentHeight = ((int)(context.ItemCount / 3) - 1) * (this.MinItemSize.Height + this.RowSpacing) + this.MinItemSize.Height;
+            var extentHeight = Math.Max(0,((int)(context.ItemCount / 3) - 1) * (this.MinItemSize.Height + this.RowSpacing) + this.MinItemSize.Height);
 
             // Report this as the desired size for the layout
             return new Size(desiredItemWidth * 4 + this.ColumnSpacing * 2, extentHeight);

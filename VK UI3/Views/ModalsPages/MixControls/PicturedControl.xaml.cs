@@ -44,6 +44,8 @@ namespace VK_UI3.Views.ModalsPages.MixControls
             {
                 if (mixCategory == mixcat) return;
                 mixOptions.Clear();
+                TitleText.Text = mixcat.Title;
+
                 mixCategory = mixcat;
                 foreach (var opt in mixcat.Options)
                 {

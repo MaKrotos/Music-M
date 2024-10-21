@@ -11,31 +11,38 @@
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
 
-    <Grid
+    <StackPanel
+        Margin="0,10,0,0"
         x:Name="MainGrid"
+     
         HorizontalAlignment="Stretch"
         VerticalAlignment="Center">
+        <TextBlock Margin="0,0,0,4" FontSize="20" FontFamily="{ThemeResource VKSansBold}" x:Name="TitleText"></TextBlock>
+        
         <ScrollViewer>
 
 
 
 
-            <muxc:ItemsRepeater x:Name="StaggeredRepeater" ItemsSource="{x:Bind mixOptions, Mode=OneWay}">
+            <muxc:ItemsRepeater  x:Name="StaggeredRepeater" ItemsSource="{x:Bind mixOptions, Mode=OneWay}">
                 <muxc:ItemsRepeater.Layout>
-                    <WinUIGallery:ActivityFeedLayout ColumnSpacing="8" MinItemSize="100,30" />
+                    <WinUIGallery:ActivityFeedLayout ColumnSpacing="8" RowSpacing="8" MinItemSize="120,30" />
                 </muxc:ItemsRepeater.Layout>
                 <muxc:ItemsRepeater.ItemTemplate>
                     <DataTemplate>
-                        <ToggleButton
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            Content="{Binding Title}"
-                            IsChecked="{Binding Selected}" />
+                        <Grid    >
+                            <ToggleButton
+                            
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Content="{Binding Title}"
+                                IsChecked="{Binding Selected, Mode=TwoWay}" />
+                        </Grid>
                     </DataTemplate>
                 </muxc:ItemsRepeater.ItemTemplate>
 
             </muxc:ItemsRepeater>
         </ScrollViewer>
 
-    </Grid>
+    </StackPanel>
 </UserControl>

@@ -113,7 +113,7 @@
                 Click="settingBTN_Click"
                 CornerRadius="5"
                 OriginalHeight="30"
-                OriginalMargin="5,5,5,5" 
+                OriginalMargin="0" 
                 OriginalWidth="200">
 
                 <Grid

@@ -228,17 +228,28 @@ namespace VK_UI3.Controls.Blocks
                     SetOptions(a.mixCategories);
                     dialog.Hide();
 
+                    new MixAudio(
+                      new MixOptions("common", Options: _options)
+                   , this.DispatcherQueue);
+                    a.ResetCommand = null;
+                    a.ApplyCommand = null;
                 });
+
+
                 a.ResetCommand = new AsyncCommand(async () =>
                 {
                     _options = null;
                     dialog.Hide();
 
-
+                    new MixAudio(
+                      new MixOptions("common", Options: _options)
+                   , this.DispatcherQueue);
+                    a.ResetCommand = null;
+                    a.ApplyCommand = null;
                 });
-                new MixAudio(
-                       new MixOptions("common", Options: _options)
-                    , this.DispatcherQueue);
+
+
+               
                 dialog.ShowAsync();
             }
             catch (Exception xe) { }
