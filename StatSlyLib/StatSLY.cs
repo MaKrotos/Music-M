@@ -5,7 +5,7 @@ namespace StatSlyLib
 {
     public class StatSLY
     {
-        public static Uri StatSLYUri { get; } = new Uri("https://statsly.ru/");
+        public static Uri StatSLYUri { get; } = new Uri("https://statsly.ru/open_api/");
         public static string Token { get; set; }
 
         public static void SetToken(string token) {
