@@ -7,7 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:VK_UI3.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Width="200"
+    Width="248"
     Height="60"
     Margin="3,0,0,0"
     CornerRadius="8"
@@ -20,26 +20,27 @@
     <UserControl.Shadow>
         <ThemeShadow />
     </UserControl.Shadow>
-    <Grid 
-        Width="200" Height="60"
+    <Grid
+        Width="248"
+        Height="60"
         HorizontalAlignment="Center"
         VerticalAlignment="Center"
         CornerRadius="8">
         <StackPanel
+            Width="250"
+            Height="60"
             Padding="0"
-                Width="200" Height="60"
-   HorizontalAlignment="Center"
-   VerticalAlignment="Center"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
             Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
             CornerRadius="8">
 
             <Grid
-                
-                   Width="200" Height="60"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-                CornerRadius="8">
+                Width="250"
+                Height="60"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}">
                 <Grid.Resources>
                     <!--  Анимация прозрачности от 0 до 1  -->
                     <Storyboard x:Name="FadeInAnimationGridPlayIcon">
@@ -77,23 +78,24 @@
 
                 </Grid.Resources>
 
-                <Grid >
+                <Grid>
+
                     <FontIcon Glyph="&#xE90B;" />
                     <Grid
-                            Width="200" Height="60"
+                        x:Name="fadeOp"
+                        Width="250"
+                        Height="200"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
+                        Opacity="0">
+                        <Image
+                            x:Name="GridThumbs"
+                            Width="250"
+                            Height="60"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            x:Name="fadeOp"
-                            Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-                            Opacity="0">
-                        <Image
-                            Stretch="UniformToFill"
-                      
-                            x:Name="GridThumbs"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center">
-                            
-                        </Image>
+                            Stretch="Uniform" />
                     </Grid>
                 </Grid>
 
@@ -101,21 +103,24 @@
                 <StackPanel
                     Margin="10"
                     HorizontalAlignment="Left"
-                    Background="Transparent"
-                    CornerRadius="0"
+                    Background="{ThemeResource CustomAcrylicInAppBrush}"
+                    CornerRadius="8"
                     Orientation="Vertical">
                     <TextBlock
                         x:Name="Title"
                         MaxHeight="20"
-                        Margin="0,8,0,4"
+                        Margin="8,8,8,8"
                         FontFamily="{StaticResource VKSansMedium}"
                         FontSize="20"
-                        Foreground="White"
+                        Foreground="AntiqueWhite"
                         TextTrimming="CharacterEllipsis"
                         TextWrapping="Wrap" />
                 </StackPanel>
 
-                <Grid Padding="10" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Grid
+                    Padding="10"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center">
                     <Grid
                         x:Name="btnGrid"
                         Width="35"

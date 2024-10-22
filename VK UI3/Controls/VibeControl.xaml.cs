@@ -171,7 +171,7 @@ namespace VK_UI3.Controls
 
             if (_PlayList.Cover != null)
             {
-                animationsChangeImage.ChangeImageWithAnimation(_PlayList.Cover);
+                animationsChangeImage.ChangeImageWithAnimation(_PlayList.Photo.Photo1200);
             }
 
 

@@ -26,11 +26,11 @@
 
             <muxc:ItemsRepeater  x:Name="StaggeredRepeater" ItemsSource="{x:Bind mixOptions, Mode=OneWay}">
                 <muxc:ItemsRepeater.Layout>
-                    <WinUIGallery:ActivityFeedLayout ColumnSpacing="8" RowSpacing="8" MinItemSize="120,30" />
+                    <WinUIGallery:ActivityFeedLayout ColumnSpacing="8" MinItemSize="120,30" />
                 </muxc:ItemsRepeater.Layout>
                 <muxc:ItemsRepeater.ItemTemplate>
                     <DataTemplate>
-                        <Grid    >
+                        <Grid    Margin="4,0,4,0">
                             <ToggleButton
                             
                                 HorizontalAlignment="Stretch"

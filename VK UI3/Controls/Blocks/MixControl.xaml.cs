@@ -25,7 +25,7 @@ namespace VK_UI3.Controls.Blocks
     public sealed partial class MixControl : UserControl
     {
 
-        // Массив цветов
+        // РњР°СЃСЃРёРІ С†РІРµС‚РѕРІ
         Color[] colors = new Color[]
         {
             Colors.Red,
@@ -66,15 +66,15 @@ namespace VK_UI3.Controls.Blocks
             {
                 _= settingBTN.ShowButton();
 
-                DownTextBoxAnim.ChangeTextWithAnimation("Музыкальные рекомендации для Вас");
-                upTextBoxAnim.ChangeTextWithAnimation("Слушать VK микс");
+                DownTextBoxAnim.ChangeTextWithAnimation("РњСѓР·С‹РєР°Р»СЊРЅС‹Рµ СЂРµРєРѕРјРµРЅРґР°С†РёРё РґР»СЏ Р’Р°СЃ");
+                upTextBoxAnim.ChangeTextWithAnimation("РЎР»СѓС€Р°С‚СЊ VK РјРёРєСЃ");
             }
             else
             {
                
                _= settingBTN.HideButton();
-               DownTextBoxAnim.ChangeTextWithAnimation("Любимые треки из Вашей колелкции");
-               upTextBoxAnim.ChangeTextWithAnimation("Слушать мои треки");
+               DownTextBoxAnim.ChangeTextWithAnimation("Р›СЋР±РёРјС‹Рµ С‚СЂРµРєРё РёР· Р’Р°С€РµР№ РєРѕР»РµР»РєС†РёРё");
+               upTextBoxAnim.ChangeTextWithAnimation("РЎР»СѓС€Р°С‚СЊ РјРѕРё С‚СЂРµРєРё");
 
             }
         }
@@ -127,7 +127,7 @@ namespace VK_UI3.Controls.Blocks
             {
                 if (child is Palka palka)
                 {
-                    // Установка цвета фона для каждого элемента palka
+                    // РЈСЃС‚Р°РЅРѕРІРєР° С†РІРµС‚Р° С„РѕРЅР° РґР»СЏ РєР°Р¶РґРѕРіРѕ СЌР»РµРјРµРЅС‚Р° palka
                     int colorIndex = random.Next(colors.Length);
                     palka.Background = new SolidColorBrush(colors[colorIndex]);
                 }
