@@ -142,6 +142,7 @@ namespace VK_UI3.Controls
                     var url = new Uri(link.Url);
 
                     MainView.OpenSection(url.Segments.LastOrDefault(), SectionView.SectionType.Artist);
+                    return;
                 }
 
                 if (link.Meta.ContentType is "group" or "user" or "chat")

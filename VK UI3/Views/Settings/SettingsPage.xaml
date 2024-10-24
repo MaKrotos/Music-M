@@ -68,7 +68,12 @@
                 </StackPanel>
             </Border>
             <Border>
-                <local:CheckUpdate />
+                <StackPanel Orientation="Horizontal">
+                    <local:CheckUpdate />
+                    <TextBlock Margin="15,0,0,0" VerticalAlignment="Center">Текущая версия:</TextBlock>
+                    <local:AppVersionText Margin="15,0,0,0" VerticalAlignment="Center" />
+                </StackPanel>
+
             </Border>
 
 
