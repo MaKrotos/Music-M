@@ -82,12 +82,19 @@ namespace VK_UI3.Controls
 
                 dataTrack = (DataContext as ExtendedAudio);
                 string? newLink = "";
-                if (dataTrack.audio.Album != null && dataTrack.audio.Album.Thumb != null)
+                if (dataTrack.audio.Thumb != null)
+                {
+                    newLink =
+                       dataTrack.audio.Thumb.Photo270 ??
+                       dataTrack.audio.Thumb.Photo300 ??
+                       dataTrack.audio.Thumb.Photo600 ??
+                       dataTrack.audio.Thumb.Photo34 ??
+                       "";
+                }
+
+            
+                if (dataTrack.audio.Album != null && dataTrack.audio.Album.Thumb != null && newLink.Equals(""))
                     newLink = 
-                    dataTrack.audio.Thumb.Photo270 ??
-                    dataTrack.audio.Thumb.Photo300 ??
-                    dataTrack.audio.Thumb.Photo600 ??
-                    dataTrack.audio.Thumb.Photo34 ??
 
                     dataTrack.audio.Album.Thumb.Photo270 ??
                     dataTrack.audio.Album.Thumb.Photo300 ??

@@ -310,7 +310,7 @@ namespace VK_UI3.Controllers
             var a = (int)Math.Round(sender.NaturalDuration.TotalSeconds);
             var b = TrackDataThis.audio.Duration;
 
-            if (Math.Abs(a - b) > 3)
+            if (Math.Abs(a - b) > 5)
             {
                 PlayTrack();
             }

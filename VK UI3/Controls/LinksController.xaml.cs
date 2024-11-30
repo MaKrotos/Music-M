@@ -116,7 +116,7 @@ namespace VK_UI3.Controls
 
         private async void Grid_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-
+            
             try
             {
                 if (link.Meta.ContentType == null)
@@ -218,11 +218,15 @@ namespace VK_UI3.Controls
             }
             catch (Exception ex)
             {
-                Process.Start(new ProcessStartInfo
+                try
                 {
-                    FileName = link.Url,
-                    UseShellExecute = true
-                });
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = link.Url,
+                        UseShellExecute = true
+                    });
+                }
+                catch {  }
             }
         }
 

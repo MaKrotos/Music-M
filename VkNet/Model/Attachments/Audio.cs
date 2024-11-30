@@ -170,7 +170,7 @@ namespace VkNet.Model.Attachments
 		public	AudioChartInfo AudioChartInfo { get; set; }
 
         [JsonProperty("thumb")]
-        public AudioCover Thumb { get; set; }
+        public AudioCover? Thumb { get; set; }
 
 
 

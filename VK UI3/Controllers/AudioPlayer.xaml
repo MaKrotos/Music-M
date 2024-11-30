@@ -147,63 +147,27 @@
                         Background="Transparent">
                         <FontIcon FontSize="14" Glyph="&#xE995;" />
                         <Button.Flyout>
-                            <Flyout>
-                                <Slider
-                                    x:Name="SoundSlider"
-                                    Grid.Column="2"
-                                    Width="150"
-                                    VerticalAlignment="Center"
-                                    Minimum="0"
-                                    Orientation="Horizontal"
-                                    PointerEntered="SoundSlider_PointerEntered"
-                                    PointerExited="SoundSlider_PointerExited"
-                                    StepFrequency="1"
-                                    ValueChanged="SoundSlider_ValueChanged"
-                                    Value="{x:Bind simpleAudioBind, Mode=TwoWay}">
-                                    <Slider.Template>
-                                        <ControlTemplate TargetType="Slider">
-                                            <Grid>
-                                                <VisualStateManager.VisualStateGroups>
-                                                    <!--  Оставьте эту часть без изменений, чтобы сохранить оригинальное поведение слайдера  -->
-                                                </VisualStateManager.VisualStateGroups>
-                                                <Grid>
-                                                    <Grid
-                                                        Height="4"
-                                                        Background="{TemplateBinding Background}"
-                                                        CornerRadius="2" />
-                                                    <Grid x:Name="HorizontalTemplate" Background="Transparent">
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="Auto" />
-                                                            <ColumnDefinition Width="Auto" />
-                                                            <ColumnDefinition Width="*" />
-                                                        </Grid.ColumnDefinitions>
-                                                        <Grid
-                                                            x:Name="HorizontalTrack"
-                                                            Height="4"
-                                                            Margin="0,0,-10,0"
-                                                            Background="{TemplateBinding Foreground}"
-                                                            CornerRadius="2" />
-                                                        <Rectangle
-                                                            x:Name="HorizontalDecreaseRect"
-                                                            Height="4"
-                                                            Fill="Transparent" />
-                                                        <Thumb
-                                                            x:Name="HorizontalThumb"
-                                                            Grid.Column="1"
-                                                            Width="10"
-                                                            Height="10"
-                                                            Background="Transparent"
-                                                            CornerRadius="10">
-                                                            <ToolTipService.ToolTip>
-                                                                <ToolTip Content="{TemplateBinding Value}" />
-                                                            </ToolTipService.ToolTip>
-                                                        </Thumb>
-                                                    </Grid>
-                                                </Grid>
-                                            </Grid>
-                                        </ControlTemplate>
-                                    </Slider.Template>
-                                </Slider>
+                            <Flyout >
+                                <Grid Margin="-15"   Height="27">
+                                    <Slider
+                                        
+                                        Margin="10,-1,10,0"
+                                        x:Name="SoundSlider"
+                                        Grid.Column="2"
+                                        Width="150"
+                                        VerticalAlignment="Top"
+                                        Minimum="0"
+                                        Background="AliceBlue"
+                                        Orientation="Horizontal"
+                                        PointerEntered="SoundSlider_PointerEntered"
+                                        PointerExited="SoundSlider_PointerExited"
+                                        StepFrequency="1"
+                                        ValueChanged="SoundSlider_ValueChanged"
+                                        Value="{x:Bind simpleAudioBind, Mode=TwoWay}">
+
+
+                                    </Slider>
+                                </Grid>
                             </Flyout>
                         </Button.Flyout>
 
@@ -246,6 +210,7 @@
                         x:Name="VolumeSlider"
                         Grid.Column="1"
                         Margin="8,0,8,0"
+                       
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Center"
                         Maximum="{x:Bind TrackDuration, Mode=TwoWay}"
@@ -255,7 +220,9 @@
                         StepFrequency="1"
                         ThumbToolTipValueConverter="{StaticResource SecondsToTimeConverter}"
                         ValueChanged="VolumeSlider_ValueChanged"
-                        Value="{x:Bind TrackPosition, Mode=TwoWay}" />
+                        Value="{x:Bind TrackPosition, Mode=TwoWay}" >
+                        
+                    </Slider>
                     <TextBlock
                         Grid.Column="2"
                         VerticalAlignment="Center"
