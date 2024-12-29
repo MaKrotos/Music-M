@@ -14,6 +14,11 @@ using VkNet.Abstractions;
 
 namespace VK_UI3.VKs.IVK
 {
+    public interface IVKGetTrack
+    {
+        public abstract ExtendedAudio getTrack(int offset);
+    }
+
     public abstract class IVKGetAudio
     {
         public IVkApi api;
@@ -27,18 +32,42 @@ namespace VK_UI3.VKs.IVK
 
         public string name;
 
-        public ObservableRangeCollection<ExtendedAudio> listAudioShuffle = new ObservableRangeCollection<ExtendedAudio>();
-        public ObservableRangeCollection<ExtendedAudio> listAudioTrue = new ObservableRangeCollection<ExtendedAudio>();
+
+
+        List<int> shuffleList = new List<int>();
+
 
         public ObservableRangeCollection<ExtendedAudio> listAudio
         {
-            get
+            get; set;
+        } = new ObservableRangeCollection<ExtendedAudio>();
+
+        public void FillAndShuffleList()
+        {
+          
+            for (int i = 0; i <= countTracks - 1; i++)
             {
-                if (shuffle) return listAudioShuffle;
-                return listAudioTrue;
+                shuffleList.Add(i);
             }
-            set { listAudioTrue = value; }
+
+            Random rng = new Random();
+            int n = shuffleList.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                int value = shuffleList[k];
+                shuffleList[k] = shuffleList[n];
+                shuffleList[n] = value;
+            }
+
+            // Find the index of currentTrack in the shuffled list
+            int currentTrackIndex = shuffleList.IndexOf((int)currentTrack);
+
+            // Update currentTrack to the index where its value is stored
+            currentTrack = currentTrackIndex;
         }
+
 
 
         public DispatcherQueue DispatcherQueue;
@@ -68,14 +97,16 @@ namespace VK_UI3.VKs.IVK
 
         private long? _countTracks { get; set; } = null;
 
-        public long? countTracks { get
+        public long? countTracks
+        {
+            get
             {
-                if (_countTracks == null) return -1; 
+                if (_countTracks == null) return -1;
                 if (_countTracks != -1) return _countTracks;
                 else return listAudio.Count;
-            
             }
-            set { _countTracks = (long)value; } }
+            set { _countTracks = (long)value; }
+        }
 
 
         private long? _currentTrack;
@@ -102,8 +133,8 @@ namespace VK_UI3.VKs.IVK
 
         public void PlayThis()
         {
-                this.currentTrack = 0;
-                AudioPlayer.PlayList(this);
+            this.currentTrack = 0;
+            AudioPlayer.PlayList(this);
         }
 
         // Добавляем делегат и событие
@@ -146,6 +177,7 @@ namespace VK_UI3.VKs.IVK
                 GetTracks();
             }
         }
+
         public IVKGetAudio(long id, DispatcherQueue dispatcher)
         {
             api = new VK().getVKAPI();
@@ -253,19 +285,13 @@ namespace VK_UI3.VKs.IVK
         {
             if (!shuffle)
             {
-                // shuffle = true;
-                //  ShuffleList();
-                //  NotifyOnListUpdate();
+               
+                FillAndShuffleList();
+                shuffle = true;
             }
+            NotifyOnListUpdate();
         }
 
-        public void ShuffleList()
-        {
-            Random rng = new Random();
-            listAudioShuffle = new ObservableRangeCollection<ExtendedAudio>(listAudio.OrderBy(x => rng.Next()).ToList());
-
-            currentTrack = listAudioShuffle.ToList().FindIndex(x => x.NumberInList == currentTrack);
-        }
 
 
 
@@ -273,18 +299,20 @@ namespace VK_UI3.VKs.IVK
         {
             if (shuffle)
             {
-                shuffle = false;
-                listAudioShuffle.Clear();
+             
+                shuffleList.Clear();
 
                 currentTrack = listAudio.ToList().FindIndex(x => x.NumberInList == currentTrack);
 
+                shuffle = false;
                 NotifyOnListUpdate();
             }
+          
         }
 
 
 
-        public async Task<ExtendedAudio> getNextTrackForPlay()
+        public void setNextTrackForPlay()
         {
 
             if (currentTrack >= countTracks - 1 && countTracks != -1)
@@ -294,11 +322,11 @@ namespace VK_UI3.VKs.IVK
                 currentTrack++;
             }
 
-            return await GetTrackPlay();
+          
 
         }
 
-        public async Task<ExtendedAudio> getPreviusTrackForPlay()
+        public void setPreviusTrackForPlay()
         {
             if (currentTrack <= 0)
                 currentTrack = countTracks - 1;
@@ -307,7 +335,7 @@ namespace VK_UI3.VKs.IVK
                 currentTrack--;
             }
 
-            return await GetTrackPlay();
+            
 
         }
 
@@ -328,38 +356,48 @@ namespace VK_UI3.VKs.IVK
 
 
 
-       public  List<TaskCompletionSource<bool>> tcs = new();
+        public List<TaskCompletionSource<bool>> tcs = new();
 
         public bool getLoadedTracks = false;
-        public async Task<ExtendedAudio> GetTrackPlayAsync(long tracI)
+        public async Task<ExtendedAudio> GetTrackPlayAsync(long tracI, bool prinud = false)
         {
-            while (tracI > listAudioTrue.Count() - 1)
+
+            if (!prinud && tracI > listAudio.Count() - 1) return null;
+            while (tracI > listAudio.Count() - 1)
             {
                 if (task == null)
                     GetTracks();
                 if (task != null)
-                await task; 
-             
+                    await task;
             }
+
+
             return listAudio[(int)tracI];
         }
         public Task task = null;
         public abstract void GetTracks();
 
 
-        public async Task<ExtendedAudio> GetTrackPlay()
+        public async Task<ExtendedAudio> GetTrackPlay(bool prinud = false)
         {
             if (countTracks < currentTrack && countTracks != -1) return null;
             if (currentTrack == null)
                 currentTrack = 0;
-            return await GetTrackPlayAsync((long)currentTrack);
+
+            if (shuffle)
+            {
+                return await GetTrackPlayAsync(shuffleList[(int)currentTrack], prinud);
+            }
+            
+
+            return await GetTrackPlayAsync((long)currentTrack, prinud);
         }
 
         public void SaveToFile()
         {
             // Reset the shuffle state
             shuffle = false;
-            listAudioShuffle.Clear();
+            listAudio.Clear();
 
             // Get the path to the AppData folder
             var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -377,6 +415,8 @@ namespace VK_UI3.VKs.IVK
                 JsonSerializer.Serialize(stream, this);
             }
         }
+
+
 
         public static IVKGetAudio RestoreFromFile(long id)
         {

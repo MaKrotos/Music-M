@@ -106,14 +106,14 @@ namespace VK_UI3.VKs.IVK
 
 
 
-                    listAudioTrue.AddRange(playlist.Audios.Select(item => new ExtendedAudio(item, this)));
+                    listAudio.AddRange(playlist.Audios.Select(item => new ExtendedAudio(item, this)));
 
 
 
                     if (playlist.Audios.Count == 0)
                     {
                         var res = await VK.vkService.AudioGetAsync(playlist.Id, playlist.OwnerId, playlist.AccessKey).ConfigureAwait(false);
-                        listAudioTrue.AddRange(res.Items.Select(item => new ExtendedAudio(item, this)));
+                        listAudio.AddRange(res.Items.Select(item => new ExtendedAudio(item, this)));
                     }
 
 
@@ -159,7 +159,7 @@ namespace VK_UI3.VKs.IVK
             playlist = _playlist.Playlist;
             foreach (var audio in _playlist.Audios)
             {
-                listAudioTrue.Add(new ExtendedAudio(audio, this));
+                listAudio.Add(new ExtendedAudio(audio, this));
             }
             countTracks = playlist.Count;
 
@@ -210,12 +210,12 @@ namespace VK_UI3.VKs.IVK
 
                 task = Task.Run(async () =>
                 {
-                    int offset = listAudioTrue.Count;
+                    int offset = listAudio.Count;
                     int count = 100;
 
                     if (countTracks > listAudio.Count)
                     {
-                        var response = await VK.vkService.AudioGetAsync(playlist.Id, playlist.OwnerId, playlist.AccessKey, listAudioTrue.Count, count);
+                        var response = await VK.vkService.AudioGetAsync(playlist.Id, playlist.OwnerId, playlist.AccessKey, listAudio.Count, count);
 
                         foreach (var item in response.Items)
                         {
@@ -224,7 +224,7 @@ namespace VK_UI3.VKs.IVK
 
                             DispatcherQueue.TryEnqueue(() =>
                             {
-                                listAudioTrue.Add(extendedAudio);
+                                listAudio.Add(extendedAudio);
                                 resetEvent.Set();
                             });
 
@@ -236,7 +236,9 @@ namespace VK_UI3.VKs.IVK
                         getLoadedTracks = false;
                     }
                     NotifyOnListUpdate();
+                    task = null;
                 });
+             
             }
             finally
             {

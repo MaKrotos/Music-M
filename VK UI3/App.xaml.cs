@@ -9,6 +9,9 @@ using StatSlyLib.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Security.Cryptography;
+using System.Security.Principal;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.DB;
@@ -163,7 +166,7 @@ namespace VK_UI3
         {
             try
             {
-                StatSlyLib.StatSLY.SetToken(StaticParams.tokenStatSly);
+             
 
                 var setting = DB.SettingsTable.GetSetting("UserUniqID");
                 string UserUniqID;
@@ -176,7 +179,7 @@ namespace VK_UI3
 
                     Event @event = new Event("First Run", DateTime.Now, eventParams: new List<EventParams>() { eventParams });
 
-                    _ = StatSlyLib.StatSLY.SendEvent(@event);
+                    _ = new VKMStatSly().SendEvent(@event);
                 }
                 else
                 {
@@ -191,19 +194,18 @@ namespace VK_UI3
                     var listParams = new List<EventParams>
                     {
                         new EventParams("userID", UserUniqID),
+                        new EventParams("Accounts Count", AccountsDB.GetAllAccounts().Count),
                         new EventParams("versionAPP", version)
                     };
 
+                    if (AccountsDB.GetAllAccounts().Count > 0)
+                    {
+                        var account = AccountsDB.GetActiveAccount();
+                        listParams.Add(new EventParams("ActiveAccount", account.GetHash()));
+                    }
 
                     Event @event = new Event("Run App", DateTime.Now, eventParams: listParams);
-
-
-
-
-
-
-
-                    _ = StatSlyLib.StatSLY.SendEvent(@event);
+                    _ = new VKMStatSly().SendEvent(@event);
                 }
             }
             catch (Exception e)

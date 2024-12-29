@@ -99,7 +99,7 @@ namespace VK_UI3.Controls
             if (dataTrack.audio.OwnerId == AccountsDB.activeAccount.id)
             {
                 vkService.AudioDeleteAsync((long)dataTrack.audio.Id, (long)dataTrack.audio.OwnerId);
-                dataTrack.iVKGetAudio.listAudioTrue.Remove(dataTrack);
+                dataTrack.iVKGetAudio.listAudio.Remove(dataTrack);
             }
             else
             {

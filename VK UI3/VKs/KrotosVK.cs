@@ -1,18 +1,11 @@
 ﻿using MusicX.Core.Models;
-using MusicX.Core.Services;
-using MusicX.Shared.Player;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using TagLib.Ape;
 using VK_UI3.DB;
-using VkNet;
-using VkNet.Model.Attachments;
 using VkNet.Model.RequestParams;
 using VkNet.Utils;
-
 namespace VK_UI3.VKs
 {
     internal class KrotosVK

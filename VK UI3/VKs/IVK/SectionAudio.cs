@@ -112,7 +112,7 @@ namespace VK_UI3.VKs.IVK
 
                             resetEvent.WaitOne();
                         }
-                        this.countTracks = this.listAudioTrue.Count;
+                        this.countTracks = this.listAudio.Count;
                         NotifyOnListUpdate();
                     }
                     catch

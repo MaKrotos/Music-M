@@ -146,10 +146,10 @@ namespace VK_UI3.Controls.Blocks
         {
             foreach (var item in block.Audios)
             {
-                sectionAudio.listAudioTrue.Add(new ExtendedAudio(item, sectionAudio));
+                sectionAudio.listAudio.Add(new ExtendedAudio(item, sectionAudio));
                 
             }
-            sectionAudio.countTracks = sectionAudio.listAudioTrue.Count;
+            sectionAudio.countTracks = sectionAudio.listAudio.Count;
             sectionAudio.Next = block.NextFrom;
         }
 

@@ -2,6 +2,8 @@ using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace VK_UI3.DB
 {
@@ -35,6 +37,23 @@ namespace VK_UI3.DB
                 else
                 {
                     DatabaseHandler.getConnect().Update(this);
+                }
+            }
+
+            public string GetHash()
+            {
+                using (SHA256 sha256 = SHA256.Create())
+                {
+                    byte[] bytes = BitConverter.GetBytes(this.id);
+                    byte[] hashBytes = sha256.ComputeHash(bytes);
+
+                    StringBuilder hash = new StringBuilder();
+                    for (int i = 0; i < 8; i++)
+                    {
+                        hash.Append(hashBytes[i].ToString("X2"));
+                    }
+
+                    return hash.ToString();
                 }
             }
         }

@@ -119,7 +119,7 @@ namespace SetupLib
                 if (!isInstalled)
                 {
                     await InstallAppInstallerAsync();
-                    if (!IsAppInstalled("WindowsAppRuntime"))
+                    if (!IsAppInstalled("WindowsAppRuntime.1.6"))
                     {
                         // Затем скачиваем AppRuntime
                         await DownlloadAppRuntimeAsync();
@@ -506,15 +506,15 @@ namespace SetupLib
         {
             if (RuntimeInformation.OSArchitecture == Architecture.Arm64)
             {
-                return new Uri("https://github.com/MaKrotos/VKUI3/releases/download/0.1.0.0/Microsoft.WindowsAppRuntimeARM.1.4.msix");
+                return new Uri("https://github.com/MaKrotos/Music-M/releases/download/0.1.0.0/WindowsAppRuntimeInstall.1.6.3-arm64.exe");
             }
             else if (RuntimeInformation.OSArchitecture == Architecture.X64)
             {
-                return new Uri("https://github.com/MaKrotos/VKUI3/releases/download/0.1.0.0/Microsoft.WindowsAppRuntimeX64.1.4.msix");
+                return new Uri("https://github.com/MaKrotos/Music-M/releases/download/0.1.0.0/WindowsAppRuntimeInstall.1.6.3-x64.exe");
             }
             else if (RuntimeInformation.OSArchitecture == Architecture.X86)
             {
-                return new Uri("https://github.com/MaKrotos/VKUI3/releases/download/0.1.0.0/Microsoft.WindowsAppRuntimeX86.1.4.msix");
+                return new Uri("https://github.com/MaKrotos/Music-M/releases/download/0.1.0.0/WindowsAppRuntimeInstall.1.6.3-x86.exe");
             }
             else
             {

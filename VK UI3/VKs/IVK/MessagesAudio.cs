@@ -104,7 +104,7 @@ namespace VK_UI3.VKs.IVK
 
                 task = Task.Run(async () =>
                 {
-                    int count = 10;
+                    int count = 100;
                     VkCollection<Audio> audios;
 
                     MessagesGetHistoryAttachmentsParams messagesGetHistoryAttachmentsParams = new MessagesGetHistoryAttachmentsParams()

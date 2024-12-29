@@ -55,7 +55,7 @@ namespace VK_UI3.VKs.IVK
                  
                     foreach (var item in audios)
                     {
-                        listAudioTrue.Add(new Helpers.ExtendedAudio(item, this));
+                        listAudio.Add(new Helpers.ExtendedAudio(item, this));
                     }
                 }
                 catch (Exception e)
@@ -106,7 +106,7 @@ namespace VK_UI3.VKs.IVK
                         var tracks = await VK.vkService.GetStreamMixAudios(data.Id, data.Append, options: data.Options);
                         foreach (var item in tracks)
                         {
-                            listAudioTrue.Add(new Helpers.ExtendedAudio(item, this));
+                            listAudio.Add(new Helpers.ExtendedAudio(item, this));
                         }
                     }
                     catch (Exception e)

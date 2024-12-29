@@ -32,11 +32,11 @@ public class AsyncRateLimiter : IAsyncRateLimiter
         }
         finally
         {
-            ReleaseAsync();
+            await ReleaseAsync();
         }
     }
 
-    private async void ReleaseAsync()
+    private async Task ReleaseAsync()
     {
         await Task.Delay(Window, _tokenSource.Token).ConfigureAwait(false);
         _semaphore.Release();

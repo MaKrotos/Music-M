@@ -132,17 +132,17 @@ namespace VK_UI3.DownloadTrack
                             break;
                         }
 
-                        while (downloaded >= iVKGetAudio.listAudioTrue.Count && iVKGetAudio.countTracks != -1 && !iVKGetAudio.itsAll)
+                        while (downloaded >= iVKGetAudio.listAudio.Count && iVKGetAudio.countTracks != -1 && !iVKGetAudio.itsAll)
                         {
                             var tcsz = new TaskCompletionSource<bool>();
                             iVKGetAudio.tcs.Add(tcsz);
                             iVKGetAudio.GetTracks();
                             await tcsz.Task;
                         }
-                        if (downloaded >= iVKGetAudio.listAudioTrue.Count) break;
+                        if (downloaded >= iVKGetAudio.listAudio.Count) break;
 
 
-                        var a = iVKGetAudio.listAudioTrue[downloaded].audio;
+                        var a = iVKGetAudio.listAudio[downloaded].audio;
 
                         if (a.Url == null)
                         {

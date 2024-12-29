@@ -94,10 +94,10 @@ namespace VK_UI3.Controls
 
 
             UserNameTXT.Text = _PlayList.Playlist.OwnerName;
-            if (!playListVK.listAudioTrue.SequenceEqual(extendedAudios))
+            if (!playListVK.listAudio.SequenceEqual(extendedAudios))
             {
                 extendedAudios.Clear();
-                foreach (var item in playListVK.listAudioTrue)
+                foreach (var item in playListVK.listAudio)
                 {
                     extendedAudios.Add(item);
                 }

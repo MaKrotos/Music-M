@@ -91,24 +91,13 @@ namespace VK_UI3.Controllers
 
         private static ExtendedAudio _trackDataThis;
 
-        public static void _TrackDataThisSet(ExtendedAudio value)
-        {
-            if (_trackDataThis != value)
-            {
-                _trackDataThis = value;
-                TrackDataThisChanged?.RaiseEvent(null, EventArgs.Empty);
-            }
 
-        }
-
-
-
-        public static async Task<ExtendedAudio> _TrackDataThisGet()
+        public static async Task<ExtendedAudio> _TrackDataThisGet(bool prinud = false)
         {
             if (iVKGetAudio != null)
                 if (iVKGetAudio.countTracks != 0)
                 {
-                    return await iVKGetAudio.GetTrackPlay();
+                    return await iVKGetAudio.GetTrackPlay(prinud);
                 }
             return _trackDataThis;
         }
@@ -307,6 +296,7 @@ namespace VK_UI3.Controllers
 
         private void PlaybackSession_BufferedRangesChanged(MediaPlaybackSession sender, object args)
         {
+            if (TrackDataThis == null) return;
             var a = (int)Math.Round(sender.NaturalDuration.TotalSeconds);
             var b = TrackDataThis.audio.Duration;
 
@@ -417,7 +407,7 @@ namespace VK_UI3.Controllers
 
         private void MediaPlayer_SourceChanged(Windows.Media.Playback.MediaPlayer sender, object args)
         {
-
+            if (TrackDataThis == null) return;
 
             var source = sender.Source as Windows.Media.Playback.MediaPlaybackItem;
 
@@ -536,7 +526,8 @@ namespace VK_UI3.Controllers
 
             Task.Run(async () =>
             {
-                await iVKGetAudio.getNextTrackForPlay();
+                //iVKGetAudio.currentTrack++;
+                iVKGetAudio.setNextTrackForPlay();
                 PlayTrack();
             });
 
@@ -546,7 +537,7 @@ namespace VK_UI3.Controllers
         {
             Task.Run(async () =>
             {
-                await iVKGetAudio.getPreviusTrackForPlay();
+                iVKGetAudio.setPreviusTrackForPlay();
                 PlayTrack();
             });
         }
@@ -577,7 +568,7 @@ namespace VK_UI3.Controllers
 
            
 
-            var trackdata = await _TrackDataThisGet();
+            var trackdata = await _TrackDataThisGet(true);
             if (trackdata == null) 
                 return;
      
