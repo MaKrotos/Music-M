@@ -8,7 +8,9 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using MusicX.Shared.Player;
+using StatSlyLib.Models;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -634,6 +636,23 @@ namespace VK_UI3.Controllers
 
             if (AudioPlayedChangeEvent != null)
             AudioPlayedChangeEvent.Invoke(trackdata, EventArgs.Empty);
+
+
+            sendStatSlyTrack(trackdata);
+        }
+
+        private static async void sendStatSlyTrack(ExtendedAudio trackdata)
+        {
+            var listParams = new List<EventParams>
+                    {
+                        new EventParams("UserID", AccountsDB.activeAccount.GetHash()),
+                        new EventParams("TrackID", trackdata.audio.FullId),
+                        new EventParams("Artist", trackdata.audio.Artist),
+                        new EventParams("Artist", trackdata.audio.Title)
+                    };
+
+            Event @event = new Event("Play Track", DateTime.Now, eventParams: listParams);
+            _ = new VKMStatSly().SendEvent(@event);
         }
 
         public static event EventHandler AudioPlayedChangeEvent;
