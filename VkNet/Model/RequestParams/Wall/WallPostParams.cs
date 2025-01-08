@@ -175,5 +175,9 @@ namespace VkNet.Model.RequestParams
 		/// </summary>
 		[JsonProperty("copyright")]
 		public string Copyright { get; set; }
-	}
+
+        [JsonProperty("PrimaryAttachments")]
+        public object PrimaryAttachments { get; set; }
+		public object PrimaryAttachmentsMode { get; internal set; } = "carousel";
+    }
 }

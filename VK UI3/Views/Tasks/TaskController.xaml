@@ -58,6 +58,7 @@
                 Value="0" />
 
             <Button
+                x:Name="PlayPause"
                 Grid.Column="1"
                 Width="25"
                 Height="25"

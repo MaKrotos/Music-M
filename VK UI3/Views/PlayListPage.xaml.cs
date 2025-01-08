@@ -373,8 +373,11 @@ namespace VK_UI3.Views
                 blockLoad = false;
                 if (vkGetAudio.itsAll)
                     LoadingIndicator.Visibility = Visibility.Collapsed;
+                else
+                {
+                    checkBottom();
+                }
             });
-       
         }
 
 
@@ -408,6 +411,7 @@ namespace VK_UI3.Views
                 // Подписываемся на событие изменения прокрутки
                 scrollViewer.ViewChanged += ScrollViewer_ViewChanged; ;
             }
+            checkBottom();
         }
 
         private void AudioPlayer_onClickonTrack(object sender, EventArgs e)
@@ -440,16 +444,22 @@ namespace VK_UI3.Views
         bool blockLoad = false;
         private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
+            checkBottom();
+        }
 
-            var isAtBottom = scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight;
-            if (isAtBottom)
+        private void checkBottom()
+        {
+            if (vkGetAudio.itsAll)
             {
-
-                if (vkGetAudio.itsAll)
+                if (LoadingIndicator.Visibility != Visibility.Collapsed)
                 {
                     LoadingIndicator.Visibility = Visibility.Collapsed;
-                    return;
                 }
+                return;
+            }
+            var isAtBottom = scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight - 100;
+            if (isAtBottom)
+            {
                 if (blockLoad) return;
                 blockLoad = true;
                 LoadingIndicator.Visibility = Visibility.Visible;
@@ -457,7 +467,6 @@ namespace VK_UI3.Views
                 LoadingIndicator.IsActive = true;
             }
         }
-
 
         private async void AddPlaylist_Click(object sender, RoutedEventArgs e)
         {

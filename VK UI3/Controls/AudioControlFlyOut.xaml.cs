@@ -33,6 +33,12 @@ namespace VK_UI3.Controls
         {
             this.InitializeComponent();
             this.Opened += AudioControlFlyOut_Opened;
+            this.Closed += AudioControlFlyOut_Closed;
+        }
+
+        private void AudioControlFlyOut_Closed(object sender, object e)
+        {
+            CreatePostItem.Items.Clear();
         }
 
         private void AudioControlFlyOut_Opened(object sender, object e)
@@ -43,6 +49,7 @@ namespace VK_UI3.Controls
                 return;
             }
             updateUIFlyOut();
+            createShareGoupsMenu();
         }
 
         public ExtendedAudio dataTrack { get; set; }
@@ -99,7 +106,7 @@ namespace VK_UI3.Controls
             if (dataTrack.audio.OwnerId == AccountsDB.activeAccount.id)
             {
                 vkService.AudioDeleteAsync((long)dataTrack.audio.Id, (long)dataTrack.audio.OwnerId);
-                dataTrack.iVKGetAudio.listAudio.Remove(dataTrack);
+                dataTrack.iVKGetAudio.DeleteTrackFromList(dataTrack);
             }
             else
             {
@@ -137,7 +144,7 @@ namespace VK_UI3.Controls
                       if (deleted)
                           this.DispatcherQueue.TryEnqueue(async () =>
                           {
-                              dataTrack.iVKGetAudio.listAudio.Remove(dataTrack);
+                              dataTrack.iVKGetAudio.DeleteTrackFromList(dataTrack);
                           });
                   }
                   );
@@ -191,7 +198,7 @@ namespace VK_UI3.Controls
                 }
                 else
                 {
-                    // Операция была отменена пользователем
+                    
                 }
             }
             catch (Exception ex)
@@ -498,7 +505,7 @@ namespace VK_UI3.Controls
 
                                    try
                                    {
-                                       VK.api.Audio.AddToPlaylistAsync(album.OwnerId, album.Id, new List<string> { $"{dataTrack.audio.OwnerId}_{dataTrack.audio.Id}" });
+                                       VK.api.Audio.AddToPlaylistAsync((long)album.OwnerId, album.Id, new List<string> { $"{dataTrack.audio.OwnerId}_{dataTrack.audio.Id}" });
 
                                    }
                                    catch (Exception ex)
@@ -655,7 +662,124 @@ namespace VK_UI3.Controls
         }
 
 
+        private async Task createShareGoupsMenu()
+        {
+            DispatcherQueue.TryEnqueue(async () =>
+            {
 
+                var item = new MenuFlyoutItem();
+                item.Text = "У себя";
+                item.Icon = new FontIcon() { Glyph = "\uE902" };
+
+
+                item.Click += delegate
+                {
+
+                    ContentDialog dialog = new CustomDialog();
+
+                    dialog.Transitions = new TransitionCollection
+                        {
+                            new PopupThemeTransition()
+                        };
+
+                    // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
+                    dialog.XamlRoot = this.XamlRoot;
+
+
+                    var a = new CreatePost(this.dataTrack.audio, AccountsDB.activeAccount.id);
+                    dialog.Content = a;
+                    dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+
+
+
+                    a.cancelPressed += ((s, e) =>
+                    {
+                        if (dialog != null)
+                            dialog.Hide();
+                        dialog = null;
+
+                        if (s != null && s is AudioPlaylist)
+                        {
+                            TempPlayLists.TempPlayLists.updateNextRequest = true;
+                        }
+                    });
+
+                    dialog.ShowAsync();
+
+
+
+                };
+
+                CreatePostItem.Items.Add(
+                    item
+                    );
+
+            }
+            );
+
+            var groups = await GroupsGet.getGroups();
+            DispatcherQueue.TryEnqueue(async () => {
+
+
+
+
+                foreach (var group in groups)
+                {
+
+
+                    var item = new MenuFlyoutItem();
+                    item.Text = group.Name;
+                    var symbicon = new SymbolIcon();
+
+                    item.Icon = new FontIcon() { Glyph = "\uE902" };
+
+                    item.Click += delegate
+                    {
+
+                        ContentDialog dialog = new CustomDialog();
+
+                        dialog.Transitions = new TransitionCollection
+                        {
+                            new PopupThemeTransition()
+                        };
+
+                        // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
+                        dialog.XamlRoot = this.XamlRoot;
+
+
+                        var a = new CreatePost(this.dataTrack.audio, group);
+                        dialog.Content = a;
+                        dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+
+                        a.cancelPressed += ((s, e) =>
+                        {
+                            if (dialog != null)
+                                dialog.Hide();
+                            dialog = null;
+
+                            if (s != null && s is AudioPlaylist)
+                            {
+                                TempPlayLists.TempPlayLists.updateNextRequest = true;
+                            }
+                        });
+
+                        dialog.ShowAsync();
+
+
+
+                    };
+
+                    CreatePostItem.Items.Add(
+                        item
+                        );
+
+                }
+
+
+            });
+
+
+        }
 
         private void DislikeClick(object sender, RoutedEventArgs e)
         {

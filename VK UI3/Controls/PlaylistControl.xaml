@@ -43,6 +43,31 @@
                     <FontIcon Glyph="&#xEB44;" />
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
+            
+            <MenuFlyoutSubItem Icon="Share" Text="Отправить">
+                <MenuFlyoutItem
+                x:Name="ShareFriendsList"
+                Click="ShareFriendsList_Click"
+                Text="Список друзей">
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="&#xE902;" />
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem
+                x:Name="ShareDialogsList"
+                Click="ShareDialogsList_Click"
+                Text="Список диалогов">
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="&#xE8F2;" />
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+            </MenuFlyoutSubItem>
+
+            <MenuFlyoutSubItem x:Name="CreatePostItem" Icon="Attach" Text="Создать пост">
+              
+            </MenuFlyoutSubItem>
+
+
         </customFlyout:CustomFlyout>
     </UserControl.ContextFlyout>
 

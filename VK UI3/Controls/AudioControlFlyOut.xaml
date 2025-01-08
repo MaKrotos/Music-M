@@ -127,4 +127,8 @@
         </MenuFlyoutItem>
     </MenuFlyoutSubItem>
 
+    <MenuFlyoutSubItem x:Name="CreatePostItem" Icon="Attach" Text="Создать пост">
+
+    </MenuFlyoutSubItem>
+
 </MenuFlyout>

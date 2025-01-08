@@ -27,7 +27,7 @@ namespace MusicX.Core.Services
         public readonly IVkApiCategories vkApi;
         private readonly IVkApiInvoke apiInvoke;
         private readonly Logger logger;
-        private readonly string vkApiVersion = "8.100";
+        private readonly string vkApiVersion = "8.110";
 
         public bool IsAuth = false;
         private readonly IVkTokenStore tokenStore;
@@ -1151,7 +1151,7 @@ namespace MusicX.Core.Services
             }   
         }
 
-        public async Task<UploadPlaylistCoverResult> UploadPlaylistCoverAsync(string uploadUrl, string path)
+        public async Task<UploadPhotoToServer> UploadPhotoToServer(string uploadUrl, string path)
         {
             using var httpClient = new HttpClient();
             using (var stream = File.OpenRead(path))
@@ -1165,12 +1165,13 @@ namespace MusicX.Core.Services
 
                 var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-                var data = JsonConvert.DeserializeObject<UploadPlaylistCoverResult>(result);
+                var data = JsonConvert.DeserializeObject<UploadPhotoToServer>(result);
 
                 return data;
 
             }
         }
+
 
         public async Task EditPlaylistAsync(long ownerId, int playlistId, string title, string description, List<Audio> tracks)
         {

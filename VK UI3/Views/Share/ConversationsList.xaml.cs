@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using TagLib.Ape;
+using VK_UI3.Controls;
 using VK_UI3.VKs;
 using VkNet.Model;
 using VkNet.Model.Attachments;
@@ -41,6 +42,8 @@ namespace VK_UI3.Views.Share
         public GetConversationsResult result;
         public VkNet.Model.Attachments.Audio audio;
         internal EventHandler selectedDialog;
+
+        public AudioPlaylist PlayList { get; internal set; }
     }
 
 
@@ -236,11 +239,17 @@ namespace VK_UI3.Views.Share
 
             MessagesSendParams messagesSendParams = new MessagesSendParams();
 
+            if (conversationsListParams.audio != null)
+            {
+                messagesSendParams.Attachments = new List<VkNet.Model.Attachments.Audio> { conversationsListParams.audio };
+            }
+            if (conversationsListParams.PlayList != null)
+            {
+                messagesSendParams.Attachments = new List<VkNet.Model.Attachments.AudioPlaylist> { conversationsListParams.PlayList };
 
-            messagesSendParams.Attachments = new List<VkNet.Model.Attachments.Audio> { conversationsListParams.audio };
+            }
 
 
-         
             messagesSendParams.PeerId = nmessConv[a].conversation.Peer.Id;
 
 
@@ -275,7 +284,7 @@ namespace VK_UI3.Views.Share
             {
                 loadMoreConv();
             }
-            if (conversationsListParams.audio != null)
+            if (conversationsListParams.audio != null || conversationsListParams.PlayList != null)
             {
                 isDisabled = true;
                 this.Width = 425;

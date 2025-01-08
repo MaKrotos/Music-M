@@ -56,9 +56,9 @@ namespace VK_UI3.Services
             {
                 var uploadServer = await VK.vkService.GetPlaylistCoverUploadServerAsync(AccountsDB.activeAccount.id, audioPlaylist.Id);
 
-                var image = await VK.vkService.UploadPlaylistCoverAsync(uploadServer, CoverPath);
+                var image = await VK.vkService.UploadPhotoToServer(uploadServer, CoverPath);
 
-                await VK.vkService.SetPlaylistCoverAsync(audioPlaylist.OwnerId, audioPlaylist.Id, image.Hash, image.Photo);
+                await VK.vkService.SetPlaylistCoverAsync((long)audioPlaylist.OwnerId, audioPlaylist.Id, image.Hash, image.Photo);
             }
         }
 

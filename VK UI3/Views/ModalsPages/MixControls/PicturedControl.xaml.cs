@@ -12,6 +12,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using VK_UI3.Controls.Blocks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
@@ -28,8 +29,11 @@ namespace VK_UI3.Views.ModalsPages.MixControls
             this.InitializeComponent();
             this.DataContextChanged += SImpleStack_DataContextChanged;
             this.Unloaded += PicturedControl_Unloaded;
+
+
         }
 
+       
         private void PicturedControl_Unloaded(object sender, RoutedEventArgs e)
         {
             this.DataContextChanged -= SImpleStack_DataContextChanged;

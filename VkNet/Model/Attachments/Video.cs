@@ -29,7 +29,7 @@ namespace VkNet.Model.Attachments
 		private long? VideoId
 		{
 			get => Id;
-			set => Id = value;
+			set => Id = (long)value;
 		}
 
 		/// <summary>

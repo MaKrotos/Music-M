@@ -129,7 +129,7 @@ namespace VK_UI3.Views.ModalsPages
             {
                 var uploadServer = await VK.vkService.GetPlaylistCoverUploadServerAsync(AccountsDB.activeAccount.id, audioPlaylist.Id);
 
-                var image = await VK.vkService.UploadPlaylistCoverAsync(uploadServer, CoverPath);
+                var image = await VK.vkService.UploadPhotoToServer(uploadServer, CoverPath);
 
                 await VK.vkService.SetPlaylistCoverAsync(AccountsDB.activeAccount.id, audioPlaylist.Id, image.Hash, image.Photo);
             }

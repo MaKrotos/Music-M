@@ -158,15 +158,6 @@ namespace VkNet.Model.Attachments
 		[JsonProperty("exclusive")]
 		public bool Exclusive { get; set; }
 
-
-
-
-		[JsonProperty("id")]
-		public long Id { get; set; }
-
-		[JsonProperty("owner_id")]
-		public long OwnerId { get; set; }
-
 		public string? OwnerName { get; set; }
 
         [JsonProperty("userOwner")]
@@ -185,8 +176,6 @@ namespace VkNet.Model.Attachments
         [JsonProperty("play_button")]
         public bool PlayButton { get; set; }
 
-        [JsonProperty("access_key")]
-        public string AccessKey { get; set; }
 
         [JsonProperty("meta")]
         public Meta meta { get; set; }

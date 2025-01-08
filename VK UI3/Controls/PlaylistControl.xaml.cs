@@ -1,6 +1,8 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,9 +14,11 @@ using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
 using VK_UI3.Views;
 using VK_UI3.Views.ModalsPages;
+using VK_UI3.Views.Share;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
+using static VK_UI3.Views.SectionView;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -35,6 +39,136 @@ namespace VK_UI3.Controls
             this.Loaded += PlaylistControl_Loaded;
 
             DataContextChanged += RecommsPlaylist_DataContextChanged;
+
+            flyOutm.Opening += FlyOutm_Opening;
+            flyOutm.Closing += FlyOutm_Closing;
+        }
+
+        private void FlyOutm_Closing(Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase sender, Microsoft.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs args)
+        {
+            CreatePostItem.Items.Clear();
+        }
+
+        private void FlyOutm_Opening(object sender, object e)
+        {
+            createShareGoupsMenu();
+        }
+
+        private async Task createShareGoupsMenu()
+        {
+            DispatcherQueue.TryEnqueue(async () =>
+            {
+
+                var item = new MenuFlyoutItem();
+                item.Text = "У себя";
+                item.Icon = new FontIcon() { Glyph = "\uE902" };
+
+
+                item.Click += delegate
+                {
+
+                    ContentDialog dialog = new CustomDialog();
+
+                    dialog.Transitions = new TransitionCollection
+                        {
+                            new PopupThemeTransition()
+                        };
+
+                    // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
+                    dialog.XamlRoot = this.XamlRoot;
+
+
+                    var a = new CreatePost(_PlayList, AccountsDB.activeAccount.id);
+                    dialog.Content = a;
+                    dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+
+
+
+                    a.cancelPressed += ((s, e) =>
+                    {
+                        if (dialog != null)
+                            dialog.Hide();
+                        dialog = null;
+
+                        if (s != null && s is AudioPlaylist)
+                        {
+                            TempPlayLists.TempPlayLists.updateNextRequest = true;
+                        }
+                    });
+
+                    dialog.ShowAsync();
+
+
+
+                };
+
+                CreatePostItem.Items.Add(
+                    item
+                    );
+
+            }
+            );
+
+            var groups = await GroupsGet.getGroups();
+            DispatcherQueue.TryEnqueue(async() => {
+
+
+
+
+                foreach (var group in groups)
+                {
+
+
+                    var item = new MenuFlyoutItem();
+                    item.Text = group.Name;
+                    var symbicon = new  SymbolIcon();
+              
+                    item.Icon = new FontIcon() { Glyph = "\uE902" };
+
+                    item.Click += delegate
+                    {
+
+                        ContentDialog dialog = new CustomDialog();
+
+                        dialog.Transitions = new TransitionCollection
+                        {
+                            new PopupThemeTransition()
+                        };
+
+                        // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
+                        dialog.XamlRoot = this.XamlRoot;
+
+
+                        var a = new CreatePost(_PlayList, group);
+                        dialog.Content = a;
+                        dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+
+                        a.cancelPressed += ((s, e) =>
+                        {
+                            if (dialog != null)
+                                dialog.Hide();
+                            dialog = null;
+
+                            if (s != null && s is AudioPlaylist)
+                            {
+                                TempPlayLists.TempPlayLists.updateNextRequest = true;
+                            }
+                        });
+
+                        dialog.ShowAsync();
+
+
+
+                    };
+
+                    CreatePostItem.Items.Add(
+                        item
+                        );
+
+                }
+
+
+            });
 
 
         }
@@ -224,11 +358,7 @@ namespace VK_UI3.Controls
 
 
 
-            if (_PlayList.Cover != null)
-            {
-                GridThumbs.AddImagesToGrid(_PlayList.Cover);
-            }
-            else if (_PlayList.Thumbs != null)
+            if (_PlayList.Thumbs != null)
             {
                 int count = _PlayList.Thumbs.Count;
                 int index = 0;
@@ -240,7 +370,11 @@ namespace VK_UI3.Controls
                     index++;
                 }
                 GridThumbs.AddImagesToGrid(list);
+            } else if (_PlayList.Cover != null)
+            {
+                GridThumbs.AddImagesToGrid(_PlayList.Cover);
             }
+   
 
 
             updateAddedBTN();
@@ -403,6 +537,103 @@ namespace VK_UI3.Controls
             MainView.mainView.openGenerator(_PlayList, unicID: $"playlist_{_PlayList.OwnerId}_{_PlayList.Id}", genBy: $"genBy {_PlayList.Title}");
          
 
+        }
+
+
+        private void ShareFriendsList_Click(object sender, RoutedEventArgs e)
+        {
+            ContentDialog dialog = new CustomDialog();
+
+            dialog.Transitions = new TransitionCollection
+                {
+                    new PopupThemeTransition()
+                };
+
+            // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
+            dialog.XamlRoot = this.XamlRoot;
+
+
+            var frame = new Microsoft.UI.Xaml.Controls.Frame();
+            dialog.Content = frame;
+            dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+
+            dialog.CornerRadius = new CornerRadius(0);
+            dialog.BorderThickness = new Thickness(0);
+            dialog.Translation = new System.Numerics.Vector3(0, 0, 0);
+
+
+            WaitParameters waitParameters = new WaitParameters();
+            waitParameters.sectionType = SectionType.LoadFriends;
+            var paramsFr = new FriendsListParametrs() { PlayList = _PlayList };
+            waitParameters.moreParams = paramsFr;
+
+            frame.Padding = new Thickness(0, 30, 0, 30);
+
+            paramsFr.selectedFriend += ((s, e) =>
+            {
+                if (dialog != null)
+                    dialog.Hide();
+                dialog = null;
+
+            });
+
+            dialog.ShowAsync();
+
+            dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+
+            dialog.CornerRadius = new CornerRadius(0);
+            dialog.BorderThickness = new Thickness(0);
+            dialog.Translation = new System.Numerics.Vector3(0, 0, -100);
+            frame.Navigate(typeof(WaitView), waitParameters, new DrillInNavigationTransitionInfo());
+        }
+
+        private void ShareDialogsList_Click(object sender, RoutedEventArgs e)
+        {
+
+            ContentDialog dialog = new CustomDialog();
+
+            dialog.Transitions = new TransitionCollection
+                {
+                    new PopupThemeTransition()
+                };
+
+            // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
+            dialog.XamlRoot = this.XamlRoot;
+
+
+            var frame = new Microsoft.UI.Xaml.Controls.Frame();
+            dialog.Content = frame;
+            dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+
+            dialog.CornerRadius = new CornerRadius(0);
+            dialog.BorderThickness = new Thickness(0);
+            dialog.Translation = new System.Numerics.Vector3(0, 0, 0);
+
+
+            WaitParameters waitParameters = new WaitParameters();
+            waitParameters.sectionType = SectionType.ConversDialogs;
+            var paramsFr = new ConversationsListParams() { PlayList = _PlayList };
+            waitParameters.moreParams = paramsFr;
+
+            frame.Padding = new Thickness(0, 30, 0, 30);
+
+            paramsFr.selectedDialog += ((s, e) =>
+            {
+                if (dialog != null)
+                    dialog.Hide();
+                dialog = null;
+
+
+            });
+
+            dialog.ShowAsync();
+
+            dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+
+            dialog.CornerRadius = new CornerRadius(0);
+            dialog.BorderThickness = new Thickness(0);
+            dialog.Translation = new System.Numerics.Vector3(0, 0, -100);
+            frame.Navigate(typeof(WaitView), waitParameters, new DrillInNavigationTransitionInfo());
         }
     }
 }

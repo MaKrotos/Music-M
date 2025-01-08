@@ -2,7 +2,7 @@
 
 namespace MusicX.Core.Models
 {
-    public class UploadPlaylistCoverResult
+    public class UploadPhotoToServer
     {
         [JsonProperty("hash")]
         public string Hash { get; set; }

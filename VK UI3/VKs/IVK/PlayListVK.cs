@@ -11,7 +11,7 @@ using VkNet.Model.Attachments;
 
 namespace VK_UI3.VKs.IVK
 {
-    public class PlayListVK : IVKGetAudio
+    public class PlayListVK : IVKGetAudio, IVKGetTracksMore
     {
         public AudioPlaylist playlist;
         public string _Year;
@@ -269,6 +269,61 @@ namespace VK_UI3.VKs.IVK
                     }
             }
             return list;
+        }
+
+        public void GetTracks(int counter)
+        {
+            semaphore.Wait(); 
+
+            try
+            {
+                if (getLoadedTracks) return;
+
+                if (listAudio.Count >= playlist.Count || itsAll)
+                {
+                    itsAll = true;
+                    NotifyOnListUpdate();
+                    return;
+                }
+
+                getLoadedTracks = true;
+
+                task = Task.Run(async () =>
+                {
+                    int offset = listAudio.Count;
+                    int count = counter;
+
+                    if (countTracks > listAudio.Count)
+                    {
+                        var response = await VK.vkService.AudioGetAsync(playlist.Id, playlist.OwnerId, playlist.AccessKey, listAudio.Count, count);
+
+                        foreach (var item in response.Items)
+                        {
+                            ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
+                            ManualResetEvent resetEvent = new ManualResetEvent(false);
+
+                            DispatcherQueue.TryEnqueue(() =>
+                            {
+                                listAudio.Add(extendedAudio);
+                                resetEvent.Set();
+                            });
+
+                            resetEvent.WaitOne();
+                        }
+
+                        if (countTracks == listAudio.Count()) itsAll = true;
+
+                        getLoadedTracks = false;
+                    }
+                    NotifyOnListUpdate();
+                    task = null;
+                });
+
+            }
+            finally
+            {
+                semaphore.Release(); // Освобождает семафор
+            }
         }
     }
 }

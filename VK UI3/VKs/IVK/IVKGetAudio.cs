@@ -14,9 +14,9 @@ using VkNet.Abstractions;
 
 namespace VK_UI3.VKs.IVK
 {
-    public interface IVKGetTrack
+    public interface IVKGetTracksMore
     {
-        public abstract ExtendedAudio getTrack(int offset);
+        public abstract void GetTracks(int offset);
     }
 
     public abstract class IVKGetAudio
@@ -35,7 +35,7 @@ namespace VK_UI3.VKs.IVK
 
 
         List<int> shuffleList = new List<int>();
-
+        
 
         public ObservableRangeCollection<ExtendedAudio> listAudio
         {
@@ -148,6 +148,17 @@ namespace VK_UI3.VKs.IVK
         }
         public string Next;
 
+
+        public void DeleteTrackFromList(ExtendedAudio dataTrack) {
+            if (shuffle)
+            {
+               shuffleList.RemoveAt(shuffleList.IndexOf((int)dataTrack.NumberInList));
+            }
+            listAudio.Remove(dataTrack);
+
+
+            updateNumbers();
+        }
 
         public IVKGetAudio(DispatcherQueue dispatcher)
         {
@@ -366,7 +377,14 @@ namespace VK_UI3.VKs.IVK
             while (tracI > listAudio.Count() - 1)
             {
                 if (task == null)
-                    GetTracks();
+                    if (this is IVKGetTracksMore ivl)
+                    {
+                        ivl.GetTracks(int.Min((int)tracI - listAudio.Count + 1, 1000));
+                    }
+                    else
+                    {
+                        GetTracks();
+                    }
                 if (task != null)
                     await task;
             }
@@ -374,6 +392,8 @@ namespace VK_UI3.VKs.IVK
 
             return listAudio[(int)tracI];
         }
+
+
         public Task task = null;
         public abstract void GetTracks();
 
@@ -434,7 +454,18 @@ namespace VK_UI3.VKs.IVK
             }
         }
 
-
+        internal void playTrack(long? numberInList)
+        {
+            if (shuffle)
+            {
+                currentTrack = shuffleList.IndexOf((int)numberInList);
+            }
+            else
+            {
+                currentTrack = numberInList;
+            }
+            AudioPlayer.PlayList(this);
+        }
     }
 
 

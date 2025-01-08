@@ -11,13 +11,11 @@
     Margin="0"
     mc:Ignorable="d">
     <Grid x:Name="MainGrid" CornerRadius="8">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+      
         <GridView
             x:Name="gridV"
             Grid.Row="0"
+            Grid.Column="2"
             Padding="10"
             ContainerContentChanging="gridV_ContainerContentChanging"
             ItemsSource="{x:Bind audioPlaylists, Mode=OneWay}"
@@ -35,10 +33,13 @@
             </GridView.Footer>
         </GridView>
         <StackPanel
-            Grid.Row="1"
+            Grid.Row="0"
+            Grid.Column="0"
             HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
             Orientation="Horizontal">
             <Button
+                Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"
                 x:Name="CreateButton"
                 Margin="10"
                 Click="CreateButton_Click">
@@ -48,6 +49,7 @@
                 </StackPanel>
             </Button>
             <Button
+                Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"
                 x:Name="Cancel"
                 Margin="10,0,10,10"
                 Click="Cancel_Click"

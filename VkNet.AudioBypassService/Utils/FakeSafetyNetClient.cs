@@ -35,14 +35,14 @@ namespace VkNet.AudioBypassService.Utils
 					Type = DeviceType.DeviceAndroidOs
 				},
 				Digest = "1-929a0dca0eee55513280171a8585da7dcd3700f8",
-				Locale = "en_US",
+				Locale = "ru_RU",
 				LoggingId = -8212629671123625360,
 				Meid = "358240051111110",
 				OtaCerts =
 				{
 					"71Q6Rn2DDZl1zPDVaaeEHItd+Yg="
 				},
-				TimeZone = "America/New_York",
+				TimeZone = "Russia/Moscow",
 				Version = 3
 			};
 

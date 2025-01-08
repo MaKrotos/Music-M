@@ -46,11 +46,12 @@
 
 
         <ListView
-         
+            Padding="0"
+            
             ItemTemplateSelector="{StaticResource MyTemplateSelector}"
             ItemsSource="{x:Bind mixCategories}"
             SelectionMode="None">
-      
+   
         </ListView>
 
 

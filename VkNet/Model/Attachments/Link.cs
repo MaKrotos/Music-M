@@ -107,7 +107,7 @@ namespace VkNet.Model.Attachments
 		/// <returns> </returns>
 		public static Link FromJson(VkResponse response)
 		{
-			var id = default(long?);
+			var id = default(long);
 			var linkId = (string)response["id"];
 
 			if (long.TryParse(linkId, out long temporaryId))

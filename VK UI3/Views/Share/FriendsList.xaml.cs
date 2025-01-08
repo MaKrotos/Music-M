@@ -27,6 +27,8 @@ namespace VK_UI3.Views.Share
         internal VkCollection<User> friends;
         internal Audio audio = null;
         internal EventHandler selectedFriend;
+
+        public AudioPlaylist PlayList { get; internal set; }
     }
 
     public class UserListed {
@@ -59,7 +61,7 @@ namespace VK_UI3.Views.Share
                 // Подписываемся на событие изменения прокрутки
                 scrollViewer.ViewChanged += ScrollViewer_ViewChanged; ;
             }
-            if (friendsListParametrs.audio != null)
+            if (friendsListParametrs.audio != null || friendsListParametrs.PlayList != null)
             {
                 this.Width = 425;
                 Cancel.Visibility = Visibility.Visible;
@@ -74,7 +76,7 @@ namespace VK_UI3.Views.Share
             if (friendsListParametrs != null)
             {
                 friendsListParametrs.itsAll = itsAll;
-                if (friendsListParametrs.audio != null) 
+                if (friendsListParametrs.audio != null || friendsListParametrs.PlayList != null) 
                     isDisableded = true;
 
                 this.DispatcherQueue.TryEnqueue(() =>
@@ -222,8 +224,12 @@ namespace VK_UI3.Views.Share
 
             MessagesSendParams messagesSendParams = new MessagesSendParams();
 
+            if (friendsListParametrs.audio != null)
+                messagesSendParams.Attachments = new List<Audio> { friendsListParametrs.audio };
 
-            messagesSendParams.Attachments = new List<Audio> { friendsListParametrs.audio };
+            if (friendsListParametrs.PlayList != null)
+                messagesSendParams.Attachments = new List<AudioPlaylist> { friendsListParametrs.PlayList }; 
+
             messagesSendParams.UserId = friends[a].user.Id;
             messagesSendParams.RandomId = 0;
             try
@@ -232,7 +238,7 @@ namespace VK_UI3.Views.Share
             }
             catch (Exception ex) { }
 
-            // Получение ID плейлиста
+
             friendsListParametrs.selectedFriend?.Invoke(friends[a].user, EventArgs.Empty);
             
         }

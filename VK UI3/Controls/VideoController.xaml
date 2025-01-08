@@ -43,10 +43,7 @@
             CornerRadius="4">
 
 
-            <MediaPlayerElement
-                x:Name="VideoSources"
-                CornerRadius="8"
-                Opacity="1" />
+           
 
 
             <Grid x:Name="ShowVidGid">
@@ -61,7 +58,7 @@
                     Height="300"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Top"
-                    Stretch="UniformToFill" />
+                    Stretch="Uniform" />
 
                 <Grid
                     x:Name="btnGrid"

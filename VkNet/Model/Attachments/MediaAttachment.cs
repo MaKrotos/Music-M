@@ -14,17 +14,17 @@ namespace VkNet.Model.Attachments
 		/// </summary>
 		protected abstract string Alias { get; }
 
-		/// <summary>
-		/// Идентификатор вложенеия.
-		/// </summary>
-		[JsonProperty("id")]
-		public long? Id { get; set; }
+        /// <summary>
+        /// Идентификатор вложенеия.
+        /// </summary>
+        [JsonProperty("id")]
+		public long Id { get; set; }
 
 		/// <summary>
 		/// Идентификатор владельца вложения.
 		/// </summary>
 		[JsonProperty("owner_id")]
-		public long? OwnerId { get; set; }
+		public long OwnerId { get; set; }
 
 
 		/// <summary>

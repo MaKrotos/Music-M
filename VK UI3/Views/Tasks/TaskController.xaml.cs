@@ -44,6 +44,13 @@ namespace VK_UI3.Views.Tasks
                 animationsChangeFontIcon = new Helpers.Animations.AnimationsChangeFontIcon(PlayIcon, this.DispatcherQueue);
             if (animationsChangeFontIconCancel == null)
                 animationsChangeFontIconCancel = new Helpers.Animations.AnimationsChangeFontIcon(CancelIcon, this.DispatcherQueue);
+
+            if (!_task.canPause)
+            {
+                PlayPause.Visibility = Visibility.Collapsed;
+            }
+
+
         }
 
         TaskAction _task { get; set; }

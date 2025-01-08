@@ -8,6 +8,10 @@ namespace MusicX.Core.Models
         [JsonExtensionData]
         public Dictionary<string, object> AdditionalData { get; set; }
 
+
+        [JsonProperty("hls")]
+        public string hls { get; set; }
+
         [JsonProperty("mp4_144")]
         public string Mp4_144 { get; set; }
 

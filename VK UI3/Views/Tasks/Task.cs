@@ -33,6 +33,9 @@ namespace VK_UI3.Views.Tasks
         public event EventHandler<StatusChangedEventArgs> StatusChanged;
         protected CancellationToken cancellationToken;
 
+        public bool canCancel { get; protected set; } = true;
+        public bool canPause { get; protected set; } = true;
+
 
         protected void OnProgressChanged(ProgressEventArgs e)
         {
@@ -97,7 +100,7 @@ namespace VK_UI3.Views.Tasks
 
         public string nameTask { get; set; }
         public string taskID { get; set; }
-        protected TaskAction(int total, string nameTask, string taskID, string subTextTask)
+        protected TaskAction(int total, string nameTask, string? taskID, string subTextTask)
         {
             this.subTextTask = subTextTask ?? "";
             this.total = total;

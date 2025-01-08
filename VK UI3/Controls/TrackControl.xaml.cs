@@ -345,8 +345,10 @@ namespace VK_UI3.Controls
                     AudioPlayer.mediaPlayer.Pause();
                     return;
                 }
-                dataTrack.iVKGetAudio.currentTrack = dataTrack.NumberInList;
-                AudioPlayer.PlayList(dataTrack.iVKGetAudio);
+                //dataTrack.iVKGetAudio.currentTrack = dataTrack.NumberInList;
+                //AudioPlayer.PlayList(dataTrack.iVKGetAudio);
+
+                dataTrack.iVKGetAudio.playTrack(dataTrack.NumberInList);
             }
         }
 

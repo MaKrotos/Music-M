@@ -105,6 +105,8 @@ namespace VkNet.Categories
                 { "friends_only", @params.FriendsOnly },
                 { "from_group", @params.FromGroup },
                 { "message", @params.Message },
+                { "primary_attachments", @params.PrimaryAttachments },
+                { "primary_attachments_mode", @params.PrimaryAttachmentsMode },
                 { "attachments", @params.Attachments },
                 { "services", @params.Services },
                 { "signed", @params.Signed },

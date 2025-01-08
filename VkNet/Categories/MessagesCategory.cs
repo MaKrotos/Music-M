@@ -38,6 +38,7 @@ using VkNet.Enums.SafetyEnums;
 using VkNet.Exception;
 using VkNet.Infrastructure;
 using VkNet.Model;
+using VkNet.Model.Attachments;
 using VkNet.Model.RequestParams;
 using VkNet.Model.RequestParams.Messages;
 using VkNet.Model.Results.Messages;
@@ -211,6 +212,7 @@ namespace VkNet.Categories
             {
                 throw new ArgumentException($"{nameof(@params.RandomId)} обязательное значение.");
             }
+            var attach = @params.Attachments.ToList<MediaAttachment>()[0].ToString();
 
             return _vk.Call("messages.send",
                 new VkParameters

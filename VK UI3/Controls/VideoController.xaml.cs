@@ -1,27 +1,10 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Media.Imaging;
-using MusicX.Core.Models;
-using MusicX.Services;
 using System;
-using System.Diagnostics;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using VK_UI3.Controllers;
-using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
-using VK_UI3.Views;
-using VK_UI3.Views.Controls;
-using VK_UI3.Views.ModalsPages;
-using VK_UI3.VKs.IVK;
-using VkNet.Model.Attachments;
-using Windows.Media.Core;
 using Windows.Media.Playback;
-using Windows.Media.Playlists;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -49,6 +32,7 @@ namespace VK_UI3.Controls
 
         private void HideAnimationMediaP_Completed(object sender, object e)
         {
+            /*
             if (ShowVidGid.Opacity == 1)
             { 
                 if (VideoSources.MediaPlayer != null)
@@ -57,6 +41,7 @@ namespace VK_UI3.Controls
                 }
                 VideoSources.Source = null;
             }
+            */
         }
 
         public bool setCOlorTheme { get; set; } = false;
@@ -75,7 +60,7 @@ namespace VK_UI3.Controls
                 HideAnimationMediaP.Pause();
                 ShowAnimationMediaP.Pause();
                 ShowVidGid.Opacity = 1;
-                VideoSources.Source = null;
+               // VideoSources.Source = null;
 
 
                 MainText.Text = video.Title;
@@ -128,6 +113,11 @@ namespace VK_UI3.Controls
 
         private async void Grid_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
+
+
+            await Windows.System.Launcher.LaunchUriAsync(new Uri(video.Player));
+
+            /*
             ContentDialog dialog = new CustomDialog();
 
             dialog.Transitions = new TransitionCollection
@@ -158,10 +148,12 @@ namespace VK_UI3.Controls
             videoView.CloseButtonClicked += closeButtonClickedHandler;
 
             dialog.ShowAsync();
+            */
         }
 
         private void Grid_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
+            
             show = true;
             FadeOutAnimationGridPlayIcon.Pause();
             FadeInAnimationGridPlayIcon.Begin();
@@ -176,6 +168,7 @@ namespace VK_UI3.Controls
 
 
         
+            /*
 
             if (VideoSources.Source == null)
             {
@@ -193,11 +186,13 @@ namespace VK_UI3.Controls
                 ShowAnimationMediaP.Begin();
             }
 
-
+            */
         }
 
         private void MediaPlayer_CurrentStateChanged(MediaPlayer sender, object args)
         {
+            /*
+
             this.DispatcherQueue.TryEnqueue(async () =>
             {
                 switch (VideoSources.MediaPlayer.CurrentState)
@@ -229,6 +224,7 @@ namespace VK_UI3.Controls
                         break;
                 }
             });
+            */
         }
 
         bool show = false;

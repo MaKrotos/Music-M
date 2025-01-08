@@ -13,7 +13,7 @@ using Windows.ApplicationModel.UserDataTasks;
 
 namespace VK_UI3.VKs.IVK
 {
-    public class UserAudio : IVKGetAudio
+    public class UserAudio : IVKGetAudio, IVKGetTracksMore
     {
         public UserAudio(long id, DispatcherQueue dispatcher) : base(id, dispatcher)
         {
@@ -126,6 +126,59 @@ namespace VK_UI3.VKs.IVK
             }
         }
 
+        public void GetTracks(int counter)
+        {
+            semaphore.Wait(); // ќжидает освобождени€ семафора
 
+            try
+            {
+                if (getLoadedTracks) return;
+                getLoadedTracks = true;
+
+                task = Task.Run(async () =>
+                {
+                    int offset = listAudio.Count;
+                    int count = counter;
+
+                    if (countTracks > listAudio.Count)
+                    {
+                        VkCollection<Audio> audios;
+
+                        audios = api.Audio.GetAsync(new AudioGetParams
+                        {
+                            OwnerId = int.Parse(id),
+                            Offset = offset,
+                            Count = count
+                        }).Result;
+
+                        ManualResetEvent resetEvent = new ManualResetEvent(false);
+
+                        foreach (var item in audios)
+                        {
+                            ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
+
+                            DispatcherQueue.TryEnqueue(() =>
+                            {
+                                listAudio.Add(extendedAudio);
+                                resetEvent.Set(); // —игнализирует о завершении задачи
+                            });
+
+                            resetEvent.WaitOne(); // ќжидает сигнала о завершении задачи
+                            resetEvent.Reset(); // —брасывает событие дл€ следующей итерации
+                        }
+
+                        if (countTracks == listAudio.Count()) itsAll = true;
+
+                        getLoadedTracks = false;
+                    }
+                    task = null;
+                    NotifyOnListUpdate();
+                });
+            }
+            finally
+            {
+                semaphore.Release(); // ќсвобождает семафор
+            }
+        }
     }
 }

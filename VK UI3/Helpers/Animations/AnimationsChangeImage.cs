@@ -190,8 +190,6 @@ namespace VK_UI3.Helpers.Animations
 
         private void showImage(FrameworkElement element, BitmapImage image)
         {
-        
-
             if (imageControl != null)
             {
                 imageControl.Source = image;
@@ -235,6 +233,20 @@ namespace VK_UI3.Helpers.Animations
                 return null;
             }
 
+            if (newImageSourceUrl.IsFile || File.Exists(newImageSourceUrl.ToString()))
+            {
+                var tcs = new TaskCompletionSource<BitmapImage>();
+
+                dispatcherQueue.TryEnqueue(() =>
+                {
+                    BitmapImage bitmap = null;
+                    bitmap = new BitmapImage(newImageSourceUrl);
+                    image = bitmap;
+                    tcs.SetResult(image);
+                });
+                return await tcs.Task;
+            }
+
             var urlSemaphore = _urlSemaphores.GetOrAdd(newImageSourceUrl, new SemaphoreSlim(1, 1));
             await urlSemaphore.WaitAsync();
 
@@ -248,7 +260,8 @@ namespace VK_UI3.Helpers.Animations
                     Directory.CreateDirectory(databaseFolderPath);
                 }
 
-                if (newImageSourceUrl.IsFile || File.Exists(fileName))
+
+                if (new Uri(fileName).IsFile && File.Exists(fileName))
                 {
                     var tcs = new TaskCompletionSource<BitmapImage>();
 
@@ -289,11 +302,16 @@ namespace VK_UI3.Helpers.Animations
 
 
 
+
         private async Task<BitmapImage> DownloadImage(Uri newImageSourceUrl, bool setColorTheme, string fileName, int repeat = 0)
         {
             BitmapImage bitmap = null;
 
-                var httpClient = new HttpClient();
+                var httpClient = new HttpClient() {
+                
+                Timeout = TimeSpan.FromMinutes(3)
+                
+                };
                 try
                 {
                     var buffer = await httpClient.GetByteArrayAsync(newImageSourceUrl);
@@ -329,7 +347,6 @@ namespace VK_UI3.Helpers.Animations
                     }
                     return await DownloadImage(newImageSourceUrl, setColorTheme, fileName, repeat +=1);
                 }
-        
         }
 
         public static void ColorOpaquePartFastParallel(string imagePath)
