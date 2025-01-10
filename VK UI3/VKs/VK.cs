@@ -263,15 +263,6 @@ namespace VK_UI3.VKs
                 if (nextStep is null || nextStep.VerificationMethod == LoginWay.Password)
                 {
 
-                    if (nextStep == null)
-                    {
-                        login.Frame.GoBack();
-                        return;
-                    }
-
-
-                    //   OpenPage(AccountsWindowPage.EnterPassword);
-
                     Profile = new EcosystemProfile("Незнакомец", string.Empty, llogin, false, false, "https://vk.com/images/camera_200.png");
 
                     Password passview = new Password();
