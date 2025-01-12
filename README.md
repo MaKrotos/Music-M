@@ -38,7 +38,8 @@ Music M - По сути своей адаптация VK X и Music X, пере�
 ![image](https://github.com/user-attachments/assets/89689566-7940-4dae-861f-4eae2fb8afd5)
 ![image](https://github.com/user-attachments/assets/ca2eae3c-443e-464d-a04e-eace7d4cba2b)
 ![image](https://github.com/user-attachments/assets/db59c45b-9101-44aa-bfac-df29ec0d88f4)
-![image](https://github.com/user-attachments/assets/4f5fec4d-d0af-4082-84b7-ea6b3d015cb4)
+![image](https://github.com/user-attachments/assets/3a230857-c03a-4c80-828c-9710b6bde6ae)
+
 ![image](https://github.com/user-attachments/assets/af681632-263c-438d-a138-e91975220fd3)
 ![image](https://github.com/user-attachments/assets/3766499d-052d-435c-a673-808e8bfbc315)
 ![image](https://github.com/user-attachments/assets/228499f9-a7d7-492a-ace6-5329b02e1bdb)
