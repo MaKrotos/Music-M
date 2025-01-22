@@ -103,7 +103,7 @@ namespace VK_UI3.Controls
         {
             var vkService = VK.vkService;
 
-            if (dataTrack.audio.OwnerId == AccountsDB.activeAccount.id)
+            if (dataTrack.audio.OwnerId == AccountsDB.activeAccount.id && !(dataTrack.iVKGetAudio is PlayListVK))
             {
                 vkService.AudioDeleteAsync((long)dataTrack.audio.Id, (long)dataTrack.audio.OwnerId);
                 dataTrack.iVKGetAudio.DeleteTrackFromList(dataTrack);
@@ -389,17 +389,28 @@ namespace VK_UI3.Controls
                 EditTrack.Visibility = Visibility.Visible;
             }
             else EditTrack.Visibility = Visibility.Collapsed;
-            AddRemove.Visibility = Visibility.Visible;
-            AddRemove.Text = isOwner ? "Удалить" : "Добавить к себе";
-            AddRemove.Icon = new SymbolIcon(isOwner ? Symbol.Delete : Symbol.Add);
+
+
+            if (dataTrack.iVKGetAudio is PlayListVK)
+            {
+                AddRemove.Visibility = Visibility.Visible;
+                AddRemove.Icon = new SymbolIcon(Symbol.Add);
+             
+            }
+            else
+            {
+                
+                AddRemove.Visibility = isOwner ? Visibility.Collapsed: Visibility.Visible;
+                AddRemove.Text = isOwner ? "Удалить" : "Добавить к себе";
+                AddRemove.Text = "Добавить к себе";
+                AddRemove.Icon = new SymbolIcon(isOwner ? Symbol.Delete : Symbol.Add);
+            }
+
+
 
             if (dataTrack.iVKGetAudio is PlayListVK aplaylist && aplaylist.playlist.Permissions.Edit)
             {
                 RemovePlayList.Visibility = Visibility.Visible;
-                if (isOwner)
-                {
-                    AddRemove.Visibility = Visibility.Collapsed;
-                }
             }
             else
             {
@@ -410,6 +421,7 @@ namespace VK_UI3.Controls
             {
                 AddArtistIgnore.Visibility = Visibility.Collapsed;
             }
+
             else
             {
                 AddArtistIgnore.Visibility = Visibility.Visible;
