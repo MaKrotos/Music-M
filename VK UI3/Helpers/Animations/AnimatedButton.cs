@@ -148,10 +148,12 @@ namespace VK_UI3.Helpers.Animations
             await AnimateSize(0, 0, TimeSpan.FromSeconds(0.25));
             await AnimateMargin(new Thickness(0), TimeSpan.FromSeconds(0.25));
             AnimationCompleted?.Invoke();
+            this.IsEnabled = false;
         }
 
         public async Task ShowButton()
         {
+            this.IsEnabled = true;
             await AnimateSize(OriginalWidth, OriginalHeight, TimeSpan.FromSeconds(0.25));
             await AnimateMargin(OriginalMargin.Value, TimeSpan.FromSeconds(0.25));
             AnimationCompleted?.Invoke();
