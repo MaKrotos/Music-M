@@ -1,6 +1,7 @@
 
 
 //using CSCore.CoreAudioAPI;
+using Aurora.Music.Effects;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -21,6 +22,7 @@ using VK_UI3.Helpers.Animations;
 using VK_UI3.Views;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
+using Windows.Foundation.Collections;
 using Windows.Media.Playback;
 using Windows.Storage.Streams;
 
@@ -220,6 +222,23 @@ namespace VK_UI3.Controllers
             mediaPlayer.CommandManager.PreviousReceived += CommandManager_PreviousReceived;
             mediaPlayer.CommandManager.NextBehavior.EnablingRule = MediaCommandEnablingRule.Always;
             mediaPlayer.CommandManager.PreviousBehavior.EnablingRule = MediaCommandEnablingRule.Always;
+
+            mediaPlayer.AddAudioEffect(typeof(SuperEQ).FullName, false, new PropertySet()
+            {
+                ["EqualizerBand"] = new EqualizerBand[]
+                    {
+                        new EqualizerBand {Bandwidth = 0.8f, Frequency = 30, Gain = 12},
+                        new EqualizerBand {Bandwidth = 0.8f, Frequency = 75, Gain = 12},
+                        new EqualizerBand {Bandwidth = 0.8f, Frequency = 150, Gain =12},
+                        new EqualizerBand {Bandwidth = 0.8f, Frequency = 30, Gain = 12},
+                        new EqualizerBand {Bandwidth = 0.8f, Frequency = 600, Gain =12},
+                        new EqualizerBand {Bandwidth = 0.8f, Frequency = 1250, Gain = 12},
+                        new EqualizerBand {Bandwidth = 0.8f, Frequency = 2500, Gain = 12},
+                        new EqualizerBand {Bandwidth = 0.8f, Frequency = 5000,Gain = 12},
+                        new EqualizerBand {Bandwidth = 0.8f, Frequency = 10000,Gain = 12},
+                        new EqualizerBand {Bandwidth = 0.8f, Frequency = 20000,Gain = 12},
+                    }
+            });
 
         }
         double actualHeight = 0;
