@@ -143,10 +143,6 @@ namespace VK_UI3
 
         private void UploadsTracks_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            this.DispatcherQueue.TryEnqueue(() => {
-                App.Current.RequestedTheme = (DB.SettingsTable.GetSetting("SetLightColor") == null) ? ApplicationTheme.Dark : ApplicationTheme.Light;
-
-            });
             if (sender is ObservableCollection<UploadTrack> traks)
             {
                 if (traks.Count > 0)
