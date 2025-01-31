@@ -138,21 +138,7 @@ jobs:
         Get-ChildItem -Path "${{ env.Solution_Name }}\\Packages" -Filter *.cer -Recurse -Depth 1 | ForEach-Object {
           Rename-Item -Path $_.FullName -NewName "Certificate.cer"
         }
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: my-artifact
-        path: path/to/artifact
         
-    - name: Download artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: my-artifact
-        path: path/to/downloaded/artifact
-
-
-
 
     # Move .msix, .cer, and .msixbundle files from subfolders to the Packages folder
     - name: Move files to the Packages folder
