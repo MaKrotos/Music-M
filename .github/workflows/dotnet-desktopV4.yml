@@ -3,7 +3,6 @@
 
 name: Автосборка Music M
 
-
 on:
   workflow_dispatch:
     inputs:
@@ -26,8 +25,6 @@ on:
         default: true
         type: boolean
 
-        
-
   push:
     branches: [ main ]
   pull_request:
@@ -42,17 +39,14 @@ jobs:
         configuration: [Release]
         platform: [x64]
 
-
     runs-on: windows-latest  # For a list of available runner types, refer to
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
 
     env:
-      Solution_Name: "VK UI3 (Package)"                         # Replace with your solution name, i.e. App1.sln.
+      Solution_Name: "VK UI3 (Package)"  # Replace with your solution name, i.e. App1.sln.
 
     steps:
 
-
-    
     - name: Checkout
       uses: actions/checkout@v4
       with:
@@ -74,13 +68,9 @@ jobs:
         Set-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs" -Value $updatedContent
         Write-Output $updatedContent
 
-    
-
-
     - name: Display disk tree
       run: |
         Get-ChildItem -Recurse | Sort-Object Length -Descending
-
 
     # Install the .NET Core workload
     - name: Install .NET Core
@@ -88,7 +78,7 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
-    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+    # Add MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v2
 
@@ -97,7 +87,6 @@ jobs:
       run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
       env:
         Configuration: ${{ matrix.configuration }}
-
 
     - name: Print working directory
       run: |
@@ -123,9 +112,6 @@ jobs:
         $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
         $password = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -Force -AsPlainText
         Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation Cert:\LocalMachine\My -Password $password
-
-
-
 
     # Create the app package by building and packaging the project
     - name: Create the app package
@@ -154,6 +140,19 @@ jobs:
         Get-ChildItem -Path "${{ env.Solution_Name }}\\Packages" -Filter *.cer -Recurse -Depth 1 | ForEach-Object {
           Rename-Item -Path $_.FullName -NewName "Certificate.cer"
         }
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: my-artifact
+        path: path/to/artifact
+        
+    - name: Download artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: my-artifact
+        path: path/to/downloaded/artifact
+
 
     # Move .msix, .cer, and .msixbundle files from subfolders to the Packages folder
     - name: Move files to the Packages folder
