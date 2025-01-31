@@ -1,5 +1,3 @@
-# This workflow will build, sign, and package a WinUI 3 MSIX desktop application
-# built on .NET.
 
 name: Автосборка Music M
 
@@ -39,11 +37,11 @@ jobs:
         configuration: [Release]
         platform: [x64]
 
-    runs-on: windows-latest  # For a list of available runner types, refer to
-                             # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+    runs-on: windows-latest  # Для получения списка доступных типов раннеров
+                             # см. https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
 
     env:
-      Solution_Name: "VK UI3 (Package)"  # Replace with your solution name, i.e. App1.sln.
+      Solution_Name: "VK UI3 (Package)"  # Замените на имя вашего решения, например, App1.sln.
 
     steps:
 
@@ -53,7 +51,7 @@ jobs:
         node-version: 16
         fetch-depth: 0
 
-    # Decode the base 64 encoded pfx and save the Signing_Certificate
+    # Декодируем закодированный в base64 pfx и сохраняем Signing_Certificate
     - name: Decode the pfx
       run: |
         $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
@@ -72,17 +70,17 @@ jobs:
       run: |
         Get-ChildItem -Recurse | Sort-Object Length -Descending
 
-    # Install the .NET Core workload
+    # Установить .NET Core
     - name: Install .NET Core
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
 
-    # Add MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+    # Добавить MSBuild в PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v2
 
-    # Restore the application to populate the obj folder with RuntimeIdentifiers
+    # Восстановить приложение для заполнения папки obj RuntimeIdentifiers
     - name: Restore the application
       run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
       env:
@@ -113,7 +111,7 @@ jobs:
         $password = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -Force -AsPlainText
         Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation Cert:\LocalMachine\My -Password $password
 
-    # Create the app package by building and packaging the project
+    # Создание пакета приложения путем сборки и упаковки проекта
     - name: Create the app package
       run: |
         $platforms = "x64", "x86", "ARM64"
@@ -128,13 +126,13 @@ jobs:
         Configuration: ${{ matrix.configuration }}
         TOKEN_STAT_SLY: ${{ secrets.TOKEN_STAT_SLY }}
 
-    # Remove the pfx
+    # Удалить pfx
     - name: Remove the pfx
       run: |
         $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
         Remove-Item -path "$certificatePath"
         
-    # Rename the .cer file
+    # Переименовать .cer файл
     - name: Rename the .cer file
       run: |
         Get-ChildItem -Path "${{ env.Solution_Name }}\\Packages" -Filter *.cer -Recurse -Depth 1 | ForEach-Object {
@@ -152,6 +150,7 @@ jobs:
       with:
         name: my-artifact
         path: path/to/downloaded/artifact
+
 
 
     # Move .msix, .cer, and .msixbundle files from subfolders to the Packages folder
