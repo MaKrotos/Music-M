@@ -78,7 +78,7 @@ jobs:
 
     # Добавить MSBuild в PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v4
+      uses: microsoft/setup-msbuild@v2
 
     # Восстановить приложение для заполнения папки obj RuntimeIdentifiers
     - name: Restore the application
