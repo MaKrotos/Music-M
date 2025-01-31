@@ -54,7 +54,7 @@ jobs:
 
     
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         node-version: 16
         fetch-depth: 0
