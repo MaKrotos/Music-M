@@ -157,6 +157,7 @@ namespace VK_UI3.Helpers.Animations
             await AnimateSize(OriginalWidth, OriginalHeight, TimeSpan.FromSeconds(0.25));
             await AnimateMargin(OriginalMargin.Value, TimeSpan.FromSeconds(0.25));
             AnimationCompleted?.Invoke();
+            this.IsEnabled = true;
         }
     }
 }

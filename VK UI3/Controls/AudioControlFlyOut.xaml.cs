@@ -390,19 +390,14 @@ namespace VK_UI3.Controls
             }
             else EditTrack.Visibility = Visibility.Collapsed;
 
-
+            AddRemove.Visibility = Visibility.Visible;
             if (dataTrack.iVKGetAudio is PlayListVK)
             {
-                AddRemove.Visibility = Visibility.Visible;
                 AddRemove.Icon = new SymbolIcon(Symbol.Add);
-             
             }
             else
             {
-                
-                AddRemove.Visibility = isOwner ? Visibility.Collapsed: Visibility.Visible;
                 AddRemove.Text = isOwner ? "Удалить" : "Добавить к себе";
-                AddRemove.Text = "Добавить к себе";
                 AddRemove.Icon = new SymbolIcon(isOwner ? Symbol.Delete : Symbol.Add);
             }
 
