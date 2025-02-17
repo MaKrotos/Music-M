@@ -117,6 +117,7 @@ namespace VK_UI3
 
             this.Activated += activated;
 
+          
 
 
         }
@@ -192,6 +193,7 @@ namespace VK_UI3
 
         private async void MainWindow_CloseRequested(object sender, WindowEventArgs args)
         {
+            throw new Exception("Тест.");
             if (justClose)
                 Application.Current.Exit();
             else

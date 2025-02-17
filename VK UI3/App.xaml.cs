@@ -9,9 +9,6 @@ using StatSlyLib.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Security.Cryptography;
-using System.Security.Principal;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.DB;
@@ -158,7 +155,6 @@ namespace VK_UI3
 
             this.UnhandledException += App_UnhandledException;
 
-            
             //   await (appUpdater.CheckForUpdaterBool)
         }
 
@@ -206,6 +202,31 @@ namespace VK_UI3
 
                     Event @event = new Event("Run App", DateTime.Now, eventParams: listParams);
                     _ = new VKMStatSly().SendEvent(@event);
+
+
+                    setting = DB.SettingsTable.GetSetting("FirstRunDate");
+                 
+
+                    DateOnly nowDate = DateOnly.FromDateTime(DateTime.Now);
+
+                    if (setting != null &&
+                        DateOnly.Parse(setting.settingValue) == nowDate)
+                    {
+                        return;
+                    }
+
+                    @event = new Event("FirstRunDay", DateTime.Now, eventParams: listParams);
+
+                    try
+                    {
+                        await (new VKMStatSly().SendEvent(@event));
+                        DB.SettingsTable.SetSetting("FirstRunDate", nowDate.ToString());
+                    }
+                    catch 
+                    {
+
+                    }
+
                 }
             }
             catch (Exception e)
@@ -237,6 +258,49 @@ namespace VK_UI3
             {
                 _mutex.ReleaseMutex();
                 _mutex = null;
+                return;
+            }
+
+            var setting = DB.SettingsTable.GetSetting("UserUniqID");
+            string UserUniqID;
+            if (setting == null)
+            {
+                UserUniqID = Helpers.SmallHelpers.GenerateRandomString(100);
+                DB.SettingsTable.SetSetting("UserUniqID", UserUniqID);
+
+                EventParams eventParams = new EventParams("userID", UserUniqID);
+
+                Event @event = new Event("First Run", DateTime.Now, eventParams: new List<EventParams>() { eventParams });
+
+                _ = new VKMStatSly().SendEvent(@event);
+            }
+            else
+            {
+                UserUniqID = setting.settingValue;
+            }
+
+            {
+                var packageVersion = Package.Current.Id.Version;
+                var version = $"{packageVersion.Major}.{packageVersion.Minor}.{packageVersion.Build}.{packageVersion.Revision}";
+
+
+                var listParams = new List<EventParams>
+                    {
+                        new EventParams("userID", UserUniqID),
+                        new EventParams("Accounts Count", AccountsDB.GetAllAccounts().Count),
+                        new EventParams("versionAPP", version),
+                        new EventParams("Sender", sender.ToString()),
+                        new EventParams("Exception", e.Message),
+                    };
+
+                if (AccountsDB.GetAllAccounts().Count > 0)
+                {
+                    var account = AccountsDB.GetActiveAccount();
+                    listParams.Add(new EventParams("ActiveAccount", account.GetHash()));
+                }
+
+                Event @event = new Event("Exception", DateTime.Now, eventParams: listParams);
+                _ = new VKMStatSly().SendEvent(@event);
             }
         }
 
