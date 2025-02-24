@@ -1,3 +1,4 @@
+using System;
 using VK_UI3.Controllers;
 using VK_UI3.VKs.IVK;
 
@@ -6,6 +7,24 @@ namespace VK_UI3.Helpers
 {
     public class ExtendedAudio
     {
+
+        public class SelectedChange : EventArgs
+        {
+            public bool selected;
+
+            public SelectedChange(bool selected)
+            {
+                this.selected = selected;
+            }
+        }
+
+        public event EventHandler trackSelectChanged;
+
+        public void trackSelectChangedInvoke(SelectedChange selectedChange)
+        {
+            trackSelectChanged.Invoke(iVKGetAudio, selectedChange);
+        }
+
         public ExtendedAudio(VkNet.Model.Attachments.Audio audio, IVKGetAudio iVKGetAudio)
         {
             this.audio = audio;

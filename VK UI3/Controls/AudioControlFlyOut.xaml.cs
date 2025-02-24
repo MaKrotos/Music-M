@@ -157,14 +157,17 @@ namespace VK_UI3.Controls
         {
             var rec =  new Recommendations(this.dataTrack.audio.FullId, this.DispatcherQueue);
             rec.name = $"Похоже на \"{this.dataTrack.audio.Title}\" от {this.dataTrack.audio.Artist}";
-            rec.photoUri = new Uri(
-                this.dataTrack.audio.Album.Thumb.Photo1200 ??
-                this.dataTrack.audio.Album.Thumb.Photo600 ??
-                this.dataTrack.audio.Album.Thumb.Photo300 ??
-                this.dataTrack.audio.Album.Thumb.Photo270 ??
-                this.dataTrack.audio.Album.Thumb.Photo135 ??
-                this.dataTrack.audio.Album.Thumb.Photo34
-                ?? null);
+            if (this.dataTrack.audio.Album != null)
+            {
+                rec.photoUri = new Uri(
+                    this.dataTrack.audio.Album.Thumb.Photo1200 ??
+                    this.dataTrack.audio.Album.Thumb.Photo600 ??
+                    this.dataTrack.audio.Album.Thumb.Photo300 ??
+                    this.dataTrack.audio.Album.Thumb.Photo270 ??
+                    this.dataTrack.audio.Album.Thumb.Photo135 ??
+                    this.dataTrack.audio.Album.Thumb.Photo34
+                    ?? null);
+            }
             MainView.OpenIVkAudio(rec);
         }
 

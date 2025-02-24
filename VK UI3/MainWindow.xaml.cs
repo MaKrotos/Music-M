@@ -60,6 +60,8 @@ namespace VK_UI3
             AppTitleBar.SizeChanged += AppTitleBar_SizeChanged;
             
 
+            
+
             PlayListDownload.OnEndAllDownload += (OnEndAllDownload_Event); ;
 
 

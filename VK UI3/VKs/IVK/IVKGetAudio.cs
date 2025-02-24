@@ -25,7 +25,7 @@ namespace VK_UI3.VKs.IVK
         public string id;
         bool shuffle = false;
 
-
+        List<ExtendedAudio> selectedAudio = new List<ExtendedAudio>();
 
 
         public Uri photoUri;
@@ -466,11 +466,91 @@ namespace VK_UI3.VKs.IVK
             }
             AudioPlayer.PlayList(this);
         }
+
+        public void SelectAudio(ExtendedAudio extended)
+        {
+            if (extended.iVKGetAudio != this)
+                return;
+
+            if (selectedAudio.Contains(extended))
+                return;
+
+            selectedAudio.Add(extended);
+            extended.trackSelectChangedInvoke(new ExtendedAudio.SelectedChange(true));
+
+        }
+
+
+
+
+        public void unselectAudio(ExtendedAudio extended)
+        {
+            if (extended.iVKGetAudio != this)
+                return;
+
+            if (!selectedAudio.Contains(extended))
+                return;
+
+            selectedAudio.Remove(extended);
+            extended.trackSelectChangedInvoke(new ExtendedAudio.SelectedChange(false));
+
+        }
+
+        public bool AudioIsSelect(ExtendedAudio extended)
+        {
+            return selectedAudio.Contains(extended);
+        }
+
+
+        ExtendedAudio lastSelected = null;
+        internal void changeSelect(ExtendedAudio dataTrack, bool shiftPressend)
+        {
+            if (dataTrack.iVKGetAudio != this)
+                return;
+
+            var trackSelected = this.selectedAudio.Contains(dataTrack);
+
+            if (lastSelected == null || !shiftPressend || !this.listAudio.Contains(lastSelected))
+            {
+                if (trackSelected)
+                {
+                    unselectAudio(dataTrack);
+                }
+                else
+                {
+                    SelectAudio(dataTrack);
+                }
+                lastSelected = dataTrack;
+                return;
+            }
+
+            var newSelectedIndex = listAudio.IndexOf(dataTrack);
+
+
+
+            var lastSelectedIndex = listAudio.IndexOf(lastSelected);
+      
+
+            int step = lastSelectedIndex < newSelectedIndex ? 1 : -1;
+
+            for (int i = lastSelectedIndex; i != newSelectedIndex + step; i += step)
+            {
+                if (trackSelected)
+                {
+                    unselectAudio(listAudio[i]);
+                }
+                else
+                {
+                    SelectAudio(listAudio[i]);
+                }
+            }
+
+            lastSelected = dataTrack;
+
+
+        }
     }
 
-
-
-
-
+   
 
 }

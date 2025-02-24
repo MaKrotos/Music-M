@@ -1,183 +1,249 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <UserControl
-    x:Class="VK_UI3.Controls.TrackControl"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="using:VK_UI3.Controls"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    x:Name="UCcontrol"
-    Width="Auto"
-    PointerEntered="UCcontrol_PointerEntered"
-    PointerExited="UCcontrol_PointerExited"
-    PointerPressed="UCcontrol_PointerPressed"
-    Translation="0,0,8"
-    mc:Ignorable="d">
-    <UserControl.Resources>
-        <SolidColorBrush x:Key="SystemControlFocusVisualPrimaryBrush" Color="#FFFFFFFF" />
-        <SolidColorBrush x:Key="SystemControlFocusVisualSecondaryBrush" Color="#FF000000" />
-    </UserControl.Resources>
-
-
-    <UserControl.ContextFlyout>
-        <local:AudioControlFlyOut x:Name="FlyOutControl" />
-    </UserControl.ContextFlyout>
-
-    <UserControl.Shadow>
-        <ThemeShadow />
-    </UserControl.Shadow>
+	x:Class="VK_UI3.Controls.TrackControl"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="using:VK_UI3.Controls"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	x:Name="UCcontrol"
+	Width="Auto"
+	PointerEntered="UCcontrol_PointerEntered"
+	PointerExited="UCcontrol_PointerExited"
+	PointerPressed="UCcontrol_PointerPressed"
+	Translation="0,0,8"
+	mc:Ignorable="d">
+	<UserControl.Resources>
+		<SolidColorBrush x:Key="SystemControlFocusVisualPrimaryBrush" Color="#FFFFFFFF" />
+		<SolidColorBrush x:Key="SystemControlFocusVisualSecondaryBrush" Color="#FF000000" />
+	</UserControl.Resources>
 
 
 
-    <Grid
-        x:Name="Card"
-        Width="Auto"
-        Margin="0,0,0,0"
-        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-        BorderBrush="{ThemeResource ApplicationForegroundThemeBrush}"
-        BorderThickness="0"
-        CornerRadius="5">
+	<UserControl.ContextFlyout>
+		<local:AudioControlFlyOut x:Name="FlyOutControl" />
+	</UserControl.ContextFlyout>
+
+	<UserControl.Shadow>
+		<ThemeShadow />
+	</UserControl.Shadow>
+
+	<Grid>
+		<Grid.Resources>
+			<!--  Анимация появления  -->
+			<Storyboard x:Name="FadeInStoryboardSelectedGrid">
+				<DoubleAnimation
+					Storyboard.TargetName="SelectedGrid"
+					Storyboard.TargetProperty="Opacity"
+					To="0.3"
+					Duration="0:0:0.15" />
 
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <Grid HorizontalAlignment="Stretch">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+			</Storyboard>
+
+			<!--  Анимация исчезновения  -->
+			<Storyboard x:Name="FadeOutStoryboardSelectedGrid">
+				<DoubleAnimation
+					Storyboard.TargetName="SelectedGrid"
+					Storyboard.TargetProperty="Opacity"
+					To="0"
+					Duration="0:0:0.15" />
+			</Storyboard>
 
 
-            <Grid
-                Grid.Column="0"
-                Margin="8,6.5,6,6"
-                VerticalAlignment="Center">
-                <Grid
-                    Width="45"
-                    Height="45"
-                    Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}"
-                    CornerRadius="5">
-                    <FontIcon Foreground="{ThemeResource TextOnAccentFillColorSelectedText}" Glyph="&#xEC4F;" />
-
-                    <Grid x:Name="ImageThumbGrid">
-                        <Image x:Name="ImageThumb" Opacity="0" />
-                    </Grid>
-
-                    <TextBlock x:Name="chartState"  Margin="2,0,0,0" FontSize="13"></TextBlock>
-                    <Grid
-                        x:Name="GridPlayIcon"
-                        Background="{StaticResource CustomAcrylicInAppBrush}"
-                        CornerRadius="0"
-                        Opacity="0">
-                        <SymbolIcon Foreground="{ThemeResource TextOnAccentFillColorSelectedText}" x:Name="PlayBTN" Symbol="Play" />
-                        <Grid.Resources>
-                            <!--  Анимация прозрачности от 0 до 1  -->
-                            <Storyboard x:Name="FadeInAnimationGridPlayIcon">
-                                <DoubleAnimation
-                                    Storyboard.TargetName="GridPlayIcon"
-                                    Storyboard.TargetProperty="Opacity"
-                                    To="1"
-                                    Duration="0:0:0.25" />
-                            </Storyboard>
-                            <!--  Анимация прозрачности от 1 до 0  -->
-                            <Storyboard x:Name="FadeOutAnimationGridPlayIcon">
-                                <DoubleAnimation
-                                    Storyboard.TargetName="GridPlayIcon"
-                                    Storyboard.TargetProperty="Opacity"
-                                    To="0"
-                                    Duration="0:0:0.25" />
-                            </Storyboard>
-                        </Grid.Resources>
-
-                    </Grid>
-                </Grid>
-            </Grid>
-            <Grid
-                x:Name="ChartGrid"
-                Grid.Column="1"
-                Visibility="Collapsed">
-                <Rectangle
-                    Width="25"
-                    Height="25"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Fill="Black"
-                    Opacity="0.2"
-                    RadiusX="100"
-                    RadiusY="100" />
-                <TextBlock
-                    x:Name="ChartPositionText"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    FontWeight="ExtraBlack"
-                    Text="1"
-                    TextTrimming="CharacterEllipsis"
-                    TextWrapping="Wrap" />
-            </Grid>
-            <StackPanel
-                x:Name="TextsPanel"
-                Grid.Column="2"
-                Margin="5,0,0,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center">
-
-                <Grid>
+			<!--  Анимация появления  -->
+			<Storyboard x:Name="FadeInStoryboardBorderSelectedGrid">
+				<DoubleAnimation
+					Storyboard.TargetName="BorderSelectedGrid"
+					Storyboard.TargetProperty="Opacity"
+					To="0.3"
+					Duration="0:0:0.15" />
 
 
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition x:Name="colDefs" Width="0.8*" />
-                    </Grid.ColumnDefinitions>
+			</Storyboard>
 
-                    <TextBlock
-                        x:Name="Title"
-                        Grid.Column="0"
-                        HorizontalAlignment="Left"
-                        FontSize="16"
-                        FontWeight="SemiBold"
-                        Text="Музыка качауу"
-                        TextTrimming="CharacterEllipsis" />
+			<!--  Анимация исчезновения  -->
+			<Storyboard x:Name="FadeOutStoryboardBorderSelectedGrid">
+				<DoubleAnimation
+					Storyboard.TargetName="BorderSelectedGrid"
+					Storyboard.TargetProperty="Opacity"
+					To="0"
+					Duration="0:0:0.15" />
+			</Storyboard>
 
+		</Grid.Resources>
 
-
-                    <TextBlock
-                        x:Name="Subtitle"
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        Margin="5,3,2,0"
-                        Opacity="0.3"
-                        Text="Subtitle"
-                        TextTrimming="CharacterEllipsis" />
-                </Grid>
-                <TextBlock
-                    x:Name="Artists"
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    Margin="0,2,0,0"
-                    HorizontalAlignment="Left"
-                    FontSize="11"
-                    Opacity="0.6"
-                    Text="Artist"
-                    TextTrimming="CharacterEllipsis"
-                    TextWrapping="NoWrap" />
-
-            </StackPanel>
+		<Grid
+			x:Name="SelectedGrid"
+			Background="{ThemeResource AccentAAFillColorDefaultBrush}"
+			CornerRadius="5"
+			Opacity="0" />
+		<Grid
+			x:Name="BorderSelectedGrid"
+			BorderBrush="{ThemeResource AccentAAFillColorDefaultBrush}"
+			BorderThickness="3"
+			CornerRadius="3"
+			Opacity="0" />
 
 
-            <TextBlock
-                x:Name="Time"
-                Grid.Column="4"
-                Margin="3,0,25,0"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Center"
-                Opacity="0.5"
-                Text="02:20" />
-        </Grid>
+		<Grid
+			x:Name="Card"
+			Width="Auto"
+			Margin="0,0,0,0"
+			Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
+			BorderBrush="{ThemeResource ApplicationForegroundThemeBrush}"
+			BorderThickness="0"
+			CornerRadius="5">
 
 
-    </Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+			<Grid HorizontalAlignment="Stretch">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+
+
+				<Grid
+					Grid.Column="0"
+					Margin="8,6.5,6,6"
+					VerticalAlignment="Center">
+					<Grid
+						Width="45"
+						Height="45"
+						Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}"
+						CornerRadius="5">
+						<FontIcon Foreground="{ThemeResource TextOnAccentFillColorSelectedText}" Glyph="&#xEC4F;" />
+
+						<Grid x:Name="ImageThumbGrid">
+							<Image x:Name="ImageThumb" Opacity="0" />
+						</Grid>
+
+						<TextBlock
+							x:Name="chartState"
+							Margin="2,0,0,0"
+							FontSize="13" />
+						<Grid
+							x:Name="GridPlayIcon"
+							Background="{StaticResource CustomAcrylicInAppBrush}"
+							CornerRadius="0"
+							Opacity="0">
+							<SymbolIcon
+								x:Name="PlayBTN"
+								Foreground="{ThemeResource TextOnAccentFillColorSelectedText}"
+								Symbol="Play" />
+							<Grid.Resources>
+								<!--  Анимация прозрачности от 0 до 1  -->
+								<Storyboard x:Name="FadeInAnimationGridPlayIcon">
+									<DoubleAnimation
+										Storyboard.TargetName="GridPlayIcon"
+										Storyboard.TargetProperty="Opacity"
+										To="0.8"
+										Duration="0:0:0.25" />
+								</Storyboard>
+								<!--  Анимация прозрачности от 1 до 0  -->
+								<Storyboard x:Name="FadeOutAnimationGridPlayIcon">
+									<DoubleAnimation
+										Storyboard.TargetName="GridPlayIcon"
+										Storyboard.TargetProperty="Opacity"
+										To="0"
+										Duration="0:0:0.25" />
+								</Storyboard>
+							</Grid.Resources>
+
+						</Grid>
+					</Grid>
+				</Grid>
+				<Grid
+					x:Name="ChartGrid"
+					Grid.Column="1"
+					Visibility="Collapsed">
+					<Rectangle
+						Width="25"
+						Height="25"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center"
+						Fill="Black"
+						Opacity="0.2"
+						RadiusX="100"
+						RadiusY="100" />
+					<TextBlock
+						x:Name="ChartPositionText"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center"
+						FontWeight="ExtraBlack"
+						Text="1"
+						TextTrimming="CharacterEllipsis"
+						TextWrapping="Wrap" />
+				</Grid>
+				<StackPanel
+					x:Name="TextsPanel"
+					Grid.Column="2"
+					Margin="5,0,0,0"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center">
+
+					<Grid>
+
+
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition x:Name="colDefs" Width="0.8*" />
+						</Grid.ColumnDefinitions>
+
+						<TextBlock
+							x:Name="Title"
+							Grid.Column="0"
+							HorizontalAlignment="Left"
+							FontSize="16"
+							FontWeight="SemiBold"
+							Text="Музыка качауу"
+							TextTrimming="CharacterEllipsis" />
+
+
+
+						<TextBlock
+							x:Name="Subtitle"
+							Grid.Row="0"
+							Grid.Column="1"
+							Margin="5,3,2,0"
+							Opacity="0.3"
+							Text="Subtitle"
+							TextTrimming="CharacterEllipsis" />
+					</Grid>
+					<TextBlock
+						x:Name="Artists"
+						Grid.Row="1"
+						Grid.Column="0"
+						Margin="0,2,0,0"
+						HorizontalAlignment="Left"
+						FontSize="11"
+						Opacity="0.6"
+						Text="Artist"
+						TextTrimming="CharacterEllipsis"
+						TextWrapping="NoWrap" />
+
+				</StackPanel>
+
+
+				<TextBlock
+					x:Name="Time"
+					Grid.Column="4"
+					Margin="3,0,25,0"
+					HorizontalAlignment="Right"
+					VerticalAlignment="Center"
+					Opacity="0.5"
+					Text="02:20" />
+			</Grid>
+
+
+		</Grid>
+	</Grid>
+
+
 </UserControl>

@@ -38,6 +38,8 @@ namespace VK_UI3.VKs.IVK
         }
         public override List<string> getPhotosList()
         {
+            if (photoUri == null)
+                return new List<string>();
             return new List<string>() { photoUri.ToString() };
         }
 
