@@ -14,6 +14,7 @@ using VK_UI3.Helpers;
 using VK_UI3.Views;
 using VK_UI3.Views.ModalsPages;
 using VK_UI3.Views.Share;
+using VK_UI3.Views.Tasks;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
@@ -1135,51 +1136,79 @@ namespace VK_UI3.Controls
             if (!(dataTrack.iVKGetAudio is PlayListVK))
                 return;
 
-
-            _ = Task.Run(
-                  async () =>
-                  {
-                      foreach (var item in dataTrack.iVKGetAudio.getSelectedList())
-                      {
-                          var deleted = await VK.deleteFromPlaylist((long)item.audio.Id, (long)item.audio.OwnerId,
-                            (item.iVKGetAudio as PlayListVK).playlist.Id);
-                          if (deleted)
-                              this.DispatcherQueue.TryEnqueue(async () =>
-                              {
-                                  item.iVKGetAudio.DeleteTrackFromList(item);
-                              });
-                      }
-
-                      
-                  }
-                  );
-        }
-
-        private void AddRemoveMass_Click(object sender, RoutedEventArgs e)
-        {
+        
+            List<Task> tasks = new List<Task>();
             var vkService = VK.vkService;
             foreach (var item in dataTrack.iVKGetAudio.getSelectedList())
             {
-             
-                vkService.AudioAddAsync((long)item.audio.Id, (long)item.audio.OwnerId);
-            }
-          
+              
 
+                tasks.Add(
+                    new Task(async () =>
+                    {
+                        var deleted = await VK.deleteFromPlaylist((long)item.audio.Id, (long)item.audio.OwnerId,
+                          (item.iVKGetAudio as PlayListVK).playlist.Id);
+                        if (deleted)
+                            this.DispatcherQueue.TryEnqueue(async () =>
+                            {
+                                item.iVKGetAudio.DeleteTrackFromList(item);
+                            });
+                    })
+                );
+
+            }
+
+            new TaskListActions(tasks, tasks.Count, "Удаляю треки из плейлиста...", null, null, 1000);
+        }
+
+        private async void AddRemoveMass_Click(object sender, RoutedEventArgs e)
+        {
+            List<Task> tasks = new List<Task>();
+            var vkService = VK.vkService;
+            foreach (var item in dataTrack.iVKGetAudio.getSelectedList())
+            {
+                Func<Task> taskFunc = async () =>
+                {
+                    try
+                    {
+                        var a = await vkService.AudioAddAsync((long)item.audio.Id, (long)item.audio.OwnerId);
+                    }
+                    catch
+                    {
+                        throw new Exception("Ошибка при выполнении задачи");
+                    }
+                };
+
+
+                tasks.Add(
+                    new Task(async () => await taskFunc())
+                );
+            }
+
+            new TaskListActions(tasks, tasks.Count, "Добавляю треки в профиль...", null, null, 5000);
         }
 
         private async void DelRemoveMass_Click(object sender, RoutedEventArgs e)
         {
+
+            List<Task> tasks = new List<Task>();
             var vkService = VK.vkService;
             foreach (var item in dataTrack.iVKGetAudio.getSelectedList())
             {
-                await vkService.AudioDeleteAsync((long)item.audio.Id, (long)item.audio.OwnerId);
+                tasks.Add(
+                    new Task(async () =>
+                    {
+                        await vkService.AudioDeleteAsync((long)item.audio.Id, (long)item.audio.OwnerId);
 
-                this.DispatcherQueue.TryEnqueue(() =>
-                {
-                    dataTrack.iVKGetAudio.DeleteTrackFromList(item);
-                });
+                        this.DispatcherQueue.TryEnqueue(() =>
+                        {
+                            dataTrack.iVKGetAudio.DeleteTrackFromList(item);
+                        });
+                    })
+                );
             }
 
+            new TaskListActions(tasks, tasks.Count, "Удаляю треки из профиля...", null, null, 1000);
         }
     }
 }

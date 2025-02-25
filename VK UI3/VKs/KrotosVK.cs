@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VK_UI3.DB;
+using VK_UI3.Views.Tasks;
 using VkNet.Model.RequestParams;
 using VkNet.Utils;
 namespace VK_UI3.VKs
@@ -54,28 +55,55 @@ namespace VK_UI3.VKs
                 var i = 1;
                 var j = 1;
                 var dateString = DateTime.Now.ToString("yyyy MM d");
+                
+
+
+                List<Task> tasks = new List<Task>();
                 foreach (var item in chunks)
                 {
-                    var ch = new List<string>();
-                    foreach (var aud in item)
-                    {
-                        ch.Add(aud.FullId);
-                    }
+                    tasks.Add(
+                        new Task(async () =>
+                        {
+                            var ch = new List<string>();
+                            foreach (var aud in item)
+                            {
+                                ch.Add(aud.FullId);
+                            }
 
 
-                    await vkApi.Audio.CreatePlaylistAsync(DB.AccountsDB.activeAccount.id,
-                        $"Архив №{i++} ({dateString})",
-                        $"Архив треков со стр ({dateString}) c {j} по {j + ch.Count-1}",
-                        ch
-                        );
-                    j += 1000;
+                            await vkApi.Audio.CreatePlaylistAsync(DB.AccountsDB.activeAccount.id,
+                                $"Архив №{i++} ({dateString})",
+                                $"Архив треков со стр ({dateString}) c {j} по {j + ch.Count - 1}",
+                                ch
+                                );
+                            j += 1000;
+                        })
+                    );
                 }
 
+                new TaskListActions(tasks, tasks.Count, "Создаю архивы...", null, null, 1000);
 
+
+
+
+
+
+                tasks = new List<Task>();
+         
                 foreach (var item in audios)
                 {
-                    await vkApi.Audio.DeleteAsync((long)item.Id, (long)item.OwnerId);
+                    tasks.Add(
+                        new Task(async () =>
+                        {
+                            await vkApi.Audio.DeleteAsync((long)item.Id, (long)item.OwnerId);
+                        })
+                    );
                 }
+
+                new TaskListActions(tasks, tasks.Count, "Удаляю треки с профиля...", null, null, 1000);
+
+                
+              
             }
             catch
             (Exception e)

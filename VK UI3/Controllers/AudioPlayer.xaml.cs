@@ -238,7 +238,6 @@ namespace VK_UI3.Controllers
                 var a = value / 100;
                 SettingsTable.SetSetting("Volume", a.ToString());
                 mediaPlayer.Volume = a;
-
             }
         }
 

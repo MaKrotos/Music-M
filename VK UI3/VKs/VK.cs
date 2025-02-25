@@ -19,6 +19,7 @@ using VK_UI3.DB;
 using VK_UI3.Helpers;
 using VK_UI3.Views;
 using VK_UI3.Views.LoginWindow;
+using VK_UI3.Views.Tasks;
 using VkNet.Abstractions;
 using VkNet.AudioBypassService.Abstractions.Categories;
 using VkNet.AudioBypassService.Models.Auth;
@@ -958,6 +959,9 @@ namespace VK_UI3.VKs
            
             try
             {
+
+
+
                 var offset = 0;
              
                 VkCollection<VkNet.Model.Attachments.Audio> audio;
@@ -981,10 +985,20 @@ namespace VK_UI3.VKs
                 } while (audio.Count > 0);
 
 
+
+                var tasks = new List<Task>();
+
                 foreach (var item in audios)
                 {
-                    await api.Audio.DeleteAsync((long)item.Id, (long)item.OwnerId);
+                    tasks.Add(
+                        new Task(async () =>
+                        {
+                            await api.Audio.DeleteAsync((long)item.Id, (long)item.OwnerId);
+                        })
+                    );
                 }
+
+                new TaskListActions(tasks, tasks.Count, "Удаляю треки с профиля...", null, null, 1000);
             }
             catch
             (Exception e)

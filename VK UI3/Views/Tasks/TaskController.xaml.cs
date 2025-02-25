@@ -44,11 +44,13 @@ namespace VK_UI3.Views.Tasks
                 animationsChangeFontIcon = new Helpers.Animations.AnimationsChangeFontIcon(PlayIcon, this.DispatcherQueue);
             if (animationsChangeFontIconCancel == null)
                 animationsChangeFontIconCancel = new Helpers.Animations.AnimationsChangeFontIcon(CancelIcon, this.DispatcherQueue);
-
-            if (!_task.canPause)
+            if (_task == null)
             {
-                PlayPause.Visibility = Visibility.Collapsed;
+                return;
             }
+
+            
+          
 
 
         }
@@ -69,7 +71,10 @@ namespace VK_UI3.Views.Tasks
             {
                 DownloadTitle.Text = DownloadTitle.Text.Substring(0, 20) + "...";
             }
-
+            if (!_task.canPause)
+            {
+                PlayPause.Visibility = Visibility.Collapsed;
+            }
 
             _task.ProgressChanged += PlayListDownload_onDoingStatusUpdate;
             _task.StatusChanged += (OnDoingStatusUpdate);

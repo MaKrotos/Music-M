@@ -22,7 +22,8 @@ namespace VK_UI3.Helpers
 
         public void trackSelectChangedInvoke(SelectedChange selectedChange)
         {
-            trackSelectChanged.Invoke(iVKGetAudio, selectedChange);
+            if (trackSelectChanged != null)
+                trackSelectChanged.Invoke(iVKGetAudio, selectedChange);
         }
 
         public ExtendedAudio(VkNet.Model.Attachments.Audio audio, IVKGetAudio iVKGetAudio)

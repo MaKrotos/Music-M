@@ -480,7 +480,7 @@ namespace MusicX.Core.Services
 
         }
 
-        public async Task AudioAddAsync(long audioId, long ownerId)
+        public async Task<bool> AudioAddAsync(long audioId, long ownerId)
         {
             try
             {
@@ -488,8 +488,6 @@ namespace MusicX.Core.Services
 
                 var parameters = new VkParameters
                 {
-                    
-                    
                     {"audio_id", audioId},
                     {"owner_id", ownerId}
                 };
@@ -500,11 +498,13 @@ namespace MusicX.Core.Services
 
 
                 logger.Info("Successful invoke 'audio.add' ");
+
+                return true;
             }catch(Exception ex)
             {
                 logger.Error("VK API ERROR:");
                 logger.Error(ex, ex.Message);
-                throw;
+                return false;
             }
         }
 

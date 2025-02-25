@@ -12,7 +12,7 @@ namespace VK_UI3.Controllers
         public static readonly DependencyProperty AccountsProperty = DependencyProperty.Register(
        "accounts", typeof(Accounts), typeof(AccountController), new PropertyMetadata(default(Accounts), onAccountProrertyChanged));
         public static readonly DependencyProperty ListAccs = DependencyProperty.Register(
-     "ListAccs", typeof(ListView), typeof(AccountController), new PropertyMetadata(default(ListView), onAccountProrertyChanged));
+        "ListAccs", typeof(ListView), typeof(AccountController), new PropertyMetadata(default(ListView), onAccountProrertyChanged));
 
         private static void onAccountProrertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
