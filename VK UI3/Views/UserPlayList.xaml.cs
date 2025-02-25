@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
+using MusicX.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,13 +52,13 @@ namespace VK_UI3.Views
             this.Unloaded += UserPlayList_Unloaded;
 
         }
-        public UserPlayList(Audio audio)
+        public UserPlayList(List<VkNet.Model.Attachments.Audio> audioList)
         {
             this.InitializeComponent();
             this.Loaded += UserPlayList_Loaded;
             this.Loading += UserPlayList_Loading;
             this.Unloaded += UserPlayList_Unloaded;
-            this.audio = audio;
+            this.audioList = audioList;
         }
 
         private void UserPlayList_Unloaded(object sender, RoutedEventArgs e)
@@ -90,7 +91,7 @@ namespace VK_UI3.Views
             }
         }
 
-        Audio audio = null;
+        List<VkNet.Model.Attachments.Audio> audioList = null;
 
         UserPlayListParameters parameters;
 
@@ -124,7 +125,7 @@ namespace VK_UI3.Views
             {
                 CreateButton.Visibility = Visibility.Collapsed;
             }
-            if (audio != null)
+            if (audioList != null)
             {
                 this.Background = Application.Current.Resources["AcrylicBackgroundFillColorDefaultBrush"] as SolidColorBrush;
                 CreateButton.Visibility = Visibility.Collapsed;
@@ -136,7 +137,7 @@ namespace VK_UI3.Views
         private void UserPlayList_Loaded(object sender, RoutedEventArgs e)
         {
             scrollViewer = SmallHelpers.FindScrollViewer(gridV);
-            if (audio != null)
+            if (audioList != null)
             {
                 gridV.SelectionMode = ListViewSelectionMode.Single;
                 this.parameters.openedPlayList = OpenedPlayList.UserPlayList;
@@ -278,8 +279,14 @@ namespace VK_UI3.Views
             // Получение ID плейлиста
             var playlistId = audioPlaylists[selectedIndex].Id;
 
+            List<string> lists = new List<string>();
+            foreach (var item in audioList)
+            {
+                lists.Add($"{item.OwnerId}_{item.Id}");
+            }
+
             // Добавление аудио в плейлист
-            VK.api.Audio.AddToPlaylistAsync((long)audioPlaylists[selectedIndex].OwnerId, playlistId, new List<string> { $"{audio.OwnerId}_{audio.Id}" });
+            VK.api.Audio.AddToPlaylistAsync((long)audioPlaylists[selectedIndex].OwnerId, playlistId, lists);
 
             // Вызов события
             selectedPlayList?.Invoke(playlistId, EventArgs.Empty);
@@ -287,7 +294,7 @@ namespace VK_UI3.Views
 
         private void gridV_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
         {
-            if (audio == null) return;
+            if (audioList == null) return;
             var control = args.ItemContainer.ContentTemplateRoot as PlaylistControl;
             if (control != null)
             {

@@ -25,7 +25,7 @@ namespace VK_UI3.VKs.IVK
         public string id;
         bool shuffle = false;
 
-        List<ExtendedAudio> selectedAudio = new List<ExtendedAudio>();
+        private List<ExtendedAudio> selectedAudio = new List<ExtendedAudio>();
 
 
         public Uri photoUri;
@@ -155,7 +155,7 @@ namespace VK_UI3.VKs.IVK
                shuffleList.RemoveAt(shuffleList.IndexOf((int)dataTrack.NumberInList));
             }
             listAudio.Remove(dataTrack);
-
+            selectedAudio.Remove(dataTrack);
 
             updateNumbers();
         }
@@ -546,8 +546,21 @@ namespace VK_UI3.VKs.IVK
             }
 
             lastSelected = dataTrack;
+        }
 
+        public List<ExtendedAudio> getSelectedList() 
+        {
+            return new List<ExtendedAudio>(selectedAudio.ToList());
+        }
 
+        internal void deselectAll()
+        {
+            foreach (var item in selectedAudio)
+            {
+                item.trackSelectChangedInvoke(new ExtendedAudio.SelectedChange(false));
+            }
+
+            selectedAudio.Clear();
         }
     }
 

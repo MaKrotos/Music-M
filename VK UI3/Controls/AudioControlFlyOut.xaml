@@ -10,20 +10,23 @@
 
 
 	<MenuFlyoutItem
-		x:Name="AddToProfileMass"
+		Click="AddRemoveMass_Click"
+		x:Name="AddRemoveMass"
 		Icon="Add"
 		Text="Добавить выбранное в профиль"
 		Visibility="Visible" />
 
 	<MenuFlyoutItem
-		x:Name="DelToProfileMass"
+		Click="DelRemoveMass_Click"
+		x:Name="DelRemoveMass"
 		Icon="Delete"
 		Text="Удалить выбранное из профиля"
-		Visibility="Collapsed" /> 
+		Visibility="Collapsed" />
 
 	<MenuFlyoutItem
 		x:Name="RemovePlayListMass"
 		Icon="Delete"
+		Click="RemovePlayListMass_Click"
 		Text="Удалить выбранное из плейлиста"
 		Visibility="Visible" />
 
@@ -31,12 +34,18 @@
 		x:Name="AddPlayListMass"
 		Icon="Add"
 		Text="Добавить выбранное в плейлист">
-		<MenuFlyoutItem x:Name="addToPlayListMoreMass" Text="Показать больше">
+		<MenuFlyoutItem
+			x:Name="addToPlayListMoreMass"
+			Click="addToPlayListMoreMass_Click"
+			Text="Показать больше">
 			<MenuFlyoutItem.Icon>
 				<FontIcon Glyph="&#xE93C;" />
 			</MenuFlyoutItem.Icon>
 		</MenuFlyoutItem>
-		<MenuFlyoutItem x:Name="CreatePlayListBTNMass" Text="Создать">
+		<MenuFlyoutItem
+			x:Name="CreatePlayListBTNMass"
+			Click="CreatePlayListBTNMass_Click"
+			Text="Создать">
 			<MenuFlyoutItem.Icon>
 				<FontIcon Glyph="&#xECC8;" />
 			</MenuFlyoutItem.Icon>
@@ -47,19 +56,29 @@
 		x:Name="DownloadFlyOutMass"
 		Icon="Download"
 		Text="Скачать выбранное">
-		<MenuFlyoutItem x:Name="PickFolderDownloadMass" Text="Выбрать папку">
+		<MenuFlyoutItem
+			x:Name="PickFolderDownloadMass"
+			Click="PickFolderDownloadMass_Click"
+			Text="Выбрать папку">
 			<MenuFlyoutItem.Icon>
 				<FontIcon Glyph="&#xF12B;" />
 			</MenuFlyoutItem.Icon>
 		</MenuFlyoutItem>
 	</MenuFlyoutSubItem>
 
-
-
-
-
 	<MenuFlyoutSeparator Visibility="Visible" />
 
+	<MenuFlyoutItem
+		x:Name="DeselectAllBtn"
+		Click="DeselectAllBtn_Click"
+		Text="Снять выделение"
+		Visibility="Visible">
+		<MenuFlyoutItem.Icon>
+			<FontIcon Glyph="&#xED62;" />
+		</MenuFlyoutItem.Icon>
+	</MenuFlyoutItem>
+
+	<MenuFlyoutSeparator Visibility="Visible" />
 
 
 	<MenuFlyoutItem

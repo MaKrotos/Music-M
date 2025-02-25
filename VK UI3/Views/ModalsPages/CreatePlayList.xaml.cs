@@ -38,19 +38,19 @@ namespace VK_UI3.Views.ModalsPages
             this.genBy = genBy;
             this.unicid = unicID;
         }
-        public CreatePlayList(AudioPlaylist audioPlaylist, VkNet.Model.Attachments.Audio audio)
+        public CreatePlayList(AudioPlaylist audioPlaylist, List<VkNet.Model.Attachments.Audio> audio)
         {
             this.InitializeComponent();
             this.Loaded += CreatePlayList_Loaded;
             this.audioPlaylist = audioPlaylist;
-            this.audio = audio;
+            this.audioList = audio;
         }
 
-        public CreatePlayList(VkNet.Model.Attachments.Audio audio)
+        public CreatePlayList( List<VkNet.Model.Attachments.Audio> audio)
         {
             this.InitializeComponent();
             this.Loaded += CreatePlayList_Loaded;
-            this.audio = audio;
+            this.audioList = audio;
         }
         public CreatePlayList()
         {
@@ -75,7 +75,7 @@ namespace VK_UI3.Views.ModalsPages
             return MainGrid;
         }
         AudioPlaylist audioPlaylist { get; set; } = null;
-        VkNet.Model.Attachments.Audio audio { get; set; } = null;
+        List<VkNet.Model.Attachments.Audio> audioList { get; set; } = null;
 
         private void CreatePlayList_Loaded(object sender, RoutedEventArgs e)
         {
@@ -152,14 +152,18 @@ namespace VK_UI3.Views.ModalsPages
         private async Task create()
         {
 
-            if (audio == null)
+            if (audioList == null)
             {
                 audioPlaylist = await VK.api.Audio.CreatePlaylistAsync(AccountsDB.activeAccount.id, this.Title.Text, this.Description.Text, No_discover: HideFromSearch.IsOn);
             }
             else
             {
                 List<string> audios = new();
-                audios.Add(audio.OwnerId + "_" + audio.Id);
+                foreach (var item in audioList)
+                {
+                    audios.Add(item.OwnerId + "_" + item.Id);
+                }
+              
                 audioPlaylist = await VK.api.Audio.CreatePlaylistAsync(AccountsDB.activeAccount.id, this.Title.Text, this.Description.Text, audios, No_discover: HideFromSearch.IsOn);
             }
             await UploadCoverPlaylist();
