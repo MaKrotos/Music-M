@@ -538,6 +538,8 @@ namespace VK_UI3.Controls
         List<MenuFlyoutItem> menuFlyoutItemsUploads = new List<MenuFlyoutItem>();
         public void updateUIFlyOut()
         {
+            
+
             bool isOwner = dataTrack.audio.OwnerId == AccountsDB.activeAccount.id;
             if (dataTrack.audio.Release_audio_id == null && dataTrack.audio.OwnerId == AccountsDB.activeAccount.id)
             {
@@ -843,6 +845,30 @@ namespace VK_UI3.Controls
 
                    });
 
+
+            if (dataTrack.iVKGetAudio.getSelectedList().Count() == 0)
+            {
+                AddRemoveMass.Visibility = Visibility.Collapsed;
+                DelRemoveMass.Visibility = Visibility.Collapsed;
+                RemovePlayListMass.Visibility = Visibility.Collapsed;
+                AddPlayListMass.Visibility = Visibility.Collapsed;
+                DownloadFlyOutMass.Visibility = Visibility.Collapsed;
+                FirstSeparator.Visibility = Visibility.Collapsed;
+                SecondSeparator.Visibility = Visibility.Collapsed;
+
+                DeselectAllBtn.Visibility = Visibility.Collapsed;
+
+            }
+            else
+            {
+                AddPlayListMass.Visibility = Visibility.Visible;
+                DownloadFlyOutMass.Visibility = Visibility.Visible;
+                DeselectAllBtn.Visibility = Visibility.Visible;
+                FirstSeparator.Visibility = Visibility.Visible;
+                SecondSeparator.Visibility = Visibility.Visible;
+
+
+            }
         }
 
 
