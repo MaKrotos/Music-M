@@ -8,10 +8,10 @@ namespace VK_UI3.Views.Tasks
 {
     public class TaskListActions : TaskAction
     {
-        private List<Task> _tasks;
+        private List<Func<Task>> _tasks;
         private int _delay;
 
-        public TaskListActions(List<Task> tasks, int total, string nameTask, string taskID, string subTextTask, int delay = 0)
+        public TaskListActions(List<Func<Task>> tasks, int total, string nameTask, string taskID, string subTextTask, int delay = 0)
             : base(total, nameTask, taskID, subTextTask)
         {
             _tasks = tasks;
@@ -20,7 +20,7 @@ namespace VK_UI3.Views.Tasks
             ExecuteTasksAsync();
         }
 
-        public void AddTask(Task task)
+        public void AddTask(Func<Task> task)
         {
             _tasks.Add(task);
         }
@@ -42,17 +42,26 @@ namespace VK_UI3.Views.Tasks
                     break;
                 }
 
-                task.Start();
-                await task;
-
-                if (task.Exception != null)
+                do
                 {
+                    while (base.Status == Statuses.Error)
+                    {
+                        await Task.Delay(100);
+                    }
 
-                }
-                else
-                {
-                
-                }
+
+                    try
+                    {
+                        await task();
+                    }
+                    catch
+                    {
+                        base.Status = Statuses.Error;
+                    }
+
+                } while (base.Status == Statuses.Error);
+
+
 
 
                     base.Progress++;

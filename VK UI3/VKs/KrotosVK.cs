@@ -58,11 +58,11 @@ namespace VK_UI3.VKs
                 
 
 
-                List<Task> tasks = new List<Task>();
+                List<Func<Task>> tasks = new List<Func<Task>>();
                 foreach (var item in chunks)
                 {
                     tasks.Add(
-                        new Task(async () =>
+                        async () =>
                         {
                             var ch = new List<string>();
                             foreach (var aud in item)
@@ -77,7 +77,7 @@ namespace VK_UI3.VKs
                                 ch
                                 );
                             j += 1000;
-                        })
+                        }
                     );
                 }
 
@@ -88,15 +88,15 @@ namespace VK_UI3.VKs
 
 
 
-                tasks = new List<Task>();
+                tasks = new List<Func<Task>>();
          
                 foreach (var item in audios)
                 {
                     tasks.Add(
-                        new Task(async () =>
+                        async () =>
                         {
                             await vkApi.Audio.DeleteAsync((long)item.Id, (long)item.OwnerId);
-                        })
+                        }
                     );
                 }
 

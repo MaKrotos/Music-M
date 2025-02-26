@@ -986,15 +986,15 @@ namespace VK_UI3.VKs
 
 
 
-                var tasks = new List<Task>();
+                var tasks = new List<Func<Task>>();
 
                 foreach (var item in audios)
                 {
                     tasks.Add(
-                        new Task(async () =>
+                        async () =>
                         {
                             await api.Audio.DeleteAsync((long)item.Id, (long)item.OwnerId);
-                        })
+                        }
                     );
                 }
 

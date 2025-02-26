@@ -504,7 +504,7 @@ namespace MusicX.Core.Services
             {
                 logger.Error("VK API ERROR:");
                 logger.Error(ex, ex.Message);
-                return false;
+                throw ex;
             }
         }
 
