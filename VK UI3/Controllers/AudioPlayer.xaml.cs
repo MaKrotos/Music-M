@@ -152,10 +152,15 @@ namespace VK_UI3.Controllers
 
         protected void OnPropertyChanged(string propertyName)
         {
-            this.DispatcherQueue.TryEnqueue(async () =>
+            try
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            });
+                this.DispatcherQueue.TryEnqueue(async () =>
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                });
+            }
+            catch
+            { }
         }
 
 

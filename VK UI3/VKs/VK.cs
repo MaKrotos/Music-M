@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media.Imaging;
+using MusicX.Core.Models;
 using MusicX.Core.Services;
 using QRCoder;
 using System;
@@ -951,6 +952,35 @@ namespace VK_UI3.VKs
             return null;
 
         }
+        internal static async Task ReorderAudio(int audio_id, int? owner_id = null, int? playlist_id = null, int? before = null, int? after = null)
+        {
+            var parameters = new VkParameters
+            {
+
+
+            };
+
+            if (audio_id != null)
+                parameters.Add("audio_id", audio_id);
+            if (owner_id != null)
+                parameters.Add("owner_id", owner_id);
+            if (playlist_id != null)
+                parameters.Add("playlist_id", playlist_id);
+            if (before != null)
+                parameters.Add("before", before);
+            if (after != null)
+                parameters.Add("after", after);
+            try
+            {
+                var response = await api.CallAsync("audio.reorder", parameters);
+            }
+            catch (Exception e)
+            {
+
+            }
+
+        }
+
 
 
         internal static async Task deleteAllMusicFromProfile()

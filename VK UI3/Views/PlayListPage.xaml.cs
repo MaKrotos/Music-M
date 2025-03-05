@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using VK_UI3.Controllers;
@@ -136,6 +137,9 @@ namespace VK_UI3.Views
 
                 if (vkGetAudio is (PlayListVK))
                 {
+         
+                    
+
                     var playlist = (vkGetAudio as PlayListVK).playlist;
                     if (audioPlaylistOriginal == null)
                         audioPlaylistOriginal = playlist;
@@ -143,6 +147,15 @@ namespace VK_UI3.Views
                     if (!playlist.Permissions.Edit)
                     {
                         stackPanel.Items.Remove(EditPlaylist);
+
+
+                    }
+                    else
+                    {
+                        TrackListView.CanReorderItems = true;
+                        TrackListView.ReorderMode = ListViewReorderMode.Enabled;
+                        TrackListView.AllowDrop = true;
+                        TrackListView.CanDragItems = true;
                     }
 
                     if (playlist.Follower != null)
@@ -286,6 +299,11 @@ namespace VK_UI3.Views
                     {
                         UploadTrack.Visibility = Visibility.Visible;
                         VK_UI3.Views.Upload.UploadTrack.addedTrack += addedTrack;
+
+                        TrackListView.CanReorderItems = true;
+                        TrackListView.ReorderMode = ListViewReorderMode.Enabled;
+                        TrackListView.AllowDrop = true;
+                        TrackListView.CanDragItems = true;
                     }
 
                     if (userAudio.user != null)
@@ -728,6 +746,47 @@ namespace VK_UI3.Views
         private void GeneratePlayList_Click(object sender, RoutedEventArgs e)
         {
             MainView.mainView.openGenerator(iVKGetAudio: this.vkGetAudio, unicID: $"generate_iVKget_{this.vkGetAudio.name}", $"genBy {this.vkGetAudio.name}");
+
+        }
+
+
+        private void TrackListView_DragItemsCompleted(ListViewBase sender, DragItemsCompletedEventArgs args)
+        {
+            var movedItems = args.Items[0];
+            var newIndex = TrackListView.Items.IndexOf(movedItems);
+
+
+            var movedItem = movedItems as ExtendedAudio;
+
+      
+
+            vkGetAudio.updateNumbers();
+
+            int? before = null;
+            int? after = null;
+
+            if (vkGetAudio.listAudio.Count < 2)
+                return;
+
+            if (newIndex == 0)
+            {
+                before = (int?)vkGetAudio.listAudio[1].audio.Id;
+            }
+            else
+            {
+                after = (int?)vkGetAudio.listAudio[newIndex - 1].audio.Id;
+            }
+
+
+
+            if (vkGetAudio is UserAudio userAudio)
+            {
+                VK.ReorderAudio((int)movedItem.audio.Id, (int?)movedItem.audio.OwnerId, before: before, after: after);
+            }
+            if (vkGetAudio is PlayListVK playListVk)
+            {
+                VK.ReorderAudio((int)movedItem.audio.Id, (int?)movedItem.audio.OwnerId, (int?) playListVk.playlist.Id, before: before, after: after);
+            }
 
         }
     }

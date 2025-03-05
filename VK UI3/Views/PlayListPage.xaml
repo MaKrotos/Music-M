@@ -1,377 +1,384 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Page
-    x:Class="VK_UI3.Views.PlayListPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:custom="using:VK_UI3.Controls"
-    xmlns:customs="using:VK_UI3.Helpers.Animations"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="using:VK_UI3.Views"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
-    <Page.Shadow>
-        <ThemeShadow />
-    </Page.Shadow>
+	x:Class="VK_UI3.Views.PlayListPage"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:custom="using:VK_UI3.Controls"
+	xmlns:customs="using:VK_UI3.Helpers.Animations"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="using:VK_UI3.Views"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d">
+	<Page.Shadow>
+		<ThemeShadow />
+	</Page.Shadow>
 
-    <ListView
-        x:Name="TrackListView"
-        Padding="0"
-        CanReorderItems="false"
-        IsItemClickEnabled="False"
-        ItemsSource="{x:Bind vkGetAudio.listAudio, Mode=OneWay}"
-        SelectionMode="None">
-        <ListView.Shadow>
-            <ThemeShadow />
-        </ListView.Shadow>
-        <ListView.Header>
-            <Grid Margin="15,15,15,15">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-
-                <!--  Квадратный элемент в первом столбце  -->
-                <Grid>
-                    <StackPanel
-                        VerticalAlignment="Top"
-                        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
-                        CornerRadius="8">
-                        <Grid
-                            Grid.Column="0"
-                            Width="200"
-                            Height="200"
-                            Margin="5"
-                            Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-                            CornerRadius="4"
-                            Translation="0,0,10">
-                            <FontIcon Glyph="&#xE90B;" />
-                            <customs:GridImagesCustom
-                                x:Name="GridThumbs"
-                                Width="200"
-                                Height="200">
-                                <customs:GridImagesCustom.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-
-                                </customs:GridImagesCustom.RowDefinitions>
-                                <customs:GridImagesCustom.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </customs:GridImagesCustom.ColumnDefinitions>
-
-                            </customs:GridImagesCustom>
+	<ListView
+		x:Name="TrackListView"
+		Padding="0"
+		AllowDrop="false"
+		CanDragItems="False"
+		CanReorderItems="false"
+		DragItemsCompleted="TrackListView_DragItemsCompleted"
+		IsItemClickEnabled="False"
+		ItemsSource="{x:Bind vkGetAudio.listAudio, Mode=OneWay}"
+		SelectionMode="None">
+		<ListView.Shadow>
+			<ThemeShadow />
+		</ListView.Shadow>
+		<ListView.Header>
+			<Grid Margin="15,15,15,15">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
 
 
-                            <Grid
-                                Margin="10"
-                                Padding="10"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Bottom"
-                                Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"
-                                CornerRadius="4"
-                                Opacity="0.9">
-                                <FontIcon x:Name="FontIconTypeVk" Glyph="&#xE93C;" />
-                            </Grid>
-                        </Grid>
-                        <StackPanel
-                            x:Name="ownerGrid"
-                            Margin="5"
-                            Padding="10"
-                            VerticalAlignment="Bottom"
-                            Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"
-                            CornerRadius="10"
-                            Orientation="Horizontal"
-                            PointerEntered="ownerGrid_PointerEntered"
-                            PointerExited="ownerGrid_PointerExited"
-                            PointerPressed="ownerGrid_PointerPressed"
-                            Visibility="Collapsed">
-                            <StackPanel.RenderTransform>
-                                <ScaleTransform x:Name="scaleTransform" ScaleX="1" ScaleY="1" />
-                            </StackPanel.RenderTransform>
-                            <StackPanel.RenderTransformOrigin>
-                                0.5,0.5
-                            </StackPanel.RenderTransformOrigin>
-                            <StackPanel.Resources>
-                                <Storyboard x:Name="ShowAnimation">
-                                    <DoubleAnimation
-                                        Storyboard.TargetName="scaleTransform"
-                                        Storyboard.TargetProperty="ScaleX"
-                                        To="0.975"
-                                        Duration="0:0:0.15">
-                                        <DoubleAnimation.EasingFunction>
-                                            <ExponentialEase EasingMode="EaseOut" />
-                                        </DoubleAnimation.EasingFunction>
-                                    </DoubleAnimation>
-                                    <DoubleAnimation
-                                        Storyboard.TargetName="scaleTransform"
-                                        Storyboard.TargetProperty="ScaleY"
-                                        To="0.975"
-                                        Duration="0:0:0.15">
-                                        <DoubleAnimation.EasingFunction>
-                                            <ExponentialEase EasingMode="EaseOut" />
-                                        </DoubleAnimation.EasingFunction>
-                                    </DoubleAnimation>
-                                </Storyboard>
-                                <Storyboard x:Name="HideAnimation">
-                                    <DoubleAnimation
-                                        Storyboard.TargetName="scaleTransform"
-                                        Storyboard.TargetProperty="ScaleX"
-                                        To="1"
-                                        Duration="0:0:0.15">
-                                        <DoubleAnimation.EasingFunction>
-                                            <ExponentialEase EasingMode="EaseIn" />
-                                        </DoubleAnimation.EasingFunction>
-                                    </DoubleAnimation>
-                                    <DoubleAnimation
-                                        Storyboard.TargetName="scaleTransform"
-                                        Storyboard.TargetProperty="ScaleY"
-                                        To="1"
-                                        Duration="0:0:0.15">
-                                        <DoubleAnimation.EasingFunction>
-                                            <ExponentialEase EasingMode="EaseIn" />
-                                        </DoubleAnimation.EasingFunction>
-                                    </DoubleAnimation>
-                                </Storyboard>
-                            </StackPanel.Resources>
+				<!--  Квадратный элемент в первом столбце  -->
+				<Grid>
+					<StackPanel
+						VerticalAlignment="Top"
+						Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
+						CornerRadius="8">
+						<Grid
+							Grid.Column="0"
+							Width="200"
+							Height="200"
+							Margin="5"
+							Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
+							CornerRadius="4"
+							Translation="0,0,10">
+							<FontIcon Glyph="&#xE90B;" />
+							<customs:GridImagesCustom
+								x:Name="GridThumbs"
+								Width="200"
+								Height="200">
+								<customs:GridImagesCustom.RowDefinitions>
+									<RowDefinition Height="*" />
+									<RowDefinition Height="*" />
 
-                            <Grid
-                                Width="30"
-                                Height="30"
-                                Margin="0,0,5,0"
-                                Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-                                CornerRadius="100">
-                                <Image
-                                    x:Name="ownerPictire"
-                                    Width="30"
-                                    Height="30"
-                                    VerticalAlignment="Center" />
-                            </Grid>
-                            <TextBlock
-                                x:Name="ownerName"
-                                MaxWidth="170"
-                                MaxHeight="40"
-                                VerticalAlignment="Center"
-                                FontFamily="{StaticResource VKSansMedium}"
-                                TextTrimming="CharacterEllipsis"
-                                TextWrapping="Wrap" />
-                        </StackPanel>
-                    </StackPanel>
-                </Grid>
+								</customs:GridImagesCustom.RowDefinitions>
+								<customs:GridImagesCustom.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="*" />
+								</customs:GridImagesCustom.ColumnDefinitions>
+
+							</customs:GridImagesCustom>
 
 
-                <StackPanel Grid.Column="1" Margin="10,0,0,0">
+							<Grid
+								Margin="10"
+								Padding="10"
+								HorizontalAlignment="Right"
+								VerticalAlignment="Bottom"
+								Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"
+								CornerRadius="4"
+								Opacity="0.9">
+								<FontIcon x:Name="FontIconTypeVk" Glyph="&#xE93C;" />
+							</Grid>
+						</Grid>
+						<StackPanel
+							x:Name="ownerGrid"
+							Margin="5"
+							Padding="10"
+							VerticalAlignment="Bottom"
+							Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"
+							CornerRadius="10"
+							Orientation="Horizontal"
+							PointerEntered="ownerGrid_PointerEntered"
+							PointerExited="ownerGrid_PointerExited"
+							PointerPressed="ownerGrid_PointerPressed"
+							Visibility="Collapsed">
+							<StackPanel.RenderTransform>
+								<ScaleTransform x:Name="scaleTransform" ScaleX="1" ScaleY="1" />
+							</StackPanel.RenderTransform>
+							<StackPanel.RenderTransformOrigin>
+								0.5,0.5
+							</StackPanel.RenderTransformOrigin>
+							<StackPanel.Resources>
+								<Storyboard x:Name="ShowAnimation">
+									<DoubleAnimation
+										Storyboard.TargetName="scaleTransform"
+										Storyboard.TargetProperty="ScaleX"
+										To="0.975"
+										Duration="0:0:0.15">
+										<DoubleAnimation.EasingFunction>
+											<ExponentialEase EasingMode="EaseOut" />
+										</DoubleAnimation.EasingFunction>
+									</DoubleAnimation>
+									<DoubleAnimation
+										Storyboard.TargetName="scaleTransform"
+										Storyboard.TargetProperty="ScaleY"
+										To="0.975"
+										Duration="0:0:0.15">
+										<DoubleAnimation.EasingFunction>
+											<ExponentialEase EasingMode="EaseOut" />
+										</DoubleAnimation.EasingFunction>
+									</DoubleAnimation>
+								</Storyboard>
+								<Storyboard x:Name="HideAnimation">
+									<DoubleAnimation
+										Storyboard.TargetName="scaleTransform"
+										Storyboard.TargetProperty="ScaleX"
+										To="1"
+										Duration="0:0:0.15">
+										<DoubleAnimation.EasingFunction>
+											<ExponentialEase EasingMode="EaseIn" />
+										</DoubleAnimation.EasingFunction>
+									</DoubleAnimation>
+									<DoubleAnimation
+										Storyboard.TargetName="scaleTransform"
+										Storyboard.TargetProperty="ScaleY"
+										To="1"
+										Duration="0:0:0.15">
+										<DoubleAnimation.EasingFunction>
+											<ExponentialEase EasingMode="EaseIn" />
+										</DoubleAnimation.EasingFunction>
+									</DoubleAnimation>
+								</Storyboard>
+							</StackPanel.Resources>
 
-                    <StackPanel
-                        Padding="10"
-                        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
-                        CornerRadius="4"
-                        Translation="0,0,16">
-                        <TextBlock
-                            x:Name="textBlock1"
-                            Margin="10,0,0,0"
-                            FontFamily="{StaticResource VKSansRegular}"
-                            FontSize="33"
-                            Opacity="1"
-                            TextTrimming="CharacterEllipsis" />
-
-                        <TextBlock
-                            x:Name="DescriptionText"
-                            MaxHeight="200"
-                            Margin="10,0,0,0"
-                            FontFamily="{StaticResource VKSansRegular}"
-                            FontSize="22"
-                            Opacity="0.6"
-                            TextTrimming="CharacterEllipsis"
-                            TextWrapping="Wrap" />
-
-
-
-                    </StackPanel>
-
-
-                    <StackPanel
-                        x:Name="AddInfo"
-                        Margin="0,10,0,0"
-                        Padding="10"
-                        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
-                        Opacity="0.5"
-                        Orientation="Vertical"
-                        Translation="0,0,16"
-                        Visibility="{Binding Path=VisibileAddInfo}">
-                        <TextBlock
-                            x:Name="FollowersText"
-                            FontFamily="{StaticResource VKSansRegular}"
-                            Text="{Binding Genres}"
-                            Visibility="Collapsed" />
-                        <TextBlock
-                            x:Name="Genres"
-                            FontFamily="{StaticResource VKSansRegular}"
-                            Text="{Binding Genres}"
-                            Visibility="Collapsed" />
-                        <TextBlock
-                            x:Name="Dot2"
-                            Margin="0,0,0,0"
-                            Text=""
-                            Visibility="Collapsed" />
-                        <TextBlock
-                            x:Name="Year"
-                            Margin="0,0,0,0"
-                            FontFamily="{StaticResource VKSansRegular}"
-                            Text="{Binding Year}"
-                            Visibility="Collapsed" />
-
-                        <TextBlock
-                            x:Name="Plays"
-                            Margin="0,0,0,0"
-                            FontFamily="{StaticResource VKSansRegular}"
-                            Text="{Binding Plays}"
-                            Visibility="Collapsed" />
-                        <TextBlock
-                            x:Name="PlaysText"
-                            Margin="3,0,0,0"
-                            Text=""
-                            Visibility="Collapsed" />
-                        <TextBlock
-                            x:Name="CountTrText"
-                            FontFamily="{StaticResource VKSansRegular}"
-                            Text="{Binding Genres}"
-                            Visibility="Collapsed" />
-                    </StackPanel>
-
-                    <GridView
-                        x:Name="stackPanel"
-                        Margin="0,10,0,0"
-                        Padding="10,5,5,2"
-                        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
-                        CornerRadius="4"
-                        RenderTransformOrigin="0.5,0.5"
-                        SelectionMode="None">
-                        <GridView.ItemContainerStyle>
-                            <Style TargetType="GridViewItem">
-                                <Setter Property="HorizontalContentAlignment" Value="Left" />
-                            </Style>
-                        </GridView.ItemContainerStyle>
-                        <Button
-                            x:Name="AddPlaylist"
-                            Width="170"
-                            Margin="0,0,0,0"
-                            Click="AddPlaylist_Click">
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal">
-                                    <SymbolIcon x:Name="iconAdd" Symbol="Add" />
-                                    <TextBlock
-                                        x:Name="textAdd"
-                                        Margin="10,0,0,0"
-                                        Text="Добавить к себе" />
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
-                        <Button
-                            x:Name="PlayPlaylist"
-                            Width="170"
-                            Margin="0,0,0,0"
-                            Click="PlayPlaylist_Click">
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal">
-                                    <SymbolIcon Symbol="Play" />
-                                    <TextBlock Margin="10,0,0,0" Text="Воспроизвести" />
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
-
-                        <Button
-                            x:Name="EditPlaylist"
-                            Width="170"
-                            Margin="0,0,0,0"
-                            Click="EditPlaylist_Click">
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal">
-                                    <SymbolIcon Symbol="Edit" />
-                                    <TextBlock Margin="10,0,0,0" Text="Редактировать" />
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
-
-                        <Button
-                            x:Name="DownloadPlaylist"
-                            Width="170"
-                            Margin="0,0,0,0"
-                            HorizontalAlignment="Left"
-                            Click="DownloadPlaylist_Click">
-                            <Button.Flyout>
-                                <MenuFlyout x:Name="folderFlyOut">
-                                    <MenuFlyoutItem Click="choosePath" Text="Выбрать путь">
-                                        <MenuFlyoutItem.Icon>
-                                            <FontIcon Glyph="&#xECC8;" />
-                                        </MenuFlyoutItem.Icon>
-                                    </MenuFlyoutItem>
-                                </MenuFlyout>
-                            </Button.Flyout>
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal">
-
-                                    <SymbolIcon Symbol="Download" />
-                                    <TextBlock Margin="10,0,0,0" Text="Скачать" />
-                                </StackPanel>
-                            </Button.Content>
+							<Grid
+								Width="30"
+								Height="30"
+								Margin="0,0,5,0"
+								Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
+								CornerRadius="100">
+								<Image
+									x:Name="ownerPictire"
+									Width="30"
+									Height="30"
+									VerticalAlignment="Center" />
+							</Grid>
+							<TextBlock
+								x:Name="ownerName"
+								MaxWidth="170"
+								MaxHeight="40"
+								VerticalAlignment="Center"
+								FontFamily="{StaticResource VKSansMedium}"
+								TextTrimming="CharacterEllipsis"
+								TextWrapping="Wrap" />
+						</StackPanel>
+					</StackPanel>
+				</Grid>
 
 
-                        </Button>
+				<StackPanel Grid.Column="1" Margin="10,0,0,0">
 
-                        <Button
-                            x:Name="UploadTrack"
-                            Width="170"
-                            Margin="0,0,0,0"
-                            HorizontalAlignment="Left"
-                            Click="UploadTrackClick"
-                            Visibility="Collapsed">
+					<StackPanel
+						Padding="10"
+						Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
+						CornerRadius="4"
+						Translation="0,0,16">
+						<TextBlock
+							x:Name="textBlock1"
+							Margin="10,0,0,0"
+							FontFamily="{StaticResource VKSansRegular}"
+							FontSize="33"
+							Opacity="1"
+							TextTrimming="CharacterEllipsis" />
 
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal">
-                                    <SymbolIcon Symbol="Upload" />
-                                    <TextBlock Margin="10,0,0,0" Text="Загрузить свою" />
-                                </StackPanel>
-                            </Button.Content>
-
-
-                        </Button>
-
-                        <Button
-                            x:Name="GeneratePlayList"
-                            Width="170"
-                            Margin="0,0,0,0"
-                            HorizontalAlignment="Left"
-                            Click="GeneratePlayList_Click"
-                 >
-
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal">
-                                    <FontIcon Glyph="&#xEB44;" />
-                                    <TextBlock FontSize="10" HorizontalAlignment="Center" TextWrapping="Wrap" Margin="10,2.5,0,0" Text="Сгенерировать плейлист" />
-                                </StackPanel>
-                            </Button.Content>
+						<TextBlock
+							x:Name="DescriptionText"
+							MaxHeight="200"
+							Margin="10,0,0,0"
+							FontFamily="{StaticResource VKSansRegular}"
+							FontSize="22"
+							Opacity="0.6"
+							TextTrimming="CharacterEllipsis"
+							TextWrapping="Wrap" />
 
 
-                        </Button>
-                    </GridView>
+
+					</StackPanel>
 
 
-                </StackPanel>
-            </Grid>
-        </ListView.Header>
+					<StackPanel
+						x:Name="AddInfo"
+						Margin="0,10,0,0"
+						Padding="10"
+						Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
+						Opacity="0.5"
+						Orientation="Vertical"
+						Translation="0,0,16"
+						Visibility="{Binding Path=VisibileAddInfo}">
+						<TextBlock
+							x:Name="FollowersText"
+							FontFamily="{StaticResource VKSansRegular}"
+							Text="{Binding Genres}"
+							Visibility="Collapsed" />
+						<TextBlock
+							x:Name="Genres"
+							FontFamily="{StaticResource VKSansRegular}"
+							Text="{Binding Genres}"
+							Visibility="Collapsed" />
+						<TextBlock
+							x:Name="Dot2"
+							Margin="0,0,0,0"
+							Text=""
+							Visibility="Collapsed" />
+						<TextBlock
+							x:Name="Year"
+							Margin="0,0,0,0"
+							FontFamily="{StaticResource VKSansRegular}"
+							Text="{Binding Year}"
+							Visibility="Collapsed" />
 
-        <ListView.ItemTemplate>
-            <DataTemplate>
-                <custom:TrackControl
-                    Margin="0,0,0,8"
-                    FocusVisualPrimaryBrush="Transparent"
-                    FocusVisualSecondaryThickness="0" />
-            </DataTemplate>
-        </ListView.ItemTemplate>
-        <ListView.Footer>
-            <ProgressRing x:Name="LoadingIndicator" IsActive="False" />
-        </ListView.Footer>
-    </ListView>
+						<TextBlock
+							x:Name="Plays"
+							Margin="0,0,0,0"
+							FontFamily="{StaticResource VKSansRegular}"
+							Text="{Binding Plays}"
+							Visibility="Collapsed" />
+						<TextBlock
+							x:Name="PlaysText"
+							Margin="3,0,0,0"
+							Text=""
+							Visibility="Collapsed" />
+						<TextBlock
+							x:Name="CountTrText"
+							FontFamily="{StaticResource VKSansRegular}"
+							Text="{Binding Genres}"
+							Visibility="Collapsed" />
+					</StackPanel>
+
+					<GridView
+						x:Name="stackPanel"
+						Margin="0,10,0,0"
+						Padding="10,5,5,2"
+						Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
+						CornerRadius="4"
+						RenderTransformOrigin="0.5,0.5"
+						SelectionMode="None">
+						<GridView.ItemContainerStyle>
+							<Style TargetType="GridViewItem">
+								<Setter Property="HorizontalContentAlignment" Value="Left" />
+							</Style>
+						</GridView.ItemContainerStyle>
+						<Button
+							x:Name="AddPlaylist"
+							Width="170"
+							Margin="0,0,0,0"
+							Click="AddPlaylist_Click">
+							<Button.Content>
+								<StackPanel Orientation="Horizontal">
+									<SymbolIcon x:Name="iconAdd" Symbol="Add" />
+									<TextBlock
+										x:Name="textAdd"
+										Margin="10,0,0,0"
+										Text="Добавить к себе" />
+								</StackPanel>
+							</Button.Content>
+						</Button>
+						<Button
+							x:Name="PlayPlaylist"
+							Width="170"
+							Margin="0,0,0,0"
+							Click="PlayPlaylist_Click">
+							<Button.Content>
+								<StackPanel Orientation="Horizontal">
+									<SymbolIcon Symbol="Play" />
+									<TextBlock Margin="10,0,0,0" Text="Воспроизвести" />
+								</StackPanel>
+							</Button.Content>
+						</Button>
+
+						<Button
+							x:Name="EditPlaylist"
+							Width="170"
+							Margin="0,0,0,0"
+							Click="EditPlaylist_Click">
+							<Button.Content>
+								<StackPanel Orientation="Horizontal">
+									<SymbolIcon Symbol="Edit" />
+									<TextBlock Margin="10,0,0,0" Text="Редактировать" />
+								</StackPanel>
+							</Button.Content>
+						</Button>
+
+						<Button
+							x:Name="DownloadPlaylist"
+							Width="170"
+							Margin="0,0,0,0"
+							HorizontalAlignment="Left"
+							Click="DownloadPlaylist_Click">
+							<Button.Flyout>
+								<MenuFlyout x:Name="folderFlyOut">
+									<MenuFlyoutItem Click="choosePath" Text="Выбрать путь">
+										<MenuFlyoutItem.Icon>
+											<FontIcon Glyph="&#xECC8;" />
+										</MenuFlyoutItem.Icon>
+									</MenuFlyoutItem>
+								</MenuFlyout>
+							</Button.Flyout>
+							<Button.Content>
+								<StackPanel Orientation="Horizontal">
+
+									<SymbolIcon Symbol="Download" />
+									<TextBlock Margin="10,0,0,0" Text="Скачать" />
+								</StackPanel>
+							</Button.Content>
+
+
+						</Button>
+
+						<Button
+							x:Name="UploadTrack"
+							Width="170"
+							Margin="0,0,0,0"
+							HorizontalAlignment="Left"
+							Click="UploadTrackClick"
+							Visibility="Collapsed">
+
+							<Button.Content>
+								<StackPanel Orientation="Horizontal">
+									<SymbolIcon Symbol="Upload" />
+									<TextBlock Margin="10,0,0,0" Text="Загрузить свою" />
+								</StackPanel>
+							</Button.Content>
+
+
+						</Button>
+
+						<Button
+							x:Name="GeneratePlayList"
+							Width="170"
+							Margin="0,0,0,0"
+							HorizontalAlignment="Left"
+							Click="GeneratePlayList_Click">
+
+							<Button.Content>
+								<StackPanel Orientation="Horizontal">
+									<FontIcon Glyph="&#xEB44;" />
+									<TextBlock
+										Margin="10,2.5,0,0"
+										HorizontalAlignment="Center"
+										FontSize="10"
+										Text="Сгенерировать плейлист"
+										TextWrapping="Wrap" />
+								</StackPanel>
+							</Button.Content>
+
+
+						</Button>
+					</GridView>
+
+
+				</StackPanel>
+			</Grid>
+		</ListView.Header>
+
+		<ListView.ItemTemplate>
+			<DataTemplate>
+				<custom:TrackControl
+					Margin="0,0,0,8"
+					FocusVisualPrimaryBrush="Transparent"
+					FocusVisualSecondaryThickness="0" />
+			</DataTemplate>
+		</ListView.ItemTemplate>
+		<ListView.Footer>
+			<ProgressRing x:Name="LoadingIndicator" IsActive="False" />
+		</ListView.Footer>
+	</ListView>
 
 </Page>
