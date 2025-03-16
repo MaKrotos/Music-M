@@ -137,9 +137,6 @@ namespace VK_UI3.Views
 
                 if (vkGetAudio is (PlayListVK))
                 {
-         
-                    
-
                     var playlist = (vkGetAudio as PlayListVK).playlist;
                     if (audioPlaylistOriginal == null)
                         audioPlaylistOriginal = playlist;

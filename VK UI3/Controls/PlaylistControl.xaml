@@ -40,7 +40,7 @@
                 Click="GenerateAlbum_Click"
                 Text="Сгенерировать плейлист">
                 <MenuFlyoutItem.Icon>
-                    <FontIcon Glyph="&#xEB44;" />
+                    <FontIcon FontSize="16" Glyph="&#xF133;" />
                 </MenuFlyoutItem.Icon>
             </MenuFlyoutItem>
             
