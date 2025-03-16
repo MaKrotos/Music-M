@@ -66,6 +66,9 @@
                         Background="Transparent"
                         Tapped="goToPlayList_BTN">
                         <SymbolIcon Symbol="List" />
+                        <ToolTipService.ToolTip>
+                            <ToolTip Content="Посмотреть текущий список воспроизведения" />
+                        </ToolTipService.ToolTip>
                     </Button>
 
                     <Button
@@ -81,7 +84,7 @@
                             FontSize="12"
                             Glyph="" />
                         <ToolTipService.ToolTip>
-                            <ToolTip Content="Транслировать в статус" />
+                            <ToolTip Content="Транслировать в статус ВК" />
                         </ToolTipService.ToolTip>
                     </Button>
                     <Button

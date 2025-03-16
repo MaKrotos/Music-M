@@ -16,6 +16,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using VK_UI3.Controls;
 using VK_UI3.DB;
+using VK_UI3.DiscordRPC;
 using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
 using VK_UI3.Views;
@@ -42,6 +43,8 @@ namespace VK_UI3.Controllers
         public static event EventHandler oniVKUpdate;
 
         public static event EventHandler onClickonTrack;
+
+        DiscordRichPresenceManager discordRichPresenceManager = new DiscordRichPresenceManager();
 
         public static void NotifyoniVKUpdate()
         {
@@ -434,8 +437,16 @@ namespace VK_UI3.Controllers
             if (bool.Parse(SettingsTable.GetSetting("shareFriend").settingValue))
                 iVKGetAudio.shareToVK();
 
+
+
+            UpdateDiscordState();
         }
 
+        private void UpdateDiscordState()
+        {
+
+            discordRichPresenceManager.SetTrack(TrackDataThis, mediaPlayer);
+        }
 
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
@@ -822,6 +833,7 @@ namespace VK_UI3.Controllers
             if (share.settingValue == "false")
             {
                 SettingsTable.SetSetting("shareFriend", "true");
+                iVKGetAudio.shareToVK();
             }
             else
             {

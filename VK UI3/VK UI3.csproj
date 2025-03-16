@@ -138,6 +138,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DiscordRPC\DiscordRPC.csproj" />
     <ProjectReference Include="..\MusicX.Core\MusicX.Core.csproj" />
     <ProjectReference Include="..\MusicX.Shared\MusicX.Shared.csproj" />
     <ProjectReference Include="..\SetupLib\SetupLib.csproj" />
