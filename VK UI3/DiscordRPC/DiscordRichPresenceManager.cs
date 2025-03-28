@@ -96,7 +96,8 @@ namespace VK_UI3.DiscordRPC
                         Type = ActivityType.Listening,
                         Timestamps = new Timestamps()
                         {
-                            Start = DateTime.UtcNow.AddSeconds(-media.Position.TotalSeconds)
+                            Start = DateTime.UtcNow.AddSeconds(-media.Position.TotalSeconds),
+                            End = DateTime.UtcNow + TimeSpan.FromSeconds(media.NaturalDuration.TotalSeconds),
                         },
                         Assets = new Assets()
                         {
@@ -121,16 +122,14 @@ namespace VK_UI3.DiscordRPC
                     };
                     _client.SetPresence(presence);
 
-                    Console.WriteLine($"Updated presence: {_currentTrack} by {_currentArtist} at {_currentSecond}s");
                 }
                 else
                 {
-                    Console.WriteLine("Discord RPC client is not initialized. Skipping presence update.");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to update presence: {ex.Message}");
+
             }
         }
 
@@ -163,7 +162,7 @@ namespace VK_UI3.DiscordRPC
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to set track: {ex.Message}");
+
             }
             update();
         }

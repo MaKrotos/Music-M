@@ -103,9 +103,15 @@ namespace VkNet.Model.Attachments
 		public long? LyricsId { get; set; }
 
 		/// <summary>
-		/// Содержит ли трек ненормативную лексику.
+		/// Имеет ли текст
 		/// </summary>
-		[JsonProperty("is_explicit")]
+		[JsonProperty("has_lyrics")]
+		public bool HasLyrics { get; set; } = false;
+
+        /// <summary>
+        /// Содержит ли трек ненормативную лексику.
+        /// </summary>
+        [JsonProperty("is_explicit")]
 		public bool IsExplicit { get; set; }
 
 		/// <summary>

@@ -20,6 +20,7 @@ using VK_UI3.DiscordRPC;
 using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
 using VK_UI3.Views;
+using VK_UI3.Views.ModalsPages;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
 using Windows.Media.Playback;
@@ -893,6 +894,29 @@ namespace VK_UI3.Controllers
         {
             NotifyonClickonTrack();
 
+        }
+
+        private void openLirycBTN_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            ContentDialog dialog = new CustomDialog();
+
+            dialog.Transitions = new TransitionCollection
+                {
+                    new PopupThemeTransition()
+                };
+
+            // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
+            dialog.XamlRoot = this.XamlRoot;
+
+
+            var a = new LyricsPage();
+            dialog.Content = a;
+            dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+
+           
+            
+
+            dialog.ShowAsync();
         }
     }
 }

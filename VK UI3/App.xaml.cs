@@ -63,7 +63,8 @@ namespace VK_UI3
             services.AddSingleton<UserRadioService>();
             services.AddSingleton<BoomService>();
 
-            
+            services.AddSingleton<GeniusService>();
+
 
             services.AddSingleton<ICustomSectionsService, CustomSectionsService>();
 
