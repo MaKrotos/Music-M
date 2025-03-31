@@ -63,7 +63,7 @@
 						Padding="0"
 						Background="Transparent"
 						Tapped="openLirycBTN_Tapped">
-						<SymbolIcon Symbol="List" />
+						<TextBlock>T</TextBlock>
 						<ToolTipService.ToolTip>
 							<ToolTip Content="Открыть текст песни" />
 						</ToolTipService.ToolTip>

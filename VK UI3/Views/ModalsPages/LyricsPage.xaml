@@ -1,11 +1,12 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <Page
 	x:Class="VK_UI3.Views.ModalsPages.LyricsPage"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:cntrollers="using:VK_UI3.Controls"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="using:VK_UI3.Views.ModalsPages"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	HorizontalAlignment="Stretch"
 	Background="{ThemeResource AcrylicInAppFillColorBaseBrush}"
 	mc:Ignorable="d">
 
@@ -13,9 +14,34 @@
 		<ThemeShadow x:Name="SharedShadow" />
 	</Page.Resources>
 
-	<Grid>
-		<TextBlock x:Name="LyrycText">
-		</TextBlock>
+	<ListView Width="500" HorizontalAlignment="Stretch">
+		<Grid
+			Margin="10"
+			HorizontalAlignment="Right"
+			VerticalAlignment="Top">
+			<ToggleSwitch />
+			<Button>
+				X
+			</Button>
+		</Grid>
 
-	</Grid>
+		<ListView
+			HorizontalAlignment="Stretch"
+			HorizontalContentAlignment="Stretch"
+			ItemsSource="{x:Bind Texts, Mode=OneWay}"
+			SelectionMode="None">
+
+			<ListView.ItemContainerStyle>
+				<Style TargetType="ListViewItem">
+					<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+				</Style>
+			</ListView.ItemContainerStyle>
+
+			<ListView.ItemTemplate>
+				<DataTemplate>
+					<cntrollers:LyricController HorizontalAlignment="Stretch" />
+				</DataTemplate>
+			</ListView.ItemTemplate>
+		</ListView>
+	</ListView>
 </Page>

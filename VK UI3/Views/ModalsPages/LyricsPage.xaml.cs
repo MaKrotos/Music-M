@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Navigation;
 using MusicX.Core.Models;
 using MusicX.Core.Services;
 using MusicX.Shared.Player;
+using MvvmHelpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,13 +31,13 @@ namespace VK_UI3.Views.ModalsPages
 
         public List<LyricsTimestamp> Timestamps { get; set; }
 
-        public List<string> Texts { get; set; }
+        public ObservableRangeCollection<string> Texts { get; set; } = new ObservableRangeCollection<string>();
 
         public event Action<int> NextLineEvent;
 
         public event Action NewTrack;
 
-        public VkNet.Model.Attachments.Audio Track { get { return AudioPlayer.PlayingTrack.audio; } }
+        public VkNet.Model.Attachments.Audio? Track { get { return AudioPlayer.PlayingTrack.audio; } }
 
         private DispatcherTimer _timer { get; set; }
 
@@ -48,7 +49,7 @@ namespace VK_UI3.Views.ModalsPages
 
         private void LyricsPage_Loaded(object sender, RoutedEventArgs e)
         {
-            LoadLyrics(true);
+            LoadLyrics(false);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -59,6 +60,7 @@ namespace VK_UI3.Views.ModalsPages
 
         public async Task LoadLyrics(bool isGenius)
         {
+         
             try
             {
                 IsLoading = true;
@@ -81,7 +83,7 @@ namespace VK_UI3.Views.ModalsPages
             catch (Exception ex)
             {
 
-                Texts = new List<string>() { "Ошибка загрузки" };
+                Texts = new ObservableRangeCollection<string>() { "Ошибка загрузки" };
                 IsLoading = false;
             }
         }
@@ -103,23 +105,22 @@ namespace VK_UI3.Views.ModalsPages
 
         private async Task<bool> LoadLyricFind(VkNet.Model.Attachments.Audio track)
         {
+            Texts.Clear();
             if (!track.HasLyrics)
             {
-                Texts = new List<string>() { "Этот трек", "Не имеет текста" };
+                Texts = new ObservableRangeCollection<string>() { "Этот трек", "Не имеет текста" };
                 IsLoading = false;
 
                 return false;
             }
 
-            var vkLyrics = await VK.vkService.GetLyrics(track.OwnerId + "_" + track.Id);
+            Lyrics vkLyrics = await VK.vkService.GetLyrics(track.OwnerId + "_" + track.Id);
 
             Timestamps = vkLyrics.LyricsInfo.Timestamps;
 
-            if (Timestamps is null)
-            {
-                Texts = vkLyrics.LyricsInfo.Text;
-            }
 
+            Texts.AddRange(vkLyrics.LyricsInfo.Text);
+            
             Credits = vkLyrics.Credits;
 
             return true;
@@ -127,11 +128,13 @@ namespace VK_UI3.Views.ModalsPages
 
         private async Task<bool> LoadGenius()
         {
+            Texts.Clear();
+
             var hits = await _geniusService.SearchAsync($"{Track.Title} {Track.MainArtists.First().Name}");
 
             if (!hits.Any())
             {
-                Texts = new List<string>() { "Этот трек", "Не имеет текста" };
+                Texts = new ObservableRangeCollection<string>() { "Этот трек", "Не имеет текста" };
                 IsLoading = false;
 
                 return false;
@@ -139,7 +142,7 @@ namespace VK_UI3.Views.ModalsPages
 
             var song = await _geniusService.GetSongAsync(hits.First().Result.Id);
 
-            Texts = song.Lyrics.Plain.Split('\n', StringSplitOptions.RemoveEmptyEntries).ToList();
+            Texts.AddRange(song.Lyrics.Plain.Split('\n', StringSplitOptions.RemoveEmptyEntries).ToList());
 
             Credits = "Текст предоставлен Genius (genius.com).\nВКонтакте и MusicX к данному сервису, а также к содержанию текста отношения не имеют.";
 
