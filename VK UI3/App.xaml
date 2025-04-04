@@ -39,8 +39,10 @@
             <FontFamily x:Key="VKSansMedium">pack://application:,,,/;component/Fonts/VKSansDisplay-Medium.ttf#VK Sans Display Medium</FontFamily>
             <FontFamily x:Key="VKSansBold">pack://application:,,,/;component/Fonts/VKSansDisplay-Bold.ttf#VK Sans Display Bold</FontFamily>
             <FontFamily x:Key="VKSansRegular">pack://application:,,,/;component/Fonts/VKSansDisplay-Regular.ttf#VK Sans Display Regular</FontFamily>
+			<FontFamily x:Key="HelveticaBlack">pack://application:,,,/;component/Fonts/HelveticaBlack.ttf#Helvetica Black</FontFamily>
 
-            <ItemsPanelTemplate x:Key="GlobalItemsPanelTemplate">
+
+			<ItemsPanelTemplate x:Key="GlobalItemsPanelTemplate">
                 <ItemsWrapGrid MaximumRowsOrColumns="1" Orientation="Vertical" />
             </ItemsPanelTemplate>
 

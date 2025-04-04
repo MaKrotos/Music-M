@@ -22,11 +22,20 @@ namespace VK_UI3.DB
         public SettingsTable() { }
 
 
-        public static SettingsTable? GetSetting(string settingName)
+        public static SettingsTable? GetSetting(string settingName, string standartSetting = null)
         {
             var setting = DatabaseHandler.getConnect().Query<SettingsTable>("Select * FROM SettingsTable WHERE settingName = '" + settingName + "'");
 
-            if (setting.Count == 0) return null;
+            if (setting.Count == 0)
+            {
+
+                if (standartSetting == null)
+                { return null; }
+
+                return new SettingsTable(settingName, standartSetting);
+                SetSetting(settingName, standartSetting);
+
+            }
             return setting[0];
         }
 
@@ -42,11 +51,8 @@ namespace VK_UI3.DB
             var setting = GetSetting(settingName);
             if (setting == null)
             {
-
                 setting = new SettingsTable(settingName, value);
                 DatabaseHandler.getConnect().Insert(setting);
-
-
             }
             else
             {

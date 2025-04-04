@@ -14,6 +14,8 @@
 			x:Name="textLyric"
 			HorizontalAlignment="Left"
 			VerticalAlignment="Center"
+			FontFamily="{StaticResource HelveticaBlack}"
+			FontSize="25"
 			IsTextSelectionEnabled="True"
 			Text="" />
 	</Grid>

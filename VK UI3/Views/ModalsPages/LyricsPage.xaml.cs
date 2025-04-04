@@ -8,7 +8,9 @@ using MusicX.Shared.Player;
 using MvvmHelpers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.Controllers;
 using VK_UI3.VKs;
@@ -29,17 +31,27 @@ namespace VK_UI3.Views.ModalsPages
 
         public string Credits { get; set; }
 
-        public List<LyricsTimestamp> Timestamps { get; set; }
 
-        public ObservableRangeCollection<string> Texts { get; set; } = new ObservableRangeCollection<string>();
+        public ObservableRangeCollection<object> Texts { get; set; } = new ObservableRangeCollection<object>();
 
         public event Action<int> NextLineEvent;
 
         public event Action NewTrack;
 
-        public VkNet.Model.Attachments.Audio? Track { get { return AudioPlayer.PlayingTrack.audio; } }
+        public event EventHandler closeClicked;
+
+        public VkNet.Model.Attachments.Audio? Track
+        {
+            get
+            {
+                if (AudioPlayer.PlayingTrack == null)
+                    return null;
+                return AudioPlayer.PlayingTrack.audio;
+            }
+        }
 
         private DispatcherTimer _timer { get; set; }
+
 
         public LyricsPage()
         {
@@ -49,7 +61,25 @@ namespace VK_UI3.Views.ModalsPages
 
         private void LyricsPage_Loaded(object sender, RoutedEventArgs e)
         {
-            LoadLyrics(false);
+            this.GeniusToggle.IsChecked = bool.Parse(DB.SettingsTable.GetSetting("fromGenius", false.ToString()).settingValue);
+            LoadLyrics();
+
+            if (_timer is null)
+            {
+                _timer = new DispatcherTimer();
+                _timer.Interval = TimeSpan.FromMilliseconds(500);
+                _timer.Tick += Timer_Tick;
+            }
+        }
+
+        public void disable()
+        {
+
+            _timer.Stop();
+        }
+        public void enable()
+        {
+            _timer.Start();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -58,57 +88,53 @@ namespace VK_UI3.Views.ModalsPages
 
         }
 
-        public async Task LoadLyrics(bool isGenius)
+        public async Task LoadLyrics()
         {
-         
             try
             {
-                IsLoading = true;
-                
+                if (Track == null)
+                    return;
 
-                var result = isGenius ? await LoadGenius() : await LoadLyricFind(Track);
+                IsLoading = true;
+                bool result = false;
+
+
+                result = (bool) GeniusToggle.IsChecked
+                    ? await LoadGenius() || await LoadLyricFind(Track)
+                    : await LoadLyricFind(Track) || await LoadGenius();
+
+
                 if (!result)
                     return;
 
-                if (_timer is null)
-                {
-                    _timer = new DispatcherTimer();
-                    _timer.Interval = TimeSpan.FromMilliseconds(500);
-                    _timer.Tick += Timer_Tick;
-                    _timer.Start();
-                }
+                
 
                 IsLoading = false;
             }
             catch (Exception ex)
             {
 
-                Texts = new ObservableRangeCollection<string>() { "Ошибка загрузки" };
+                Texts = new ObservableRangeCollection<object>() { "Ошибка загрузки" };
                 IsLoading = false;
             }
         }
-
+        VkNet.Model.Attachments.Audio? TempTrack = null;
         private void Timer_Tick(object sender, object e)
         {
-            try
+            if (TempTrack != Track)
             {
-                //     var currentPositionOnMs = _playerService.Position.TotalMilliseconds;
-
-                //     NextLineEvent?.Invoke(Convert.ToInt32(currentPositionOnMs));
-
-            }
-            catch (Exception ex)
-            {
-                //   _logger.Error(ex, "Failed to jump to next lyrics line");
+                TempTrack = Track;
+                LoadLyrics();
             }
         }
 
         private async Task<bool> LoadLyricFind(VkNet.Model.Attachments.Audio track)
         {
             Texts.Clear();
+
             if (!track.HasLyrics)
             {
-                Texts = new ObservableRangeCollection<string>() { "Этот трек", "Не имеет текста" };
+                Texts = new ObservableRangeCollection<object>() { "Этот трек", "Не имеет текста" };
                 IsLoading = false;
 
                 return false;
@@ -116,11 +142,14 @@ namespace VK_UI3.Views.ModalsPages
 
             Lyrics vkLyrics = await VK.vkService.GetLyrics(track.OwnerId + "_" + track.Id);
 
-            Timestamps = vkLyrics.LyricsInfo.Timestamps;
-
-
-            Texts.AddRange(vkLyrics.LyricsInfo.Text);
-            
+            if (vkLyrics.LyricsInfo.Timestamps != null)
+            {
+                Texts.AddRange(vkLyrics.LyricsInfo.Timestamps);
+            }
+            else
+            {
+                Texts.AddRange(vkLyrics.LyricsInfo.Text);
+            }
             Credits = vkLyrics.Credits;
 
             return true;
@@ -134,7 +163,7 @@ namespace VK_UI3.Views.ModalsPages
 
             if (!hits.Any())
             {
-                Texts = new ObservableRangeCollection<string>() { "Этот трек", "Не имеет текста" };
+                Texts = new ObservableRangeCollection<object>() { "Этот трек", "Не имеет текста" };
                 IsLoading = false;
 
                 return false;
@@ -149,5 +178,12 @@ namespace VK_UI3.Views.ModalsPages
             return true;
         }
 
+        private void GeniusToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            DB.SettingsTable.SetSetting("fromGenius", GeniusToggle.IsChecked.ToString());
+            LoadLyrics();
+        }
+
+        
     }
 }

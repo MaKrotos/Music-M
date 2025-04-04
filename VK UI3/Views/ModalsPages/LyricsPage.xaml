@@ -14,20 +14,35 @@
 		<ThemeShadow x:Name="SharedShadow" />
 	</Page.Resources>
 
-	<ListView Width="500" HorizontalAlignment="Stretch">
-		<Grid
-			Margin="10"
-			HorizontalAlignment="Right"
+	<Grid
+		HorizontalAlignment="Stretch"
+	>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<StackPanel CornerRadius="4" Margin="10,10,10,0" Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}" Grid.Row="0"
+			Orientation="Horizontal"
+			
+			Padding="10,10,10,10"
+		
+			HorizontalAlignment="Stretch"
 			VerticalAlignment="Top">
-			<ToggleSwitch />
-			<Button>
-				X
-			</Button>
-		</Grid>
+
+			<CheckBox Unchecked="GeniusToggle_Toggled"  Checked="GeniusToggle_Toggled" x:Name="GeniusToggle"  >Genuis</CheckBox>
+		</StackPanel>
 
 		<ListView
+		
+			Padding="10"
+			Margin="0"
+			Grid.Row="1"
+			ScrollViewer.HorizontalScrollMode="Enabled"
+			ScrollViewer.VerticalScrollMode="Enabled"
 			HorizontalAlignment="Stretch"
 			HorizontalContentAlignment="Stretch"
+			VerticalAlignment="Stretch"
+	
 			ItemsSource="{x:Bind Texts, Mode=OneWay}"
 			SelectionMode="None">
 
@@ -43,5 +58,5 @@
 				</DataTemplate>
 			</ListView.ItemTemplate>
 		</ListView>
-	</ListView>
+	</Grid>
 </Page>

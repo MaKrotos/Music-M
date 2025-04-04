@@ -27,11 +27,15 @@ namespace VK_UI3.Controls
         {
             var data = this.DataContext;
 
-            if (DataContext is not string text)
-                return;
-            textLyric.Text = text;
+            if (DataContext is string text)
+            {
+                textLyric.Text = text;
 
-
+            }
+            if (DataContext is LyricsTimestamp lyricsTimestamp)
+            { 
+                lyricsTimestamp.Line = lyricsTimestamp.Line;
+            }
         }
     }
 }

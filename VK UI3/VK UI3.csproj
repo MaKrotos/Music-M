@@ -63,6 +63,7 @@
 	  <None Remove="Controls\TrackControl.xaml" />
 	  <None Remove="Controls\VibeControl.xaml" />
 	  <None Remove="Controls\VideoController.xaml" />
+	  <None Remove="Fonts\HelveticaBlack.ttf" />
 	  <None Remove="Fonts\VKSansDisplay-Bold.ttf" />
 	  <None Remove="Fonts\VKSansDisplay-DemiBold.ttf" />
 	  <None Remove="Fonts\VKSansDisplay-Medium.ttf" />
@@ -397,6 +398,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Fonts\HelveticaBlack.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Fonts\VKSansDisplay-Bold.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

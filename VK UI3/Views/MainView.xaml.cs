@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,6 +40,9 @@ namespace VK_UI3.Views
     {
         public static MainView mainView;
         public static Frame frame;
+
+
+
         public MainView()
         {
             this.InitializeComponent();
@@ -81,7 +85,7 @@ namespace VK_UI3.Views
             NavWiv.BackRequested -= NavWiv_BackRequested;
             AccountsDB.ChanhgeActiveAccount -= ChangeAccount;
             this.KeyDown -= MainView_KeyDown;
-
+    
             this.Unloaded -= MainView_Unloaded;
         }
 
@@ -160,7 +164,7 @@ namespace VK_UI3.Views
             MainWindow.mainWindow.onBackClicked += back;
 
             AccountsDB.ChanhgeActiveAccount += ChangeAccount;
-
+            CollapseAnimation.Completed += CollapseAnimation_Completed;
 
             this.KeyDown += MainView_KeyDown;
 
@@ -170,6 +174,12 @@ namespace VK_UI3.Views
             dispatcherQueue = this.DispatcherQueue;
 
             MainWindow.mainWindow.MainWindow_showRefresh();
+        }
+
+        private void CollapseAnimation_Completed(object sender, object e)
+        {
+            if (LyricPage.Opacity == 0)
+                LyricPage.Visibility = Visibility.Collapsed;
         }
 
         private async void back(object sender, EventArgs e)
@@ -577,6 +587,40 @@ namespace VK_UI3.Views
             navigateInvoke();
         }
 
+        bool lyrClosed = true;
+        public void ToggleLyricsPanel()
+        {
+            if (lyrClosed)
+            {
+                ExpandLyricsPanel();
+            }
+            else
+            {
+                CollapseLyricsPanel();
+            }
+            lyrClosed = !lyrClosed;
+
+        }
+
+
+
+        public async void CollapseLyricsPanel()
+        {
+            ExpandAnimation.Pause();
+            CollapseAnimation.Begin();
+            LyricPage.disable();
+
+        }
+
+        public async void ExpandLyricsPanel()
+        {
+            LyricPage.Visibility = Visibility.Visible;
+            CollapseAnimation.Pause();
+            ExpandAnimation.Begin();
+            LyricPage.enable();
+            LyricPage.LoadLyrics();
+        }
+
         private void navigateInvoke()
         {
             var invokedItem = NavWiv.SelectedItem as NavigationViewItem;
@@ -646,7 +690,8 @@ namespace VK_UI3.Views
             }
         }
 
-      
+    
+
     }
 
 

@@ -898,25 +898,10 @@ namespace VK_UI3.Controllers
 
         private void openLirycBTN_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            ContentDialog dialog = new CustomDialog();
+            MainView.mainView.ToggleLyricsPanel();
 
-            dialog.Transitions = new TransitionCollection
-                {
-                    new PopupThemeTransition()
-                };
-
-            // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
-            dialog.XamlRoot = this.XamlRoot;
-
-
-            var a = new LyricsPage();
-            dialog.Content = a;
-            dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
-
-           
-            
-
-            dialog.ShowAsync();
         }
+
+      
     }
 }
