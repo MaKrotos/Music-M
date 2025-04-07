@@ -608,7 +608,7 @@ namespace VK_UI3.Views
         {
             ExpandAnimation.Pause();
             CollapseAnimation.Begin();
-            LyricPage.disable();
+            LyricPage.Disable();
 
         }
 
@@ -617,8 +617,8 @@ namespace VK_UI3.Views
             LyricPage.Visibility = Visibility.Visible;
             CollapseAnimation.Pause();
             ExpandAnimation.Begin();
-            LyricPage.enable();
-            LyricPage.LoadLyrics();
+            LyricPage.Enable();
+            _ = LyricPage.LoadLyricsAsync();
         }
 
         private void navigateInvoke()

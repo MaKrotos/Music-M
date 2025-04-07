@@ -9,14 +9,50 @@
 	mc:Ignorable="d">
 
 	<Grid>
-
 		<TextBlock
 			x:Name="textLyric"
 			HorizontalAlignment="Left"
 			VerticalAlignment="Center"
 			FontFamily="{StaticResource HelveticaBlack}"
 			FontSize="25"
-			IsTextSelectionEnabled="True"
-			Text="" />
+			IsTextSelectionEnabled="False"
+			Opacity="0.8"
+			RenderTransformOrigin="0.5,0.5"
+			Text="">
+			<TextBlock.Resources>
+				<Storyboard x:Name="scaleUpAnimation">
+					<!--  Анимация увеличения  -->
+					<DoubleAnimation
+						EnableDependentAnimation="True"
+						Storyboard.TargetName="textLyric"
+						Storyboard.TargetProperty="FontSize"
+						To="40"
+						Duration="0:0:0.2" />
+					<DoubleAnimation
+						EnableDependentAnimation="True"
+						Storyboard.TargetName="textLyric"
+						Storyboard.TargetProperty="Opacity"
+						To="1"
+						Duration="0:0:0.2" />
+				</Storyboard>
+
+				<Storyboard x:Name="scaleDownAnimation">
+					<!--  Анимация Уменьшения  -->
+					<DoubleAnimation
+						EnableDependentAnimation="True"
+						Storyboard.TargetName="textLyric"
+						Storyboard.TargetProperty="FontSize"
+						To="25"
+						Duration="0:0:0.2" />
+					<DoubleAnimation
+						EnableDependentAnimation="True"
+						Storyboard.TargetName="textLyric"
+						Storyboard.TargetProperty="Opacity"
+						To="0.5"
+						Duration="0:0:0.2" />
+				</Storyboard>
+
+			</TextBlock.Resources>
+		</TextBlock>
 	</Grid>
 </UserControl>

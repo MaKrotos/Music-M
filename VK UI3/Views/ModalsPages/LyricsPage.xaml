@@ -32,13 +32,13 @@
 			<CheckBox Unchecked="GeniusToggle_Toggled"  Checked="GeniusToggle_Toggled" x:Name="GeniusToggle"  >Genuis</CheckBox>
 		</StackPanel>
 
+
 		<ListView
-		
+			x:Name="ListLyrics"
 			Padding="10"
 			Margin="0"
 			Grid.Row="1"
-			ScrollViewer.HorizontalScrollMode="Enabled"
-			ScrollViewer.VerticalScrollMode="Enabled"
+
 			HorizontalAlignment="Stretch"
 			HorizontalContentAlignment="Stretch"
 			VerticalAlignment="Stretch"
@@ -57,6 +57,7 @@
 					<cntrollers:LyricController HorizontalAlignment="Stretch" />
 				</DataTemplate>
 			</ListView.ItemTemplate>
+
 		</ListView>
 	</Grid>
 </Page>

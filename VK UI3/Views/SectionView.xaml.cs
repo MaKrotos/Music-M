@@ -52,7 +52,6 @@ namespace VK_UI3.Views
 
         public void ScrollToElement(Block element, double point)
         {
-            // Find the vertical position of the element
             var ins = blocks.IndexOf(element);
 
 
