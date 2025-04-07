@@ -6,6 +6,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="using:VK_UI3.Views.ModalsPages"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:winui="using:WinUICommunity"
 	HorizontalAlignment="Stretch"
 	Background="{ThemeResource AcrylicInAppFillColorBaseBrush}"
 	mc:Ignorable="d">
@@ -14,50 +15,73 @@
 		<ThemeShadow x:Name="SharedShadow" />
 	</Page.Resources>
 
-	<Grid
-		HorizontalAlignment="Stretch"
-	>
+	<Grid HorizontalAlignment="Stretch">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
-		<StackPanel CornerRadius="4" Margin="10,10,10,0" Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}" Grid.Row="0"
-			Orientation="Horizontal"
-			
-			Padding="10,10,10,10"
-		
-			HorizontalAlignment="Stretch"
-			VerticalAlignment="Top">
 
-			<CheckBox Unchecked="GeniusToggle_Toggled"  Checked="GeniusToggle_Toggled" x:Name="GeniusToggle"  >Genuis</CheckBox>
+
+
+
+		<StackPanel
+			Grid.Row="0"
+			Margin="10,10,10,0"
+			Padding="10,10,10,10"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Top"
+			Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+			CornerRadius="4"
+			Orientation="Horizontal">
+
+			<ComboBox x:Name="GeniusToggle" />
 		</StackPanel>
 
 
-		<ListView
-			x:Name="ListLyrics"
-			Padding="10"
-			Margin="0"
+		<winui:OpacityMaskView
 			Grid.Row="1"
-
+			Grid.Column="0"
 			HorizontalAlignment="Stretch"
-			HorizontalContentAlignment="Stretch"
-			VerticalAlignment="Stretch"
-	
-			ItemsSource="{x:Bind Texts, Mode=OneWay}"
-			SelectionMode="None">
+			VerticalAlignment="Stretch">
+			<winui:OpacityMaskView.OpacityMask>
+				<LinearGradientBrush MappingMode="RelativeToBoundingBox" StartPoint="1,0" EndPoint="1,1">
+					<GradientStop Offset="0" Color="#00FFFFFF" />
+					<GradientStop Offset="0.1" Color="#FFFFFFFF" />
+					<GradientStop Offset="0.5" Color="#FFFFFFFF" />
+					<GradientStop Offset="0.99" Color="#FFFFFFFF" />
+					<GradientStop Offset="1" Color="#00FFFFFF" />
+				</LinearGradientBrush>
+			</winui:OpacityMaskView.OpacityMask>
 
-			<ListView.ItemContainerStyle>
-				<Style TargetType="ListViewItem">
-					<Setter Property="HorizontalContentAlignment" Value="Stretch" />
-				</Style>
-			</ListView.ItemContainerStyle>
+			<winui:OpacityMaskView HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
-			<ListView.ItemTemplate>
-				<DataTemplate>
-					<cntrollers:LyricController HorizontalAlignment="Stretch" />
-				</DataTemplate>
-			</ListView.ItemTemplate>
 
-		</ListView>
+				<ListView
+					x:Name="ListLyrics"
+					Grid.Row="1"
+					Margin="0"
+					Padding="10"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Stretch"
+					HorizontalContentAlignment="Stretch"
+					ItemsSource="{x:Bind Texts, Mode=OneWay}"
+					SelectionMode="None">
+
+					<ListView.ItemContainerStyle>
+						<Style TargetType="ListViewItem">
+							<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+						</Style>
+					</ListView.ItemContainerStyle>
+
+					<ListView.ItemTemplate>
+						<DataTemplate>
+							<cntrollers:LyricController HorizontalAlignment="Stretch" />
+						</DataTemplate>
+					</ListView.ItemTemplate>
+
+				</ListView>
+			</winui:OpacityMaskView>
+
+		</winui:OpacityMaskView>
 	</Grid>
 </Page>

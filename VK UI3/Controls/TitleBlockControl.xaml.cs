@@ -214,8 +214,8 @@ namespace VK_UI3.Controls
             if (DataContext is not Block block)
                 return;
             if (block.Actions.Count == 0 || string.IsNullOrEmpty(block.Actions[0].SectionId)) return;
-            MoveLeftStoryboard.Pause();
 
+            MoveLeftStoryboard.Pause();
             MoveRightStoryboard.Begin();
         }
 

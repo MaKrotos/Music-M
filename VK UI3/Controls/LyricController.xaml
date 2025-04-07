@@ -7,52 +7,74 @@
 	xmlns:local="using:VK_UI3.Controls"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d">
+	<StackPanel Orientation="Horizontal" Translation="0,0,8">
+		<Grid
+		
+			PointerEntered="Grid_PointerEntered"
+			PointerExited="Grid_PointerExited"
+			Tapped="Grid_Tapped">
+			<Grid
+				x:Name="BackgrD"
+				Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
+				CornerRadius="8"
+				Opacity="0"
+				Translation="0,0,20">
+				<Grid.Shadow>
+					<ThemeShadow />
+				</Grid.Shadow>
+			</Grid>
+			<TextBlock
+				Margin="10"
+				x:Name="textLyric"
+				HorizontalAlignment="Left"
+				VerticalAlignment="Center"
+				FontFamily="{StaticResource HelveticaBlack}"
+				FontSize="25"
+				IsTextSelectionEnabled="False"
+				Opacity="0.6"
+				RenderTransformOrigin="0.5,0.5"
+				Text="">
+				<TextBlock.Resources>
+					<Storyboard x:Name="scaleUpAnimation">
+						<!--  Анимация увеличения  -->
+						<DoubleAnimation
+							EnableDependentAnimation="True"
+							Storyboard.TargetName="textLyric"
+							Storyboard.TargetProperty="Opacity"
+							To="1"
+							Duration="0:0:0.3" />
+					</Storyboard>
 
-	<Grid>
-		<TextBlock
-			x:Name="textLyric"
-			HorizontalAlignment="Left"
-			VerticalAlignment="Center"
-			FontFamily="{StaticResource HelveticaBlack}"
-			FontSize="25"
-			IsTextSelectionEnabled="False"
-			Opacity="0.8"
-			RenderTransformOrigin="0.5,0.5"
-			Text="">
-			<TextBlock.Resources>
-				<Storyboard x:Name="scaleUpAnimation">
-					<!--  Анимация увеличения  -->
+					<Storyboard x:Name="scaleDownAnimation">
+						<!--  Анимация Уменьшения  -->
+						<DoubleAnimation
+							EnableDependentAnimation="True"
+							Storyboard.TargetName="textLyric"
+							Storyboard.TargetProperty="Opacity"
+							To="0.6"
+							Duration="0:0:0.3" />
+					</Storyboard>
+
+				</TextBlock.Resources>
+			</TextBlock>
+			<Grid.Resources>
+				<Storyboard x:Name="MoveBackUpStoryboard">
+
 					<DoubleAnimation
-						EnableDependentAnimation="True"
-						Storyboard.TargetName="textLyric"
-						Storyboard.TargetProperty="FontSize"
-						To="40"
-						Duration="0:0:0.2" />
-					<DoubleAnimation
-						EnableDependentAnimation="True"
-						Storyboard.TargetName="textLyric"
+						Storyboard.TargetName="BackgrD"
 						Storyboard.TargetProperty="Opacity"
 						To="1"
-						Duration="0:0:0.2" />
+						Duration="0:0:0.175" />
 				</Storyboard>
+				<Storyboard x:Name="MoveBackDownStoryboard">
 
-				<Storyboard x:Name="scaleDownAnimation">
-					<!--  Анимация Уменьшения  -->
 					<DoubleAnimation
-						EnableDependentAnimation="True"
-						Storyboard.TargetName="textLyric"
-						Storyboard.TargetProperty="FontSize"
-						To="25"
-						Duration="0:0:0.2" />
-					<DoubleAnimation
-						EnableDependentAnimation="True"
-						Storyboard.TargetName="textLyric"
+						Storyboard.TargetName="BackgrD"
 						Storyboard.TargetProperty="Opacity"
-						To="0.5"
-						Duration="0:0:0.2" />
+						To="0"
+						Duration="0:0:0.175" />
 				</Storyboard>
-
-			</TextBlock.Resources>
-		</TextBlock>
-	</Grid>
+			</Grid.Resources>
+		</Grid>
+	</StackPanel>
 </UserControl>

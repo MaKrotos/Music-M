@@ -553,6 +553,10 @@ namespace VK_UI3.Controllers
 
         internal static void PlayPreviousTrack()
         {
+            if (mediaPlayer.Position.TotalSeconds <= 5 && mediaPlayer.Position.TotalSeconds > 1)
+            {
+                mediaPlayer.Position = new TimeSpan(0);
+            }
             Task.Run(async () =>
             {
                 iVKGetAudio.setPreviusTrackForPlay();
