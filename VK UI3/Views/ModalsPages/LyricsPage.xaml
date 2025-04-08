@@ -15,7 +15,7 @@
 		<ThemeShadow x:Name="SharedShadow" />
 	</Page.Resources>
 
-	<Grid HorizontalAlignment="Stretch">
+	<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
@@ -33,8 +33,8 @@
 			Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
 			CornerRadius="4"
 			Orientation="Horizontal">
-
-			<ComboBox x:Name="GeniusToggle" />
+			<Button Click="Button_Click">X</Button>
+			<ComboBox x:Name="GeniusToggle" SelectionChanged="GeniusToggle_SelectionChanged" />
 		</StackPanel>
 
 
@@ -83,5 +83,36 @@
 			</winui:OpacityMaskView>
 
 		</winui:OpacityMaskView>
+		<Grid
+			x:Name="GridBRing"
+			Grid.Row="3"
+			Padding="10"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Center"
+			Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"
+			CornerRadius="8">
+			<ProgressRing
+				Grid.Row="3"
+				Width="100"
+				Height="100"
+				IsActive="True" />
+		</Grid>
+
+		<Grid.Resources>
+			<Storyboard x:Name="MoveBackUpStoryboard">
+				<DoubleAnimation
+					Storyboard.TargetName="GridBRing"
+					Storyboard.TargetProperty="Opacity"
+					To="1"
+					Duration="0:0:0.3" />
+			</Storyboard>
+			<Storyboard x:Name="MoveBackDownStoryboard">
+				<DoubleAnimation
+					Storyboard.TargetName="GridBRing"
+					Storyboard.TargetProperty="Opacity"
+					To="0"
+					Duration="0:0:0.3" />
+			</Storyboard>
+		</Grid.Resources>
 	</Grid>
 </Page>

@@ -71,13 +71,22 @@ namespace VK_UI3.Views.ModalsPages
             _httpClient = new HttpClient();
             Loaded += OnLoaded;
             Unloaded += OnUnloaded;
-
+            MoveBackDownStoryboard.Completed += MoveBackDownStoryboard_Completed;
             // Initialize source toggle
+            GeniusToggle.Items.Add("Auto");
             GeniusToggle.Items.Add("VK");
             GeniusToggle.Items.Add("Genius");
             GeniusToggle.Items.Add("LRCLib");
             GeniusToggle.SelectedIndex = int.Parse(
-                DB.SettingsTable.GetSetting("lyricsSource", "0").settingValue);
+            DB.SettingsTable.GetSetting("lyricsSource", "0").settingValue);
+        }
+
+        private void MoveBackDownStoryboard_Completed(object sender, object e)
+        {
+            if (GridBRing.Opacity != 0)
+                return;
+
+            GridBRing.Visibility = Visibility.Collapsed;
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -140,7 +149,6 @@ namespace VK_UI3.Views.ModalsPages
         {
             _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
             _timer.Tick += OnTimerTick;
-            _timer.Start();
         }
 
         private void DisposeTimer()
@@ -235,6 +243,7 @@ namespace VK_UI3.Views.ModalsPages
 
         public async Task LoadLyricsAsync()
         {
+            ShowLoadRing();
             if (Track == null)
                 return;
 
@@ -250,13 +259,18 @@ namespace VK_UI3.Views.ModalsPages
 
                 switch (GeniusToggle.SelectedIndex)
                 {
-                    case 0: // VK
+                    case 0:  //Auto
+                        result = await TryLoadVkLyrics(Track, loadId)
+                            || await TryLoadLrcLibLyrics(Track, loadId)
+                            || await TryLoadGeniusLyrics(Track, loadId);
+                        break;
+                    case 1: // VK
                         result = await TryLoadVkLyrics(Track, loadId);
                         break;
-                    case 1: // Genius
+                    case 2: // Genius                
                         result = await TryLoadGeniusLyrics(Track, loadId);
                         break;
-                    case 2: // LRCLib
+                    case 3:  // LRCLib
                         result = await TryLoadLrcLibLyrics(Track, loadId);
                         break;
                 }
@@ -273,8 +287,24 @@ namespace VK_UI3.Views.ModalsPages
             finally
             {
                 if (_currentLoadId == loadId)
+                {
                     IsLoading = false;
+                    hideLoadRing();
+                }
             }
+        }
+
+        private void hideLoadRing()
+        {
+            MoveBackUpStoryboard.Pause();
+            MoveBackDownStoryboard.Begin();
+        }
+
+        private void ShowLoadRing()
+        {
+            GridBRing.Visibility = Visibility.Visible;
+            MoveBackDownStoryboard.Pause();
+            MoveBackUpStoryboard.Begin();
         }
 
         private async Task<bool> TryLoadVkLyrics(VkNet.Model.Attachments.Audio track, Guid loadId)
@@ -388,45 +418,77 @@ namespace VK_UI3.Views.ModalsPages
             if (string.IsNullOrEmpty(lrcText))
                 return result;
 
-            var lines = lrcText.Split('\n');
+            var lines = lrcText.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            LyricsTimestamp previousItem = null;
+
             foreach (var line in lines)
             {
-                if (string.IsNullOrWhiteSpace(line))
+                var trimmedLine = line.Trim();
+                if (string.IsNullOrEmpty(trimmedLine))
                     continue;
 
-                // Parse timestamp lines like [00:12.34] Text
-                if (line.StartsWith("[") && line.IndexOf(']') > 1)
+                if (TryParseLrcLine(trimmedLine, out var timestamp, out var text))
                 {
-                    var closeBracket = line.IndexOf(']');
-                    var timePart = line.Substring(1, closeBracket - 1);
+                    var begin = (int)timestamp.TotalMilliseconds;
 
-                    if (TimeSpan.TryParseExact(timePart, @"m\:ss\.ff", null, out var timestamp))
+                    if (previousItem != null)
                     {
-                        var text = line.Substring(closeBracket + 1).Trim();
-                        if (!string.IsNullOrEmpty(text))
-                        {
-                            // Calculate begin and end times (assuming 5 seconds per line if no end time)
-                            var begin = (int)timestamp.TotalMilliseconds;
-                            var end = begin + 5000; // Default 5 seconds duration
-
-                            result.Add(new LyricsTimestamp
-                            {
-                                Line = text,
-                                Begin = begin,
-                                End = end
-                            });
-                        }
+                        previousItem.End = begin;
                     }
+
+                    var currentItem = new LyricsTimestamp
+                    {
+                        Line = text ?? string.Empty, // Handle null text
+                        Begin = begin,
+                        End = begin + 5000 // Default duration
+                    };
+
+                    result.Add(currentItem);
+                    previousItem = currentItem;
                 }
                 else
                 {
-                    // Plain text line
-                    result.Add(line.Trim());
+                    if (previousItem != null)
+                    {
+                        previousItem.End = previousItem.Begin + 5000;
+                        previousItem = null;
+                    }
+
+                    result.Add(trimmedLine);
                 }
             }
 
             return result;
         }
+
+        private bool TryParseLrcLine(string line, out TimeSpan timestamp, out string text)
+        {
+            timestamp = TimeSpan.Zero;
+            text = null;
+
+            if (!line.StartsWith("[") || line.IndexOf(']') <= 1)
+                return false;
+
+            var closeBracketIndex = line.IndexOf(']');
+            var timePart = line.Substring(1, closeBracketIndex - 1);
+
+            if (!TimeSpan.TryParseExact(timePart, @"m\:ss\.ff", null, out timestamp))
+                return false;
+
+            // Get text after timestamp (if any)
+            if (closeBracketIndex + 1 < line.Length)
+            {
+                text = line.Substring(closeBracketIndex + 1).Trim();
+            }
+            else
+            {
+                text = string.Empty;
+            }
+
+            // Return true even if text is empty (only timestamp case)
+            return true;
+        }
+
 
         private void AddTextLines(IEnumerable<object> lines, Guid loadId)
         {
@@ -465,6 +527,16 @@ namespace VK_UI3.Views.ModalsPages
         public void Disable()
         {
             _timer?.Stop();
+        }
+
+        private void GeniusToggle_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            _ = LoadLyricsAsync();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            MainView.mainView.ToggleLyricsPanel();
         }
     }
 

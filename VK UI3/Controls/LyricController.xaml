@@ -9,7 +9,6 @@
 	mc:Ignorable="d">
 	<StackPanel Orientation="Horizontal" Translation="0,0,8">
 		<Grid
-		
 			PointerEntered="Grid_PointerEntered"
 			PointerExited="Grid_PointerExited"
 			Tapped="Grid_Tapped">
@@ -24,8 +23,8 @@
 				</Grid.Shadow>
 			</Grid>
 			<TextBlock
-				Margin="10"
 				x:Name="textLyric"
+				Margin="10"
 				HorizontalAlignment="Left"
 				VerticalAlignment="Center"
 				FontFamily="{StaticResource HelveticaBlack}"
@@ -59,7 +58,6 @@
 			</TextBlock>
 			<Grid.Resources>
 				<Storyboard x:Name="MoveBackUpStoryboard">
-
 					<DoubleAnimation
 						Storyboard.TargetName="BackgrD"
 						Storyboard.TargetProperty="Opacity"
@@ -67,7 +65,6 @@
 						Duration="0:0:0.175" />
 				</Storyboard>
 				<Storyboard x:Name="MoveBackDownStoryboard">
-
 					<DoubleAnimation
 						Storyboard.TargetName="BackgrD"
 						Storyboard.TargetProperty="Opacity"
