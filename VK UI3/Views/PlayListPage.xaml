@@ -349,8 +349,8 @@
 
 							<Button.Content>
 								<StackPanel Orientation="Horizontal">
-                                    <FontIcon FontSize="16" Glyph="&#xF133;" />
-                                    <TextBlock
+									<FontIcon FontSize="16" Glyph="&#xF133;" />
+									<TextBlock
 										Margin="10,2.5,0,0"
 										HorizontalAlignment="Center"
 										FontSize="10"

@@ -21,6 +21,8 @@ using VK_UI3.VKs.IVK;
 using Windows.Foundation;
 using System.Net.Http;
 using System.Text.Json;
+using System.Text;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace VK_UI3.Views.ModalsPages
 {
@@ -537,6 +539,28 @@ namespace VK_UI3.Views.ModalsPages
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             MainView.mainView.ToggleLyricsPanel();
+        }
+
+        private void CopyClipboard_Click(object sender, RoutedEventArgs e)
+        {
+            StringBuilder textToClip = new StringBuilder(); ;
+            foreach (var item in Texts)
+            {
+
+                if (item is string TextString)
+                {
+                    textToClip.AppendLine(TextString);
+                }
+                else if (item is LyricsTimestamp timeText)
+                {
+                    textToClip.AppendLine(timeText.Line);
+                }
+            }
+
+            var package = new DataPackage();
+            package.SetText(textToClip.ToString());
+            Clipboard.SetContent(package);
+
         }
     }
 

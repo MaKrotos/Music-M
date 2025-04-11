@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -46,9 +46,13 @@ namespace VkNet.Categories
 		}
 
 		/// <inheritdoc />
-		public Task<ReadOnlyCollection<GroupMember>> IsMemberAsync(string groupId, long? userId, IEnumerable<long> userIds, bool? extended,
-																	bool skipAuthorization = false)
-		{
+		public Task<ReadOnlyCollection<GroupMember>> IsMemberAsync(
+                string groupId,
+                long? userId = null,
+                IEnumerable<long> userIds = null,
+                bool? extended = null,
+                bool skipAuthorization = false)
+        {
 			return TypeHelper.TryInvokeMethodAsync(() => IsMember(groupId, userId, userIds, extended, skipAuthorization));
 		}
 

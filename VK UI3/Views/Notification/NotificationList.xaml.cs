@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.ObjectModel;
@@ -39,14 +39,14 @@ namespace VK_UI3.Views.Notification
         {
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
             {
-                foreach (TaskAction newTask in e.NewItems)
+                foreach (Notification newTask in e.NewItems)
                 {
                     tasks.Add(newTask);
                 }
             }
             else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
             {
-                foreach (TaskAction oldTask in e.OldItems)
+                foreach (Notification oldTask in e.OldItems)
                 {
                     tasks.Remove(oldTask);
                 }
@@ -56,7 +56,7 @@ namespace VK_UI3.Views.Notification
      
 
 
-        ObservableCollection<TaskAction> tasks = new ObservableCollection<TaskAction>();
+        ObservableCollection<Notification> tasks = new ObservableCollection<Notification>();
    
     }
 }

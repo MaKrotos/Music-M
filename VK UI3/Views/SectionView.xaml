@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Page
-    x:Class="VK_UI3.Views.SectionView"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="using:VK_UI3.Views"
-    xmlns:c="using:VK_UI3.Views.Controls"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Padding="0"
-    x:Name="SectionPage"
-    mc:Ignorable="d">
+	x:Class="VK_UI3.Views.SectionView"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:c="using:VK_UI3.Views.Controls"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="using:VK_UI3.Views"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	x:Name="SectionPage"
+	Padding="0"
+	mc:Ignorable="d">
 
-    <Page.Resources>
-        <local:BlockTemplateSelector x:Key="SectionTemplateSelector" />
-    </Page.Resources>
+	<Page.Resources>
+		<local:BlockTemplateSelector x:Key="SectionTemplateSelector" />
+	</Page.Resources>
 
-    <ScrollView x:Name="scrollVIew" ViewChanged="scrollVIew_ViewChanged">
-        <ListView
-            Padding="0,20,0,20"
-            x:Name="ListBlocks"
-            ItemTemplateSelector="{StaticResource SectionTemplateSelector}"
-            ItemsSource="{x:Bind blocks, Mode=OneWay}"
-            SelectionMode="None">
-            <ListView.Footer>
-                <ProgressRing
-                    x:Name="LoadingIndicator"
-                    Width="50"
-                    Height="50"
-                    Margin="20"
-                    IsActive="True" />
-            </ListView.Footer>
-        </ListView>
+	<ScrollView x:Name="scrollVIew" ViewChanged="scrollVIew_ViewChanged">
+		<ListView
+			x:Name="ListBlocks"
+			Padding="0,20,0,20"
+			ItemTemplateSelector="{StaticResource SectionTemplateSelector}"
+			ItemsSource="{x:Bind blocks, Mode=OneWay}"
+			SelectionMode="None">
+			<ListView.Footer>
+				<ProgressRing
+					x:Name="LoadingIndicator"
+					Width="50"
+					Height="50"
+					Margin="20"
+					IsActive="True" />
+			</ListView.Footer>
+		</ListView>
 
-    </ScrollView>
+	</ScrollView>
 </Page>

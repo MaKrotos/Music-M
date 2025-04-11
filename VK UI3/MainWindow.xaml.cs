@@ -20,6 +20,7 @@ using VK_UI3.DB;
 using VK_UI3.DownloadTrack;
 using VK_UI3.Views;
 using VK_UI3.Views.LoginWindow;
+using VK_UI3.Views.Notification;
 using VK_UI3.Views.Upload;
 using VK_UI3.VKs;
 using Windows.ApplicationModel;
@@ -52,17 +53,18 @@ namespace VK_UI3
             m_AppWindow = this.AppWindow;
 
             mainWindow = this;
-       
+
             contentFrame = ContentFrame;
             this.ExtendsContentIntoTitleBar = true;
             this.SetTitleBar(AppTitleBar);
             AppTitleBar.Loaded += AppTitleBar_Loaded;
             AppTitleBar.SizeChanged += AppTitleBar_SizeChanged;
-            
 
-            
 
-            PlayListDownload.OnEndAllDownload += (OnEndAllDownload_Event); ;
+
+
+            PlayListDownload.OnEndAllDownload += (OnEndAllDownload_Event);
+            ;
 
 
             AppWindowTitleBar m_TitleBar = m_AppWindow.TitleBar;
@@ -78,7 +80,8 @@ namespace VK_UI3
             m_TitleBar.ButtonForegroundColor = (Application.Current.RequestedTheme == ApplicationTheme.Dark)
                 ? Colors.White : Colors.Black;
             UISettings uI = new();
-            uI.ColorValuesChanged += UI_ColorValuesChanged; ;
+            uI.ColorValuesChanged += UI_ColorValuesChanged;
+            ;
 
 
             var navigationInfo = new NavigationInfo { SourcePageType = this };
@@ -112,21 +115,23 @@ namespace VK_UI3
             ProfilesBTN.AnimationCompleted += ResizeTabBar;
             UploadBTN.AnimationCompleted += ResizeTabBar;
             VK_UI3.Views.Tasks.TaskAction.tasks.CollectionChanged += Tasks_CollectionChanged;
+            VK_UI3.Views.Notification.Notification.Notifications.CollectionChanged += Notifications_CollectionChanged;
+            ;
+
 
             UploadTrack.UploadsTracks.CollectionChanged += UploadsTracks_CollectionChanged;
 
-          
+
 
             this.Activated += activated;
 
-          
+
 
 
         }
 
         public void ShowTaskFlyOut()
         {
-
             TasksBTN.Flyout.ShowAt(TasksBTN);
         }
 
@@ -168,7 +173,7 @@ namespace VK_UI3
             SetRegionsForCustomTitleBar();
         }
 
-  
+
 
 
 
@@ -327,7 +332,8 @@ namespace VK_UI3
         private void SetRegionsForCustomTitleBar()
         {
             // Specify the interactive regions of the title bar.
-            if (AppTitleBar.XamlRoot == null) return;
+            if (AppTitleBar.XamlRoot == null)
+                return;
             double scaleAdjustment = AppTitleBar.XamlRoot.RasterizationScale;
             var nonClientInputSrc = InputNonClientPointerSource.GetForWindowId(m_AppWindow.Id);
 
@@ -369,7 +375,7 @@ namespace VK_UI3
         }
 
 
-    
+
         private Windows.Graphics.RectInt32 GetRect(Rect bounds, double scale)
         {
             return new Windows.Graphics.RectInt32(
@@ -398,7 +404,7 @@ namespace VK_UI3
 
         private void activated(object sender, WindowActivatedEventArgs args)
         {
-
+          
         }
 
         private void OnUpdateMica(object sender, EventArgs e)
@@ -465,28 +471,28 @@ namespace VK_UI3
 
         public async Task<bool> checkUpdate()
         {
-            
 
-                Windows.ApplicationModel.Package package = Windows.ApplicationModel.Package.Current;
-                PackageId packageId = package.Id;
-                var version = packageId.Version;
-                var currentVersion = string.Format("{0}.{1}.{2}.{3}", version.Major, version.Minor, version.Build, version.Revision);
 
-                var appUpdater = new AppUpdater(currentVersion);
+            Windows.ApplicationModel.Package package = Windows.ApplicationModel.Package.Current;
+            PackageId packageId = package.Id;
+            var version = packageId.Version;
+            var currentVersion = string.Format("{0}.{1}.{2}.{3}", version.Major, version.Minor, version.Build, version.Revision);
 
-                var updateAvailable = await appUpdater.CheckForUpdates();
+            var appUpdater = new AppUpdater(currentVersion);
 
-                if (updateAvailable)
+            var updateAvailable = await appUpdater.CheckForUpdates();
+
+            if (updateAvailable)
+            {
+
+
+                // Создайте новое окно
+                dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
                 {
-
-           
-                    // Создайте новое окно
-                    dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
-                    {
-                        ContentFrame.Navigate(typeof(UpdatePage), appUpdater, new DrillInNavigationTransitionInfo());
-                    });
-                    return true;
-                }
+                    ContentFrame.Navigate(typeof(UpdatePage), appUpdater, new DrillInNavigationTransitionInfo());
+                });
+                return true;
+            }
             return false;
         }
 
@@ -617,7 +623,7 @@ namespace VK_UI3
 
             onDownloadClicked?.RaiseEvent(this, EventArgs.Empty);
         }
-       
+
 
 
 
@@ -666,6 +672,25 @@ namespace VK_UI3
         }
 
         public static DownloadFileWithProgress downloadFileWithProgress = null;
-    }
 
+        private void TitIcon_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            if (VK_UI3.Views.Notification.Notification.Notifications.Count > 0)
+                NotifList.ShowAt(TitIcon);
+        }
+
+        private void Notifications_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (VK_UI3.Views.Notification.Notification.Notifications.Count == 0)
+            {
+                NotifList.Hide();
+                NotifIndicator.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                NotifList.ShowAt(TitIcon);
+                NotifIndicator.Visibility = Visibility.Visible;
+            }
+        }
+    }
 }

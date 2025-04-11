@@ -16,10 +16,30 @@ namespace VK_UI3.Views.Notification
 
         public ButtonNotification button1;
         public ButtonNotification button2;
+
+        public Notification(string header = null, string message = null, ButtonNotification button1 = null, ButtonNotification button2 = null)
+        {
+            this.header = header;
+            Message = message;
+            this.button1 = button1;
+            this.button2 = button2;
+            Notifications.Add(this);
+        }
+
+        internal void Delete()
+        {
+            Notifications.Remove(this);
+        }
     }
 
     public class ButtonNotification
     {
+        public ButtonNotification(string text, Action btnAction)
+        {
+            Text = text;
+            BtnAction = btnAction;
+        }
+
         public string Text { get; set; }  
         public Action BtnAction { get; set; }  
     }

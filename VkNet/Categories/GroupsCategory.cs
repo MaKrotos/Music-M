@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -203,51 +203,59 @@ namespace VkNet.Categories
 		}
 
 		/// <inheritdoc />
-		public ReadOnlyCollection<GroupMember> IsMember(string groupId, long? userId, IEnumerable<long> userIds, bool? extended,
-														bool skipAuthorization = false)
+		public ReadOnlyCollection<GroupMember> IsMember(
+				string groupId,
+				long? userId = null,
+				IEnumerable<long> userIds = null,
+				bool? extended = null,
+				bool skipAuthorization = false)
 		{
+			// Проверяем, что передан хотя бы один ID пользователя
+			if (!userId.HasValue && (userIds == null || !userIds.Any()))
+			{
+				throw new ArgumentException("Необходимо указать userId или userIds");
+			}
+
+			// Объединяем userId и userIds в один список (если оба переданы)
+			var finalUserIds = new List<long>();
+
 			if (userId.HasValue)
 			{
-				if (userIds != null)
+				if (userId.Value < 1)
 				{
-					var enumerable = userIds as long[] ?? userIds.ToArray();
+					throw new ArgumentException("Идентификатор пользователя должен быть больше 0");
+				}
+				finalUserIds.Add(userId.Value);
+			}
 
-					if (enumerable.Any(id => id < 1))
+			if (userIds != null)
+			{
+				foreach (var id in userIds)
+				{
+					if (id < 1)
 					{
 						throw new ArgumentException("Идентификатор пользователя должен быть больше 0");
 					}
-
-					var tempList = enumerable.ToList();
-					tempList.Add(userId.Value);
-					userIds = tempList;
-				} else
-				{
-					if (userId.Value < 1)
-					{
-						throw new ArgumentException("Идентификатор пользователя должен быть больше 0");
-					}
-
-					userIds = new List<long>
-					{
-						userId.Value
-					};
+					finalUserIds.Add(id);
 				}
 			}
 
+			// Убираем дубликаты (если userId был также в userIds)
+			finalUserIds = finalUserIds.Distinct().ToList();
+
 			var parameters = new VkParameters
-			{
-				{ "group_id", groupId },
-				{ "user_ids", userIds },
-				{ "extended", extended }
-			};
+				{
+					{ "group_id", groupId },
+					{ "user_ids", finalUserIds },
+					{ "extended", extended }
+				};
 
-			var result = _vk.Call("groups.isMember", parameters, skipAuthorization);
-
-			return result.ToReadOnlyCollectionOf<GroupMember>(x => x);
+			return _vk.Call("groups.isMember", parameters, skipAuthorization)
+					  .ToReadOnlyCollectionOf<GroupMember>(x => x);
 		}
 
-		/// <inheritdoc />
-		public VkCollection<Group> Search(GroupsSearchParams @params, bool skipAuthorization = false)
+        /// <inheritdoc />
+        public VkCollection<Group> Search(GroupsSearchParams @params, bool skipAuthorization = false)
 		{
 			return _vk.Call("groups.search",
 					new VkParameters

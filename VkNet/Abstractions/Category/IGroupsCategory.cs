@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using VkNet.Enums.Filters;
@@ -42,11 +42,15 @@ namespace VkNet.Abstractions
 		VkCollection<User> GetMembers(GroupsGetMembersParams @params, bool skipAuthorization = false);
 
 		/// <inheritdoc cref="IGroupsCategoryAsync.IsMemberAsync" />
-		ReadOnlyCollection<GroupMember> IsMember(string groupId, long? userId, IEnumerable<long> userIds, bool? extended,
-												bool skipAuthorization = false);
+		ReadOnlyCollection<GroupMember> IsMember(
+				string groupId,
+				long? userId = null,
+				IEnumerable<long> userIds = null,
+				bool? extended = null,
+				bool skipAuthorization = false);
 
-		/// <inheritdoc cref="IGroupsCategoryAsync.SearchAsync" />
-		VkCollection<Group> Search(GroupsSearchParams @params, bool skipAuthorization = false);
+        /// <inheritdoc cref="IGroupsCategoryAsync.SearchAsync" />
+        VkCollection<Group> Search(GroupsSearchParams @params, bool skipAuthorization = false);
 
 		/// <inheritdoc cref="IGroupsCategoryAsync.GetInvitesAsync" />
 		VkCollection<Group> GetInvites(long? count, long? offset, bool? extended = null);

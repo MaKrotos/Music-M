@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -163,9 +163,12 @@ namespace VkNet.Abstractions
         /// <remarks>
         /// Страница документации ВКонтакте http://vk.com/dev/groups.isMember
         /// </remarks>
-        Task<ReadOnlyCollection<GroupMember>> IsMemberAsync(string groupId, long? userId, IEnumerable<long> userIds, bool? extended,
-                                                            bool skipAuthorization = false);
-
+        Task<ReadOnlyCollection<GroupMember>> IsMemberAsync(
+                string groupId,
+                long? userId = null,
+                IEnumerable<long> userIds = null,
+                bool? extended = null,
+                bool skipAuthorization = false);
         /// <summary>
         /// Осуществляет поиск сообществ по заданной подстроке.
         /// </summary>

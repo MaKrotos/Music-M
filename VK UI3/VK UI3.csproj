@@ -88,6 +88,7 @@
 	  <None Remove="Views\ModalsPages\MixControls\PicturedControl.xaml" />
 	  <None Remove="Views\ModalsPages\MixControls\SimpleButtons.xaml" />
 	  <None Remove="Views\ModalsPages\SettingMix.xaml" />
+	  <None Remove="Views\Notification\NotifController.xaml" />
 	  <None Remove="Views\SectionView.xaml" />
 	  <None Remove="Views\Settings\SettingsPage.xaml" />
 	  <None Remove="Views\Share\ConversationsList.xaml" />
@@ -269,6 +270,9 @@
     <None Update="DownloadTrack\ffmpeg.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\Notification\NotifController.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\ModalsPages\MixControls\PicturedControl.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
