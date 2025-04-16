@@ -19,8 +19,7 @@
 		CanReorderItems="false"
 		IsItemClickEnabled="False"
 		ItemsSource="{x:Bind tasks, Mode=OneWay}"
-		ScrollViewer.HorizontalScrollMode="Disabled"
-		ScrollViewer.VerticalScrollMode="Disabled"
+
 		SelectionMode="None">
 		<ListView.Shadow>
 			<ThemeShadow />

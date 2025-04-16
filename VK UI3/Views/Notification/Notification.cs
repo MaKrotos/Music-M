@@ -34,12 +34,14 @@ namespace VK_UI3.Views.Notification
 
     public class ButtonNotification
     {
-        public ButtonNotification(string text, Action btnAction)
+        public ButtonNotification(string text, Action btnAction, bool closeNotification = false)
         {
             Text = text;
             BtnAction = btnAction;
+            this.closeNotification = closeNotification;
         }
 
+        public bool closeNotification { get; set; }
         public string Text { get; set; }  
         public Action BtnAction { get; set; }  
     }

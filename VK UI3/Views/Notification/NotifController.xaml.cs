@@ -63,6 +63,11 @@ namespace VK_UI3.Views.Notification
                 BTNsGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
                 Grid.SetColumn(btn, 0);
                 BTNsGrid.Children.Add(btn);
+
+                if (notification.button1.closeNotification)
+                {
+                    btn.Click += (sender, e) => notification.Delete();
+                }
             }
 
             if (notification.button2 != null)
@@ -73,7 +78,7 @@ namespace VK_UI3.Views.Notification
                 btn.Click += (sender, e) => notification.button2.BtnAction();
                 btn.HorizontalAlignment = HorizontalAlignment.Stretch;
                 BTNsGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
-
+                btn.Click += (sender, e) => notification.Delete();
                 Grid.SetColumn(btn, 1);
                 BTNsGrid.Children.Add(btn);
             }

@@ -151,7 +151,7 @@
 					</FontIcon>
 				</customBTN:AnimatedButton>
 
-				<Grid Background="Transparent" Tapped="TitIcon_Tapped">
+				<Grid Grid.Column="2" Background="Transparent" Tapped="TitIcon_Tapped">
 					<Grid.ContextFlyout>
 						<Flyout
 							x:Name="NotifList"

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <UserControl
 	x:Class="VK_UI3.Controls.LyricController"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -41,7 +41,7 @@
 							Storyboard.TargetName="textLyric"
 							Storyboard.TargetProperty="Opacity"
 							To="1"
-							Duration="0:0:0.3" />
+							Duration="0:0:0.4" />
 					</Storyboard>
 
 					<Storyboard x:Name="scaleDownAnimation">
@@ -51,7 +51,7 @@
 							Storyboard.TargetName="textLyric"
 							Storyboard.TargetProperty="Opacity"
 							To="0.6"
-							Duration="0:0:0.3" />
+							Duration="0:0:0.4" />
 					</Storyboard>
 
 				</TextBlock.Resources>
