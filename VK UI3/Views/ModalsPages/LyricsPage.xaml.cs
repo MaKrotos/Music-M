@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+п»їusing Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
@@ -278,13 +278,13 @@ namespace VK_UI3.Views.ModalsPages
                 }
 
                 if (!result && _currentLoadId == loadId)
-                    AddTextLines(new[] { "Текст песни не найден" }, loadId);
+                    AddTextLines(new[] { "РўРµРєСЃС‚ РїРµСЃРЅРё РЅРµ РЅР°Р№РґРµРЅ" }, loadId);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Ошибка загрузки: {ex}");
+                Debug.WriteLine($"РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё: {ex}");
                 if (_currentLoadId == loadId)
-                    AddTextLines(new[] { "Ошибка загрузки текста" }, loadId);
+                    AddTextLines(new[] { "РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё С‚РµРєСЃС‚Р°" }, loadId);
             }
             finally
             {
@@ -357,7 +357,7 @@ namespace VK_UI3.Views.ModalsPages
                 if (_currentLoadId == loadId)
                 {
                     AddTextLines(lines, loadId);
-                    Credits = "Текст предоставлен Genius (genius.com)";
+                    Credits = "РўРµРєСЃС‚ РїСЂРµРґРѕСЃС‚Р°РІР»РµРЅ Genius (genius.com)";
                 }
                 return true;
             }
@@ -403,7 +403,7 @@ namespace VK_UI3.Views.ModalsPages
                 if (_currentLoadId == loadId)
                 {
                     AddTextLines(lines, loadId);
-                    Credits = "Текст предоставлен LRCLib (lrclib.net)";
+                    Credits = "РўРµРєСЃС‚ РїСЂРµРґРѕСЃС‚Р°РІР»РµРЅ LRCLib (lrclib.net)";
                 }
                 return true;
             }

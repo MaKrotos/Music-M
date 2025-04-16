@@ -294,7 +294,7 @@ namespace VK_UI3.Controllers
 
         private void CommandManager_PreviousReceived(MediaPlaybackCommandManager sender, MediaPlaybackCommandManagerPreviousReceivedEventArgs args)
         {
-            if (mediaPlayer.Position.TotalSeconds <= 3)
+            if (mediaPlayer.Position.TotalSeconds >= 3)
             {
                 mediaPlayer.Position = new TimeSpan(0);
             }

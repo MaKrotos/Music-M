@@ -324,16 +324,23 @@ namespace VK_UI3.Views
 
 
 
-                if (string.IsNullOrEmpty(DescriptionText.Text)) DescriptionText.Visibility = Visibility.Collapsed;
-                if (string.IsNullOrEmpty(textBlock1.Text)) textBlock1.Visibility = Visibility.Collapsed;
 
-                if (string.IsNullOrEmpty(DescriptionText.Text) && string.IsNullOrEmpty(textBlock1.Text))
-                    TextsT.Visibility = Visibility.Collapsed;
 
                 MainText.ChangeTextWithAnimation(vkGetAudio.name);
                 CountTrText.Visibility = Visibility.Visible;
 
                 CheckAndHideGrid(AddInfo);
+
+
+                if (string.IsNullOrEmpty(DescriptionText.Text)) DescriptionText.Visibility = Visibility.Collapsed;
+                if (string.IsNullOrEmpty(textBlock1.Text) && string.IsNullOrEmpty(vkGetAudio.name)) textBlock1.Visibility = Visibility.Collapsed;
+
+                if (string.IsNullOrEmpty(DescriptionText.Text) && string.IsNullOrEmpty(textBlock1.Text) && string.IsNullOrEmpty(vkGetAudio.name))
+                    TextsT.Visibility = Visibility.Collapsed;
+                else
+                {
+                    TextsT.Visibility = Visibility.Visible;
+                }
             });
         }
 
