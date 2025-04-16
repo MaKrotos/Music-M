@@ -166,6 +166,9 @@ namespace VK_UI3.Views
 
             AccountsDB.ChanhgeActiveAccount += ChangeAccount;
             CollapseAnimation.Completed += CollapseAnimation_Completed;
+            CollapseAnimationPlayingList.Completed += CollapseAnimationPlayingList_Completed;
+            ;
+
 
             this.KeyDown += MainView_KeyDown;
 
@@ -182,6 +185,12 @@ namespace VK_UI3.Views
 
             _= CheckMemberVK();
 
+        }
+
+        private void CollapseAnimationPlayingList_Completed(object sender, object e)
+        {
+            if (SectionViewPageNowPlayingList.Opacity == 0)
+                SectionViewPageNowPlayingList.Visibility = Visibility.Collapsed;
         }
 
         private async Task CheckMemberVK()
@@ -559,6 +568,11 @@ namespace VK_UI3.Views
 
         public static void OpenMyPage(SectionType sectionType)
         {
+            if (!mainView.PlayNowPanelListCLosed)
+            {
+                mainView.TogglePlayNowPanel();
+            }
+
             var sectionView = new WaitParameters();
             sectionView.sectionType = sectionType;
             frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
@@ -567,6 +581,11 @@ namespace VK_UI3.Views
 
         public static void OpenPlayListLists(long? id = null, OpenedPlayList openedPlayList = OpenedPlayList.all)
         {
+            if (!mainView.PlayNowPanelListCLosed)
+            {
+                mainView.TogglePlayNowPanel();
+            }
+
             var sectionView = new WaitParameters();
             if (id == null)
                 id = activeAccount.id;
@@ -577,6 +596,12 @@ namespace VK_UI3.Views
         }
         public static void OpenIVkAudio(IVKGetAudio iVKGetAudio)
         {
+            if (!mainView.PlayNowPanelListCLosed)
+            {
+                mainView.TogglePlayNowPanel();
+            }
+
+
             var waitParameters = new WaitParameters();
             waitParameters.sectionType = SectionType.CustomIVKGetAudio;
             waitParameters.iVKGetAudio = iVKGetAudio;
@@ -585,6 +610,12 @@ namespace VK_UI3.Views
 
         public static void OpenPlayList(AudioPlaylist playlist)
         {
+            if (!mainView.PlayNowPanelListCLosed)
+            {
+                mainView.TogglePlayNowPanel();
+            }
+
+
             var waitParameters = new WaitParameters();
             waitParameters.sectionType = SectionType.PlayList;
             waitParameters.Playlist = playlist;
@@ -593,7 +624,13 @@ namespace VK_UI3.Views
 
         public static void OpenPlayList(IVKGetAudio iVKGetAudio)
         {
-                var sectionView = new WaitParameters();
+            if (!mainView.PlayNowPanelListCLosed)
+            {
+                mainView.TogglePlayNowPanel();
+            }
+
+
+            var sectionView = new WaitParameters();
                 sectionView.sectionType = SectionType.PlayList;
                 sectionView.iVKGetAudio = iVKGetAudio;
                 frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
@@ -601,6 +638,12 @@ namespace VK_UI3.Views
 
         public static void OpenPlayList(long AlbumID, long AlbumOwnerID, string AlbumAccessKey)
         {
+            if (!mainView.PlayNowPanelListCLosed)
+            {
+                mainView.TogglePlayNowPanel();
+            }
+
+
             var sectionView = new WaitParameters();
             sectionView.sectionType = SectionType.PlayList;
             MusicX.Core.Models.Playlist playlist = new MusicX.Core.Models.Playlist();
@@ -614,6 +657,12 @@ namespace VK_UI3.Views
 
         public static void OpenSection(string sectionID, SectionType sectionType = SectionType.None)
         {
+
+            if (!mainView.PlayNowPanelListCLosed)
+            {
+                mainView.TogglePlayNowPanel();
+            }
+
             var sectionView = new WaitParameters();
             sectionView.SectionID = sectionID;
             if (sectionView.SectionID != "search")
@@ -629,6 +678,12 @@ namespace VK_UI3.Views
 
         public static void OpenSearchSection(string searchString)
         {
+
+            if (!mainView.PlayNowPanelListCLosed)
+            {
+                mainView.TogglePlayNowPanel();
+            }
+
             var sectionView = new WaitParameters();
             sectionView.searchText = searchString;
             sectionView.SectionID = "search";
@@ -660,8 +715,17 @@ namespace VK_UI3.Views
         }
 
         bool lyrClosed = true;
+
+        public bool PlayNowPanelListCLosed { get; set; } = true;
+
         public void ToggleLyricsPanel()
         {
+
+            if (!PlayNowPanelListCLosed)
+            {
+                TogglePlayNowPanel(); 
+            }
+
             if (lyrClosed)
             {
                 ExpandLyricsPanel();
@@ -672,8 +736,9 @@ namespace VK_UI3.Views
             }
             lyrClosed = !lyrClosed;
 
-        }
 
+        }
+       
 
 
         public async void CollapseLyricsPanel()
@@ -691,6 +756,66 @@ namespace VK_UI3.Views
             ExpandAnimation.Begin();
             LyricPage.Enable();
             _ = LyricPage.LoadLyricsAsync();
+        }
+
+
+        public void TogglePlayNowPanel()
+        {
+
+            if (!lyrClosed)
+            {
+                ToggleLyricsPanel();
+            }
+
+            if (PlayNowPanelListCLosed)
+            {
+                ExpandePlayNowPanel();
+            }
+            else
+            {
+                CollapseePlayNowPanel();
+            }
+
+            PlayNowPanelListCLosed = !PlayNowPanelListCLosed;
+
+        }
+
+        private void CollapseePlayNowPanel()
+        {
+            ExpandAnimationPlayingList.Pause();
+            CollapseAnimationPlayingList.Begin();
+
+            //    LyricPage.Disable();
+
+        }
+
+        private void ExpandePlayNowPanel()
+        {
+            SectionViewPageNowPlayingList.Visibility = Visibility.Visible;
+            CollapseAnimationPlayingList.Pause();
+
+            ExpandAnimationPlayingList.Begin();
+
+            if (AudioPlayer.iVKGetAudio != null)
+            {
+                var waitParameters = new WaitParameters();
+                waitParameters.sectionType = SectionType.CustomIVKGetAudio;
+                waitParameters.iVKGetAudio = AudioPlayer.iVKGetAudio;
+                SectionViewPageNowPlayingList.Navigate(typeof(WaitView), waitParameters, new DrillInNavigationTransitionInfo());
+            }
+        }
+
+        internal void setNewPlayingList(IVKGetAudio value)
+        {
+            if (PlayNowPanelListCLosed)
+                return;
+            if (value != null)
+            {
+                var waitParameters = new WaitParameters();
+                waitParameters.sectionType = SectionType.CustomIVKGetAudio;
+                waitParameters.iVKGetAudio = AudioPlayer.iVKGetAudio;
+                SectionViewPageNowPlayingList.Navigate(typeof(WaitView), waitParameters, new DrillInNavigationTransitionInfo());
+            }
         }
 
         private void navigateInvoke()
@@ -762,8 +887,7 @@ namespace VK_UI3.Views
             }
         }
 
-    
-
+     
     }
 
 

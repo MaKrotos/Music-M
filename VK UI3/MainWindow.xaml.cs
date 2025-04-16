@@ -173,12 +173,6 @@ namespace VK_UI3
             SetRegionsForCustomTitleBar();
         }
 
-
-
-
-
-
-
         public void backBTNShow()
         {
 

@@ -538,6 +538,9 @@ namespace VK_UI3.Controllers
             {
                 if (_iVKGetAudio == value) return;
                 _iVKGetAudio = value;
+
+                MainView.mainView.setNewPlayingList(value);
+
                 NotifyoniVKUpdate();
             }
         }
@@ -689,8 +692,7 @@ namespace VK_UI3.Controllers
 
         private void goToPlayList_BTN(object sender, TappedRoutedEventArgs e)
         {
-            var navigationInfo = new NavigationInfo { SourcePageType = this };
-            MainView.frame.Navigate(typeof(PlayList), navigationInfo, new DrillInNavigationTransitionInfo());
+            MainView.mainView.TogglePlayNowPanel();
         }
 
         public void OnDisplayNameChanged(string newDisplayName, ref Guid eventContext)
@@ -841,8 +843,11 @@ namespace VK_UI3.Controllers
             if (share.settingValue == "false")
             {
                 SettingsTable.SetSetting("shareFriend", "true");
-                iVKGetAudio.shareToVK();
-            }
+                if (iVKGetAudio != null)
+                    {
+                    iVKGetAudio.shareToVK();
+                }
+                }
             else
             {
                 SettingsTable.SetSetting("shareFriend", "false");

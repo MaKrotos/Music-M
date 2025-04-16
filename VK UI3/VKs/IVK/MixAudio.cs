@@ -1,4 +1,4 @@
-using Microsoft.UI.Dispatching;
+п»їusing Microsoft.UI.Dispatching;
 using MusicX.Core.Services;
 using Newtonsoft.Json;
 using System;
@@ -90,7 +90,7 @@ namespace VK_UI3.VKs.IVK
 
         public override void GetTracks()
         {
-            semaphore.Wait(); // Ожидает освобождения семафора
+            semaphore.Wait(); // РћР¶РёРґР°РµС‚ РѕСЃРІРѕР±РѕР¶РґРµРЅРёСЏ СЃРµРјР°С„РѕСЂР°
 
             try
             {
@@ -103,7 +103,7 @@ namespace VK_UI3.VKs.IVK
 
                     try
                     {
-                        var tracks = await VK.vkService.GetStreamMixAudios(data.Id, data.Append, options: data.Options);
+                        var tracks = await VK.vkService.GetStreamMixAudios(data.Id, data.Append+1, options: data.Options);
                         foreach (var item in tracks)
                         {
                             listAudio.Add(new Helpers.ExtendedAudio(item, this));

@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -131,10 +131,6 @@ namespace VK_UI3.Views
                     default:
                         break;
                 }
-
-             
-
-
                 if (vkGetAudio is (PlayListVK))
                 {
                     var playlist = (vkGetAudio as PlayListVK).playlist;
@@ -319,9 +315,21 @@ namespace VK_UI3.Views
 
 
                 }
-            
 
-                if (DescriptionText.Text is null || DescriptionText.Text == "") DescriptionText.Visibility = Visibility.Collapsed;
+
+                if (vkGetAudio.getPhotosList() == null && vkGetAudio.getPhoto() == null)
+                {
+                    ThumbGrid.Visibility = Visibility.Collapsed;
+                }
+
+
+
+                if (string.IsNullOrEmpty(DescriptionText.Text)) DescriptionText.Visibility = Visibility.Collapsed;
+                if (string.IsNullOrEmpty(textBlock1.Text)) textBlock1.Visibility = Visibility.Collapsed;
+
+                if (string.IsNullOrEmpty(DescriptionText.Text) && string.IsNullOrEmpty(textBlock1.Text))
+                    TextsT.Visibility = Visibility.Collapsed;
+
                 MainText.ChangeTextWithAnimation(vkGetAudio.name);
                 CountTrText.Visibility = Visibility.Visible;
 

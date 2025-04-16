@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <Page
 	x:Class="VK_UI3.Views.MainView"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -31,6 +31,26 @@
 				To="0"
 				Duration="0:0:0.3" />
 		</Storyboard>
+
+
+		<Storyboard x:Name="ExpandAnimationPlayingList">
+			<DoubleAnimation
+				EnableDependentAnimation="True"
+				Storyboard.TargetName="SectionViewPageNowPlayingList"
+				Storyboard.TargetProperty="Opacity"
+				To="1"
+				Duration="0:0:0.3" />
+		</Storyboard>
+
+		<Storyboard x:Name="CollapseAnimationPlayingList">
+			<DoubleAnimation
+				EnableDependentAnimation="True"
+				Storyboard.TargetName="SectionViewPageNowPlayingList"
+				Storyboard.TargetProperty="Opacity"
+				To="0"
+				Duration="0:0:0.3" />
+		</Storyboard>
+
 	</Page.Resources>
 
 
@@ -97,7 +117,10 @@
 
 
 				</NavigationView.MenuItems>
-				<Grid x:Name="MainGridLir" Margin="0" PointerEntered="ListViewItem_PointerEntered">
+				<Grid
+					x:Name="MainGridLir"
+					Margin="0"
+					PointerEntered="ListViewItem_PointerEntered">
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="*" />
@@ -115,17 +138,23 @@
 							</TransitionCollection>
 						</Frame.ContentTransitions>
 					</Frame>
-					
+
 				</Grid>
 			</NavigationView>
 			<controlLyryc:LyricsPage
-				VerticalAlignment="Stretch"
 				x:Name="LyricPage"
 				Grid.Row="3"
+				VerticalAlignment="Stretch"
+				Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}"
 				Opacity="0"
-				Visibility="Collapsed"
-				
-				Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}" />
+				Visibility="Collapsed" />
+			<Frame
+				x:Name="SectionViewPageNowPlayingList"
+				Grid.Row="3"
+				VerticalAlignment="Stretch"
+				Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}"
+				Opacity="0"
+				Visibility="Collapsed" />
 		</Grid>
 		<Frame
 			Grid.Row="1"

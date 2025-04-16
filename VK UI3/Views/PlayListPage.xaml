@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <Page
 	x:Class="VK_UI3.Views.PlayListPage"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -35,7 +35,7 @@
 
 
 				<!--  Квадратный элемент в первом столбце  -->
-				<Grid>
+				<Grid x:Name="ThumbGrid">
 					<StackPanel
 						VerticalAlignment="Top"
 						Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
@@ -166,6 +166,7 @@
 				<StackPanel Grid.Column="1" Margin="10,0,0,0">
 
 					<StackPanel
+						x:Name="TextsT"
 						Padding="10"
 						Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
 						CornerRadius="4"
