@@ -1,4 +1,4 @@
-
+﻿
 
 //using CSCore.CoreAudioAPI;
 using Microsoft.UI.Xaml;
@@ -294,7 +294,14 @@ namespace VK_UI3.Controllers
 
         private void CommandManager_PreviousReceived(MediaPlaybackCommandManager sender, MediaPlaybackCommandManagerPreviousReceivedEventArgs args)
         {
-            PlayPreviousTrack();
+            if (mediaPlayer.Position.TotalSeconds <= 3)
+            {
+                mediaPlayer.Position = new TimeSpan(0);
+            }
+            else
+            {
+                PlayPreviousTrack();
+            }
         }
 
         private void CommandManager_NextReceived(MediaPlaybackCommandManager sender, MediaPlaybackCommandManagerNextReceivedEventArgs args)
@@ -553,10 +560,6 @@ namespace VK_UI3.Controllers
 
         internal static void PlayPreviousTrack()
         {
-            if (mediaPlayer.Position.TotalSeconds <= 5 && mediaPlayer.Position.TotalSeconds > 1)
-            {
-                mediaPlayer.Position = new TimeSpan(0);
-            }
             Task.Run(async () =>
             {
                 iVKGetAudio.setPreviusTrackForPlay();
