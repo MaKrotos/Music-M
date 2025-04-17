@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using TagLib.Jpeg;
 using VK_UI3.Controllers;
 using VK_UI3.DB;
 using VK_UI3.Helpers.Animations;
@@ -773,9 +774,10 @@ namespace VK_UI3.Views
             }
             else
             {
+                SectionViewPageNowPlayingList.Content = null;
+                frame.BackStack.Clear();
                 CollapseePlayNowPanel();
             }
-
             PlayNowPanelListCLosed = !PlayNowPanelListCLosed;
 
         }
@@ -814,7 +816,13 @@ namespace VK_UI3.Views
                 var waitParameters = new WaitParameters();
                 waitParameters.sectionType = SectionType.CustomIVKGetAudio;
                 waitParameters.iVKGetAudio = AudioPlayer.iVKGetAudio;
-                SectionViewPageNowPlayingList.Navigate(typeof(WaitView), waitParameters, new DrillInNavigationTransitionInfo());
+
+                this.DispatcherQueue.TryEnqueue(async () =>
+                {
+                    SectionViewPageNowPlayingList.Navigate(typeof(WaitView), waitParameters, new DrillInNavigationTransitionInfo());
+
+                });
+
             }
         }
 

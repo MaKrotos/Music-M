@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml;
+п»їusing Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Imaging;
@@ -69,7 +69,7 @@ namespace VK_UI3.Controls
       
                 ToolTipService.SetToolTip(this, toolTip);
               // bool setCOlorTheme = false;
-              //  if (link.Title is "Недавнee" or "Плейлисты" or "Альбомы" or "Артисты и кураторы")
+              //  if (link.Title is "РќРµРґР°РІРЅee" or "РџР»РµР№Р»РёСЃС‚С‹" or "РђР»СЊР±РѕРјС‹" or "РђСЂС‚РёСЃС‚С‹ Рё РєСѓСЂР°С‚РѕСЂС‹")
               //      setCOlorTheme = true;
 
                 if (link.Meta.ContentType is "group" or "user" or "chat")
@@ -149,7 +149,11 @@ namespace VK_UI3.Controls
                 {
                     if (Regex.IsMatch(link.Id, CustomSectionsService.CustomLinkRegex))
                     {
-                        MainView.OpenSection(link.Id);
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = link.Url,
+                            UseShellExecute = true
+                        });
                         return;
                     }
 
@@ -205,16 +209,12 @@ namespace VK_UI3.Controls
                     return;
                 }
 
-                {
-                    var music = await VKs.VK.vkService.GetAudioCatalogAsync(link.Url);
-                    MainView.OpenSection(music.Catalog.DefaultSection);
-                    return;
-                }
                 Process.Start(new ProcessStartInfo
                 {
                     FileName = link.Url,
                     UseShellExecute = true
                 });
+
             }
             catch (Exception ex)
             {

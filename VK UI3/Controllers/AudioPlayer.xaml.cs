@@ -741,45 +741,51 @@ namespace VK_UI3.Controllers
 
         private void setButtonPlayNext()
         {
-            if (SettingsTable.GetSetting("playNext") == null)
+            try
             {
-                SettingsTable.SetSetting("playNext", "RepeatAll");
+                if (SettingsTable.GetSetting("playNext") == null)
+                {
+                    SettingsTable.SetSetting("playNext", "RepeatAll");
+                }
+
+                switch (SettingsTable.GetSetting("playNext").settingValue)
+                {
+                    case "RepeatOne":
+                        animateFontIcon.ChangeFontIconWithAnimation("\uE8ED");
+                        if (iVKGetAudio != null)
+                        {
+                            iVKGetAudio.UnShuffleList();
+                        }
+                        break;
+
+                    case "Shuffle":
+                        animateFontIcon.ChangeFontIconWithAnimation("\uE8B1");
+                        if (iVKGetAudio != null)
+                        {
+
+                            iVKGetAudio.setShuffle();
+                        }
+                        break;
+
+                    case "RepeatAll":
+                        animateFontIcon.ChangeFontIconWithAnimation("\uE8EE");
+                        if (iVKGetAudio != null)
+                        {
+
+                            iVKGetAudio.UnShuffleList();
+                        }
+                        break;
+
+
+                    default:
+                        break;
+                }
+
             }
-
-            switch (SettingsTable.GetSetting("playNext").settingValue)
-            {
-                case "RepeatOne":
-                    animateFontIcon.ChangeFontIconWithAnimation("\uE8ED");
-                    if (iVKGetAudio != null)
-                    {
-                        iVKGetAudio.UnShuffleList();
-                    }
-                    break;
-
-                case "Shuffle":
-                    animateFontIcon.ChangeFontIconWithAnimation("\uE8B1");
-                    if (iVKGetAudio != null)
-                    {
-
-                        iVKGetAudio.setShuffle();
-                    }
-                    break;
-
-                case "RepeatAll":
-                    animateFontIcon.ChangeFontIconWithAnimation("\uE8EE");
-                    if (iVKGetAudio != null)
-                    {
-
-                        iVKGetAudio.UnShuffleList();
-                    }
-                    break;
-
-
-                default:
-                    break;
+            catch (Exception ex)
+            { 
+            
             }
-
-
         }
 
         private void repeatBTN_Tapped(object sender, TappedRoutedEventArgs e)
