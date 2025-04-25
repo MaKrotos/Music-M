@@ -28,6 +28,7 @@ using Windows.UI.ViewManagement;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
+using WinRT.Interop;
 
 namespace VK_UI3
 {
@@ -51,7 +52,7 @@ namespace VK_UI3
         private WinProc newWndProc = null;
         private IntPtr oldWndProc = IntPtr.Zero;
         private bool addClosed = false;
-        private bool justClose = false;
+        public bool justClose = false;
         #endregion
 
         #region Constants
@@ -61,12 +62,16 @@ namespace VK_UI3
         #region Initialization
         public MainWindow()
         {
+            InitializeSystemIntegration();
+
             InitializeComponent();
             InitializeWindowProperties();
             InitializeEventHandlers();
             InitializeUIComponents();
-            InitializeSystemIntegration();
             InitializeNavigation();
+
+            var hwnd = WindowNative.GetWindowHandle(this);
+            _trayIconManager = new TrayIconManager(hwnd, this);
         }
 
         private void InitializeWindowProperties()
@@ -95,7 +100,45 @@ namespace VK_UI3
             BackBTN.AnimationCompleted += ResizeTabBar;
             ProfilesBTN.AnimationCompleted += ResizeTabBar;
             UploadBTN.AnimationCompleted += ResizeTabBar;
+
         }
+        // Win32 API функции
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex);
+
+
+        [DllImport("user32.dll")]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
+        // Константы стилей
+        private const int GWL_EXSTYLE = -20;
+        private const uint WS_EX_TOOLWINDOW = 0x00000080;
+
+        private TrayIconManager _trayIconManager;
+        public void HideFromTaskbar()
+        {
+                        var hwnd = WindowNative.GetWindowHandle(this);
+            if (hwnd == IntPtr.Zero)
+                return;
+
+            var extendedStyle = GetWindowLongPtr(hwnd, GWL_EXSTYLE);
+            SetWindowLongPtr(hwnd, GWL_EXSTYLE,
+                (IntPtr)(extendedStyle.ToInt64() | WS_EX_TOOLWINDOW));
+
+            ShowWindow(hwnd, 0);
+        }
+
+        public void ShowWindowAgain()
+        {
+            var hWnd = WindowNative.GetWindowHandle(this);
+            ShowWindow(hWnd, 5); // Показать окно
+        }
+
+
+
 
         private void SetRegionsForCustomTitleBar()
         {
@@ -190,12 +233,70 @@ namespace VK_UI3
         #region Window Management
         private void MainWindow_CloseRequested(object sender, WindowEventArgs args)
         {
+            // Если включено скрытие в трей, сразу прячем окно и не проверяем активные загрузки.
+            var hideTray = DB.SettingsTable.GetSetting("hideTray");
+            if (hideTray == null)
+            {
+                args.Handled = true;
+
+                showDialogTrayAsync();
+                return;
+            }
+
+
+
+        
+            // Если принудительное закрытие (justClose) – завершаем приложение.
             if (justClose)
+            {
                 Application.Current.Exit();
-            else if (PlayListDownload.PlayListDownloads.Count != 0)
+                return;
+            }
+            if (hideTray.settingValue.Equals("1"))
+            {
+                args.Handled = true;
+                HideFromTaskbar();
+                return;
+            }
+            // Если есть активные загрузки – предлагаем пользователю варианты.
+            if (PlayListDownload.PlayListDownloads.Count != 0)
             {
                 args.Handled = true;
                 HandleCloseWithActiveDownloads();
+                return;
+            }
+
+            // Если нет никаких особенностей – закрываем приложение.
+            Application.Current.Exit();
+        }
+
+        private async Task showDialogTrayAsync()
+        {
+            var dialog = new ContentDialog
+            {
+                Title = "Спрятать окно в трей?",
+                Content = "Укажите, как желаете, чтобы вело себя окно при закрытии?",
+                PrimaryButtonText = "Закрывать",
+                SecondaryButtonText = "Прятать в трей",
+                CloseButtonText = "Отмена"
+            };
+
+            dialog.Resources["ContentDialogMaxWidth"] = double.PositiveInfinity;
+            dialog.XamlRoot = this.Content.XamlRoot;
+
+            var result = await dialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+                DB.SettingsTable.SetSetting("hideTray", "0");
+                Application.Current.Exit();
+            }
+            else if (result == ContentDialogResult.Secondary)
+            {
+
+                DB.SettingsTable.SetSetting("hideTray", "1");
+                Application.Current.Exit();
+
             }
         }
 
@@ -204,27 +305,32 @@ namespace VK_UI3
             var dialog = new ContentDialog
             {
                 Title = "Загрузка еще не завершена",
-                Content = "Вы уверены, что хотите закрыть приложение?",
-                PrimaryButtonText = "Да",
+                Content = "Вы уверены, что хотите закрыть приложение, несмотря на активные загрузки?",
+                PrimaryButtonText = "Да, закрыть",
                 SecondaryButtonText = "Закрыть по завершению",
-                CloseButtonText = "Нет"
+                CloseButtonText = "Отмена"
             };
 
             dialog.Resources["ContentDialogMaxWidth"] = double.PositiveInfinity;
             dialog.XamlRoot = this.Content.XamlRoot;
+
             var result = await dialog.ShowAsync();
 
             if (result == ContentDialogResult.Primary)
             {
+                // Закрываем приложение немедленно.
                 justClose = true;
                 Application.Current.Exit();
             }
             else if (result == ContentDialogResult.Secondary && !addClosed)
             {
+                // Подписываемся на событие завершения всех загрузок, чтобы закрыть приложение после их окончания.
                 addClosed = true;
                 PlayListDownload.OnEndAllDownload += close;
             }
+            // При выборе "Отмена" – ничего не делаем, окно остаётся открытым.
         }
+
 
         private void close(object sender, EventArgs e) => Application.Current.Exit();
         #endregion

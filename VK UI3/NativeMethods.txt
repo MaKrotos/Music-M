@@ -19,3 +19,9 @@ GetWindow
 SetForegroundWindow
 ShowWindow
 IsIconic
+NOTIFYICONDATAW
+GDI_IMAGE_TYPE
+NOTIFY_ICON_MESSAGE
+ShowWindow
+SHOW_WINDOW
+GWL_EXSTYLE

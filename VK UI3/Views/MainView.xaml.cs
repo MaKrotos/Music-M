@@ -180,11 +180,11 @@ namespace VK_UI3.Views
 
             MainWindow.mainWindow.MainWindow_showRefresh();
 
-  
-      
 
 
-            _= CheckMemberVK();
+
+
+            _ = CheckMemberVK();
 
         }
 

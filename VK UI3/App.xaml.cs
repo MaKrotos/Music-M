@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Configuration;
+п»їusing Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
@@ -118,26 +118,26 @@ namespace VK_UI3
             _mutex = new Mutex(true, mutexName, out createdNew);
             if (!createdNew)
             {
-                // Здесь ваш код для запуска приложения
+              
                 _mutex = null;
 
-                // Получаем текущий процесс
+          
                 Process current = Process.GetCurrentProcess();
 
-                // Получаем все процессы с таким же именем, как у текущего
+                // РџРѕР»СѓС‡Р°РµРј РІСЃРµ РїСЂРѕС†РµСЃСЃС‹ СЃ С‚Р°РєРёРј Р¶Рµ РёРјРµРЅРµРј, РєР°Рє Сѓ С‚РµРєСѓС‰РµРіРѕ
                 foreach (Process process in Process.GetProcessesByName(current.ProcessName))
                 {
-                    // Если процесс не является текущим и его главное окно не минимизировано
+                    // Р•СЃР»Рё РїСЂРѕС†РµСЃСЃ РЅРµ СЏРІР»СЏРµС‚СЃСЏ С‚РµРєСѓС‰РёРј Рё РµРіРѕ РіР»Р°РІРЅРѕРµ РѕРєРЅРѕ РЅРµ РјРёРЅРёРјРёР·РёСЂРѕРІР°РЅРѕ
                     if (process.Id != current.Id && process.MainWindowHandle != IntPtr.Zero)
                     {
-                        // Развертываем окно, если оно свернуто
+                        // Р Р°Р·РІРµСЂС‚С‹РІР°РµРј РѕРєРЅРѕ, РµСЃР»Рё РѕРЅРѕ СЃРІРµСЂРЅСѓС‚Рѕ
                         var a = new Windows.Win32.Foundation.HWND(process.MainWindowHandle);
                         if (PInvoke.IsIconic(new Windows.Win32.Foundation.HWND(a)))
                         {
                             PInvoke.ShowWindow(new Windows.Win32.Foundation.HWND(a), Windows.Win32.UI.WindowsAndMessaging.SHOW_WINDOW_CMD.SW_RESTORE);
                         }
 
-                        // Переводим окно на передний план
+                        // РџРµСЂРµРІРѕРґРёРј РѕРєРЅРѕ РЅР° РїРµСЂРµРґРЅРёР№ РїР»Р°РЅ
                         PInvoke.SetForegroundWindow(new Windows.Win32.Foundation.HWND(a));
                         break;
                     }

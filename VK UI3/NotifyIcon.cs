@@ -1,55 +1,173 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.Drawing;
+using System.IO;
 
 namespace VK_UI3
 {
-    public static class TrayInterop
+    public class TrayIconManager : IDisposable
     {
-        public const int WM_USER = 0x0400;
-        public const int WM_LBUTTONDBLCLK = 0x0203;
-        public const int WM_RBUTTONDOWN = 0x0204;
+        private const uint NIM_ADD = 0x00000000;
+        private const uint NIM_DELETE = 0x00000002;
+        private const uint NIF_MESSAGE = 0x00000001;
+        private const uint NIF_ICON = 0x00000002;
+        private const uint NIF_TIP = 0x00000004;
+        private const uint WM_APP = 0x8000;
+        private const uint WM_TRAYICON = WM_APP + 1;
+        private const int WM_LBUTTONUP = 0x0202;
+        private const int WM_RBUTTONUP = 0x0205;
 
-        public const int NIM_ADD = 0;
-        public const int NIM_MODIFY = 1;
-        public const int NIM_DELETE = 2;
-
-        public const int NIF_MESSAGE = 0x1;
-        public const int NIF_ICON = 0x2;
-        public const int NIF_TIP = 0x4;
-        public const int NIF_SHOWTIP = 0x80;
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        private static extern bool Shell_NotifyIcon(uint dwMessage, [In] ref NOTIFYICONDATA lpData);
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        public struct NOTIFYICONDATA
+        private struct NOTIFYICONDATA
         {
-            public int cbSize;
+            public uint cbSize;
             public IntPtr hWnd;
-            public int uID;
-            public int uFlags;
-            public int uCallbackMessage;
+            public uint uID;
+            public uint uFlags;
+            public uint uCallbackMessage;
             public IntPtr hIcon;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
             public string szTip;
-            public int dwState;
-            public int dwStateMask;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-            public string szInfo;
-            public int uTimeoutOrVersion;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
-            public string szInfoTitle;
-            public int dwInfoFlags;
-            public Guid guidItem;
-            public IntPtr hBalloonIcon;
         }
 
-        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
-        public static extern bool Shell_NotifyIcon(int dwMessage, ref NOTIFYICONDATA lpData);
+        private readonly IntPtr _windowHandle;
+        private readonly MainWindow _window;
+        private readonly uint _iconId = 1;
+        private bool _iconAdded;
 
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern IntPtr LoadImage(
-            IntPtr hInst, string lpszName, uint uType, int cxDesired, int cyDesired, uint fuLoad);
+        private delegate IntPtr SubclassProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam, UIntPtr uIdSubclass, IntPtr dwRefData);
+        private SubclassProc _subclassProc;
+
+        [DllImport("comctl32.dll", SetLastError = true)]
+        private static extern bool SetWindowSubclass(IntPtr hWnd, SubclassProc pfnSubclass, UIntPtr uIdSubclass, IntPtr dwRefData);
+
+        [DllImport("comctl32.dll", SetLastError = true)]
+        private static extern bool RemoveWindowSubclass(IntPtr hWnd, SubclassProc pfnSubclass, UIntPtr uIdSubclass);
+
+        [DllImport("comctl32.dll", SetLastError = true)]
+        private static extern IntPtr DefSubclassProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+
+        public TrayIconManager(IntPtr windowHandle, MainWindow window)
+        {
+            _windowHandle = windowHandle;
+            _window = window;
+            _subclassProc = new SubclassProc(WindowSubclassProc);
+
+            if (!SetWindowSubclass(_windowHandle, _subclassProc, UIntPtr.Zero, IntPtr.Zero))
+            {
+                throw new Exception("Не удалось установить подкласс окна.");
+            }
+
+            AddTrayIcon();
+        }
+
+        private void AddTrayIcon()
+        {
+            var nid = new NOTIFYICONDATA
+            {
+                cbSize = (uint)Marshal.SizeOf(typeof(NOTIFYICONDATA)),
+                hWnd = _windowHandle,
+                uID = _iconId,
+                uFlags = NIF_MESSAGE | NIF_ICON | NIF_TIP,
+                uCallbackMessage = WM_TRAYICON,
+                szTip = "VK M"
+            };
+
+            string iconPath = Path.Combine(AppContext.BaseDirectory, "icon.ico");
+            using (var icon = new Icon(iconPath))
+            {
+                nid.hIcon = icon.Handle;
+                _iconAdded = Shell_NotifyIcon(NIM_ADD, ref nid);
+            }
+        }
+
+        private void RemoveTrayIcon()
+        {
+            if (!_iconAdded)
+                return;
+
+            var nid = new NOTIFYICONDATA
+            {
+                cbSize = (uint)Marshal.SizeOf(typeof(NOTIFYICONDATA)),
+                hWnd = _windowHandle,
+                uID = _iconId
+            };
+
+            Shell_NotifyIcon(NIM_DELETE, ref nid);
+        }
+
+        private IntPtr WindowSubclassProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam, UIntPtr uIdSubclass, IntPtr dwRefData)
+        {
+            if (msg == WM_TRAYICON)
+            {
+                int eventCode = lParam.ToInt32();
+
+                if (eventCode == WM_LBUTTONUP)
+                {
+                    _window.DispatcherQueue.TryEnqueue(() => _window.ShowWindowAgain());
+                }
+                else if (eventCode == WM_RBUTTONUP)
+                {
+                    ShowContextMenu();
+                }
+            }
+
+            return DefSubclassProc(hWnd, msg, wParam, lParam);
+        }
+        private const uint TPM_LEFTALIGN = 0x0000;
+        private const uint TPM_RETURNCMD = 0x0100;
+
+        private void ShowContextMenu()
+        {
+            IntPtr hMenu = CreatePopupMenu();
+            AppendMenu(hMenu, 0, 1, "Закрыть");
+
+            POINT cursorPos;
+            GetCursorPos(out cursorPos);
+            SetForegroundWindow(_windowHandle);
+            int command = TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_RETURNCMD, cursorPos.X, cursorPos.Y, 0, _windowHandle, IntPtr.Zero);
+
+            if (command == 1)
+            {
+                _window.justClose = true;
+                _window.DispatcherQueue.TryEnqueue(() => _window.Close());
+            }
+
+            DestroyMenu(hMenu);
+        }
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr CreatePopupMenu();
+
+        [DllImport("user32.dll")]
+        private static extern bool AppendMenu(IntPtr hMenu, uint uFlags, uint uIDNewItem, string lpNewItem);
+
+        [DllImport("user32.dll")]
+        private static extern bool GetCursorPos(out POINT lpPoint);
+
+        [DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        private static extern int TrackPopupMenu(IntPtr hMenu, uint uFlags, int x, int y, int nReserved, IntPtr hWnd, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        private static extern bool DestroyMenu(IntPtr hMenu);
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct POINT
+        {
+            public int X;
+            public int Y;
+        }
+
+        public void Dispose()
+        {
+            RemoveTrayIcon();
+            RemoveWindowSubclass(_windowHandle, _subclassProc, UIntPtr.Zero);
+        }
     }
 }

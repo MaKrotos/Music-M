@@ -452,7 +452,9 @@ namespace VK_UI3.Controllers
 
         private void UpdateDiscordState()
         {
-
+            var setting = DB.SettingsTable.GetSetting("DisableDiscordIntegration");
+            if (setting != null && setting.settingValue.Equals(1))
+                return;
             discordRichPresenceManager.SetTrack(TrackDataThis, mediaPlayer);
         }
 
