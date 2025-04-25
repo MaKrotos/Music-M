@@ -120,7 +120,7 @@ namespace VK_UI3
         private TrayIconManager _trayIconManager;
         public void HideFromTaskbar()
         {
-                        var hwnd = WindowNative.GetWindowHandle(this);
+            var hwnd = WindowNative.GetWindowHandle(this);
             if (hwnd == IntPtr.Zero)
                 return;
 
@@ -130,9 +130,26 @@ namespace VK_UI3
 
             ShowWindow(hwnd, 0);
         }
+        private const int WS_EX_APPWINDOW = 0x00040000;
 
         public void ShowWindowAgain()
         {
+            var hwnd = WindowNative.GetWindowHandle(this);
+            if (hwnd == IntPtr.Zero)
+                return;
+
+            // Получаем текущие расширенные стили
+            IntPtr extendedStyle = GetWindowLongPtr(hwnd, GWL_EXSTYLE);
+
+            // Убираем флаг WS_EX_TOOLWINDOW
+            extendedStyle = (IntPtr)(extendedStyle.ToInt64() & ~WS_EX_TOOLWINDOW);
+
+            // Опционально: добавляем WS_EX_APPWINDOW для явного указания на показ в панели задач
+            extendedStyle = (IntPtr)(extendedStyle.ToInt64() | WS_EX_APPWINDOW);
+
+            // Устанавливаем обновлённые стили
+            SetWindowLongPtr(hwnd, GWL_EXSTYLE, extendedStyle);
+
             var hWnd = WindowNative.GetWindowHandle(this);
             ShowWindow(hWnd, 5); // Показать окно
         }
