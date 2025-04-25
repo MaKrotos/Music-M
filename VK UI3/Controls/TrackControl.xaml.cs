@@ -1,8 +1,10 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Input;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using VK_UI3.Controllers;
 using VK_UI3.Converters;
@@ -377,36 +379,36 @@ namespace VK_UI3.Controls
             FadeOutStoryboardBorderSelectedGrid.Begin();
         }
 
-        private void UCcontrol_PointerPressed(object sender, PointerRoutedEventArgs e)
+        private DateTime _pressStartTime;
+
+
+
+        private void UCcontrol_Tapped(object sender, TappedRoutedEventArgs e)
         {
 
+            // Проверяем состояние клавиш модификаторов
+            var isCtrlPressed = InputKeyboardSource.GetKeyStateForCurrentThread(Windows.System.VirtualKey.Control)
+                                .HasFlag(Windows.UI.Core.CoreVirtualKeyStates.Down);
+            var isShiftPressed = InputKeyboardSource.GetKeyStateForCurrentThread(Windows.System.VirtualKey.Shift)
+                                .HasFlag(Windows.UI.Core.CoreVirtualKeyStates.Down);
 
 
-            var pointerProperties = e.GetCurrentPoint(sender as UIElement).Properties;
-            if (pointerProperties.IsLeftButtonPressed)
+            if (isCtrlPressed || isShiftPressed)
             {
-                var pointerModifiers = e.KeyModifiers;
-                if (
-                   pointerModifiers.HasFlag(Windows.System.VirtualKeyModifiers.Control)
-                || pointerModifiers.HasFlag(Windows.System.VirtualKeyModifiers.Shift)
-                   )
-                {
-
-                    dataTrack.iVKGetAudio.changeSelect(dataTrack, pointerModifiers.HasFlag(Windows.System.VirtualKeyModifiers.Shift));
-                    return;
-                }
-
-
-                if (dataTrack.PlayThis && AudioPlayer.mediaPlayer.CurrentState != Windows.Media.Playback.MediaPlayerState.Paused)
-                {
-                    AudioPlayer.mediaPlayer.Pause();
-                    return;
-                }
-
-                dataTrack.iVKGetAudio.playTrack(dataTrack.NumberInList);
+                dataTrack.iVKGetAudio.changeSelect(dataTrack, isShiftPressed);
+                return;
             }
-        }
 
+            if (dataTrack.PlayThis && AudioPlayer.mediaPlayer.CurrentState != Windows.Media.Playback.MediaPlayerState.Paused)
+            {
+                AudioPlayer.mediaPlayer.Pause();
+                return;
+            }
+
+            dataTrack.iVKGetAudio.playTrack(dataTrack.NumberInList);
+
+
+        }
 
     }
 }
