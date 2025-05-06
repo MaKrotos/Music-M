@@ -5,7 +5,10 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace VK_UI3.Helpers.Animations
@@ -17,12 +20,44 @@ namespace VK_UI3.Helpers.Animations
         private readonly object _element;
         private readonly DispatcherQueue _dispatcherQueue;
         private readonly ImageCacheManager _cacheManager;
-        // Делегат, устанавливающий новый источник изображения для конкретного элемента
         private readonly Action<BitmapImage> _setImageSourceAction;
 
+        // Статическая очередь для управления потоками загрузки
+        private static SemaphoreSlim _downloadSemaphore;
+        private static readonly ConcurrentDictionary<Uri, Task<BitmapImage>> _activeDownloads = new();
+
+        // Настройки по умолчанию - можно изменить через статические методы
+        private static int _maxConcurrentDownloads = 4;
+        private static bool _enableQueue = true;
+
+        static AnimationsChangeImage()
+        {
+            _downloadSemaphore = new SemaphoreSlim(_maxConcurrentDownloads, _maxConcurrentDownloads);
+        }
+
         /// <summary>
-        /// Если элемент может быть приведён к FrameworkElement – используем его для анимации.
+        /// Устанавливает максимальное количество одновременных загрузок
         /// </summary>
+        public static void SetMaxConcurrentDownloads(int maxDownloads)
+        {
+            if (maxDownloads < 1)
+                maxDownloads = 1;
+            if (_maxConcurrentDownloads != maxDownloads)
+            {
+                _maxConcurrentDownloads = maxDownloads;
+                _downloadSemaphore.Dispose();
+                _downloadSemaphore = new SemaphoreSlim(maxDownloads, maxDownloads);
+            }
+        }
+
+        /// <summary>
+        /// Включает или выключает систему очередей
+        /// </summary>
+        public static void EnableQueueSystem(bool enable)
+        {
+            _enableQueue = enable;
+        }
+
         private FrameworkElement AnimatableElement => _element as FrameworkElement;
 
         #region Конструкторы
@@ -63,10 +98,6 @@ namespace VK_UI3.Helpers.Animations
 
         #region Public API
 
-        /// <summary>
-        /// Меняет изображение с анимацией. Принимает строку URL.
-        /// Если передана строка "null" или null, осуществляется анимация скрытия.
-        /// </summary>
         public void ChangeImageWithAnimation(string newImageSourceUrl, bool forceUpdate = false, bool setColorTheme = false)
         {
             if (string.IsNullOrEmpty(newImageSourceUrl) || newImageSourceUrl == "null")
@@ -78,17 +109,14 @@ namespace VK_UI3.Helpers.Animations
             ChangeImageWithAnimation(new Uri(newImageSourceUrl), forceUpdate, setColorTheme);
         }
 
-        /// <summary>
-        /// Меняет изображение с анимационным переходом.
-        /// </summary>
         public async void ChangeImageWithAnimation(Uri newImageSource, bool forceUpdate = false, bool setColorTheme = false)
         {
-            // Если новое изображение совпадает с текущим и не задан принудительный режим – выходим
             if (_currentImageSource != null && _currentImageSource.Equals(newImageSource) && !forceUpdate)
                 return;
 
             _currentImageSource = newImageSource;
 
+            // Проверяем кэш
             var cachedImage = await _cacheManager.GetCachedImageAsync(newImageSource, setColorTheme);
             if (cachedImage != null)
             {
@@ -96,52 +124,94 @@ namespace VK_UI3.Helpers.Animations
                 return;
             }
 
-            await DownloadAndSetImage(newImageSource, setColorTheme);
+            // Если изображения нет в кэше - начинаем загрузку
+            await ProcessImageDownload(newImageSource, setColorTheme);
         }
 
         #endregion
 
         #region Private Methods
 
-        /// <summary>
-        /// Скачивает изображение по указанному URI, сохраняет его в кэш и обновляет изображение.
-        /// </summary>
-        private async Task DownloadAndSetImage(Uri imageUri, bool setColorTheme)
+        private async Task ProcessImageDownload(Uri imageUri, bool setColorTheme)
         {
-            using (var httpClient = new HttpClient { Timeout = TimeSpan.FromMinutes(3) })
+            // Проверяем, не загружается ли уже это изображение в другом потоке
+            if (_activeDownloads.TryGetValue(imageUri, out var existingDownload))
             {
                 try
                 {
-                    var buffer = await httpClient.GetByteArrayAsync(imageUri);
-                    if (buffer == null || buffer.Length == 0)
-                        return;
-
-                    await _cacheManager.SaveImageToCacheAsync(imageUri, buffer, setColorTheme);
-                    var cachedImage = await _cacheManager.GetCachedImageAsync(imageUri, setColorTheme);
-                    if (cachedImage != null)
+                    var image = await existingDownload;
+                    if (image != null && _currentImageSource == imageUri)
                     {
-                        UpdateImage(cachedImage);
+                        UpdateImage(image);
                     }
                 }
                 catch
                 {
-                    // Ошибки загрузки можно залогировать при необходимости
+                    // Ошибка уже обработана в основном потоке загрузки
+                }
+                return;
+            }
+
+            // Создаем новую задачу загрузки
+            var downloadTask = DownloadAndSetImage(imageUri, setColorTheme);
+            _activeDownloads.TryAdd(imageUri, downloadTask);
+
+            try
+            {
+                await downloadTask;
+            }
+            finally
+            {
+                _activeDownloads.TryRemove(imageUri, out _);
+            }
+        }
+
+        private async Task<BitmapImage> DownloadAndSetImage(Uri imageUri, bool setColorTheme)
+        {
+            if (_enableQueue)
+            {
+                await _downloadSemaphore.WaitAsync();
+            }
+
+            try
+            {
+                using (var httpClient = new HttpClient { Timeout = TimeSpan.FromMinutes(3) })
+                {
+                    var buffer = await httpClient.GetByteArrayAsync(imageUri);
+                    if (buffer == null || buffer.Length == 0)
+                        return null;
+
+                    await _cacheManager.SaveImageToCacheAsync(imageUri, buffer, setColorTheme);
+                    var cachedImage = await _cacheManager.GetCachedImageAsync(imageUri, setColorTheme);
+
+                    if (cachedImage != null && _currentImageSource == imageUri)
+                    {
+                        _dispatcherQueue.TryEnqueue(() => UpdateImage(cachedImage));
+                    }
+
+                    return cachedImage;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                if (_enableQueue)
+                {
+                    _downloadSemaphore.Release();
                 }
             }
         }
 
-        /// <summary>
-        /// Обновляет изображение с анимацией перехода.
-        /// </summary>
         private void UpdateImage(BitmapImage image)
         {
-            _dispatcherQueue.TryEnqueue(() =>
+            this._dispatcherQueue.TryEnqueue(() =>
             {
-                // При активной анимации приостанавливаем storyboard
-                if (_storyboard.GetCurrentState() == ClockState.Active)
-                {
+                if (_storyboard != null)
                     _storyboard.Pause();
-                }
+
 
                 if (AnimatableElement == null || AnimatableElement.Opacity == 0 || _currentImageSource == null)
                 {
@@ -156,9 +226,6 @@ namespace VK_UI3.Helpers.Animations
             });
         }
 
-        /// <summary>
-        /// Производит анимацию скрытия (уменьшения прозрачности до 0) с опциональным переходом на новое изображение.
-        /// </summary>
         private void HideAnimation(BitmapImage newImage)
         {
             AnimateOpacity(AnimatableElement?.Opacity ?? 1.0, 0.0, 250, () =>
@@ -170,9 +237,6 @@ namespace VK_UI3.Helpers.Animations
             });
         }
 
-        /// <summary>
-        /// Устанавливает новый источник изображения и производит анимацию появления.
-        /// </summary>
         private void ShowImage(BitmapImage image)
         {
             _setImageSourceAction?.Invoke(image);
@@ -183,10 +247,6 @@ namespace VK_UI3.Helpers.Animations
             }
         }
 
-        /// <summary>
-        /// Унифицированный метод для анимации изменения прозрачности элемента.
-        /// Принимает начальное и конечное значения, длительность и опциональный обработчик завершения.
-        /// </summary>
         private void AnimateOpacity(double from, double to, double durationMs, Action onCompleted)
         {
             var animation = new DoubleAnimation
@@ -196,8 +256,6 @@ namespace VK_UI3.Helpers.Animations
                 Duration = TimeSpan.FromMilliseconds(durationMs)
             };
 
-            // Если AnimatableElement не определён (например, если исходный элемент не является FrameworkElement),
-            // анимация не выполняется.
             if (AnimatableElement != null)
             {
                 Storyboard.SetTarget(animation, AnimatableElement);
@@ -205,7 +263,6 @@ namespace VK_UI3.Helpers.Animations
             }
             else
             {
-                // Применяем анимацию сразу, если нет возможности анимировать
                 onCompleted?.Invoke();
                 return;
             }
