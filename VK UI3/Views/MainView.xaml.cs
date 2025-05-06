@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using KrotosNavigationFrame;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -41,7 +42,7 @@ namespace VK_UI3.Views
     public sealed partial class MainView : Microsoft.UI.Xaml.Controls.Page, INotifyPropertyChanged
     {
         public static MainView mainView;
-        public static Frame frame;
+        private static NavigateFrame frame;
 
 
 
@@ -68,10 +69,8 @@ namespace VK_UI3.Views
 
         public void updateAllWithReacreate()
         {
-
-
             TempPlayLists.TempPlayLists.updateNextRequest = true;
-            if (ContentFrame.Content != null)
+            if (ContentFrame.Children.Count != 0)
             {
                 _ = CreateNavigation();
             }
@@ -298,6 +297,15 @@ namespace VK_UI3.Views
             else
             {
                 MainWindow.mainWindow.backBTNHide();
+            }
+
+            if (ContentFrame.frameCurrent.sectionType == SectionType.Search)
+            {
+                MainView.mainView.showSearch();
+            }
+            else
+            {
+                MainView.mainView.hideSearch();
             }
             navToAnotherPage = false;
         }
@@ -775,7 +783,7 @@ namespace VK_UI3.Views
             else
             {
                 SectionViewPageNowPlayingList.Content = null;
-                frame.BackStack.Clear();
+                frame.ClearBackStack();
                 CollapseePlayNowPanel();
             }
             PlayNowPanelListCLosed = !PlayNowPanelListCLosed;
@@ -882,7 +890,7 @@ namespace VK_UI3.Views
                 }
 
 
-                ContentFrame.BackStack.Clear();
+                ContentFrame.ClearBackStack();
                 MainWindow.mainWindow.backBTNHide();
 
             }

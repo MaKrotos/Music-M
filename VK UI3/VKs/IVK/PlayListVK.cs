@@ -1,4 +1,4 @@
-using Microsoft.UI.Dispatching;
+п»їusing Microsoft.UI.Dispatching;
 using MusicX.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -79,8 +79,8 @@ namespace VK_UI3.VKs.IVK
                     if (playlist.Year == 0)
                     {
                         var date = playlist.UpdateTime;
-                        _Year = $"Обновлен {date.ToString("dd MMMM")}";
-                        genres = "Подборка";
+                        _Year = $"РћР±РЅРѕРІР»РµРЅ {date.ToString("dd MMMM")}";
+                        genres = "РџРѕРґР±РѕСЂРєР°";
                     }
 
                     if (playlist.MainArtists != null && playlist.MainArtists.Count > 0)
@@ -121,11 +121,11 @@ namespace VK_UI3.VKs.IVK
 
                     if (playlist.Plays > 1000000)
                     {
-                        Plays = Math.Round(playlist.Plays / 1000000d, 2) + "М";
+                        Plays = Math.Round(playlist.Plays / 1000000d, 2) + "Рњ";
                     }
                     else if (playlist.Plays > 1000)
                     {
-                        Plays = Math.Round(playlist.Plays / 1000d, 2) + "К";
+                        Plays = Math.Round(playlist.Plays / 1000d, 2) + "Рљ";
                     }
                     else
                     {
@@ -150,7 +150,7 @@ namespace VK_UI3.VKs.IVK
                 NotifyOnListUpdate();
 
 
-            }).Wait();
+            });
         }
 
         public PlayListVK(RecommendedPlaylist _playlist, DispatcherQueue dispatcher) : base(dispatcher)
@@ -193,7 +193,7 @@ namespace VK_UI3.VKs.IVK
 
         public override void GetTracks()
         {
-            semaphore.Wait(); // Ожидает освобождения семафора
+            semaphore.Wait(); // РћР¶РёРґР°РµС‚ РѕСЃРІРѕР±РѕР¶РґРµРЅРёСЏ СЃРµРјР°С„РѕСЂР°
 
             try
             {
@@ -242,7 +242,7 @@ namespace VK_UI3.VKs.IVK
             }
             finally
             {
-                semaphore.Release(); // Освобождает семафор
+                semaphore.Release(); // РћСЃРІРѕР±РѕР¶РґР°РµС‚ СЃРµРјР°С„РѕСЂ
             }
         }
 
@@ -322,7 +322,7 @@ namespace VK_UI3.VKs.IVK
             }
             finally
             {
-                semaphore.Release(); // Освобождает семафор
+                semaphore.Release(); // РћСЃРІРѕР±РѕР¶РґР°РµС‚ СЃРµРјР°С„РѕСЂ
             }
         }
     }

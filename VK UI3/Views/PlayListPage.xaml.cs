@@ -266,6 +266,13 @@ namespace VK_UI3.Views
                     Plays.Text = $"Прослушиваний : {playlist.Plays}";
                     Plays.Visibility = Visibility.Visible;
 
+                    if ((playlist.Year != null))
+                    {
+                        YearRelease.Text = "Год выхода: "+playlist.Year+"";
+                        YearRelease.Visibility = Visibility.Visible;
+
+                    }
+
                     CountTrText.Text = $"Треков: {playlist.Count}";
 
                 }

@@ -7,6 +7,7 @@
 	xmlns:controlLyryc="using:VK_UI3.Views.ModalsPages"
 	xmlns:custom="using:VK_UI3.Controllers"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:krotos="using:KrotosNavigationFrame"
 	xmlns:local="using:VK_UI3.Views"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	NavigationCacheMode="Enabled"
@@ -131,14 +132,7 @@
 						Height="0"
 						Margin="0"
 						OriginalHeight="50" />
-					<Frame x:Name="ContentFrame" Grid.Row="1">
-						<Frame.ContentTransitions>
-							<TransitionCollection>
-								<NavigationThemeTransition />
-							</TransitionCollection>
-						</Frame.ContentTransitions>
-					</Frame>
-
+					<krotos:NavigateFrame x:Name="ContentFrame" Grid.Row="1" />
 				</Grid>
 			</NavigationView>
 			<controlLyryc:LyricsPage

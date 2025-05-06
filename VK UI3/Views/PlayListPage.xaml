@@ -206,12 +206,15 @@
 						<TextBlock
 							x:Name="FollowersText"
 							FontFamily="{StaticResource VKSansRegular}"
-							Text="{Binding Genres}"
 							Visibility="Collapsed" />
 						<TextBlock
 							x:Name="Genres"
 							FontFamily="{StaticResource VKSansRegular}"
 							Text="{Binding Genres}"
+							Visibility="Collapsed" />
+						<TextBlock
+							x:Name="YearRelease"
+							FontFamily="{StaticResource VKSansRegular}"
 							Visibility="Collapsed" />
 						<TextBlock
 							x:Name="Dot2"
@@ -236,6 +239,7 @@
 							Margin="3,0,0,0"
 							Text=""
 							Visibility="Collapsed" />
+
 						<TextBlock
 							x:Name="CountTrText"
 							FontFamily="{StaticResource VKSansRegular}"
