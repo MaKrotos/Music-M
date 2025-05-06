@@ -549,7 +549,7 @@ namespace VK_UI3
                 float scalingFactor = (float)dpi / 96;
 
                 var minMaxInfo = Marshal.PtrToStructure<MINMAXINFO>(lParam);
-                minMaxInfo.ptMinTrackSize.x = (int)(500 * scalingFactor);
+                minMaxInfo.ptMinTrackSize.x = (int)(700 * scalingFactor);
                 minMaxInfo.ptMinTrackSize.y = (int)(500 * scalingFactor);
                 Marshal.StructureToPtr(minMaxInfo, lParam, true);
             }
