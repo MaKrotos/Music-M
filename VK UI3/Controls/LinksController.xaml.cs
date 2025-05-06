@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Imaging;
 using MusicX.Core.Models;
+using MusicX.Core.Services;
 using MusicX.Services;
 using System;
 using System.Diagnostics;
@@ -13,6 +14,7 @@ using VK_UI3.Controllers;
 using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
 using VK_UI3.Views;
+using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
 using Windows.Media.Playlists;
@@ -119,87 +121,125 @@ namespace VK_UI3.Controls
             
             try
             {
-                if (link.Meta.ContentType == null)
-                {
-                    var match = Regex.Match(link.Url, "https://vk.com/podcasts\\?category=[0-9]+$");
 
-                    if (match.Success)
+                switch (link.Meta.ContentType)
+                {
+                    case "" or null or "audio_recent" or "audio_followings":
                     {
-                        //var podcasts = await vkService.GetPodcastsAsync(Link.Url);
-                        //await navigationService.OpenSection(podcasts.Catalog.DefaultSection, true);
+                        var match = IsPodcstURL(link.Url);
+
+                        if (match)
+                        {
+                            //var podcasts = await vkService.GetPodcastsAsync(Link.Url);
+                            //await navigationService.OpenSection(podcasts.Catalog.DefaultSection, true);
+
+                            return;
+                        }
+
+                        match = IsMiniAppUrl(link.Url);
+
+                        if (match)
+                        {
+                            //var appId = match.Groups["app"].Value;
+                            //var miniAppResponse = await vkService.GetMiniApp(appId, link.Url);
+
+                           // navigationService.OpenExternalPage(new MiniAppView(new MiniAppViewModel(appId, miniAppResponse.Object.WebviewUrl)));
+                            return;
+                        }
+
+                        // ураа костыль для "Настроить рекомендации"
+                        var matchRecoms = IsConfugureRecomsUrl(link.Url);
+
+                        if (matchRecoms)
+                        {
+                            Process.Start(new ProcessStartInfo
+                            {
+                                FileName = link.Url,
+                                UseShellExecute = true
+                            });
+
+                            return;
+                        }
+
+                        var music = await VK.vkService.GetAudioCatalogAsync(link.Url);
+                        MainView.OpenSection(music.Catalog.DefaultSection);
 
                         return;
-
                     }
-                    var music = await VKs.VK.vkService.GetAudioCatalogAsync(link.Url);
-                    MainView.OpenSection(music.Catalog.DefaultSection);
-
-                    return;
-                }
-
-                if (link.Meta.ContentType == "artist")
-                {
-                    var url = new Uri(link.Url);
-
-                    MainView.OpenSection(url.Segments.LastOrDefault(), SectionView.SectionType.Artist);
-                    return;
-                }
-
-                if (link.Meta.ContentType is "group" or "user" or "chat")
-                {
-                    if (Regex.IsMatch(link.Id, CustomSectionsService.CustomLinkRegex))
+                    case "artist":
                     {
+                        var url = new Uri(link.Url);
+
+                        MainView.OpenSection(url.Segments.Last(), SectionType.Artist);
+                        break;
+                    }
+                    
+                   // case "group" or "user" or "chat" when CustomSectionsService.CustomLinkRegex().IsMatch(link.Id):
+                   // {
+                   //     MainView.OpenSection(link.Id);
+                   //     return;
+                   // }
+
+                    case "group" or "user" or "chat":
+                    {
+                        var match = IsUserProfileRegex(link.Url);
+                        if (match)
+                        {
+                            var music = await VK.vkService.GetAudioCatalogAsync(link.Url);
+
+                            MainView.OpenSection(music.Catalog.DefaultSection);
+
+                            return;
+                        }
+
+
                         Process.Start(new ProcessStartInfo
                         {
                             FileName = link.Url,
                             UseShellExecute = true
                         });
-                        return;
+                        break;
                     }
-
-                    var match = Regex.Match(link.Url, "https://vk.com/audios[0-9]+$");
-                    if (match.Success)
+                    case "curator":
                     {
-                        var music = await VKs.VK.vkService.GetAudioCatalogAsync(link.Url);
+                        var curator = await VK.vkService.GetAudioCuratorAsync(link.Meta.TrackCode, link.Url);
 
-                        MainView.OpenSection(music.Catalog.DefaultSection);
-
-                        return;
+                        MainView.OpenSection(curator.Catalog.DefaultSection);
+                        break;
                     }
-
-
-                 
-                }
-
-                if (link.Meta.ContentType is "audio_playlists" or "audio_albums")
-                {
-                    if (IsAlbumUrl(link.Url) || IsPlaylistUrl(link.Url))
+                    case "audio_playlists" or "audio_albums":
                     {
-                        var splited = link.Url.ToString().Split("/");
-                        splited = splited.Last().Split("_");
-
+                        var match = IsPlaylistUrl(link.Url);
                       
 
-                        MainView.OpenPlayList(
-                            long.Parse(splited[1]),
-                            long.Parse(splited[0]),
-                            splited[2]
-                            );
+                        if (IsAlbumUrl(link.Url) || IsPlaylistUrl(link.Url))
+                        {
+                            var splited = link.Url.ToString().Split("/");
+                            splited = splited.Last().Split("_");
 
-                        return;
+
+
+                            MainView.OpenPlayList(
+                                long.Parse(splited[1]),
+                                long.Parse(splited[0]),
+                                splited[2]
+                                );
+
+                            return;
+                        }
+
+                        var catalog = await VK.vkService.GetAudioCatalogAsync(link.Url);
+
+                        MainView.OpenSection(catalog.Catalog.DefaultSection);
+                        break;
                     }
-
-
+                    case "custom":
+                    {
+                        MainView.OpenSection(link.Meta.TrackCode);
+                        break;
+                    }
                 }
 
-                if (link.Meta.ContentType == "curator")
-                {
-
-                    var curator = await VKs.VK.vkService.GetAudioCuratorAsync(link.Meta.TrackCode, link.Url);
-
-                    MainView.OpenSection(curator.Catalog.DefaultSection);
-                    return;
-                }
 
                
 
@@ -233,12 +273,31 @@ namespace VK_UI3.Controls
 
         static bool IsAlbumUrl(string url)
         {
-            return Regex.IsMatch(url, @"https://vk.com/music/album/-\d+_\d+_[a-z0-9]+$");
+            return Regex.IsMatch(url, @"https://vk\.com/music/(?:album|playlist)/(?<id>[\-\w]+)$");
+        }
+
+        static bool IsPodcstURL(string url)
+        {
+            return Regex.IsMatch(url, @"https://vk\.com/podcasts\?category=[0-9]+$");
+        }
+
+        static bool IsUserProfileRegex(string url)
+        {
+            return Regex.IsMatch(url, @"https://vk\.com/audios\-?[0-9]+$");
+        }
+
+        static bool IsMiniAppUrl(string url)
+        {
+            return Regex.IsMatch(url, @"https://vk\.com/(?<app>app\-?[0-9]+)(?>[\?\#].+)?$");
         }
 
         static bool IsPlaylistUrl(string url)
         {
             return Regex.IsMatch(url, @"https://vk.com/music/playlist/\d+_\d+_[a-z0-9]+$");
+        }
+        static bool IsConfugureRecomsUrl(string url)
+        {
+            return Regex.IsMatch(url, @"https://vk\.com/audio\?popup=recoms_onboarding+$");
         }
 
         private void Grid_PointerEntered(object sender, PointerRoutedEventArgs e)
