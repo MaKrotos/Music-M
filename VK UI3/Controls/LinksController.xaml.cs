@@ -171,6 +171,8 @@ namespace VK_UI3.Controls
                         var url = new Uri(link.Url);
 
                         MainView.OpenSection(url.Segments.Last(), SectionType.Artist);
+                        return;
+
                         break;
                     }
                     
@@ -198,6 +200,8 @@ namespace VK_UI3.Controls
                             FileName = link.Url,
                             UseShellExecute = true
                         });
+                        return;
+
                         break;
                     }
                     case "curator":
@@ -205,6 +209,8 @@ namespace VK_UI3.Controls
                         var curator = await VK.vkService.GetAudioCuratorAsync(link.Meta.TrackCode, link.Url);
 
                         MainView.OpenSection(curator.Catalog.DefaultSection);
+                        return;
+
                         break;
                     }
                     case "audio_playlists" or "audio_albums":
@@ -231,11 +237,14 @@ namespace VK_UI3.Controls
                         var catalog = await VK.vkService.GetAudioCatalogAsync(link.Url);
 
                         MainView.OpenSection(catalog.Catalog.DefaultSection);
+                        return;
                         break;
                     }
                     case "custom":
                     {
                         MainView.OpenSection(link.Meta.TrackCode);
+                        return;
+
                         break;
                     }
                 }
