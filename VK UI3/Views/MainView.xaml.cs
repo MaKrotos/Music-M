@@ -88,6 +88,22 @@ namespace VK_UI3.Views
             this.KeyDown -= MainView_KeyDown;
     
             this.Unloaded -= MainView_Unloaded;
+
+
+
+
+
+            MainWindow.mainWindow.onBackClicked -= back;
+
+            CollapseAnimation.Completed -= CollapseAnimation_Completed;
+            CollapseAnimationPlayingList.Completed -= CollapseAnimationPlayingList_Completed;
+
+
+            this.Unloaded -= MainView_Unloaded;
+
+
+
+            _ = CheckMemberVK();
         }
 
         private void MainView_KeyDown(object sender, KeyRoutedEventArgs e)

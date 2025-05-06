@@ -38,6 +38,7 @@ namespace KrotosNavigationFrame
             }
             _BackStack.Clear();
         }
+
         public FramesKrotos frameCurrent{ get { return currentFrame; } }
 
         private FramesKrotos currentFrame;
@@ -46,16 +47,19 @@ namespace KrotosNavigationFrame
 
         public void Navigate(Type sourcePageType, object parameter, NavigationTransitionInfo infoOverride)
         {
+
+            if (currentFrame != null)
+            {
+                _BackStack.Add(currentFrame);
+                var curr = currentFrame;
+                // Не скрываем сразу, а анимируем
+                AnimateOpacity(curr.Frame, 1, 0, 300, () => {
+                    curr.Frame.Visibility = Microsoft.UI.Xaml.Visibility.Collapsed;
+                });
+            }
+
             this.DispatcherQueue.TryEnqueue(async () => {
-                if (currentFrame != null)
-                {
-                    _BackStack.Add(currentFrame);
-                    var curr = currentFrame;
-                    // Не скрываем сразу, а анимируем
-                    AnimateOpacity(curr.Frame, 1, 0, 300, () => {
-                        curr.Frame.Visibility = Microsoft.UI.Xaml.Visibility.Collapsed;
-                    });
-                }
+               
 
                 Frame frame = new Frame();
                 frame.Opacity = 0;
@@ -81,8 +85,7 @@ namespace KrotosNavigationFrame
 
         public void GoBack()
         {
-            this.DispatcherQueue.TryEnqueue(async () =>
-            {
+
                 if (!this.CanGoBack)
                     return;
 
@@ -106,7 +109,6 @@ namespace KrotosNavigationFrame
 
                     Navigated?.Invoke(this, null);
                 }
-            });
         }
 
         private void AnimateOpacity(UIElement target, double from, double to, double durationMs, Action onCompleted)
