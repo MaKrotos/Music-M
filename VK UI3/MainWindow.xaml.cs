@@ -70,8 +70,7 @@ namespace VK_UI3
             InitializeUIComponents();
             InitializeNavigation();
 
-            var hwnd = WindowNative.GetWindowHandle(this);
-            _trayIconManager = new TrayIconManager(hwnd, this);
+
         }
 
         private void InitializeWindowProperties()
@@ -152,6 +151,7 @@ namespace VK_UI3
 
             var hWnd = WindowNative.GetWindowHandle(this);
             ShowWindow(hWnd, 5); // Показать окно
+            _trayIconManager?.HideTrayIcon();
         }
 
 
@@ -272,6 +272,8 @@ namespace VK_UI3
             if (hideTray.settingValue.Equals("1"))
             {
                 args.Handled = true;
+                var hwnd = WindowNative.GetWindowHandle(this);
+                _trayIconManager = new TrayIconManager(hwnd, this);
                 HideFromTaskbar();
                 return;
             }

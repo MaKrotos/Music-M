@@ -63,6 +63,10 @@ namespace VK_UI3
 
             AddTrayIcon();
         }
+        public void HideTrayIcon()
+        {
+            RemoveTrayIcon();
+        }
 
         private void AddTrayIcon()
         {
