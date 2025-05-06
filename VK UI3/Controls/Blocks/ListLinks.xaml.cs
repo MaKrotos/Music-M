@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml;
+п»їusing Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using MusicX.Core.Models;
 using System;
@@ -88,12 +88,16 @@ namespace VK_UI3.Controls.Blocks
                 var a = await VK.vkService.GetSectionAsync(localBlock.Id, localBlock.NextFrom);
                 localBlock.NextFrom = a.Section.NextFrom;
                 this.DispatcherQueue.TryEnqueue(async () => {
-                    foreach (var item in a.Links)
+                    if (a.Links != null)
                     {
-                        links.Add(item);
-                    }
+                        foreach (var item in a.Links)
+                        {
+                            links.Add(item);
+                        }
+                    
                     if (myControl.CheckIfAllContentIsVisible())
                         load();
+                    }
                 });
             }
             finally
@@ -131,7 +135,7 @@ namespace VK_UI3.Controls.Blocks
                 }
 
 
-                // Применяем DataTemplate к свойству ItemTemplate UniversalControl
+                // РџСЂРёРјРµРЅСЏРµРј DataTemplate Рє СЃРІРѕР№СЃС‚РІСѓ ItemTemplate UniversalControl
 
 
 
