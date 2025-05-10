@@ -172,7 +172,7 @@
                 </Grid>
 
 
-                <Grid x:Name="gridTextYear"  VerticalAlignment="Bottom" HorizontalAlignment="Left" Padding="10" CornerRadius="6" Margin="4" Background="{ThemeResource CustomAcrylicInAppBrush}">
+                <Grid x:Name="gridTextYear"  VerticalAlignment="Bottom" HorizontalAlignment="Left" Padding="10" CornerRadius="6" Margin="4" Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}">
                     <TextBlock x:Name="TextYear"  FontFamily="{ThemeResource VKSansMedium}" FontSize="14" >2024</TextBlock>
                 </Grid>
 
