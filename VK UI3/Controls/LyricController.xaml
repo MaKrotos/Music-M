@@ -6,23 +6,34 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="using:VK_UI3.Controls"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+
 	mc:Ignorable="d">
-	<StackPanel Orientation="Horizontal" Translation="0,0,8">
-		<Grid
+	<Grid
+        VerticalAlignment="Stretch"
+
+
+		 Translation="0,0,8">
+		<Grid Grid.Column="0" Grid.Row="0"
 			PointerEntered="Grid_PointerEntered"
 			PointerExited="Grid_PointerExited"
+			HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
 			Tapped="Grid_Tapped">
 			<Grid
 				x:Name="BackgrD"
 				Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
 				CornerRadius="8"
+     
 				Opacity="0"
 				Translation="0,0,20">
 				<Grid.Shadow>
 					<ThemeShadow />
 				</Grid.Shadow>
 			</Grid>
+            
 			<TextBlock
+                Grid.Column="0" Grid.Row="0"
+                TextWrapping="WrapWholeWords"
 				x:Name="textLyric"
 				Margin="10"
 				HorizontalAlignment="Left"
@@ -73,5 +84,5 @@
 				</Storyboard>
 			</Grid.Resources>
 		</Grid>
-	</StackPanel>
+	</Grid>
 </UserControl>
