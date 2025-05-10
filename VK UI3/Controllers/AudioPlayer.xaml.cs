@@ -792,30 +792,34 @@ namespace VK_UI3.Controllers
 
         private void repeatBTN_Tapped(object sender, TappedRoutedEventArgs e)
         {
-
-            switch (SettingsTable.GetSetting("playNext").settingValue)
+            try
             {
-                case "RepeatOne":
-                    SettingsTable.SetSetting("playNext", "RepeatAll");
+                switch (SettingsTable.GetSetting("playNext").settingValue)
+                {
+                    case "RepeatOne":
+                        SettingsTable.SetSetting("playNext", "RepeatAll");
 
-                    break;
+                        break;
 
-                case "Shuffle":
-                    SettingsTable.SetSetting("playNext", "RepeatOne");
+                    case "Shuffle":
+                        SettingsTable.SetSetting("playNext", "RepeatOne");
 
-                    break;
+                        break;
 
-                case "RepeatAll":
-                    SettingsTable.SetSetting("playNext", "Shuffle");
+                    case "RepeatAll":
+                        SettingsTable.SetSetting("playNext", "Shuffle");
 
-                    break;
+                        break;
 
 
-                default:
-                    break;
+                    default:
+                        break;
+                }
+                setButtonPlayNext();
             }
-            setButtonPlayNext();
-
+            catch { 
+                
+            }
 
         }
         AnimationsChangeFontIcon statusAnimate;
