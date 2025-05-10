@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -356,6 +356,17 @@ namespace VK_UI3.Controls
 
             titleAnim.ChangeTextWithAnimation(_PlayList.Title);
 
+            if (_PlayList.Year != null)
+            {
+                TextYear.Visibility = Visibility.Visible;
+                gridTextYear.Visibility = Visibility.Visible;
+                TextYear.Text = _PlayList.Year.ToString();
+            }
+            else
+            {
+                TextYear.Visibility = Visibility.Collapsed;
+                gridTextYear.Visibility = Visibility.Collapsed;
+            }
 
 
             if (_PlayList.Thumbs != null)
