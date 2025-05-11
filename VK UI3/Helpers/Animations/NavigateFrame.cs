@@ -34,7 +34,15 @@ namespace KrotosNavigationFrame
         {
             foreach (var item in _BackStack)
             {
-                this.Children.Remove(item.Frame);
+                if (item.Frame.Opacity == 0)
+                {
+                    this.Children.Remove(item.Frame);
+                }
+                else
+                {
+                    var frame = item.Frame;
+                    AnimateOpacity(item.Frame, 0, 500, new Action(() => { this.Children.Remove(frame); }));
+                }
             }
             _BackStack.Clear();
         }
@@ -53,7 +61,7 @@ namespace KrotosNavigationFrame
                 _BackStack.Add(currentFrame);
                 var curr = currentFrame;
                 // Не скрываем сразу, а анимируем
-                AnimateOpacity(curr.Frame, 1, 0, 300, () => {
+                AnimateOpacity(curr.Frame, 0, 300, () => {
                     curr.Frame.Visibility = Microsoft.UI.Xaml.Visibility.Collapsed;
                 });
             }
@@ -76,7 +84,7 @@ namespace KrotosNavigationFrame
 
                 // Показываем новый фрейм с анимацией
                 frame.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
-                AnimateOpacity(frame, 0, 1, 300, null);
+                AnimateOpacity(frame, 1, 300, null);
 
                 currentFrame.Frame.Navigate(sourcePageType, parameter, infoOverride);
                 Navigated?.Invoke(this, null);
@@ -93,7 +101,7 @@ namespace KrotosNavigationFrame
                 {
                     var curr = currentFrame;
                     // Анимируем исчезновение текущего фрейма
-                    AnimateOpacity(curr.Frame, 1, 0, 300, () =>
+                    AnimateOpacity(curr.Frame, 0, 300, () =>
                     {
                         this.Children.Remove(curr.Frame);
                         _BackStack.Remove(curr);
@@ -105,18 +113,17 @@ namespace KrotosNavigationFrame
                     _BackStack.Remove(currentFrame);
 
                     currentFrame.Frame.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
-                    AnimateOpacity(currentFrame.Frame, 0, 1, 300, null);
+                    AnimateOpacity(currentFrame.Frame, 1, 300, null);
 
                     Navigated?.Invoke(this, null);
                 }
         }
 
-        private void AnimateOpacity(UIElement target, double from, double to, double durationMs, Action onCompleted)
+        private void AnimateOpacity(UIElement target, double to, double durationMs, Action onCompleted)
         {
             var storyboard = new Storyboard();
             var animation = new DoubleAnimation
             {
-                From = from,
                 To = to,
                 Duration = TimeSpan.FromMilliseconds(durationMs),
                 EnableDependentAnimation = true
