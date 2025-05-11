@@ -8,9 +8,11 @@ using NLog;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
 using VkNet.Abstractions;
 using VkNet.Abstractions.Core;
+using VkNet.Abstractions.Utils;
 using VkNet.AudioBypassService.Abstractions;
 using VkNet.Enums.Filters;
 using VkNet.Exception;
@@ -18,6 +20,7 @@ using VkNet.Extensions.DependencyInjection;
 using VkNet.Model;
 using VkNet.Utils;
 using Lyrics = MusicX.Core.Models.Lyrics;
+
 
 namespace MusicX.Core.Services
 {
@@ -36,6 +39,7 @@ namespace MusicX.Core.Services
         private readonly ICustomSectionsService _customSectionsService;
         private readonly IDeviceIdStore _deviceIdStore;
         private readonly ITokenRefreshHandler _tokenRefreshHandler;
+        private readonly IRestClient _restClient;
 
         public async Task<MixSettingsRoot> GetStreamMixSettings(string mixId)
         {
@@ -63,7 +67,7 @@ namespace MusicX.Core.Services
         }
 
         public VkService(Logger logger, IVkApiCategories vkApi, IVkApiInvoke apiInvoke, IVkApiVersionManager versionManager,
-                         IVkTokenStore tokenStore, IVkApiAuthAsync auth, IVkApi api, ICustomSectionsService customSectionsService, IDeviceIdStore deviceIdStore, ITokenRefreshHandler tokenRefreshHandler)
+                         IVkTokenStore tokenStore, IVkApiAuthAsync auth, IVkApi api, ICustomSectionsService customSectionsService, IDeviceIdStore deviceIdStore, ITokenRefreshHandler tokenRefreshHandler, IRestClient restClient)
         {
             this.vkApi = vkApi;
             this.apiInvoke = apiInvoke;
@@ -73,6 +77,8 @@ namespace MusicX.Core.Services
             _customSectionsService = customSectionsService;
             _deviceIdStore = deviceIdStore;
             _tokenRefreshHandler = tokenRefreshHandler;
+            _restClient = restClient;
+
 
             var ver = vkApiVersion.Split('.');
             versionManager.SetVersion(int.Parse(ver[0]), int.Parse(ver[1]));
@@ -1308,6 +1314,61 @@ namespace MusicX.Core.Services
             {
                 logger.Error("VK API ERROR:");
                 logger.Error(ex, ex.Message);
+                throw;
+            }
+        }
+        public async Task<AppLaunchParamsResponse> GetMiniAppLaunchParams(long appId)
+        {
+            var parameters = new VkParameters
+            {
+                {"device_id", await _deviceIdStore.GetDeviceIdAsync()},
+                {"mini_app_id", appId},
+                {"referer", "recs"}
+            };
+
+            try
+            {
+                var model = await apiInvoke.CallAsync<AppLaunchParamsResponse>("apps.getAppLaunchParams",
+                    parameters);
+
+                return model;
+            }
+            catch (Exception e)
+            {
+                logger.Error(e);
+                throw;
+            }
+        }
+
+        public async Task<CredentialResponse> GetMiniAppCredentialToken(string sourceUrl, string scope)
+        {
+            var parameters = new VkParameters
+            {
+                {"device_id", await _deviceIdStore.GetDeviceIdAsync()},
+                {"display", "android"},
+                {"scope", scope},
+                {"response_type", "token"},
+                {"redirect_uri", "https://oauth.vk.com/blank.html"},
+                {"client_id", 52384530},
+                {"source_url", sourceUrl},
+                {"https", true},
+                {"v", vkApiVersion},
+                {"access_token", _api.Token}
+            };
+
+            try
+            {
+                var response = await _restClient.PostAsync(new("https://api.vk.com/oauth/authorize"), parameters, Encoding.UTF8);
+
+                if (!response.ResponseUri.Fragment.StartsWith("#access_token="))
+                    throw new VkApiException("Access token not found");
+
+                var query = Url.ParseQueryString("?" + response.ResponseUri.Fragment[1..]);
+                return new CredentialResponse(query["access_token"]);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e);
                 throw;
             }
         }

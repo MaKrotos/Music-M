@@ -1,4 +1,4 @@
-namespace MusicX.Services.Player
+﻿namespace VK_UI3.Services
 {
     public enum BoomRadioType
     {

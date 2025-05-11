@@ -65,6 +65,9 @@ namespace VK_UI3
 
             services.AddSingleton<GeniusService>();
 
+            services.AddTransient<VkBridgeService>();
+
+
 
             services.AddSingleton<ICustomSectionsService, CustomSectionsService>();
 

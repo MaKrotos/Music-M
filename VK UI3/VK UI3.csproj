@@ -79,6 +79,7 @@
 	  <None Remove="Views\Download\DownloadFFmpegController.xaml" />
 	  <None Remove="Views\Download\DOwnloadsList.xaml" />
 	  <None Remove="Views\LoginWindow\AccountList.xaml" />
+	  <None Remove="Views\MiniAppView.xaml" />
 	  <None Remove="Views\ModalsPages\CreatePlayList.xaml" />
 	  <None Remove="Views\ModalsPages\CustomDialog.xaml" />
 	  <None Remove="Views\ModalsPages\DownLoadFFMpeg.xaml" />
@@ -270,6 +271,9 @@
     <None Update="DownloadTrack\ffmpeg.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\MiniAppView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\Notification\NotifController.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
