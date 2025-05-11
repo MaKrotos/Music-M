@@ -1,6 +1,7 @@
-using Microsoft.UI.Dispatching;
+﻿using Microsoft.UI.Dispatching;
 using MusicX.Core.Models;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -264,13 +265,18 @@ namespace VK_UI3.VKs.IVK
 
         public void NotifyOnListUpdate()
         {
-            foreach (var item in tcs)
-            {
-                item.SetResult(true);
-            }
+
+
+            var tempList = new List<TaskCompletionSource<bool>>(tcs);
             tcs.Clear();
+            foreach (var item in tempList)
+            {
+                item.TrySetResult(true);
+            }
+
+
             getLoadedTracks = false;
-            onListUpdate?.Invoke(this, EventArgs.Empty);
+            onListUpdate?.Invoke(this, EventArgs.Empty); 
         }
         public void updateNumbers()
         {
