@@ -140,11 +140,11 @@ namespace VK_UI3.Controls
 
                         if (match)
                         {
-                            //var appId = match.Groups["app"].Value;
-                            //var miniAppResponse = await vkService.GetMiniApp(appId, link.Url);
+                           // var appId = match.Groups["app"].Value;
+                           // var miniAppResponse = await vkService.GetMiniApp(appId, link.Url);
 
-                           // navigationService.OpenExternalPage(new MiniAppView(new MiniAppViewModel(appId, miniAppResponse.Object.WebviewUrl)));
-                            return;
+                          //  navigationService.OpenExternalPage(new MiniAppView(new MiniAppViewModel(appId, miniAppResponse.Object.WebviewUrl)));
+                           // return;
                         }
 
                         // ураа костыль для "Настроить рекомендации"
