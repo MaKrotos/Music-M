@@ -3,6 +3,7 @@ using System;
 using System.Threading;
 using VK_UI3.Helpers;
 using Windows.Media.Playback;
+using Windows.System.Profile;
 
 namespace VK_UI3.DiscordRPC
 {
@@ -157,8 +158,19 @@ namespace VK_UI3.DiscordRPC
                 _timer?.Dispose(); 
                 _timer = new Timer(UpdatePresence, null, 0, 5000);
 
-                this.image = trackDataThis.audio.Thumb.Photo270;
-                this.imageSmall = imageSmall;
+
+                if (trackDataThis != null && trackDataThis.audio != null && trackDataThis.audio.Album != null && trackDataThis.audio.Album.Thumb != null)
+                {
+                    this.image = 
+                        trackDataThis.audio.Album.Thumb.Photo68 ??
+                        trackDataThis.audio.Album.Thumb.Photo300 ??
+                        trackDataThis.audio.Album.Thumb.Photo1200 ??
+                        trackDataThis.audio.Album.Thumb.Photo1200 ??
+                        trackDataThis.audio.Album.Thumb.Photo600 ??
+                        trackDataThis.audio.Album.Thumb.Photo270 ??
+                        null;
+                    ///this.imageSmall = imageSmall;
+                }
             }
             catch (Exception ex)
             {
