@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-	  <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
-	  <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
-	  <WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
+      <TargetFramework>net8.0-windows10.0.22000.0</TargetFramework>
+      <TargetPlatformMinVersion>10.0.22000.0</TargetPlatformMinVersion>
+	  <WindowsSdkPackageVersion>10.0.22000.38</WindowsSdkPackageVersion>
 
 	  <RootNamespace>VK_UI3</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -123,6 +123,9 @@
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" Version="8.1.240916" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.1.240916" />
     <PackageReference Include="CommunityToolkit.WinUI.Lottie" Version="8.1.240821" />
+    <PackageReference Include="FFmpegInteropX" Version="2.0.0-pre7" />
+    <PackageReference Include="FFmpegInteropX.Desktop.FFmpeg" Version="7.1.0-libass2" />
+    <PackageReference Include="FFmpegInteropX.Desktop.Lib" Version="2.0.0-pre7" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
@@ -142,6 +145,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DiscordRPC\DiscordRPC.csproj" />
+    <ProjectReference Include="..\FFMediaToolkit\FFMediaToolkit.csproj" />
     <ProjectReference Include="..\MusicX.Core\MusicX.Core.csproj" />
     <ProjectReference Include="..\MusicX.Shared\MusicX.Shared.csproj" />
     <ProjectReference Include="..\SetupLib\SetupLib.csproj" />

@@ -360,7 +360,7 @@ namespace VK_UI3.VKs
 
         private async Task AuthPasskeyAsync()
         {
-            var hResult = PInvoke.WebAuthNGetCancellationId(out var cancellationId);
+            var hResult = PInvoke.WebAuthNGetCancellationId(out Guid cancellationId);
 
             if (hResult.Succeeded)
             {

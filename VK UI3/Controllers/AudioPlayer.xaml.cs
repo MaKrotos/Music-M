@@ -12,7 +12,9 @@ using StatSlyLib.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.Controls;
 using VK_UI3.DB;
@@ -23,9 +25,20 @@ using VK_UI3.Views;
 using VK_UI3.Views.ModalsPages;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
+using Windows.Foundation.Collections;
+using Windows.Media;
 using Windows.Media.Playback;
+using FFmpegInteropX;
 using Windows.Storage.Streams;
-
+using FFMediaToolkit.Decoding;
+using WinRT;
+using Windows.Media.Core;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.Media.MediaProperties;
+using FFMediaToolkit;
+using FFMediaToolkit.Audio;
+using VkNet.Model.Attachments;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -200,6 +213,11 @@ namespace VK_UI3.Controllers
 
             this.Loaded += AudioPlayer_Loaded;
 
+            mediaPlayer.AudioCategory = MediaPlayerAudioCategory.Media;
+            mediaPlayer.CommandManager.NextBehavior.EnablingRule = MediaCommandEnablingRule.Always;
+            mediaPlayer.CommandManager.PreviousBehavior.EnablingRule = MediaCommandEnablingRule.Always;
+            mediaPlayer.SystemMediaTransportControls.DisplayUpdater.Type = MediaPlaybackType.Music;
+
 
             TrackDuration = 0;
             TrackPosition = 0;
@@ -217,7 +235,6 @@ namespace VK_UI3.Controllers
 
             // Привязка к событию CurrentStateChanged
             mediaPlayer.CurrentStateChanged += MediaPlayer_CurrentStateChanged;
-            mediaPlayer.AutoPlay = true;
 
             // Привязка к событию SourceChanged
             mediaPlayer.SourceChanged += MediaPlayer_SourceChanged;
@@ -339,26 +356,6 @@ namespace VK_UI3.Controllers
         {
 
 
-            switch (SettingsTable.GetSetting("playNext").settingValue)
-            {
-                case "RepeatOne":
-                    PlayTrack();
-                    break;
-
-                case "Shuffle":
-                    PlayNextTrack();
-
-                    break;
-
-                case "RepeatAll":
-
-                    PlayNextTrack();
-                    break;
-
-
-                default:
-                    break;
-            }
 
 
         }
@@ -573,8 +570,225 @@ namespace VK_UI3.Controllers
         }
         public static ExtendedAudio PlayingTrack = null;
 
+        public static Task<FFmpegMediaSource> CreateWinRtMediaSource(Audio data, IReadOnlyDictionary<string, string>? customOptions = null, CancellationToken cancellationToken = default)
+        {
+            var options = new PropertySet();
+
+            foreach (var option in MediaOptions.DemuxerOptions.PrivateOptions)
+            {
+                options.Add(option.Key, option.Value);
+            }
+
+            if (customOptions != null)
+                foreach (var (key, value) in customOptions)
+                    options[key] = value;
+
+            return FFmpegMediaSource.CreateFromUriAsync(data.Url.ToString(), new()
+            {
+                FFmpegOptions = options,
+                General =
+            {
+                ReadAheadBufferEnabled = true,
+                SkipErrors = uint.MaxValue,
+                KeepMetadataOnMediaSourceClosed = false
+            }
+            }).AsTask(cancellationToken);
+        }
+        protected static void RegisterSourceObjectReference(MediaPlayer player, IWinRTObject rtObject)
+        {
+            GC.SuppressFinalize(rtObject.NativeObject);
+
+            player.SourceChanged += PlayerOnSourceChanged;
+
+            void PlayerOnSourceChanged(MediaPlayer sender, object args)
+            {
+                player.SourceChanged -= PlayerOnSourceChanged;
+
+                if (rtObject is IDisposable disposable)
+                    disposable.Dispose();
+                else
+                    GC.ReRegisterForFinalize(rtObject);
+            }
+        }
+        private static readonly Semaphore FFmpegSemaphore = new(1, 1, "MusicX_FFmpegSemaphore");
+
+        public static async Task<bool> OpenWithMediaPlayerAsync(MediaPlayer player, Audio track,
+        CancellationToken cancellationToken = default)
+        {
+          
+
+            try
+            {
+                var rtMediaSource = await CreateWinRtMediaSource(track, cancellationToken: cancellationToken);
+
+                await rtMediaSource.OpenWithMediaPlayerAsync(player).AsTask(cancellationToken);
+
+                RegisterSourceObjectReference(player, rtMediaSource);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+              
+
+                // i think its better to use task.run over task.yield because we aren't doing async with ffmpeg
+                var playbackItem = await Task.Run(() =>
+                {
+                    var file = MediaFile.Open(track.Url.ToString(), MediaOptions);
+
+                    return CreateMediaPlaybackItem(file);
+                }, cancellationToken);
+
+                player.Source = playbackItem;
+            }
+
+            return true;
+        }
+        protected static MediaPlaybackItem CreateMediaPlaybackItem(MediaFile file)
+        {
+            var streamingSource = CreateFFMediaStreamSource(file);
+
+            return new(MediaSource.CreateFromMediaStreamSource(streamingSource));
+        }
+        protected static readonly MediaOptions MediaOptions = new()
+        {
+            StreamsToLoad = MediaMode.Audio,
+            AudioSampleFormat = SampleFormat.SignedWord,
+            DemuxerOptions =
+        {
+            FlagDiscardCorrupt = true,
+            FlagEnableFastSeek = true,
+            SeekToAny = true,
+            PrivateOptions =
+            {
+                ["http_persistent"] = "false",
+                ["reconnect"] = "1",
+                ["reconnect_streamed"] = "1",
+                ["reconnect_on_network_error"] = "1",
+                ["reconnect_delay_max"] = "30",
+                ["reconnect_on_http_error"] = "4xx,5xx",
+                ["stimeout"] = "30000000",
+                ["timeout"] = "30000000",
+                ["rw_timeout"] = "30000000"
+            }
+        }
+        };
+        public static MediaStreamSource CreateFFMediaStreamSource(string url)
+        {
+            return CreateFFMediaStreamSource(MediaFile.Open(url, MediaOptions));
+        }
+
+        public static MediaStreamSource CreateFFMediaStreamSource(MediaFile file)
+        {
+            var properties =
+                AudioEncodingProperties.CreatePcm((uint)file.Audio.Info.SampleRate, (uint)file.Audio.Info.NumChannels, 16);
+
+            var streamingSource = new MediaStreamSource(new AudioStreamDescriptor(properties))
+            {
+                CanSeek = true,
+                IsLive = true,
+                Duration = file.Audio.Info.Duration,
+                BufferTime = TimeSpan.Zero
+            };
+
+            var position = TimeSpan.Zero;
+
+            streamingSource.Starting += (_, args) =>
+            {
+                position = args.Request.StartPosition == TimeSpan.Zero
+                    ? file.Info.StartTime
+                    : args.Request.StartPosition.GetValueOrDefault();
+
+                args.Request.SetActualStartPosition(position);
+
+                try
+                {
+                    FFmpegSemaphore.WaitOne(TimeSpan.FromSeconds(10));
+                    file.Audio.GetFrame(position);
+                }
+                catch (FFmpegException)
+                {
+                }
+                finally
+                {
+                    FFmpegSemaphore.Release();
+                }
+            };
+
+            streamingSource.Closed += (_, _) =>
+            {
+                FFmpegSemaphore.WaitOne(TimeSpan.FromSeconds(10));
+                try
+                {
+                    file.Dispose();
+                }
+                finally
+                {
+                    FFmpegSemaphore.Release();
+                }
+            };
+
+            streamingSource.SampleRequested += (_, args) =>
+            {
+                FFmpegSemaphore.WaitOne(TimeSpan.FromSeconds(10));
+
+                try
+                {
+                    if (file.IsDisposed)
+                        return;
+
+                    var array = ProcessSample();
+                    if (array != null)
+                        args.Request.Sample = MediaStreamSample.CreateFromBuffer(array.AsBuffer(), position);
+                }
+                finally
+                {
+                    FFmpegSemaphore.Release();
+                }
+            };
+
+            byte[]? ProcessSample()
+            {
+                AudioData frame;
+                while (true)
+                {
+                    try
+                    {
+                        if (!file.Audio.TryGetNextFrame(out frame))
+                            return null;
+
+                        position = file.Audio.Position;
+
+                        break;
+                    }
+                    catch (FFmpegException)
+                    {
+                    }
+                }
+
+                var blockSize = frame.NumSamples * Unsafe.SizeOf<short>();
+                var array = new byte[frame.NumChannels * blockSize];
+
+                frame.GetChannelData<short>(0).CopyTo(MemoryMarshal.Cast<byte, short>(array));
+
+                frame.Dispose();
+
+                return array;
+            }
+
+            return streamingSource;
+        }
+        private static CancellationTokenSource? _tokenSource;
+
         private async static Task PlayTrack(long? v = 0)
         {
+
+            _tokenSource?.Cancel();
+            _tokenSource?.Dispose();
+            _tokenSource = new();
+
             if (iVKGetAudio.listAudio.Count == 0)
             {
                 var tcs = new TaskCompletionSource<bool>();
@@ -650,14 +864,16 @@ namespace VK_UI3.Controllers
             else props.Thumbnail = null;
             mediaPlaybackItem.ApplyDisplayProperties(props);
 
-            mediaPlayer.PlaybackSession.Position = TimeSpan.Zero;
+            mediaPlayer.PlaybackSession.Position = TimeSpan.FromMilliseconds(1);
             mediaPlayer.Pause();
 
 
-            mediaPlayer.Source = mediaPlaybackItem;
-            mediaPlayer.Play();
+            //mediaPlayer.Source = mediaPlaybackItem;
+            //mediaPlayer.Play();
 
-            _= KrotosVK.sendVKAudioPlayStat(trackdata, preTrack, secDurPre);
+            OpenWithMediaPlayerAsync(mediaPlayer, trackdata.audio, _tokenSource.Token);
+
+            _ = KrotosVK.sendVKAudioPlayStat(trackdata, preTrack, secDurPre);
 
             iVKGetAudio.ChangePlayAudio(trackdata);
             
@@ -679,7 +895,7 @@ namespace VK_UI3.Controllers
                         new EventParams("Artist", trackdata.audio.Title)
                     };
 
-            Event @event = new Event("Play Track", DateTime.Now, eventParams: listParams);
+            StatSlyLib.Models.Event @event = new StatSlyLib.Models.Event("Play Track", DateTime.Now, eventParams: listParams);
             _ = new VKMStatSly().SendEvent(@event);
         }
 
