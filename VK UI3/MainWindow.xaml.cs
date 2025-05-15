@@ -116,7 +116,7 @@ namespace VK_UI3
         private const int GWL_EXSTYLE = -20;
         private const uint WS_EX_TOOLWINDOW = 0x00000080;
 
-        private TrayIconManager _trayIconManager;
+        private TrayIconManager _trayIconManager = null;
         public void HideFromTaskbar()
         {
             var hwnd = WindowNative.GetWindowHandle(this);
@@ -273,7 +273,13 @@ namespace VK_UI3
             {
                 args.Handled = true;
                 var hwnd = WindowNative.GetWindowHandle(this);
-                _trayIconManager = new TrayIconManager(hwnd, this);
+                if (_trayIconManager == null)
+                {
+                    _trayIconManager = new TrayIconManager(hwnd, this);
+                } else
+                {
+                    _trayIconManager.ShowTrayIconAgain();
+                }
                 HideFromTaskbar();
                 return;
             }

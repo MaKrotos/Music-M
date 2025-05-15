@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Drawing;
 using System.IO;
+using System.Diagnostics;
 
 namespace VK_UI3
 {
@@ -50,6 +51,11 @@ namespace VK_UI3
         [DllImport("comctl32.dll", SetLastError = true)]
         private static extern IntPtr DefSubclassProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
+        [DllImport("user32.dll")]
+        private static extern bool IsWindow(IntPtr hWnd);
+
+
+
         public TrayIconManager(IntPtr windowHandle, MainWindow window)
         {
             _windowHandle = windowHandle;
@@ -63,13 +69,28 @@ namespace VK_UI3
 
             AddTrayIcon();
         }
+
+        public void ShowTrayIconAgain()
+        {
+            if (_iconAdded)
+                return;
+
+            AddTrayIcon();
+        }
+
+
         public void HideTrayIcon()
         {
             RemoveTrayIcon();
         }
 
+        private IntPtr _trayIconHandle = IntPtr.Zero;
+
         private void AddTrayIcon()
         {
+            if (_trayIconHandle != IntPtr.Zero)
+                return;
+
             var nid = new NOTIFYICONDATA
             {
                 cbSize = (uint)Marshal.SizeOf(typeof(NOTIFYICONDATA)),
@@ -83,7 +104,8 @@ namespace VK_UI3
             string iconPath = Path.Combine(AppContext.BaseDirectory, "icon.ico");
             using (var icon = new Icon(iconPath))
             {
-                nid.hIcon = icon.Handle;
+                _trayIconHandle = icon.Handle; // Сохраняем дескриптор
+                nid.hIcon = _trayIconHandle;
                 _iconAdded = Shell_NotifyIcon(NIM_ADD, ref nid);
             }
         }
@@ -101,46 +123,95 @@ namespace VK_UI3
             };
 
             Shell_NotifyIcon(NIM_DELETE, ref nid);
+            if (_trayIconHandle != IntPtr.Zero)
+            {
+                DestroyIcon(_trayIconHandle); // Освобождаем дескриптор
+                _trayIconHandle = IntPtr.Zero;
+            }
+            _iconAdded = false;
         }
+
+        [DllImport("user32.dll")]
+        private static extern bool DestroyIcon(IntPtr hIcon);
 
         private IntPtr WindowSubclassProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam, UIntPtr uIdSubclass, IntPtr dwRefData)
         {
-            if (msg == WM_TRAYICON)
+            try
             {
-                int eventCode = lParam.ToInt32();
+                if (!IsWindow(hWnd))
+                {
+                    Debug.WriteLine("Ошибка: Окно больше не существует.");
+                    return IntPtr.Zero;
+                }
 
-                if (eventCode == WM_LBUTTONUP)
+                Debug.WriteLine($"WindowSubclassProc: msg={msg}, wParam={wParam}, lParam={lParam}");
+
+                if (msg == WM_TRAYICON)
                 {
-                    _window.DispatcherQueue.TryEnqueue(() => _window.ShowWindowAgain());
+                    int eventCode = lParam.ToInt32();
+                    Debug.WriteLine($"WM_TRAYICON received: eventCode={eventCode}");
+
+                    if (eventCode == WM_LBUTTONUP)
+                    {
+                        _window?.DispatcherQueue?.TryEnqueue(() =>
+                        {
+                            if (_window != null && IsWindow(_windowHandle))
+                            {
+                                _window.ShowWindowAgain();
+                            }
+                            else
+                            {
+                                Debug.WriteLine("Ошибка: Окно недоступно.");
+                            }
+                        });
+                    }
+                    else if (eventCode == WM_RBUTTONUP)
+                    {
+                        ShowContextMenu();
+                    }
                 }
-                else if (eventCode == WM_RBUTTONUP)
+
+                if (!IsWindow(hWnd))
                 {
-                    ShowContextMenu();
+                    Debug.WriteLine("Ошибка: Окно уничтожено во время обработки.");
+                    return IntPtr.Zero;
                 }
+
+                return DefSubclassProc(hWnd, msg, wParam, lParam);
             }
-
-            return DefSubclassProc(hWnd, msg, wParam, lParam);
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Ошибка в WindowSubclassProc: {ex.Message}");
+                return IntPtr.Zero;
+            }
         }
+
+
         private const uint TPM_LEFTALIGN = 0x0000;
         private const uint TPM_RETURNCMD = 0x0100;
 
         private void ShowContextMenu()
         {
             IntPtr hMenu = CreatePopupMenu();
-            AppendMenu(hMenu, 0, 1, "Закрыть");
-
-            POINT cursorPos;
-            GetCursorPos(out cursorPos);
-            SetForegroundWindow(_windowHandle);
-            int command = TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_RETURNCMD, cursorPos.X, cursorPos.Y, 0, _windowHandle, IntPtr.Zero);
-
-            if (command == 1)
+            try
             {
-                _window.justClose = true;
-                _window.DispatcherQueue.TryEnqueue(() => _window.Close());
-            }
+                AppendMenu(hMenu, 0, 1, "Закрыть");
 
-            DestroyMenu(hMenu);
+                POINT cursorPos;
+                GetCursorPos(out cursorPos);
+                SetForegroundWindow(_windowHandle);
+                int command = TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_RETURNCMD, cursorPos.X, cursorPos.Y, 0, _windowHandle, IntPtr.Zero);
+
+                if (command == 1)
+                {
+                    _window.justClose = true;
+                    _window.DispatcherQueue.TryEnqueue(() => _window.Close());
+                }
+            }
+            finally
+            {
+                DestroyMenu(hMenu); // Гарантированное освобождение
+            }
         }
 
         [DllImport("user32.dll")]
