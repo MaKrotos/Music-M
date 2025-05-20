@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
@@ -19,7 +19,10 @@ namespace VkNet.AudioBypassService.Utils
 
 		public FakeSafetyNetClient()
 		{
-			_httpClient = new HttpClient();
+			_httpClient = new HttpClient()
+            {
+                Timeout = TimeSpan.FromSeconds(30),
+            };
 			_httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(GcmUserAgent);
 		}
 
