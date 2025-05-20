@@ -130,24 +130,31 @@ namespace VK_UI3
                 // Получаем все процессы с таким же именем, как у текущего
                 foreach (Process process in Process.GetProcessesByName(current.ProcessName))
                 {
-                    // Если процесс не является текущим и его главное окно не минимизировано
-                    if (process.Id != current.Id && process.MainWindowHandle != IntPtr.Zero)
-                    {
-                        // Развертываем окно, если оно свернуто
-                        var a = new Windows.Win32.Foundation.HWND(process.MainWindowHandle);
-                        if (PInvoke.IsIconic(new Windows.Win32.Foundation.HWND(a)))
-                        {
-                            PInvoke.ShowWindow(new Windows.Win32.Foundation.HWND(a), Windows.Win32.UI.WindowsAndMessaging.SHOW_WINDOW_CMD.SW_RESTORE);
-                        }
+                    var hwnd = new Windows.Win32.Foundation.HWND(process.MainWindowHandle);
 
-                        // Переводим окно на передний план
-                        PInvoke.SetForegroundWindow(new Windows.Win32.Foundation.HWND(a));
-                        break;
+                    // Проверяем, видимо ли окно (не скрыто ли оно)
+                    if (PInvoke.IsWindowVisible(hwnd))
+                    {
+                        // Если окно свернуто - восстанавливаем
+                        if (PInvoke.IsIconic(hwnd))
+                        {
+                            PInvoke.ShowWindow(hwnd, Windows.Win32.UI.WindowsAndMessaging.SHOW_WINDOW_CMD.SW_RESTORE);
+                        }
+                        // Переводим на передний план
+                        PInvoke.SetForegroundWindow(hwnd);
                     }
+                    else
+                    {
+                        // Если окно скрыто (ShowWindow(hwnd, 0)), показываем его
+                        PInvoke.ShowWindow(hwnd, Windows.Win32.UI.WindowsAndMessaging.SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
+                        PInvoke.SetForegroundWindow(hwnd);
+                    }
+
+                    Application.Current.Exit();
+                    return;
                 }
                 Application.Current.Exit();
                 return;
-
             }
 
             _host.Start();
