@@ -54,7 +54,7 @@ namespace VK_UI3
         [DllImport("user32.dll")]
         private static extern bool IsWindow(IntPtr hWnd);
 
-
+        private bool _disposed = false;
 
         public TrayIconManager(IntPtr windowHandle, MainWindow window)
         {
@@ -239,10 +239,35 @@ namespace VK_UI3
             public int Y;
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    // Освобождаем управляемые ресурсы
+                    RemoveTrayIcon();
+                }
+
+                // Освобождаем неуправляемые ресурсы
+                if (_trayIconHandle != IntPtr.Zero)
+                {
+                    DestroyIcon(_trayIconHandle);
+                    _trayIconHandle = IntPtr.Zero;
+                }
+
+                RemoveWindowSubclass(_windowHandle, _subclassProc, UIntPtr.Zero);
+                _disposed = true;
+            }
+        }
         public void Dispose()
         {
-            RemoveTrayIcon();
-            RemoveWindowSubclass(_windowHandle, _subclassProc, UIntPtr.Zero);
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        ~TrayIconManager()
+        {
+            Dispose(false);
         }
     }
 }
