@@ -9,6 +9,7 @@ using StatSlyLib.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.DB;
@@ -105,6 +106,9 @@ namespace VK_UI3
         private Mutex _mutex = null;
         private const int SW_RESTORE = 9;
 
+        [DllImport("user32.dll")]
+        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
         /// <summary>
         /// Invoked when the application is launched.
         /// </summary>
@@ -118,41 +122,43 @@ namespace VK_UI3
 
          
             setThemeApp();
-            _mutex = new Mutex(true, mutexName, out createdNew);
-            if (!createdNew)
-            {
-              
+            
                 _mutex = null;
-
-          
                 Process current = Process.GetCurrentProcess();
+            bool close = false;
 
-                // Получаем все процессы с таким же именем, как у текущего
-                foreach (Process process in Process.GetProcessesByName(current.ProcessName))
+            foreach (Process process in Process.GetProcessesByName(current.ProcessName))
+            {
+                Windows.Win32.Foundation.BOOL EnumWindowCallback(Windows.Win32.Foundation.HWND hwnd, Windows.Win32.Foundation.LPARAM lParam)
                 {
-                    var hwnd = new Windows.Win32.Foundation.HWND(process.MainWindowHandle);
+                    uint processId;
+                    GetWindowThreadProcessId(hwnd, out processId);
 
-                    // Проверяем, видимо ли окно (не скрыто ли оно)
-                    if (PInvoke.IsWindowVisible(hwnd))
+                    if (processId == process.Id)
                     {
-                        // Если окно свернуто - восстанавливаем
-                        if (PInvoke.IsIconic(hwnd))
+                        if (PInvoke.IsWindowVisible(hwnd))
                         {
-                            PInvoke.ShowWindow(hwnd, Windows.Win32.UI.WindowsAndMessaging.SHOW_WINDOW_CMD.SW_RESTORE);
+                            if (PInvoke.IsIconic(hwnd))
+                            {
+                                PInvoke.ShowWindow(hwnd, Windows.Win32.UI.WindowsAndMessaging.SHOW_WINDOW_CMD.SW_RESTORE);
+                            }
+                            PInvoke.SetForegroundWindow(hwnd);
                         }
-                        // Переводим на передний план
-                        PInvoke.SetForegroundWindow(hwnd);
+                        else
+                        {
+                            PInvoke.ShowWindow(hwnd, Windows.Win32.UI.WindowsAndMessaging.SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
+                            PInvoke.SetForegroundWindow(hwnd);
+                        }
+                        close = true;
                     }
-                    else
-                    {
-                        // Если окно скрыто (ShowWindow(hwnd, 0)), показываем его
-                        PInvoke.ShowWindow(hwnd, Windows.Win32.UI.WindowsAndMessaging.SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
-                        PInvoke.SetForegroundWindow(hwnd);
-                    }
-
-                    Application.Current.Exit();
-                    return;
+                    return true;
                 }
+
+                // Перебираем все окна
+                PInvoke.EnumWindows(EnumWindowCallback, (Windows.Win32.Foundation.LPARAM)0);
+            }
+            if (close)
+            {
                 Application.Current.Exit();
                 return;
             }
