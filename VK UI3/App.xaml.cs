@@ -186,14 +186,21 @@ namespace VK_UI3
 
                 var setting = DB.SettingsTable.GetSetting("UserUniqID");
                 string UserUniqID;
+                var packageVersion = Package.Current.Id.Version;
+                var version = $"{packageVersion.Major}.{packageVersion.Minor}.{packageVersion.Build}.{packageVersion.Revision}";
                 if (setting == null)
                 {
                     UserUniqID = Helpers.SmallHelpers.GenerateRandomString(100);
-                    DB.SettingsTable.SetSetting("UserUniqID", UserUniqID);
 
                     EventParams eventParams = new EventParams("userID", UserUniqID);
 
-                    Event @event = new Event("First Run", DateTime.Now, eventParams: new List<EventParams>() { eventParams });
+                    Event @event = new Event("First Run", DateTime.Now, eventParams: new List<EventParams>() {
+                        new EventParams("userID", UserUniqID),
+                        new EventParams("versionAPP", version),
+
+                        new EventParams("OSArchitecture", RuntimeInformation.OSArchitecture.ToString()),
+                        new EventParams("AppArchitecture", RuntimeInformation.ProcessArchitecture.ToString())
+                    });
 
                     _ = new VKMStatSly().SendEvent(@event);
                 }
@@ -203,15 +210,16 @@ namespace VK_UI3
                 }
 
                 {
-                    var packageVersion = Package.Current.Id.Version;
-                    var version = $"{packageVersion.Major}.{packageVersion.Minor}.{packageVersion.Build}.{packageVersion.Revision}";
+                 
                
 
                     var listParams = new List<EventParams>
                     {
                         new EventParams("userID", UserUniqID),
                         new EventParams("Accounts Count", AccountsDB.GetAllAccounts().Count),
-                        new EventParams("versionAPP", version)
+                        new EventParams("versionAPP", version),
+                        new EventParams("OSArchitecture", RuntimeInformation.OSArchitecture.ToString()),
+                        new EventParams("AppArchitecture", RuntimeInformation.ProcessArchitecture.ToString())
                     };
 
                     if (AccountsDB.GetAllAccounts().Count > 0)
@@ -311,6 +319,8 @@ namespace VK_UI3
                         new EventParams("versionAPP", version),
                         new EventParams("Sender", sender.ToString()),
                         new EventParams("Exception", e.Message),
+                        new EventParams("OSArchitecture", RuntimeInformation.OSArchitecture.ToString()),
+                        new EventParams("AppArchitecture", RuntimeInformation.ProcessArchitecture.ToString())
                     };
 
                 if (AccountsDB.GetAllAccounts().Count > 0)
