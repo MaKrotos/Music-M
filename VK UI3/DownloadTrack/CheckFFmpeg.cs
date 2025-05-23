@@ -56,6 +56,8 @@ namespace VK_UI3.DownloadTrack
                     return "https://github.com/MaKrotos/Music-M/releases/download/0.1.0.0/ffmpegX32.exe";
                 case Architecture.X64:
                     return "https://github.com/MaKrotos/Music-M/releases/download/0.1.0.0/ffmpegX64.exe";
+                case Architecture.Arm64:
+                    return "https://github.com/MaKrotos/Music-M/releases/download/0.1.0.0/ffmpegARM64.exe";
                 default:
                     return null;
             }
