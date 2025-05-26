@@ -566,7 +566,7 @@ namespace VK_UI3.VKs
                         listParams.Add(new EventParams("ActiveAccount", account.GetHash()));
                     }
 
-                    Event @event = new Event("Run App", DateTime.Now, eventParams: listParams);
+                    Event @event = new Event("LoginVK", DateTime.Now, eventParams: listParams);
                     _ = new VKMStatSly().SendEvent(@event);
                 }
                 catch { }
