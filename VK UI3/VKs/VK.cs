@@ -550,6 +550,26 @@ namespace VK_UI3.VKs
 
                 AccountsDB.activeAccount.Update();
 
+                try
+                {
+                    var packageVersion = Package.Current.Id.Version;
+                    var version = $"{packageVersion.Major}.{packageVersion.Minor}.{packageVersion.Build}.{packageVersion.Revision}";
+                    var listParams = new List<EventParams>
+                    {
+                        new EventParams("Accounts Count", AccountsDB.GetAllAccounts().Count),
+                        new EventParams("versionAPP", version),
+                    };
+
+                    if (AccountsDB.GetAllAccounts().Count > 0)
+                    {
+                        var account = AccountsDB.GetActiveAccount();
+                        listParams.Add(new EventParams("ActiveAccount", account.GetHash()));
+                    }
+
+                    Event @event = new Event("Run App", DateTime.Now, eventParams: listParams);
+                    _ = new VKMStatSly().SendEvent(@event);
+                }
+                catch { }
 
                 login.Frame.Navigate(typeof(MainView), null, new DrillInNavigationTransitionInfo());
 
