@@ -112,6 +112,7 @@ namespace VK_UI3
         [DllImport("user32.dll")]
         private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
+
         /// <summary>
         /// Invoked when the application is launched.
         /// </summary>
@@ -139,20 +140,44 @@ namespace VK_UI3
 
                     if (processId == process.Id)
                     {
-                        if (PInvoke.IsWindowVisible(hwnd))
+                        // Получаем заголовок окна
+                        int length = PInvoke.GetWindowTextLength(hwnd);
+                        if (length > 0)
                         {
-                            if (PInvoke.IsIconic(hwnd))
+                            // Создаем буфер достаточного размера (+1 для нуль-терминатора)
+                            char[] buffer = new char[length + 1];
+                            unsafe
                             {
-                                PInvoke.ShowWindow(hwnd, Windows.Win32.UI.WindowsAndMessaging.SHOW_WINDOW_CMD.SW_RESTORE);
+                                fixed (char* pBuffer = buffer)
+                                {
+                                    // Получаем текст окна
+                                    int copiedChars = PInvoke.GetWindowText(hwnd, (Windows.Win32.Foundation.PWSTR)pBuffer, buffer.Length);
+                                    if (copiedChars > 0)
+                                    {
+                                        string windowTitle = new string(buffer, 0, copiedChars);
+
+                                        // Проверяем, содержит ли заголовок "VK M" (или точное совпадение)
+                                        if (windowTitle.Contains("VK M")) // или windowTitle == "VK M"
+                                        {
+                                            if (PInvoke.IsWindowVisible(hwnd))
+                                            {
+                                                if (PInvoke.IsIconic(hwnd))
+                                                {
+                                                    PInvoke.ShowWindow(hwnd, Windows.Win32.UI.WindowsAndMessaging.SHOW_WINDOW_CMD.SW_RESTORE);
+                                                }
+                                                PInvoke.SetForegroundWindow(hwnd);
+                                            }
+                                            else
+                                            {
+                                                PInvoke.ShowWindow(hwnd, Windows.Win32.UI.WindowsAndMessaging.SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
+                                                PInvoke.SetForegroundWindow(hwnd);
+                                            }
+                                            close = true;
+                                        }
+                                    }
+                                }
                             }
-                            PInvoke.SetForegroundWindow(hwnd);
                         }
-                        else
-                        {
-                            PInvoke.ShowWindow(hwnd, Windows.Win32.UI.WindowsAndMessaging.SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
-                            PInvoke.SetForegroundWindow(hwnd);
-                        }
-                        close = true;
                     }
                     return true;
                 }
