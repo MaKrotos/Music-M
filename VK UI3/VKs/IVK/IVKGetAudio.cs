@@ -24,7 +24,7 @@ namespace VK_UI3.VKs.IVK
     {
         public IVkApi api;
         public string id;
-        bool shuffle = false;
+        protected bool shuffle = false;
 
         private List<ExtendedAudio> selectedAudio = new List<ExtendedAudio>();
 
@@ -45,21 +45,21 @@ namespace VK_UI3.VKs.IVK
 
         public void FillAndShuffleList()
         {
-            // Проверяем, что в списке shuffleList все элементы от 0 до countTracks-1
-            for (int i = 0; i < countTracks; i++)
+
+            if (countTracks == -1)
             {
-                // Если элемента нет в списке, добавляем его
-                if (!shuffleList.Contains(i))
+                for (int i = 0; i <= listAudio.Count - 1; i++)
                 {
                     shuffleList.Add(i);
                 }
             }
-
-            // Удаляем возможные лишние элементы (если countTracks уменьшилось)
-            // Оставляем только элементы от 0 до countTracks-1
-            shuffleList.RemoveAll(x => x >= countTracks || x < 0);
-
-            // Теперь перемешиваем список
+            else
+            {
+                for (int i = 0; i <= countTracks - 1; i++)
+                {
+                    shuffleList.Add(i);
+                }
+            }
             Random rng = new Random();
             int n = shuffleList.Count;
             while (n > 1)
@@ -276,7 +276,32 @@ namespace VK_UI3.VKs.IVK
 
         public void NotifyOnListUpdate()
         {
+            if (shuffle && countTracks  == -1)
+            {
 
+                List<int> shuffleListex = new List<int>();
+
+                for (int i = shuffleList.Count; listAudio.Count -1 > i; i++)
+                {
+                    shuffleListex.Add(i);
+                }
+
+                Random rng = new Random();
+                int n = shuffleListex.Count;
+                while (n > 1)
+                {
+                    n--;
+                    int k = rng.Next(n + 1);
+                    int value = shuffleListex[k];
+                    shuffleListex[k] = shuffleListex[n];
+                    shuffleListex[n] = value;
+                }
+
+                foreach (var item in shuffleListex)
+                {
+                    shuffleList.Add(item);
+                }
+            }
 
             var tempList = new List<TaskCompletionSource<bool>>(tcs);
             tcs.Clear();

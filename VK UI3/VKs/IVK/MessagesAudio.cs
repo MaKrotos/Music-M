@@ -1,4 +1,4 @@
-using Microsoft.UI.Dispatching;
+п»їusing Microsoft.UI.Dispatching;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -95,7 +95,7 @@ namespace VK_UI3.VKs.IVK
 
         public override void GetTracks()
         {
-            semaphore.Wait(); // Ожидает освобождения семафора
+            semaphore.Wait(); // РћР¶РёРґР°РµС‚ РѕСЃРІРѕР±РѕР¶РґРµРЅРёСЏ СЃРµРјР°С„РѕСЂР°
 
             try
             {
@@ -130,6 +130,8 @@ namespace VK_UI3.VKs.IVK
                         resetEvent.WaitOne(); 
                         resetEvent.Reset(); 
                     }
+
+                    
 
                     if (nextFrom == null) itsAll = true;
 
