@@ -27,3 +27,5 @@ SHOW_WINDOW
 GWL_EXSTYLE
 IsWindowVisible
 EnumWindows
+GetWindowTextLength
+GetWindowText
