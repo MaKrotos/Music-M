@@ -3,11 +3,14 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media.Imaging;
+using StatSlyLib.Models;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using VK_UI3.DB;
 using VK_UI3.Views.ModalsPages;
 using VK_UI3.VKs;
+using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.System;
 using static VK_UI3.DB.AccountsDB;
@@ -55,8 +58,28 @@ namespace VK_UI3.Views.LoginWindow
 
 
 
-            private async void LoginButton_Click(object sender, RoutedEventArgs e)
+        private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                var UserUniqID = DB.SettingsTable.GetSetting("UserUniqID");
+
+                EventParams eventParams = new EventParams("userID", UserUniqID.settingValue);
+
+                var packageVersion = Package.Current.Id.Version;
+                var version = $"{packageVersion.Major}.{packageVersion.Minor}.{packageVersion.Build}.{packageVersion.Revision}";
+                var listParams = new List<EventParams>
+                {
+                        eventParams,
+                        new EventParams("Accounts Count", AccountsDB.GetAllAccounts().Count),
+                        new EventParams("versionAPP", version),
+                };
+
+
+                Event @event = new Event("Enter Login VK", DateTime.Now, eventParams: listParams);
+                _ = new VKMStatSly().SendEvent(@event);
+            }
+            catch { }
 
             Task task = new Task(() =>
             {
@@ -64,6 +87,8 @@ namespace VK_UI3.Views.LoginWindow
             });
             task.RunSynchronously();
             Frame.Navigate(typeof(waitPage), this, new DrillInNavigationTransitionInfo());
+
+
 
         }
 
