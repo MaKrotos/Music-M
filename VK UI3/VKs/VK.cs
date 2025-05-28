@@ -578,7 +578,10 @@ namespace VK_UI3.VKs
                     Event @event = new Event("LoginVK", DateTime.Now, eventParams: listParams);
                     _ = new VKMStatSly().SendEvent(@event);
                 }
-                catch { }
+                catch (Exception exc)
+                { 
+                
+                }
 
                 login.Frame.Navigate(typeof(MainView), null, new DrillInNavigationTransitionInfo());
 
