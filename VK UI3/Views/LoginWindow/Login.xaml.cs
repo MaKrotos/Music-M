@@ -60,6 +60,21 @@ namespace VK_UI3.Views.LoginWindow
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
+            
+
+            Task task = new Task(() =>
+            {
+                loginInvike();
+            });
+            task.RunSynchronously();
+            Frame.Navigate(typeof(waitPage), this, new DrillInNavigationTransitionInfo());
+
+
+
+        }
+
+        private void loginInvike()
+        {
             try
             {
                 var UserUniqID = DB.SettingsTable.GetSetting("UserUniqID");
@@ -81,19 +96,6 @@ namespace VK_UI3.Views.LoginWindow
             }
             catch { }
 
-            Task task = new Task(() =>
-            {
-                loginInvike();
-            });
-            task.RunSynchronously();
-            Frame.Navigate(typeof(waitPage), this, new DrillInNavigationTransitionInfo());
-
-
-
-        }
-
-        private void loginInvike()
-        {
             new VK(this).LoginAsync(LoginTextBox.Text);
         }
 
