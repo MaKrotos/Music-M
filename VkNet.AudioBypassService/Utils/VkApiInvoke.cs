@@ -135,8 +135,24 @@ public class VkApiInvoke : IVkApiInvoke
         {
             if (sid is { } captchaSid)
             {
-                parameters.Add("captcha_sid", captchaSid.ToString());
-                parameters.Add("captcha_key", key);
+
+                if (parameters.ContainsKey("captcha_sid"))
+                {
+                    parameters["captcha_sid"] = captchaSid.ToString();
+                }
+                else
+                {
+                    parameters.Add("captcha_sid", captchaSid.ToString());
+                }
+                if (parameters.ContainsKey("captcha_key"))
+                {
+                    parameters["captcha_key"] = key;
+                }
+                else
+                {
+                    parameters.Add("captcha_key", key);
+                }
+
             }
 
             await _rateLimiter.WaitNextAsync();

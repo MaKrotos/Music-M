@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using System.Collections.ObjectModel;
@@ -23,7 +23,7 @@ namespace VK_UI3.Views.LoginWindow
         public ObservableCollection<EcosystemVerificationMethod> VerificationMethods;
 
         public event PropertyChangedEventHandler PropertyChanged;
-        internal VK vk;
+        internal VKAuth vk;
 
         public ChooseVerMethods()
         {

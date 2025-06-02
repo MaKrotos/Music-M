@@ -26,7 +26,7 @@ namespace VK_UI3.Views.LoginWindow
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class Login : Page
+    public sealed partial class Login : Page, NavigateArgsSender
     {
         public Login()
         {
@@ -96,7 +96,7 @@ namespace VK_UI3.Views.LoginWindow
             }
             catch { }
 
-            new VK(this).LoginAsync(LoginTextBox.Text);
+            new VKAuth(this).LoginAsync(LoginTextBox.Text);
         }
 
         public Task<string> InputTextDialogAsyncCapthca(Uri imageUrl)
@@ -281,6 +281,10 @@ namespace VK_UI3.Views.LoginWindow
             }
         }
 
-
+        public void SendArgs(ArgSender argSender)
+        {
+            errorTextBlock.Text = argSender.ErrorText;
+            errorTextBlock.Visibility = Visibility.Visible;
+        }
     }
 }
