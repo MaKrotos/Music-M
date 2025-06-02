@@ -213,6 +213,7 @@ namespace VK_UI3
                 if (setting == null)
                 {
                     UserUniqID = Helpers.SmallHelpers.GenerateRandomString(100);
+                    DB.SettingsTable.SetSetting("UserUniqID", UserUniqID);
 
                     EventParams eventParams = new EventParams("userID", UserUniqID);
 
@@ -318,42 +319,39 @@ namespace VK_UI3
                 UserUniqID = Helpers.SmallHelpers.GenerateRandomString(100);
                 DB.SettingsTable.SetSetting("UserUniqID", UserUniqID);
 
-                EventParams eventParams = new EventParams("userID", UserUniqID);
 
-                Event @event = new Event("First Run", DateTime.Now, eventParams: new List<EventParams>() { eventParams });
 
-                _ = new VKMStatSly().SendEvent(@event);
             }
             else
             {
                 UserUniqID = setting.settingValue;
             }
 
-            {
-                var packageVersion = Package.Current.Id.Version;
-                var version = $"{packageVersion.Major}.{packageVersion.Minor}.{packageVersion.Build}.{packageVersion.Revision}";
+
+            var packageVersion = Package.Current.Id.Version;
+            var version = $"{packageVersion.Major}.{packageVersion.Minor}.{packageVersion.Build}.{packageVersion.Revision}";
 
 
-                var listParams = new List<EventParams>
+            var listParams = new List<EventParams>
                     {
                         new EventParams("userID", UserUniqID),
                         new EventParams("Accounts Count", AccountsDB.GetAllAccounts().Count),
                         new EventParams("versionAPP", version),
                         new EventParams("Sender", sender.ToString()),
                         new EventParams("Exception", e.Message),
+                        new EventParams("StackTrace", e.Exception.StackTrace),
                         new EventParams("OSArchitecture", RuntimeInformation.OSArchitecture.ToString()),
                         new EventParams("AppArchitecture", RuntimeInformation.ProcessArchitecture.ToString())
                     };
 
-                if (AccountsDB.GetAllAccounts().Count > 0)
-                {
-                    var account = AccountsDB.GetActiveAccount();
-                    listParams.Add(new EventParams("ActiveAccount", account.GetHash()));
-                }
-
-                Event @event = new Event("Exception", DateTime.Now, eventParams: listParams);
-                _ = new VKMStatSly().SendEvent(@event);
+            if (AccountsDB.GetAllAccounts().Count > 0)
+            {
+                var account = AccountsDB.GetActiveAccount();
+                listParams.Add(new EventParams("ActiveAccount", account.GetHash()));
             }
+
+            Event @event = new Event("Exception", DateTime.Now, eventParams: listParams);
+            _ = new VKMStatSly().SendEvent(@event);
         }
 
       
