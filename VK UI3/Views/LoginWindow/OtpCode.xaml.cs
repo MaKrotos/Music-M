@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using VK_UI3.DB;
@@ -14,9 +14,9 @@ namespace VK_UI3.Views.LoginWindow
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public partial class OtpCode : Page
+    public partial class OtpCode : Page, NavigateArgsSender
     {
-        internal VK vk;
+        internal VKAuth vk;
 
         public int CodeLength { get; set; }
         public string? Info { get; set; }
@@ -126,6 +126,10 @@ namespace VK_UI3.Views.LoginWindow
                 sumbit();
             }
 
+        }
+
+        public void SendArgs(ArgSender argSender)
+        {
         }
     }
 }

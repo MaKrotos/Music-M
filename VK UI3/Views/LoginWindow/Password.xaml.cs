@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using System;
@@ -14,9 +14,9 @@ namespace VK_UI3.Views.LoginWindow
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public partial class Password : Page
+    public partial class Password : Page, NavigateArgsSender
     {
-        internal VK vk;
+        internal VKAuth vk;
 
         public int CodeLength { get; set; }
         public string? Info { get; set; }
@@ -112,6 +112,12 @@ namespace VK_UI3.Views.LoginWindow
         private void sumbit()
         {
             vk.AuthAsync(passText.Password);
+        }
+
+        public void SendArgs(ArgSender argSender)
+        {
+            errorTextBlock.Text = argSender.ErrorText;
+            errorTextBlock.Visibility = Visibility.Visible;
         }
     }
 }
