@@ -60,10 +60,17 @@ namespace KrotosNavigationFrame
             {
                 _BackStack.Add(currentFrame);
                 var curr = currentFrame;
-                // Не скрываем сразу, а анимируем
-                AnimateOpacity(curr.Frame, 0, 300, () => {
-                    curr.Frame.Visibility = Microsoft.UI.Xaml.Visibility.Collapsed;
-                });
+              
+
+                foreach (var item in _BackStack)
+                {
+                    if (item.Frame.Visibility == Visibility.Collapsed)
+                        continue;
+
+                    AnimateOpacity(item.Frame, 0, 300, () => {
+                        item.Frame.Visibility = Microsoft.UI.Xaml.Visibility.Collapsed;
+                    });
+                }
             }
 
             this.DispatcherQueue.TryEnqueue(async () => {
