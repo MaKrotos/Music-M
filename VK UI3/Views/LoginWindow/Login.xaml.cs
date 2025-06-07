@@ -223,33 +223,43 @@ namespace VK_UI3.Views.LoginWindow
 
 
 
-        public async Task<string> DialogMessageShow(string Message)
-        {
-            string result = "";
+         public async Task<string> DialogMessageShow(string Message)
+ {
+     string result = "";
 
-            ContentDialog dialog = new CustomDialog();
+     ContentDialog dialog = new CustomDialog();
 
-            dialog.Transitions = new TransitionCollection
-            {
-                new PopupThemeTransition()
-            };
+     dialog.Transitions = new TransitionCollection
+     {
+         new PopupThemeTransition()
+     };
 
 
-            this.DispatcherQueue.TryEnqueue(async () =>
-            {
-                if (dialog != null)
-                {
-                    dialog.XamlRoot = this.XamlRoot; // Associate with the correct XamlRoot
+     this.DispatcherQueue.TryEnqueue(async () =>
+     {
+         if (dialog != null)
+         {
+             dialog.XamlRoot = this.XamlRoot; 
 
-                    dialog.Title = Message;
+             TextBlock textBlock = new TextBlock() { TextWrapping = TextWrapping.Wrap, Text = Message };
 
-                    dialog.PrimaryButtonText = "Ок";
+             Grid grid = new Grid() { Padding = new Thickness(20) };
+             grid.Children.Add(textBlock);
+             
 
-                    dialog.ShowAsync();
-                }
-            });
-            return result;
-        }
+             dialog.Margin = new Thickness(20);
+             
+             dialog.Content = grid;
+
+             dialog.PrimaryButtonText = "Ок";
+
+             dialog.ShowAsync();
+         }
+     });
+     return result;
+ }
+
+
 
 
 
