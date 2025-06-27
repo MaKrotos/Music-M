@@ -90,7 +90,7 @@ namespace VK_UI3.DownloadTrack
                 this.location = path;
 
 
-            if (!new CheckFFmpeg().isExist())
+            if (!new CheckFFmpeg().IsExist())
             {
                 new DownloadFileWithProgress();
                 this.Pause();
@@ -121,7 +121,7 @@ namespace VK_UI3.DownloadTrack
                     string appPath = AppDomain.CurrentDomain.BaseDirectory;
 
 
-                    string ffmpegPath = new CheckFFmpeg().getPathFfmpeg();
+                    string ffmpegPath = new CheckFFmpeg().GetFFmpegPath();
 
 
                     while (iVKGetAudio.listAudio.Count() > downloaded || !iVKGetAudio.itsAll)

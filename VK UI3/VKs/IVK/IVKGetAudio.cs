@@ -45,12 +45,21 @@ namespace VK_UI3.VKs.IVK
 
         public void FillAndShuffleList()
         {
-          
-            for (int i = 0; i <= countTracks - 1; i++)
+            // Проверяем, что в списке shuffleList все элементы от 0 до countTracks-1
+            for (int i = 0; i < countTracks; i++)
             {
-                shuffleList.Add(i);
+                // Если элемента нет в списке, добавляем его
+                if (!shuffleList.Contains(i))
+                {
+                    shuffleList.Add(i);
+                }
             }
 
+            // Удаляем возможные лишние элементы (если countTracks уменьшилось)
+            // Оставляем только элементы от 0 до countTracks-1
+            shuffleList.RemoveAll(x => x >= countTracks || x < 0);
+
+            // Теперь перемешиваем список
             Random rng = new Random();
             int n = shuffleList.Count;
             while (n > 1)
@@ -68,6 +77,8 @@ namespace VK_UI3.VKs.IVK
             // Update currentTrack to the index where its value is stored
             currentTrack = currentTrackIndex;
         }
+
+
 
 
 
@@ -412,6 +423,10 @@ namespace VK_UI3.VKs.IVK
 
             if (shuffle)
             {
+                if (shuffleList.Count < listAudio.Count)
+                {
+                    FillAndShuffleList();
+                }
                 return await GetTrackPlayAsync(shuffleList[(int)currentTrack], prinud);
             }
             

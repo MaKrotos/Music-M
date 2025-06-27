@@ -1,44 +1,44 @@
 ﻿
 
 //using CSCore.CoreAudioAPI;
+using FFMediaToolkit;
+using FFMediaToolkit.Audio;
+using FFMediaToolkit.Decoding;
+using FFmpegInteropX;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
-using MusicX.Shared.Player;
+using MusicX.Services.Player;
+using MusicX.Services.Player.Sources;
 using StatSlyLib.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing.Imaging;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
-using VK_UI3.Controls;
 using VK_UI3.DB;
 using VK_UI3.DiscordRPC;
 using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
 using VK_UI3.Views;
-using VK_UI3.Views.ModalsPages;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
+using VkNet.Model.Attachments;
 using Windows.Foundation.Collections;
 using Windows.Media;
-using Windows.Media.Playback;
-using FFmpegInteropX;
-using Windows.Storage.Streams;
-using FFMediaToolkit.Decoding;
-using WinRT;
 using Windows.Media.Core;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Media.MediaProperties;
-using FFMediaToolkit;
-using FFMediaToolkit.Audio;
-using VkNet.Model.Attachments;
+using Windows.Media.Playback;
+using Windows.Storage.Streams;
+using WinRT;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -51,6 +51,7 @@ namespace VK_UI3.Controllers
     public sealed partial class AudioPlayer : Microsoft.UI.Xaml.Controls.Page, INotifyPropertyChanged
     /// </summary>
     {
+        private static readonly IEnumerable<ITrackMediaSource> _mediaSources= App._host.Services.GetRequiredService<IEnumerable<ITrackMediaSource>>();
 
         public static Windows.Media.Playback.MediaPlayer mediaPlayer = new MediaPlayer();
 
@@ -102,6 +103,15 @@ namespace VK_UI3.Controllers
 
         private int _trackPosition2;
 
+        private static AudioEqualizer _equalizer = null;
+
+        public static AudioEqualizer Equalizer { get { return _equalizer; }
+            set
+            {
+                _equalizer = value;
+                PlayTrack(position: mediaPlayer.Position);
+            }
+        }
 
 
         public static WeakEventManager TrackDataThisChanged = new WeakEventManager();
@@ -646,6 +656,8 @@ namespace VK_UI3.Controllers
 
             return true;
         }
+
+
         protected static MediaPlaybackItem CreateMediaPlaybackItem(MediaFile file)
         {
             var streamingSource = CreateFFMediaStreamSource(file);
@@ -782,7 +794,7 @@ namespace VK_UI3.Controllers
         }
         private static CancellationTokenSource? _tokenSource;
 
-        private async static Task PlayTrack(long? v = 0)
+        private async static Task PlayTrack(long? v = 0, TimeSpan? position = null)
         {
 
             _tokenSource?.Cancel();
@@ -869,9 +881,34 @@ namespace VK_UI3.Controllers
 
 
             //mediaPlayer.Source = mediaPlaybackItem;
-            //mediaPlayer.Play();
 
-            OpenWithMediaPlayerAsync(mediaPlayer, trackdata.audio, _tokenSource.Token);
+            var allSourcesTask = Task.WhenAll(_mediaSources.Select(b => b.OpenWithMediaPlayerAsync(mediaPlayer, trackdata.audio, _tokenSource.Token, equalizer: _equalizer)));
+
+            try
+            {
+                await allSourcesTask;
+            }
+            catch
+            {
+                // await unwraps AggregateException into only the first exception,
+                // but we need to make sure that all exceptions are cancel ones
+                if (allSourcesTask.IsCanceled || allSourcesTask.Exception?.InnerExceptions.All(b => b is OperationCanceledException) is true)
+                    return; // canceled
+
+                throw;
+            }
+
+            if (!allSourcesTask.Result.Any(b => b)) // no sources picked up this track
+            {
+                PlayNextTrack();
+                return;
+            }
+
+            if (position != null)
+            {
+                mediaPlayer.Position = (TimeSpan) position;
+            }
+            mediaPlayer.Play();
 
             _ = KrotosVK.sendVKAudioPlayStat(trackdata, preTrack, secDurPre);
 
@@ -884,6 +921,9 @@ namespace VK_UI3.Controllers
 
             sendStatSlyTrack(trackdata);
         }
+
+
+
 
         private static async void sendStatSlyTrack(ExtendedAudio trackdata)
         {
@@ -1142,6 +1182,9 @@ namespace VK_UI3.Controllers
 
         }
 
-      
+        private void OpenEqalizer_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+
+        }
     }
 }

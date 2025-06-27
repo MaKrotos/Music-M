@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
@@ -27,38 +28,74 @@ namespace VK_UI3.DownloadTrack
             }
             catch
             {
-
+                // Log error if needed
             }
             return null;
         }
 
-        public string getPathFfmpeg()
+        public string GetFFmpegDirectory()
         {
-            var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            path = Path.Combine(path, "VKMMKZ");
-            path = Path.Combine(path, "FFMPeg.exe");
-            return path;
-        }
-        public bool isExist()
-        {
-            if (File.Exists(getPathFfmpeg()))
+            try
             {
+                var path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                path = Path.Combine(path, "VKMMKZ", "FFmpeg");
 
-                return true;
+                // Создаем все поддиректории, если они не существуют
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+
+                    // Добавляем скрытый атрибут для родительской папки VKMMKZ (опционально)
+                    var parentDir = Path.GetDirectoryName(path);
+                    if (Directory.Exists(parentDir))
+                    {
+                        try
+                        {
+                            File.SetAttributes(parentDir, File.GetAttributes(parentDir) | FileAttributes.Hidden);
+                        }
+                        catch
+                        {
+                            // Если не получилось установить атрибут - игнорируем
+                        }
+                    }
+                }
+
+                return path;
             }
-            return false;
+            catch (Exception ex)
+            {
+                // Логируем ошибку, если нужно
+                Console.WriteLine($"Ошибка при создании директории FFmpeg: {ex.Message}");
+                throw; // или возвращаем путь к временной директории
+            }
         }
+
+        public string GetFFmpegPath()
+        {
+            return Path.Combine(GetFFmpegDirectory(), RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "ffmpeg.exe" : "ffmpeg");
+        }
+
+        public bool IsExist()
+        {
+            return File.Exists(GetFFmpegPath());
+        }
+
         public string? getLinkFFMPEG()
         {
-            switch (RuntimeInformation.OSArchitecture)
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                case Architecture.X86:
-                    return "https://github.com/MaKrotos/Music-M/releases/download/0.1.0.0/ffmpegX32.exe";
-                case Architecture.X64:
-                    return "https://github.com/MaKrotos/Music-M/releases/download/0.1.0.0/ffmpegX64.exe";
-                default:
-                    return null;
+                switch (RuntimeInformation.OSArchitecture)
+                {
+                    case Architecture.X86:
+                        return "https://github.com/defisym/FFmpeg-Builds-Win32/releases/download/latest/ffmpeg-n7.1-latest-win32-lgpl-shared-7.1.zip";
+                    case Architecture.X64:
+                        return "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n7.1-latest-win64-lgpl-shared-7.1.zip";
+                    case Architecture.Arm64:
+                        return "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n7.1-latest-winarm64-lgpl-shared-7.1.zip";
+                }
             }
+            // Add other platform support if needed
+            return null;
         }
     }
 
@@ -74,25 +111,23 @@ namespace VK_UI3.DownloadTrack
         private WebClient webClient;
         private CheckFFmpeg checkFFmpeg = new CheckFFmpeg();
 
-
         public DownloadFileWithProgress()
         {
             if (MainWindow.downloadFileWithProgress == null)
             {
                 MainWindow.downloadFileWithProgress = this;
 
-
                 webClient = new WebClient();
                 webClient.DownloadFileCompleted += new AsyncCompletedEventHandler(Completed);
                 webClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChangedEvent);
-                if (!checkFFmpeg.isExist())
+
+                if (!checkFFmpeg.IsExist())
                 {
                     MainWindow.mainWindow.requstDownloadFFMpegAsync();
                 }
             }
             else
             {
-
                 MainWindow.mainWindow.MainWindow_showDownload();
             }
         }
@@ -101,21 +136,22 @@ namespace VK_UI3.DownloadTrack
 
         public async void DownloadFile()
         {
-            _ = Task.Run(async () =>
-               {
-                   string path = checkFFmpeg.getPathFfmpeg() + ".temp";
-                   if (File.Exists(path)) { File.Delete(path); }
+            await Task.Run(async () =>
+            {
+                string tempZipPath = Path.Combine(Path.GetTempPath(), "ffmpeg_temp.zip");
+                string? url = checkFFmpeg.getLinkFFMPEG();
 
-                   mb = await checkFFmpeg.getFileSizeInMBAsync();
-                   string? url = checkFFmpeg.getLinkFFMPEG();
-                   if (url != null)
-                   {
-                       webClient.OpenRead(url);
+                if (url != null)
+                {
+                    if (File.Exists(tempZipPath))
+                    {
+                        File.Delete(tempZipPath);
+                    }
 
-
-                       webClient.DownloadFileAsync(new Uri(url), path);
-                   }
-               });
+                    mb = await checkFFmpeg.getFileSizeInMBAsync();
+                    webClient.DownloadFileAsync(new Uri(url), tempZipPath);
+                }
+            });
         }
 
         public void CancelDownload()
@@ -128,23 +164,71 @@ namespace VK_UI3.DownloadTrack
             MainWindow.downloadFileWithProgress = null;
         }
 
+        private void ExtractFFmpegFromZip(string zipPath)
+        {
+            string extractPath = checkFFmpeg.GetFFmpegDirectory();
+            string ffmpegBinaryName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "ffmpeg.exe" : "ffmpeg";
+
+            // Clear existing directory
+            if (Directory.Exists(extractPath))
+            {
+                Directory.Delete(extractPath, true);
+            }
+            Directory.CreateDirectory(extractPath);
+
+            // Extract archive
+            ZipFile.ExtractToDirectory(zipPath, extractPath);
+
+            // On Windows, the binary is in the 'bin' subdirectory
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                string binPath = Path.Combine(extractPath, "bin", ffmpegBinaryName);
+                if (File.Exists(binPath))
+                {
+                    string destinationPath = Path.Combine(extractPath, ffmpegBinaryName);
+                    File.Move(binPath, destinationPath);
+                }
+            }
+
+            // Clean up
+            File.Delete(zipPath);
+        }
+
         private void Completed(object sender, AsyncCompletedEventArgs e)
         {
+            if (e.Error != null)
+            {
+                // Handle download error
+                DownloadCompleted?.Invoke(this, e);
+                return;
+            }
 
-            string path = checkFFmpeg.getPathFfmpeg();
-            string temp = path + ".temp";
+            try
+            {
+                string tempZipPath = Path.Combine(Path.GetTempPath(), "ffmpeg_temp.zip");
+                if (File.Exists(tempZipPath))
+                {
+                    ExtractFFmpegFromZip(tempZipPath);
+                }
 
-            File.Move(temp, path);
+                DownloadCompleted?.Invoke(this, EventArgs.Empty);
 
-            DownloadCompleted?.Invoke(this, e);
-            MainWindow.downloadFileWithProgress = null;
-            if (SettingsTable.GetSetting("downloadALL") == null)
-                PlayListDownload.ResumeOnlyFirst();
-            else
-                PlayListDownload.ResumeAll();
+                if (SettingsTable.GetSetting("downloadALL") == null)
+                    PlayListDownload.ResumeOnlyFirst();
+                else
+                    PlayListDownload.ResumeAll();
 
-
-            MainWindow.mainWindow.MainWindow_showDownload();
+                MainWindow.mainWindow.MainWindow_showDownload();
+            }
+            catch (Exception ex)
+            {
+                // Handle extraction error
+                DownloadCompleted?.Invoke(this, new AsyncCompletedEventArgs(ex, false, null));
+            }
+            finally
+            {
+                MainWindow.downloadFileWithProgress = null;
+            }
         }
 
         private void ProgressChangedEvent(object sender, DownloadProgressChangedEventArgs e)

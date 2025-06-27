@@ -4,6 +4,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
 using MusicX.Core.Services;
 using MusicX.Services;
+using MusicX.Services.Player;
+using MusicX.Services.Player.Sources;
 using NLog;
 using StatSlyLib.Models;
 using System;
@@ -12,7 +14,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.DB;
-using VK_UI3.Services;
+using VK_UI3.DownloadTrack;
 using VK_UI3.VKs.Ext;
 using VkNet.Abstractions;
 using VkNet.AudioBypassService.Abstractions;
@@ -62,12 +64,13 @@ namespace VK_UI3
             services.AddSingleton<ListenTogetherService>();
             services.AddSingleton<UserRadioService>();
             services.AddSingleton<BoomService>();
+            services.AddSingleton<ITrackMediaSource, VkMediaSource>();
 
             services.AddSingleton<GeniusService>();
 
             services.AddTransient<VkBridgeService>();
 
-
+            FFMediaToolkit.FFmpegLoader.FFmpegPath = new CheckFFmpeg().GetFFmpegDirectory();
 
             services.AddSingleton<ICustomSectionsService, CustomSectionsService>();
 

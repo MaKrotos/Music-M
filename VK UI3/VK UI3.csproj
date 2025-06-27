@@ -74,6 +74,7 @@
 	  <None Remove="Views\Controls\BlockButtonView.xaml" />
 	  <None Remove="Views\Controls\ChoosenControl.xaml" />
 	  <None Remove="Views\Controls\CustomVideoTrailer.xaml" />
+	  <None Remove="Views\Controls\EqualizerControl.xaml" />
 	  <None Remove="Views\Controls\UniversalControl.xaml" />
 	  <None Remove="Views\Download\DownloadController.xaml" />
 	  <None Remove="Views\Download\DownloadFFmpegController.xaml" />
@@ -84,6 +85,7 @@
 	  <None Remove="Views\ModalsPages\CustomDialog.xaml" />
 	  <None Remove="Views\ModalsPages\DownLoadFFMpeg.xaml" />
 	  <None Remove="Views\ModalsPages\EditTrack.xaml" />
+	  <None Remove="Views\ModalsPages\EqualizerControlPage.xaml" />
 	  <None Remove="Views\ModalsPages\MixControls\BTNSControl.xaml" />
 	  <None Remove="Views\ModalsPages\MixControls\PicturedButton.xaml" />
 	  <None Remove="Views\ModalsPages\MixControls\PicturedControl.xaml" />
@@ -275,6 +277,12 @@
     <None Update="DownloadTrack\ffmpeg.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Update="Views\ModalsPages\EqualizerControlPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Views\Controls\EqualizerControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\MiniAppView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
