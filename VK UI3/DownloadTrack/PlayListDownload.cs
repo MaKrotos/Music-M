@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Dispatching;
+﻿using FFmpeg.AutoGen;
+using Microsoft.UI.Dispatching;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -113,16 +114,11 @@ namespace VK_UI3.DownloadTrack
 
         public async Task PlayListDownloadAsync()
         {
-
-            _ = Task.Run(async() =>
+            _ = Task.Run(async () =>
             {
                 try
                 {
                     string appPath = AppDomain.CurrentDomain.BaseDirectory;
-
-
-                    string ffmpegPath = new CheckFFmpeg().GetFFmpegPath();
-
 
                     while (iVKGetAudio.listAudio.Count() > downloaded || !iVKGetAudio.itsAll)
                     {
@@ -141,7 +137,6 @@ namespace VK_UI3.DownloadTrack
                         }
                         if (downloaded >= iVKGetAudio.listAudio.Count) break;
 
-
                         var a = iVKGetAudio.listAudio[downloaded].audio;
 
                         if (a.Url == null)
@@ -151,14 +146,11 @@ namespace VK_UI3.DownloadTrack
                             StatusUpdate();
                             continue;
                         }
-                        string input = a.Url.ToString();
 
+                        string input = a.Url.ToString();
                         var invalidChars = Path.GetInvalidFileNameChars();
                         var titl = $"{a.Title}-{a.Artist}.mp3";
                         titl = new string(titl.Where(ch => !invalidChars.Contains(ch)).ToArray());
-
-                        //iVKGetAudio.name
-
                         string output = Path.Combine(location, titl);
 
                         if (File.Exists(output))
@@ -168,7 +160,6 @@ namespace VK_UI3.DownloadTrack
                             continue;
                         }
 
-
                         var titlTemp = $"{a.OwnerId}_{a.Id}.mp3";
                         string outputTemp = Path.Combine(location, titlTemp);
                         if (File.Exists(outputTemp))
@@ -177,22 +168,8 @@ namespace VK_UI3.DownloadTrack
                         }
                         if (!Directory.Exists(location)) Directory.CreateDirectory(location);
 
-
-                        var startInfo = new ProcessStartInfo
-                        {
-                            FileName = ffmpegPath, // Путь к исполняемому файлу ffmpeg
-                            Arguments = $"-http_persistent 0 -n -i \"{input}\" \"{outputTemp}\"",
-                            RedirectStandardOutput = false,
-                            RedirectStandardError = false,
-                            UseShellExecute = false,
-                            CreateNoWindow = true,
-                        };
-
-                        var process = new Process { StartInfo = startInfo };
-                        process.Start();
-                        process.WaitForExit();
-
-
+                        // Используем FFmpeg.Autogen для загрузки и конвертации
+                        await DownloadAndConvertWithFFmpegAutogen(input, outputTemp);
 
                         MakeTags(outputTemp, a);
                         File.Move(outputTemp, output);
@@ -203,12 +180,10 @@ namespace VK_UI3.DownloadTrack
                         {
                             OnTrackDownloaded?.Invoke(this, new TrackDownloadedEventArgs { Downloaded = downloaded, Total = (int?)iVKGetAudio.countTracks });
                         });
-
-
                     }
+
                     if (SettingsTable.GetSetting("downloadALL") == null)
                     {
-
                         var index = PlayListDownloads.IndexOf(this) + 1;
                         if (index <= PlayListDownloads.Count - 1)
                         {
@@ -220,14 +195,12 @@ namespace VK_UI3.DownloadTrack
                     {
                         PlayListDownloads.Remove(this);
                         PlayListDownloadsList.Remove(iVKGetAudio);
-                        if (PlayListDownloads.Count == 0) 
+                        if (PlayListDownloads.Count == 0)
                             EndAllDownload();
                     });
-
                 }
                 catch (Exception ex)
                 {
-
                     this.error = true;
                     dispatcherQueue.TryEnqueue(async () =>
                     {
@@ -235,6 +208,148 @@ namespace VK_UI3.DownloadTrack
                     });
                 }
             }, cts.Token);
+        }
+
+        private unsafe Task DownloadAndConvertWithFFmpegAutogen(string inputUrl, string outputPath)
+        {
+            return Task.Run(() =>
+            {
+                // Регистрируем все кодеки и форматы
+                ffmpeg.avformat_network_init();
+
+                AVFormatContext* pFormatContext = null;
+                AVFormatContext* pOutputFormatContext = null;
+
+                try
+                {
+                    // Открываем входной поток
+                    if (ffmpeg.avformat_open_input(&pFormatContext, inputUrl, null, null) != 0)
+                    {
+                        throw new Exception("Could not open input file.");
+                    }
+
+                    // Получаем информацию о потоке
+                    if (ffmpeg.avformat_find_stream_info(pFormatContext, null) < 0)
+                    {
+                        throw new Exception("Could not find stream information.");
+                    }
+
+                    // Находим аудио поток
+                    int audioStreamIndex = -1;
+                    for (int i = 0; i < pFormatContext->nb_streams; i++)
+                    {
+                        if (pFormatContext->streams[i]->codecpar->codec_type == AVMediaType.AVMEDIA_TYPE_AUDIO)
+                        {
+                            audioStreamIndex = i;
+                            break;
+                        }
+                    }
+
+                    if (audioStreamIndex == -1)
+                    {
+                        throw new Exception("Could not find audio stream.");
+                    }
+
+                    // Получаем параметры кодека
+                    AVCodecParameters* pCodecParameters = pFormatContext->streams[audioStreamIndex]->codecpar;
+                    AVCodec* pCodec = ffmpeg.avcodec_find_decoder(pCodecParameters->codec_id);
+
+                    if (pCodec == null)
+                    {
+                        throw new Exception("Unsupported codec.");
+                    }
+
+                    // Создаем контекст кодека
+                    AVCodecContext* pCodecContext = ffmpeg.avcodec_alloc_context3(pCodec);
+                    if (ffmpeg.avcodec_parameters_to_context(pCodecContext, pCodecParameters) < 0)
+                    {
+                        throw new Exception("Could not copy codec parameters to context.");
+                    }
+
+                    // Открываем кодек
+                    if (ffmpeg.avcodec_open2(pCodecContext, pCodec, null) < 0)
+                    {
+                        throw new Exception("Could not open codec.");
+                    }
+
+                    // Создаем контекст выходного файла
+                    if (ffmpeg.avformat_alloc_output_context2(&pOutputFormatContext, null, null, outputPath) < 0)
+                    {
+                        throw new Exception("Could not create output context.");
+                    }
+
+                    // Создаем выходной поток
+                    AVStream* pOutputStream = ffmpeg.avformat_new_stream(pOutputFormatContext, null);
+                    if (pOutputStream == null)
+                    {
+                        throw new Exception("Could not create output stream.");
+                    }
+
+                    // Устанавливаем параметры кодека для выходного потока
+                    if (ffmpeg.avcodec_parameters_copy(pOutputStream->codecpar, pCodecParameters) < 0)
+                    {
+                        throw new Exception("Could not copy codec parameters.");
+                    }
+
+                    // Открываем выходной файл
+                    if ((ffmpeg.avio_open(&pOutputFormatContext->pb, outputPath, ffmpeg.AVIO_FLAG_WRITE) < 0))
+                    {
+                        throw new Exception("Could not open output file.");
+                    }
+
+                    // Записываем заголовок файла
+                    if (ffmpeg.avformat_write_header(pOutputFormatContext, null) < 0)
+                    {
+                        throw new Exception("Could not write header.");
+                    }
+
+                    // Читаем и записываем пакеты
+                    AVPacket* pPacket = ffmpeg.av_packet_alloc();
+                    AVFrame* pFrame = ffmpeg.av_frame_alloc();
+
+                    while (ffmpeg.av_read_frame(pFormatContext, pPacket) >= 0)
+                    {
+                        if (pPacket->stream_index == audioStreamIndex)
+                        {
+                            // Перемещаем пакет в выходной поток
+                            pPacket->stream_index = pOutputStream->index;
+
+                            // Пересчитываем временные метки
+                            ffmpeg.av_packet_rescale_ts(pPacket,
+                                pFormatContext->streams[audioStreamIndex]->time_base,
+                                pOutputStream->time_base);
+
+                            // Записываем пакет
+                            if (ffmpeg.av_interleaved_write_frame(pOutputFormatContext, pPacket) < 0)
+                            {
+                                throw new Exception("Error while writing packet.");
+                            }
+                        }
+
+                        ffmpeg.av_packet_unref(pPacket);
+                    }
+
+                    // Записываем завершающую часть файла
+                    ffmpeg.av_write_trailer(pOutputFormatContext);
+                }
+                finally
+                {
+                    // Освобождаем ресурсы
+                    if (pFormatContext != null)
+                    {
+                        ffmpeg.avformat_close_input(&pFormatContext);
+                    }
+                    if (pOutputFormatContext != null && pOutputFormatContext->pb != null)
+                    {
+                        ffmpeg.avio_closep(&pOutputFormatContext->pb);
+                    }
+                    if (pOutputFormatContext != null)
+                    {
+                        ffmpeg.avformat_free_context(pOutputFormatContext);
+                    }
+                    ffmpeg.avformat_network_deinit();
+                }
+            });
         }
 
         public static void ResumeOnlyFirst()

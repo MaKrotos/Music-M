@@ -70,7 +70,7 @@ namespace VK_UI3
 
             services.AddTransient<VkBridgeService>();
 
-            FFMediaToolkit.FFmpegLoader.FFmpegPath = new CheckFFmpeg().GetFFmpegDirectory();
+            FFMediaToolkit.FFmpegLoader.FFmpegPath = new CheckFFmpeg().GetFFmpegDirectory() + "\\";
 
             services.AddSingleton<ICustomSectionsService, CustomSectionsService>();
 

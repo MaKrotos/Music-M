@@ -137,8 +137,7 @@ public abstract class MediaSourceBase : ITrackMediaSource
                 ["reconnect_on_http_error"] = "4xx,5xx",
                 ["stimeout"] = "30000000",
                 ["timeout"] = "30000000",
-                ["rw_timeout"] = "30000000",
-                ["af"] = "equalizer=f=1000:width_type=h:width=200:g=2",
+                ["rw_timeout"] = "30000000"
             }
         }
     };
