@@ -362,10 +362,7 @@ namespace VK_UI3.Controllers
 
         private void MediaPlayer_MediaEnded(Windows.Media.Playback.MediaPlayer sender, object args)
         {
-
-
-
-
+            PlayNextTrack();
         }
         private void PlaybackSession_PositionChanged(MediaPlaybackSession sender, object args)
         {
