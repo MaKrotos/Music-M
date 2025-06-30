@@ -20,12 +20,10 @@ public class VkMediaSource : MediaSourceBase
     {
         _logger = logger;
     }
-
     public override async Task<bool> OpenWithMediaPlayerAsync(MediaPlayer player, Audio track,
         CancellationToken cancellationToken = default, AudioEqualizer  equalizer = null)
     {
         if (string.IsNullOrEmpty(track.Url.ToString())) return false;
-
         try
         {
             var mediaOptions = new MediaOptions
@@ -53,15 +51,23 @@ public class VkMediaSource : MediaSourceBase
             };
 
 
-
             // Добавляем эквалайзер, если он передан
             if (equalizer != null)
             {
                 string filterString = equalizer.GetFFmpegFilterString();
                 if (!string.IsNullOrEmpty(filterString))
                 {
-                    // Добавляем loudnorm после эквалайзера
-                    mediaOptions.DemuxerOptions.PrivateOptions["af"] = $"{filterString},loudnorm=I=-16:TP=-1.5:LRA=11";
+                    // Создаем или обновляем словарь DecoderOptions
+                    if (mediaOptions.DecoderOptions == null)
+                    {
+                        mediaOptions.DecoderOptions = new Dictionary<string, string>();
+                    }
+
+                    // Добавляем фильтры эквалайзера и loudnorm
+                    mediaOptions.DecoderOptions["af"] = $"{filterString},loudnorm=I=-16:TP=-1.5:LRA=11";
+
+                    // Альтернативный вариант, если не работает через DecoderOptions:
+                    // mediaOptions.DemuxerOptions.PrivateOptions["af"] = $"{filterString},loudnorm=I=-16:TP=-1.5:LRA=11";
                 }
             }
 

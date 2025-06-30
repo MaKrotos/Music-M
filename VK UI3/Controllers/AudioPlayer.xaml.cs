@@ -666,7 +666,7 @@ namespace VK_UI3.Controllers
                     return;
                 }
 
-               
+                mediaPlayer.Source = mediaPlaybackItem;
 
             }
             else
