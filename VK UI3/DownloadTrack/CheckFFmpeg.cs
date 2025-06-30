@@ -109,6 +109,7 @@ namespace VK_UI3.DownloadTrack
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
+
                 switch (RuntimeInformation.OSArchitecture)
                 {
                     case Architecture.X86:
@@ -117,7 +118,9 @@ namespace VK_UI3.DownloadTrack
                         return "https://github.com/MaKrotos/Music-M/releases/download/0.3.2.5/ffmpeg-X64.zip";
                     case Architecture.Arm64:
                         return "https://github.com/MaKrotos/Music-M/releases/download/0.3.2.5/ffmpeg-ARM64.zip";
-                }
+
+                default:
+                    return null;
             }
             // Add other platform support if needed
             return null;
