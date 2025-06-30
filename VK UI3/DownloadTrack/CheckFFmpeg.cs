@@ -119,10 +119,10 @@ namespace VK_UI3.DownloadTrack
                     case Architecture.Arm64:
                         return "https://github.com/MaKrotos/Music-M/releases/download/0.3.2.5/ffmpeg-ARM64.zip";
 
-                default:
-                    return null;
+                    default:
+                        return null;
+                }
             }
-            // Add other platform support if needed
             return null;
         }
     }
