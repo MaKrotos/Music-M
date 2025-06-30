@@ -77,7 +77,32 @@ namespace VK_UI3.DownloadTrack
 
         public bool IsExist()
         {
-            return File.Exists(GetFFmpegPath());
+            string directory = GetFFmpegDirectory();
+
+            if (!Directory.Exists(directory))
+            {
+                return false;
+            }
+
+            string[] requiredFiles = new string[]
+            {
+                "avcodec-61.dll",
+                "avdevice-61.dll",
+                "avfilter-10.dll",
+                "avformat-61.dll",
+                "avutil-59.dll",
+                "swresample-5.dll"
+            };
+
+            foreach (string file in requiredFiles)
+            {
+                if (!File.Exists(Path.Combine(directory, file)))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public string? getLinkFFMPEG()
@@ -87,11 +112,11 @@ namespace VK_UI3.DownloadTrack
                 switch (RuntimeInformation.OSArchitecture)
                 {
                     case Architecture.X86:
-                        return "https://github.com/defisym/FFmpeg-Builds-Win32/releases/download/latest/ffmpeg-n7.1-latest-win32-lgpl-shared-7.1.zip";
+                        return "https://github.com/MaKrotos/Music-M/releases/download/0.3.2.5/ffmpeg-X32.zip";
                     case Architecture.X64:
-                        return "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n7.1-latest-win64-lgpl-shared-7.1.zip";
+                        return "https://github.com/MaKrotos/Music-M/releases/download/0.3.2.5/ffmpeg-X64.zip";
                     case Architecture.Arm64:
-                        return "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n7.1-latest-winarm64-lgpl-shared-7.1.zip";
+                        return "https://github.com/MaKrotos/Music-M/releases/download/0.3.2.5/ffmpeg-ARM64.zip";
                 }
             }
             // Add other platform support if needed
@@ -110,6 +135,8 @@ namespace VK_UI3.DownloadTrack
 
         private WebClient webClient;
         private CheckFFmpeg checkFFmpeg = new CheckFFmpeg();
+        private static bool isDownloading = false;
+        private static object downloadLock = new object();
 
         public DownloadFileWithProgress()
         {
@@ -121,9 +148,16 @@ namespace VK_UI3.DownloadTrack
                 webClient.DownloadFileCompleted += new AsyncCompletedEventHandler(Completed);
                 webClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChangedEvent);
 
-                if (!checkFFmpeg.IsExist())
+                lock (downloadLock)
                 {
-                    MainWindow.mainWindow.requstDownloadFFMpegAsync();
+                    if (!checkFFmpeg.IsExist() && !isDownloading)
+                    {
+                        MainWindow.mainWindow.requstDownloadFFMpegAsync();
+                    }
+                    else if (isDownloading)
+                    {
+                        MainWindow.mainWindow.MainWindow_showDownload();
+                    }
                 }
             }
             else
@@ -136,6 +170,13 @@ namespace VK_UI3.DownloadTrack
 
         public async void DownloadFile()
         {
+            lock (downloadLock)
+            {
+                if (isDownloading)
+                    return;
+                isDownloading = true;
+            }
+
             await Task.Run(async () =>
             {
                 string tempZipPath = Path.Combine(Path.GetTempPath(), "ffmpeg_temp.zip");
@@ -160,6 +201,10 @@ namespace VK_UI3.DownloadTrack
             foreach (var item in PlayListDownload.PlayListDownloads)
             {
                 item.Cancel();
+            }
+            lock (downloadLock)
+            {
+                isDownloading = false;
             }
             MainWindow.downloadFileWithProgress = null;
         }
@@ -196,6 +241,11 @@ namespace VK_UI3.DownloadTrack
 
         private void Completed(object sender, AsyncCompletedEventArgs e)
         {
+            lock (downloadLock)
+            {
+                isDownloading = false;
+            }
+
             if (e.Error != null)
             {
                 // Handle download error

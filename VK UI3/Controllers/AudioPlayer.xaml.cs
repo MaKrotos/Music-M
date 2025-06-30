@@ -4,7 +4,6 @@
 using FFMediaToolkit;
 using FFMediaToolkit.Audio;
 using FFMediaToolkit.Decoding;
-using FFmpegInteropX;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -26,13 +25,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.DB;
 using VK_UI3.DiscordRPC;
+using VK_UI3.DownloadTrack;
 using VK_UI3.Helpers;
 using VK_UI3.Helpers.Animations;
 using VK_UI3.Views;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
-using VkNet.Model.Attachments;
-using Windows.Foundation.Collections;
 using Windows.Media;
 using Windows.Media.Core;
 using Windows.Media.MediaProperties;
@@ -580,30 +578,7 @@ namespace VK_UI3.Controllers
         }
         public static ExtendedAudio PlayingTrack = null;
 
-        public static Task<FFmpegMediaSource> CreateWinRtMediaSource(Audio data, IReadOnlyDictionary<string, string>? customOptions = null, CancellationToken cancellationToken = default)
-        {
-            var options = new PropertySet();
-
-            foreach (var option in MediaOptions.DemuxerOptions.PrivateOptions)
-            {
-                options.Add(option.Key, option.Value);
-            }
-
-            if (customOptions != null)
-                foreach (var (key, value) in customOptions)
-                    options[key] = value;
-
-            return FFmpegMediaSource.CreateFromUriAsync(data.Url.ToString(), new()
-            {
-                FFmpegOptions = options,
-                General =
-            {
-                ReadAheadBufferEnabled = true,
-                SkipErrors = uint.MaxValue,
-                KeepMetadataOnMediaSourceClosed = false
-            }
-            }).AsTask(cancellationToken);
-        }
+       
         protected static void RegisterSourceObjectReference(MediaPlayer player, IWinRTObject rtObject)
         {
             GC.SuppressFinalize(rtObject.NativeObject);
@@ -622,40 +597,7 @@ namespace VK_UI3.Controllers
         }
         private static readonly Semaphore FFmpegSemaphore = new(1, 1, "MusicX_FFmpegSemaphore");
 
-        public static async Task<bool> OpenWithMediaPlayerAsync(MediaPlayer player, Audio track,
-        CancellationToken cancellationToken = default)
-        {
-          
-
-            try
-            {
-                var rtMediaSource = await CreateWinRtMediaSource(track, cancellationToken: cancellationToken);
-
-                await rtMediaSource.OpenWithMediaPlayerAsync(player).AsTask(cancellationToken);
-
-                RegisterSourceObjectReference(player, rtMediaSource);
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
-            catch (Exception e)
-            {
-              
-
-                // i think its better to use task.run over task.yield because we aren't doing async with ffmpeg
-                var playbackItem = await Task.Run(() =>
-                {
-                    var file = MediaFile.Open(track.Url.ToString(), MediaOptions);
-
-                    return CreateMediaPlaybackItem(file);
-                }, cancellationToken);
-
-                player.Source = playbackItem;
-            }
-
-            return true;
-        }
+      
 
 
         protected static MediaPlaybackItem CreateMediaPlaybackItem(MediaFile file)
@@ -880,33 +822,43 @@ namespace VK_UI3.Controllers
             mediaPlayer.Pause();
 
 
-            //mediaPlayer.Source = mediaPlaybackItem;
-
-            var allSourcesTask = Task.WhenAll(_mediaSources.Select(b => b.OpenWithMediaPlayerAsync(mediaPlayer, trackdata.audio, _tokenSource.Token, equalizer: _equalizer)));
-
-            try
+            if (new CheckFFmpeg().IsExist())
             {
-                await allSourcesTask;
+
+                var allSourcesTask = Task.WhenAll(_mediaSources.Select(b => b.OpenWithMediaPlayerAsync(mediaPlayer, trackdata.audio, _tokenSource.Token, equalizer: _equalizer)));
+
+                try
+                {
+                    await allSourcesTask;
+                }
+                catch
+                {
+                    // await unwraps AggregateException into only the first exception,
+                    // but we need to make sure that all exceptions are cancel ones
+                    if (allSourcesTask.IsCanceled || allSourcesTask.Exception?.InnerExceptions.All(b => b is OperationCanceledException) is true)
+                        return; // canceled
+
+                    throw;
+                }
+
+                if (!allSourcesTask.Result.Any(b => b)) // no sources picked up this track
+                {
+                    PlayNextTrack();
+                    return;
+                }
+
+                
             }
-            catch
-            {
-                // await unwraps AggregateException into only the first exception,
-                // but we need to make sure that all exceptions are cancel ones
-                if (allSourcesTask.IsCanceled || allSourcesTask.Exception?.InnerExceptions.All(b => b is OperationCanceledException) is true)
-                    return; // canceled
 
-                throw;
-            }
-
-            if (!allSourcesTask.Result.Any(b => b)) // no sources picked up this track
+            else
             {
-                PlayNextTrack();
-                return;
+                MainWindow.mainWindow.requstDownloadFFMpegAsync();
+                mediaPlayer.Source = mediaPlaybackItem;
             }
 
             if (position != null)
             {
-                mediaPlayer.Position = (TimeSpan) position;
+                mediaPlayer.Position = (TimeSpan)position;
             }
             mediaPlayer.Play();
 

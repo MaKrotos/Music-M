@@ -20,6 +20,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.Controllers;
 using VK_UI3.DB;
+using VK_UI3.DownloadTrack;
 using VK_UI3.Helpers.Animations;
 using VK_UI3.Views.ModalsPages;
 using VK_UI3.Views.Notification;
@@ -63,6 +64,11 @@ namespace VK_UI3.Views
         private void MainView_Loading(FrameworkElement sender, object args)
         {
             NavWiv.IsPaneOpen = false;
+
+            if (!new CheckFFmpeg().IsExist())
+            {
+                MainWindow.mainWindow.requstDownloadFFMpegAsync();
+            }
         }
 
         public void updateAllWithReacreate()

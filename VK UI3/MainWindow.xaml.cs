@@ -647,32 +647,12 @@ namespace VK_UI3
         {
             try
             {
-                this.DispatcherQueue.TryEnqueue(async () =>
+                if (downloadFileWithProgress == null)
                 {
-                    var dialog = new ContentDialog
-                    {
-                        Title = "Необходимо загрузить расширение",
-                        Content = "Для загрузки треков необходимо скачать расширение (≈80 мб)",
-                        PrimaryButtonText = "Скачать",
-                        CloseButtonText = "Отмена"
-                    };
-
-                    dialog.Resources["ContentDialogMaxWidth"] = double.PositiveInfinity;
-                    dialog.XamlRoot = this.Content.XamlRoot;
-                    var result = await dialog.ShowAsync();
-
-                    if (result == ContentDialogResult.Primary)
-                    {
-                        downloadFileWithProgress?.DownloadFile();
-                        MainWindow_showDownload();
-                    }
-                    else
-                    {
-                        downloadFileWithProgress = null;
-                        PlayListDownload.PlayListDownloadsList.Clear();
-                        PlayListDownload.PlayListDownloads.Clear();
-                    }
-                });
+                    downloadFileWithProgress = new DownloadFileWithProgress();
+                }
+                downloadFileWithProgress?.DownloadFile();
+                MainWindow_showDownload();
             }
             catch (Exception e)
             {

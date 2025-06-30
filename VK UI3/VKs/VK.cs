@@ -1,15 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Media.Imaging;
-using MusicX.Core.Models;
 using MusicX.Core.Services;
-using QRCoder;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -28,7 +21,6 @@ using VkNet.AudioBypassService.Models.Ecosystem;
 using VkNet.Enums.Filters;
 using VkNet.Model.RequestParams;
 using VkNet.Utils;
-using Windows.Storage.Streams;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.Networking.WindowsWebServices;
@@ -170,7 +162,7 @@ namespace VK_UI3.VKs
             return way;
         }
 
-
+        /*
         public async Task<AuthCodeResponse> LoadQrCode(DispatcherQueue dispatcherQueue, bool forceRegenerate = false)
         {
             var result = await _authCategory.GetAuthCodeAsync("VK M Player", forceRegenerate);
@@ -209,6 +201,7 @@ namespace VK_UI3.VKs
                 }
             }
         }
+        */
 
         private EcosystemProfile Profile;
         string Sid;

@@ -419,7 +419,8 @@ namespace VK_UI3.DownloadTrack
 
         public void Resume()
         {
-            if (MainWindow.downloadFileWithProgress != null) return;
+           // if (MainWindow.downloadFileWithProgress != null) 
+           //     return;
             pauseEvent.Set();
             pause = false;
 
