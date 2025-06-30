@@ -24,6 +24,7 @@ using VK_UI3.Views.Upload;
 using VK_UI3.VKs;
 using Windows.ApplicationModel;
 using Windows.Foundation;
+using Windows.Media;
 using Windows.UI.ViewManagement;
 using Windows.Win32;
 using Windows.Win32.Foundation;
@@ -664,6 +665,11 @@ namespace VK_UI3
             {
                 // Обработка ошибок
             }
+        }
+
+        internal SystemMediaTransportControls getCurrentView()
+        {
+            return SystemMediaTransportControls.GetForCurrentView();
         }
         #endregion
 

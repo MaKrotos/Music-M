@@ -575,27 +575,6 @@ namespace VK_UI3.Controllers
         }
         public static ExtendedAudio PlayingTrack = null;
 
-       
-        protected static void RegisterSourceObjectReference(MediaPlayer player, IWinRTObject rtObject)
-        {
-            GC.SuppressFinalize(rtObject.NativeObject);
-
-            player.SourceChanged += PlayerOnSourceChanged;
-
-            void PlayerOnSourceChanged(MediaPlayer sender, object args)
-            {
-                player.SourceChanged -= PlayerOnSourceChanged;
-
-                if (rtObject is IDisposable disposable)
-                    disposable.Dispose();
-                else
-                    GC.ReRegisterForFinalize(rtObject);
-            }
-        }
-        private static readonly Semaphore FFmpegSemaphore = new(1, 1, "MusicX_FFmpegSemaphore");
-
-      
-
 
         private static CancellationTokenSource? _tokenSource;
 
@@ -658,30 +637,7 @@ namespace VK_UI3.Controllers
             }
             PlayingTrack = trackdata;
 
-            MediaItemDisplayProperties props = mediaPlaybackItem.GetDisplayProperties();
-            props.Type = Windows.Media.MediaPlaybackType.Music;
-            props.MusicProperties.Title = trackdata.audio.Title;
-            props.MusicProperties.AlbumArtist = trackdata.audio.Artist;
-
-
-            if (trackdata.audio.Album != null && trackdata.audio.Album.Thumb != null)
-            {
-                RandomAccessStreamReference imageStreamRef = RandomAccessStreamReference.CreateFromUri(new Uri(
-                    trackdata.audio.Album.Thumb.Photo600 ??
-                    trackdata.audio.Album.Thumb.Photo270 ??
-                    trackdata.audio.Album.Thumb.Photo300
-                    ));
-
-                props.Thumbnail = imageStreamRef;
-                mediaPlaybackItem.ApplyDisplayProperties(props);
-
-                props.Thumbnail = imageStreamRef;
-
-            }
-            else props.Thumbnail = null;
-            mediaPlaybackItem.ApplyDisplayProperties(props);
-
-            mediaPlayer.PlaybackSession.Position = TimeSpan.FromMilliseconds(1);
+            
             mediaPlayer.Pause();
 
 
@@ -710,11 +666,36 @@ namespace VK_UI3.Controllers
                     return;
                 }
 
-                
-            }
+               
 
+            }
             else
             {
+                MediaItemDisplayProperties props = mediaPlaybackItem.GetDisplayProperties();
+                props.Type = Windows.Media.MediaPlaybackType.Music;
+                props.MusicProperties.Title = trackdata.audio.Title;
+                props.MusicProperties.AlbumArtist = trackdata.audio.Artist;
+
+
+                if (trackdata.audio.Album != null && trackdata.audio.Album.Thumb != null)
+                {
+                    RandomAccessStreamReference imageStreamRef = RandomAccessStreamReference.CreateFromUri(new Uri(
+                        trackdata.audio.Album.Thumb.Photo600 ??
+                        trackdata.audio.Album.Thumb.Photo270 ??
+                        trackdata.audio.Album.Thumb.Photo300
+                        ));
+
+                    props.Thumbnail = imageStreamRef;
+                    mediaPlaybackItem.ApplyDisplayProperties(props);
+
+                    props.Thumbnail = imageStreamRef;
+
+                }
+                else
+                    props.Thumbnail = null;
+                mediaPlaybackItem.ApplyDisplayProperties(props);
+
+                mediaPlayer.PlaybackSession.Position = TimeSpan.FromMilliseconds(1);
                 MainWindow.mainWindow.requstDownloadFFMpegAsync();
                 mediaPlayer.Source = mediaPlaybackItem;
             }

@@ -1,14 +1,14 @@
 ﻿using FFMediaToolkit.Audio;
 using FFMediaToolkit.Decoding;
-using MusicX.Shared.Player;
 using NLog;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using VkNet.Model.Attachments;
+using Windows.Media;
 using Windows.Media.Playback;
+using Windows.Storage.Streams;
 
 namespace MusicX.Services.Player.Sources;
 
@@ -28,21 +28,6 @@ public class VkMediaSource : MediaSourceBase
 
         try
         {
-            var rtMediaSource = await CreateWinRtMediaSource(track, cancellationToken: cancellationToken, equalizer: equalizer);
-
-            await rtMediaSource.OpenWithMediaPlayerAsync(player).AsTask(cancellationToken);
-            
-            RegisterSourceObjectReference(player, rtMediaSource);
-        }
-        catch (OperationCanceledException)
-        {
-            throw;
-        }
-        catch (Exception e)
-        {
-            _logger.Error(e, "Failed to use winrt decoder for vk media source");
-
-
             var mediaOptions = new MediaOptions
             {
                 StreamsToLoad = MediaMode.Audio,
@@ -64,11 +49,11 @@ public class VkMediaSource : MediaSourceBase
                     ["timeout"] = "30000000",
                     ["rw_timeout"] = "30000000"
                 }
-            }
+                }
             };
 
 
-    
+
             // Добавляем эквалайзер, если он передан
             if (equalizer != null)
             {
@@ -80,17 +65,57 @@ public class VkMediaSource : MediaSourceBase
                 }
             }
 
-            // i think its better to use task.run over task.yield because we aren't doing async with ffmpeg
             var playbackItem = await Task.Run(() =>
             {
                 var file = MediaFile.Open(track.Url.ToString(), mediaOptions);
-
                 return CreateMediaPlaybackItem(file);
-            }, cancellationToken);
-            
+            }, cancellationToken).ConfigureAwait(false);  // Добавил ConfigureAwait(false) для избежания deadlock
+
+            // ⚠️ Устанавливаем метаданные ДО присвоения Source!
+            var props = playbackItem.GetDisplayProperties();
+            props.Type = MediaPlaybackType.Music;  // Обязательно!
+
+            // Заполняем текст (проверяем на null)
+            props.MusicProperties.Title = track.Title ?? "Unknown Title";
+            props.MusicProperties.Artist = track.Artist ?? "Unknown Artist";  // ⚠️ Не AlbumArtist!
+            props.MusicProperties.AlbumTitle = track.Album?.Title ?? "";  // Если есть альбом
+
+            // Обложка (уже работало)
+            if (track.Album?.Thumb != null)
+            {
+                var imageUri = track.Album.Thumb.Photo600 ??
+                              track.Album.Thumb.Photo300 ??
+                              track.Album.Thumb.Photo270;
+
+                if (!string.IsNullOrEmpty(imageUri))
+                {
+                    try
+                    {
+                        props.Thumbnail = RandomAccessStreamReference.CreateFromUri(new Uri(imageUri));
+                    }
+                    catch { /* Логируем ошибку, если нужно */ }
+                }
+            }
+
+
+            playbackItem.ApplyDisplayProperties(props);
+
+            // Теперь присваиваем источник
             player.Source = playbackItem;
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception e)
+        {
+            _logger.Error(e, "Failed to use winrt decoder for vk media source");
+
+
+            
         }
         
         return true;
+        
     }
 }

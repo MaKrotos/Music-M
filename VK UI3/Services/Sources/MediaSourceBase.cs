@@ -16,7 +16,6 @@ using WinRT;
 
 namespace MusicX.Services.Player.Sources;
 
-using FFmpegInteropX;
 using System.Collections.Generic;
 
 public class AudioEqualizer
@@ -261,39 +260,6 @@ public abstract class MediaSourceBase : ITrackMediaSource
         return streamingSource;
     }
 
-    public static Task<FFmpegMediaSource> CreateWinRtMediaSource(Audio data, IReadOnlyDictionary<string, string>? customOptions = null, CancellationToken cancellationToken = default, AudioEqualizer equalizer = null)
-    {
-        var options = new PropertySet();
-        
-        foreach (var option in MediaOptions.DemuxerOptions.PrivateOptions)
-        {
-            options.Add(option.Key, option.Value);
-        }
-
-        if (equalizer != null)
-        {
-            string filterString = equalizer.GetFFmpegFilterString();
-            if (!string.IsNullOrEmpty(filterString))
-            {
-                options["af"] = $"{filterString},loudnorm=I=-16:TP=-1.5:LRA=11";
-            }
-        }
-
-        if (customOptions != null)
-            foreach (var (key, value) in customOptions)
-                options[key] = value;
-
-        return FFmpegMediaSource.CreateFromUriAsync(data.Url.ToString(), new()
-        {
-            FFmpegOptions = options,
-            General =
-            {
-                ReadAheadBufferEnabled = true,
-                SkipErrors = uint.MaxValue,
-                KeepMetadataOnMediaSourceClosed = false
-            }
-        }).AsTask(cancellationToken);
-    }
 
     protected static void RegisterSourceObjectReference(MediaPlayer player, IWinRTObject rtObject)
     {
