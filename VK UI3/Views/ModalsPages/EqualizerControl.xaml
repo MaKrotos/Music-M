@@ -1,0 +1,269 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<UserControl
+	x:Class="VK_UI3.Views.ModalsPages.EqualizerControl"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:converters="using:VK_UI3.Views.ModalsPages"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="using:VK_UI3.Views.ModalsPages"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d">
+
+	<Grid Padding="10">
+		<Grid.Resources>
+			<Style x:Key="EqualizerSliderStyle" TargetType="Slider">
+				<Setter Property="Orientation" Value="Vertical" />
+				<Setter Property="Minimum" Value="-15" />
+				<Setter Property="Maximum" Value="15" />
+				<Setter Property="TickFrequency" Value="1" />
+				<Setter Property="TickPlacement" Value="Outside" />
+				<Setter Property="Width" Value="40" />
+				<Setter Property="Height" Value="200" />
+				<Setter Property="Margin" Value="5,0" />
+			</Style>
+
+			<Style x:Key="FrequencyLabelStyle" TargetType="TextBlock">
+				<Setter Property="HorizontalAlignment" Value="Center" />
+				<Setter Property="Margin" Value="5,5,5,0" />
+				<Setter Property="FontSize" Value="10" />
+			</Style>
+
+			<converters:DoubleToDbStringConverter x:Key="DbConverter" />
+		</Grid.Resources>
+
+		<StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+			<!--  Sub Bass  -->
+			<StackPanel>
+				<TextBlock Style="{StaticResource FrequencyLabelStyle}" Text="30Hz" />
+				<Slider
+					x:Name="Slider30Hz"
+					Style="{StaticResource EqualizerSliderStyle}"
+					ValueChanged="Slider_ValueChanged" />
+				<TextBlock
+					Margin="5,0,5,5"
+					HorizontalAlignment="Center"
+					FontSize="10">
+					<Run Text="{Binding Value, ElementName=Slider30Hz, Converter={StaticResource DbConverter}}" />
+					<Run Text="dB" />
+				</TextBlock>
+			</StackPanel>
+
+			<StackPanel>
+				<TextBlock Style="{StaticResource FrequencyLabelStyle}" Text="60Hz" />
+				<Slider
+					x:Name="Slider60Hz"
+					Style="{StaticResource EqualizerSliderStyle}"
+					ValueChanged="Slider_ValueChanged" />
+				<TextBlock
+					Margin="5,0,5,5"
+					HorizontalAlignment="Center"
+					FontSize="10">
+					<Run Text="{Binding Value, ElementName=Slider60Hz, Converter={StaticResource DbConverter}}" />
+					<Run Text="dB" />
+				</TextBlock>
+			</StackPanel>
+
+			<!--  Bass  -->
+			<StackPanel>
+				<TextBlock Style="{StaticResource FrequencyLabelStyle}" Text="80Hz" />
+				<Slider
+					x:Name="Slider80Hz"
+					Style="{StaticResource EqualizerSliderStyle}"
+					ValueChanged="Slider_ValueChanged" />
+				<TextBlock
+					Margin="5,0,5,5"
+					HorizontalAlignment="Center"
+					FontSize="10">
+					<Run Text="{Binding Value, ElementName=Slider80Hz, Converter={StaticResource DbConverter}}" />
+					<Run Text="dB" />
+				</TextBlock>
+			</StackPanel>
+
+			<StackPanel>
+				<TextBlock Style="{StaticResource FrequencyLabelStyle}" Text="120Hz" />
+				<Slider
+					x:Name="Slider120Hz"
+					Style="{StaticResource EqualizerSliderStyle}"
+					ValueChanged="Slider_ValueChanged" />
+				<TextBlock
+					Margin="5,0,5,5"
+					HorizontalAlignment="Center"
+					FontSize="10">
+					<Run Text="{Binding Value, ElementName=Slider120Hz, Converter={StaticResource DbConverter}}" />
+					<Run Text="dB" />
+				</TextBlock>
+			</StackPanel>
+
+			<!--  Low Mids  -->
+			<StackPanel>
+				<TextBlock Style="{StaticResource FrequencyLabelStyle}" Text="250Hz" />
+				<Slider
+					x:Name="Slider250Hz"
+					Style="{StaticResource EqualizerSliderStyle}"
+					ValueChanged="Slider_ValueChanged" />
+				<TextBlock
+					Margin="5,0,5,5"
+					HorizontalAlignment="Center"
+					FontSize="10">
+					<Run Text="{Binding Value, ElementName=Slider250Hz, Converter={StaticResource DbConverter}}" />
+					<Run Text="dB" />
+				</TextBlock>
+			</StackPanel>
+
+			<StackPanel>
+				<TextBlock Style="{StaticResource FrequencyLabelStyle}" Text="400Hz" />
+				<Slider
+					x:Name="Slider400Hz"
+					Style="{StaticResource EqualizerSliderStyle}"
+					ValueChanged="Slider_ValueChanged" />
+				<TextBlock
+					Margin="5,0,5,5"
+					HorizontalAlignment="Center"
+					FontSize="10">
+					<Run Text="{Binding Value, ElementName=Slider400Hz, Converter={StaticResource DbConverter}}" />
+					<Run Text="dB" />
+				</TextBlock>
+			</StackPanel>
+
+			<!--  Mids  -->
+			<StackPanel>
+				<TextBlock Style="{StaticResource FrequencyLabelStyle}" Text="600Hz" />
+				<Slider
+					x:Name="Slider600Hz"
+					Style="{StaticResource EqualizerSliderStyle}"
+					ValueChanged="Slider_ValueChanged" />
+				<TextBlock
+					Margin="5,0,5,5"
+					HorizontalAlignment="Center"
+					FontSize="10">
+					<Run Text="{Binding Value, ElementName=Slider600Hz, Converter={StaticResource DbConverter}}" />
+					<Run Text="dB" />
+				</TextBlock>
+			</StackPanel>
+
+			<StackPanel>
+				<TextBlock Style="{StaticResource FrequencyLabelStyle}" Text="1kHz" />
+				<Slider
+					x:Name="Slider1kHz"
+					Style="{StaticResource EqualizerSliderStyle}"
+					ValueChanged="Slider_ValueChanged" />
+				<TextBlock
+					Margin="5,0,5,5"
+					HorizontalAlignment="Center"
+					FontSize="10">
+					<Run Text="{Binding Value, ElementName=Slider1kHz, Converter={StaticResource DbConverter}}" />
+					<Run Text="dB" />
+				</TextBlock>
+			</StackPanel>
+
+			<!--  High Mids  -->
+			<StackPanel>
+				<TextBlock Style="{StaticResource FrequencyLabelStyle}" Text="2.5kHz" />
+				<Slider
+					x:Name="Slider2_5kHz"
+					Style="{StaticResource EqualizerSliderStyle}"
+					ValueChanged="Slider_ValueChanged" />
+				<TextBlock
+					Margin="5,0,5,5"
+					HorizontalAlignment="Center"
+					FontSize="10">
+					<Run Text="{Binding Value, ElementName=Slider2_5kHz, Converter={StaticResource DbConverter}}" />
+					<Run Text="dB" />
+				</TextBlock>
+			</StackPanel>
+
+			<StackPanel>
+				<TextBlock Style="{StaticResource FrequencyLabelStyle}" Text="4kHz" />
+				<Slider
+					x:Name="Slider4kHz"
+					Style="{StaticResource EqualizerSliderStyle}"
+					ValueChanged="Slider_ValueChanged" />
+				<TextBlock
+					Margin="5,0,5,5"
+					HorizontalAlignment="Center"
+					FontSize="10">
+					<Run Text="{Binding Value, ElementName=Slider4kHz, Converter={StaticResource DbConverter}}" />
+					<Run Text="dB" />
+				</TextBlock>
+			</StackPanel>
+
+			<!--  Presence  -->
+			<StackPanel>
+				<TextBlock Style="{StaticResource FrequencyLabelStyle}" Text="6kHz" />
+				<Slider
+					x:Name="Slider6kHz"
+					Style="{StaticResource EqualizerSliderStyle}"
+					ValueChanged="Slider_ValueChanged" />
+				<TextBlock
+					Margin="5,0,5,5"
+					HorizontalAlignment="Center"
+					FontSize="10">
+					<Run Text="{Binding Value, ElementName=Slider6kHz, Converter={StaticResource DbConverter}}" />
+					<Run Text="dB" />
+				</TextBlock>
+			</StackPanel>
+
+			<StackPanel>
+				<TextBlock Style="{StaticResource FrequencyLabelStyle}" Text="8kHz" />
+				<Slider
+					x:Name="Slider8kHz"
+					Style="{StaticResource EqualizerSliderStyle}"
+					ValueChanged="Slider_ValueChanged" />
+				<TextBlock
+					Margin="5,0,5,5"
+					HorizontalAlignment="Center"
+					FontSize="10">
+					<Run Text="{Binding Value, ElementName=Slider8kHz, Converter={StaticResource DbConverter}}" />
+					<Run Text="dB" />
+				</TextBlock>
+			</StackPanel>
+
+			<!--  Brilliance  -->
+			<StackPanel>
+				<TextBlock Style="{StaticResource FrequencyLabelStyle}" Text="10kHz" />
+				<Slider
+					x:Name="Slider10kHz"
+					Style="{StaticResource EqualizerSliderStyle}"
+					ValueChanged="Slider_ValueChanged" />
+				<TextBlock
+					Margin="5,0,5,5"
+					HorizontalAlignment="Center"
+					FontSize="10">
+					<Run Text="{Binding Value, ElementName=Slider10kHz, Converter={StaticResource DbConverter}}" />
+					<Run Text="dB" />
+				</TextBlock>
+			</StackPanel>
+
+			<StackPanel>
+				<TextBlock Style="{StaticResource FrequencyLabelStyle}" Text="12kHz" />
+				<Slider
+					x:Name="Slider12kHz"
+					Style="{StaticResource EqualizerSliderStyle}"
+					ValueChanged="Slider_ValueChanged" />
+				<TextBlock
+					Margin="5,0,5,5"
+					HorizontalAlignment="Center"
+					FontSize="10">
+					<Run Text="{Binding Value, ElementName=Slider12kHz, Converter={StaticResource DbConverter}}" />
+					<Run Text="dB" />
+				</TextBlock>
+			</StackPanel>
+
+			<!--  Air  -->
+			<StackPanel>
+				<TextBlock Style="{StaticResource FrequencyLabelStyle}" Text="16kHz" />
+				<Slider
+					x:Name="Slider16kHz"
+					Style="{StaticResource EqualizerSliderStyle}"
+					ValueChanged="Slider_ValueChanged" />
+				<TextBlock
+					Margin="5,0,5,5"
+					HorizontalAlignment="Center"
+					FontSize="10">
+					<Run Text="{Binding Value, ElementName=Slider16kHz, Converter={StaticResource DbConverter}}" />
+					<Run Text="dB" />
+				</TextBlock>
+			</StackPanel>
+		</StackPanel>
+	</Grid>
+</UserControl>

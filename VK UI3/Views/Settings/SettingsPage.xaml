@@ -1,45 +1,45 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Page
-    x:Class="VK_UI3.Views.Settings.SettingsPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:VK_UI3.WinUI.Controls"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="using:VK_UI3.Views.Settings"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
-    <ScrollView>
-        <StackPanel>
-            <StackPanel.Resources>
-                <Style TargetType="Border">
-                    <Setter Property="Margin" Value="5,5,5,0" />
+	x:Class="VK_UI3.Views.Settings.SettingsPage"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="using:VK_UI3.WinUI.Controls"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="using:VK_UI3.Views.Settings"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d">
+	<ScrollView>
+		<StackPanel>
+			<StackPanel.Resources>
+				<Style TargetType="Border">
+					<Setter Property="Margin" Value="5,5,5,0" />
 
-                    <Setter Property="BorderThickness" Value="1" />
-                    <Setter Property="CornerRadius" Value="4" />
+					<Setter Property="BorderThickness" Value="1" />
+					<Setter Property="CornerRadius" Value="4" />
 
-                    <Setter Property="Background" Value="{ThemeResource LayerFillColorAltBrush}" />
-                    <Setter Property="Padding" Value="14" />
-                </Style>
-            </StackPanel.Resources>
-            <Border>
-                <local:StartUpSetting />
-            </Border>
+					<Setter Property="Background" Value="{ThemeResource LayerFillColorAltBrush}" />
+					<Setter Property="Padding" Value="14" />
+				</Style>
+			</StackPanel.Resources>
+			<Border>
+				<local:StartUpSetting />
+			</Border>
 
-            <Border>
-                <local:BackDropSetting />
-            </Border>
-            <Border>
-                <local:DownloadAllSetting />
-            </Border>
-            <Border>
-                <local:StartAllTaskSetting />
-            </Border>
-            <Border>
-                <local:DeleteAllAudioProfile />
-            </Border>
-            <Border>
-                <local:ArchivateTracks />
-            </Border>
+			<Border>
+				<local:BackDropSetting />
+			</Border>
+			<Border>
+				<local:DownloadAllSetting />
+			</Border>
+			<Border>
+				<local:StartAllTaskSetting />
+			</Border>
+			<Border>
+				<local:DeleteAllAudioProfile />
+			</Border>
+			<Border>
+				<local:ArchivateTracks />
+			</Border>
 
 			<Border>
 				<local:HideToTraySetting />
@@ -53,41 +53,41 @@
 
 
 			<Border>
-                <StackPanel>
-                    <TextBlock Text="Размер кеша фотографий" />
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <local:PhotoCacheSize x:Name="photocache" Grid.Column="0" />
-                        <TextBlock
-                            Grid.Column="1"
-                            Margin="10,0,0,0"
-                            VerticalAlignment="Center"
-                            Text="{x:Bind photocache.Value, Mode=OneWay}" />
-                        <TextBlock
-                            Grid.Column="2"
-                            VerticalAlignment="Center"
-                            Text="МБ" />
-                    </Grid>
-                </StackPanel>
-            </Border>
-            <Border>
-                <StackPanel Orientation="Horizontal">
-                    <local:CheckUpdate />
-                    <TextBlock Margin="15,0,0,0" VerticalAlignment="Center">Текущая версия:</TextBlock>
-                    <local:AppVersionText Margin="15,0,0,0" VerticalAlignment="Center" />
-                </StackPanel>
+				<StackPanel>
+					<TextBlock Text="Размер кеша фотографий" />
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+						<local:PhotoCacheSize x:Name="photocache" Grid.Column="0" />
+						<TextBlock
+							Grid.Column="1"
+							Margin="10,0,0,0"
+							VerticalAlignment="Center"
+							Text="{x:Bind photocache.Value, Mode=OneWay}" />
+						<TextBlock
+							Grid.Column="2"
+							VerticalAlignment="Center"
+							Text="МБ" />
+					</Grid>
+				</StackPanel>
+			</Border>
+			<Border>
+				<StackPanel Orientation="Horizontal">
+					<local:CheckUpdate />
+					<TextBlock Margin="15,0,0,0" VerticalAlignment="Center">Текущая версия:</TextBlock>
+					<local:AppVersionText Margin="15,0,0,0" VerticalAlignment="Center" />
+				</StackPanel>
 
-            </Border>
+			</Border>
 
 
-            <TextBlock Margin="0,20,0,0" TextAlignment="Center">
-                <Hyperlink NavigateUri="https://t.me/VK_M_creator">Music M в telegram</Hyperlink>
-            </TextBlock>
+			<TextBlock Margin="0,20,0,0" TextAlignment="Center">
+				<Hyperlink NavigateUri="https://t.me/VK_M_creator">Music M в telegram</Hyperlink>
+			</TextBlock>
 
-        </StackPanel>
-    </ScrollView>
+		</StackPanel>
+	</ScrollView>
 </Page>

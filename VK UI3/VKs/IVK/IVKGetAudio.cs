@@ -80,6 +80,8 @@ namespace VK_UI3.VKs.IVK
 
 
 
+
+
         public DispatcherQueue DispatcherQueue;
 
         public EventHandler onListUpdate;
@@ -446,6 +448,10 @@ namespace VK_UI3.VKs.IVK
 
             if (shuffle)
             {
+                if (shuffleList.Count < listAudio.Count)
+                {
+                    FillAndShuffleList();
+                }
                 return await GetTrackPlayAsync(shuffleList[(int)currentTrack], prinud);
             }
             
