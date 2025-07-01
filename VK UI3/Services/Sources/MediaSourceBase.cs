@@ -13,6 +13,7 @@ using Windows.Media.Core;
 using Windows.Media.MediaProperties;
 using Windows.Media.Playback;
 using WinRT;
+using VK_UI3.Controllers;
 
 namespace MusicX.Services.Player.Sources;
 
@@ -143,7 +144,7 @@ public abstract class MediaSourceBase : ITrackMediaSource
 
 
 
-    public abstract Task<bool> OpenWithMediaPlayerAsync(MediaPlayer player, Audio track, CancellationToken cancellationToken = default, AudioEqualizer equalizer = null);
+    public abstract Task<bool> OpenWithMediaPlayerAsync(CustomMediaPlayer player, Audio track, CancellationToken cancellationToken = default, AudioEqualizer equalizer = null);
 
     protected static MediaPlaybackItem CreateMediaPlaybackItem(MediaFile file)
     {

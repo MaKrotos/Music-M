@@ -1,5 +1,6 @@
 ﻿using FFMediaToolkit.Audio;
 using FFMediaToolkit.Decoding;
+using FFMediaToolkit.Interop;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using VkNet.Model.Attachments;
 using Windows.Media;
 using Windows.Media.Playback;
 using Windows.Storage.Streams;
+using VK_UI3.Controllers; // Для доступа к CustomMediaPlayer
 
 namespace MusicX.Services.Player.Sources;
 
@@ -20,94 +22,79 @@ public class VkMediaSource : MediaSourceBase
     {
         _logger = logger;
     }
-    public override async Task<bool> OpenWithMediaPlayerAsync(MediaPlayer player, Audio track,
-        CancellationToken cancellationToken = default, AudioEqualizer  equalizer = null)
+    public override async Task<bool> OpenWithMediaPlayerAsync(CustomMediaPlayer player, Audio track,
+    CancellationToken cancellationToken = default, AudioEqualizer equalizer = null)
     {
-        if (string.IsNullOrEmpty(track.Url.ToString())) return false;
+        if (string.IsNullOrEmpty(track.Url.ToString()))
+            return false;
         try
         {
-            var mediaOptions = new MediaOptions
+            // Формируем строку фильтра
+            string filterString = null;
+            if (equalizer != null)
             {
-                StreamsToLoad = MediaMode.Audio,
-                AudioSampleFormat = SampleFormat.SignedWord,
-                DemuxerOptions =
+                filterString = equalizer.GetFFmpegFilterString();
+            }
+
+            // 1. Создаём StreamingAudioReader (он сам применяет фильтр)
+            var reader = new StreamingAudioReader(track.Url.ToString(), filterString);
+
+            // 2. Создаём MediaStreamSource с нужными параметрами
+            var audioProps = Windows.Media.MediaProperties.AudioEncodingProperties.CreatePcm(
+                (uint)reader.SampleRate, (ushort)reader.Channels, (ushort)reader.BitsPerSample);
+            var desc = new Windows.Media.Core.AudioStreamDescriptor(audioProps);
+            var mss = new Windows.Media.Core.MediaStreamSource(desc);
+
+            // 3. Готовим enumerator для PCM-чанков
+            var chunkEnumerator = reader.CreatePcmChunkEnumerator();
+
+            TimeSpan currentTimestamp = TimeSpan.Zero;
+
+            // Подписка на события перемотки
+            player.PositionChanging += (s, newPos) =>
             {
-                FlagDiscardCorrupt = true,
-                FlagEnableFastSeek = true,
-                SeekToAny = true,
-                PrivateOptions = new Dictionary<string, string>
+                // Перемотка через FFmpeg
+                reader.Seek(newPos);
+                chunkEnumerator = reader.CreatePcmChunkEnumerator(newPos);
+                currentTimestamp = newPos;
+                System.Diagnostics.Debug.WriteLine($"[CustomMediaPlayer] Position changing to: {newPos}");
+            };
+            player.PositionChanged += (s, newPos) =>
+            {
+                System.Diagnostics.Debug.WriteLine($"[CustomMediaPlayer] Position changed to: {newPos}");
+            };
+
+            mss.Starting += (s, e) =>
+            {
+                TimeSpan pos = e.Request.StartPosition ?? new TimeSpan(0);
+                reader.Seek(pos);
+                chunkEnumerator = reader.CreatePcmChunkEnumerator(pos);
+                currentTimestamp = pos;
+                e.Request.SetActualStartPosition(pos);
+            };
+
+            mss.SampleRequested += (s, e) =>
+            {
+                if (chunkEnumerator.MoveNext())
                 {
-                    ["http_persistent"] = "false",
-                    ["reconnect"] = "1",
-                    ["reconnect_streamed"] = "1",
-                    ["reconnect_on_network_error"] = "1",
-                    ["reconnect_delay_max"] = "30",
-                    ["reconnect_on_http_error"] = "4xx,5xx",
-                    ["stimeout"] = "30000000",
-                    ["timeout"] = "30000000",
-                    ["rw_timeout"] = "30000000"
+                    var buffer = chunkEnumerator.Current;
+                    int bytesPerSample = reader.BitsPerSample / 8;
+                    int samples = buffer.Length / (reader.Channels * bytesPerSample);
+                    double seconds = (double)samples / reader.SampleRate;
+                    var sample = Windows.Media.Core.MediaStreamSample.CreateFromBuffer(BufferFromArray(buffer), currentTimestamp);
+                    e.Request.Sample = sample;
+                    currentTimestamp += TimeSpan.FromSeconds(seconds);
                 }
+                else
+                {
+                    e.Request.Sample = null;
                 }
             };
 
+            // 4. Передаём MediaStreamSource в MediaPlayer
+            player.InnerPlayer.Source = Windows.Media.Core.MediaSource.CreateFromMediaStreamSource(mss);
 
-            // Добавляем эквалайзер, если он передан
-            if (equalizer != null)
-            {
-                string filterString = equalizer.GetFFmpegFilterString();
-                if (!string.IsNullOrEmpty(filterString))
-                {
-                    // Создаем или обновляем словарь DecoderOptions
-                    if (mediaOptions.DecoderOptions == null)
-                    {
-                        mediaOptions.DecoderOptions = new Dictionary<string, string>();
-                    }
-
-                    // Добавляем фильтры эквалайзера и loudnorm
-                    mediaOptions.DecoderOptions["af"] = $"{filterString},loudnorm=I=-16:TP=-1.5:LRA=11";
-
-                    // Альтернативный вариант, если не работает через DecoderOptions:
-                    // mediaOptions.DemuxerOptions.PrivateOptions["af"] = $"{filterString},loudnorm=I=-16:TP=-1.5:LRA=11";
-                }
-            }
-
-            var playbackItem = await Task.Run(() =>
-            {
-                var file = MediaFile.Open(track.Url.ToString(), mediaOptions);
-                return CreateMediaPlaybackItem(file);
-            }, cancellationToken).ConfigureAwait(false);  // Добавил ConfigureAwait(false) для избежания deadlock
-
-            // ⚠️ Устанавливаем метаданные ДО присвоения Source!
-            var props = playbackItem.GetDisplayProperties();
-            props.Type = MediaPlaybackType.Music;  // Обязательно!
-
-            // Заполняем текст (проверяем на null)
-            props.MusicProperties.Title = track.Title ?? "Unknown Title";
-            props.MusicProperties.Artist = track.Artist ?? "Unknown Artist";  // ⚠️ Не AlbumArtist!
-            props.MusicProperties.AlbumTitle = track.Album?.Title ?? "";  // Если есть альбом
-
-            // Обложка (уже работало)
-            if (track.Album?.Thumb != null)
-            {
-                var imageUri = track.Album.Thumb.Photo600 ??
-                              track.Album.Thumb.Photo300 ??
-                              track.Album.Thumb.Photo270;
-
-                if (!string.IsNullOrEmpty(imageUri))
-                {
-                    try
-                    {
-                        props.Thumbnail = RandomAccessStreamReference.CreateFromUri(new Uri(imageUri));
-                    }
-                    catch { /* Логируем ошибку, если нужно */ }
-                }
-            }
-
-
-            playbackItem.ApplyDisplayProperties(props);
-
-            // Теперь присваиваем источник
-            player.Source = playbackItem;
+            return true;
         }
         catch (OperationCanceledException)
         {
@@ -115,13 +102,16 @@ public class VkMediaSource : MediaSourceBase
         }
         catch (Exception e)
         {
-            _logger.Error(e, "Failed to use winrt decoder for vk media source");
-
-
-            
+            _logger.Error(e, "Failed to use streaming reader for vk media source");
         }
-        
-        return true;
-        
+        return false;
+    }
+
+    // Вспомогательная функция для создания IBuffer из byte[]
+    private static Windows.Storage.Streams.IBuffer BufferFromArray(byte[] data)
+    {
+        var writer = new Windows.Storage.Streams.DataWriter();
+        writer.WriteBytes(data);
+        return writer.DetachBuffer();
     }
 }

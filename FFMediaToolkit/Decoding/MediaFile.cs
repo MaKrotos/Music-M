@@ -144,5 +144,11 @@ namespace FFMediaToolkit.Decoding
 
             IsDisposed = true;
         }
+
+
+        /// <summary>
+        /// Строка фильтра для аудио (FFmpeg -af), например: "equalizer=f=1000:t=q:w=1:g=5".
+        /// </summary>
+        public string AudioFilterString { get; set; }
     }
 }

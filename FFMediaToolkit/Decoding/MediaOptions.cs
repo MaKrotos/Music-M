@@ -98,6 +98,11 @@ namespace FFMediaToolkit.Decoding
         public MediaMode StreamsToLoad { get; set; } = MediaMode.AudioVideo;
 
         /// <summary>
+        /// Строка фильтра для аудио (FFmpeg -af), например: "equalizer=f=1000:t=q:w=1:g=5".
+        /// </summary>
+        public string AudioFilterString { get; set; }
+
+        /// <summary>
         /// Determines whether streams of a certain <see cref="AVMediaType"/> should be loaded
         /// (Based on <see cref="StreamsToLoad"/> property).
         /// </summary>

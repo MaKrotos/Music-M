@@ -1,6 +1,4 @@
-﻿
-
-//using CSCore.CoreAudioAPI;
+﻿//using CSCore.CoreAudioAPI;
 using FFMediaToolkit;
 using FFMediaToolkit.Audio;
 using FFMediaToolkit.Decoding;
@@ -51,7 +49,7 @@ namespace VK_UI3.Controllers
     {
         private static readonly IEnumerable<ITrackMediaSource> _mediaSources= App._host.Services.GetRequiredService<IEnumerable<ITrackMediaSource>>();
 
-        public static Windows.Media.Playback.MediaPlayer mediaPlayer = new MediaPlayer();
+        public static CustomMediaPlayer mediaPlayer = new CustomMediaPlayer();
 
         public static event EventHandler oniVKUpdate;
 
@@ -77,8 +75,8 @@ namespace VK_UI3.Controllers
 
         public MediaPlayer MediaPlayer
         {
-            get { return mediaPlayer; }
-            set { mediaPlayer = value; }
+            get { return mediaPlayer.InnerPlayer; }
+            set { mediaPlayer.InnerPlayer = value; }
         }
 
 
@@ -221,10 +219,10 @@ namespace VK_UI3.Controllers
 
             this.Loaded += AudioPlayer_Loaded;
 
-            mediaPlayer.AudioCategory = MediaPlayerAudioCategory.Media;
-            mediaPlayer.CommandManager.NextBehavior.EnablingRule = MediaCommandEnablingRule.Always;
-            mediaPlayer.CommandManager.PreviousBehavior.EnablingRule = MediaCommandEnablingRule.Always;
-            mediaPlayer.SystemMediaTransportControls.DisplayUpdater.Type = MediaPlaybackType.Music;
+            mediaPlayer.InnerPlayer.AudioCategory = MediaPlayerAudioCategory.Media;
+            mediaPlayer.InnerPlayer.CommandManager.NextBehavior.EnablingRule = MediaCommandEnablingRule.Always;
+            mediaPlayer.InnerPlayer.CommandManager.PreviousBehavior.EnablingRule = MediaCommandEnablingRule.Always;
+            mediaPlayer.InnerPlayer.SystemMediaTransportControls.DisplayUpdater.Type = MediaPlaybackType.Music;
 
 
             TrackDuration = 0;
@@ -233,27 +231,27 @@ namespace VK_UI3.Controllers
             TrackDataThisChanged.AddHandler(AudioPlayer_PropertyChanged);
 
             // Привязка к событию MediaOpened
-            mediaPlayer.MediaOpened += MediaPlayer_MediaOpened;
+            mediaPlayer.InnerPlayer.MediaOpened += MediaPlayer_MediaOpened;
 
             // Привязка к событию MediaEnded
-            mediaPlayer.MediaEnded += MediaPlayer_MediaEnded;
+            mediaPlayer.InnerPlayer.MediaEnded += MediaPlayer_MediaEnded;
 
             // Привязка к событию MediaFailed
-            mediaPlayer.MediaFailed += MediaPlayer_MediaFailed;
+            mediaPlayer.InnerPlayer.MediaFailed += MediaPlayer_MediaFailed;
 
             // Привязка к событию CurrentStateChanged
-            mediaPlayer.CurrentStateChanged += MediaPlayer_CurrentStateChanged;
+            mediaPlayer.InnerPlayer.CurrentStateChanged += MediaPlayer_CurrentStateChanged;
 
             // Привязка к событию SourceChanged
-            mediaPlayer.SourceChanged += MediaPlayer_SourceChanged;
-            mediaPlayer.PlaybackSession.PositionChanged += PlaybackSession_PositionChanged;
-            mediaPlayer.PlaybackSession.BufferedRangesChanged += PlaybackSession_BufferedRangesChanged;
+            mediaPlayer.InnerPlayer.SourceChanged += MediaPlayer_SourceChanged;
+            mediaPlayer.InnerPlayer.PlaybackSession.PositionChanged += PlaybackSession_PositionChanged;
+            mediaPlayer.InnerPlayer.PlaybackSession.BufferedRangesChanged += PlaybackSession_BufferedRangesChanged;
 
 
-            mediaPlayer.CommandManager.NextReceived += CommandManager_NextReceived;
-            mediaPlayer.CommandManager.PreviousReceived += CommandManager_PreviousReceived;
-            mediaPlayer.CommandManager.NextBehavior.EnablingRule = MediaCommandEnablingRule.Always;
-            mediaPlayer.CommandManager.PreviousBehavior.EnablingRule = MediaCommandEnablingRule.Always;
+            mediaPlayer.InnerPlayer.CommandManager.NextReceived += CommandManager_NextReceived;
+            mediaPlayer.InnerPlayer.CommandManager.PreviousReceived += CommandManager_PreviousReceived;
+            mediaPlayer.InnerPlayer.CommandManager.NextBehavior.EnablingRule = MediaCommandEnablingRule.Always;
+            mediaPlayer.InnerPlayer.CommandManager.PreviousBehavior.EnablingRule = MediaCommandEnablingRule.Always;
 
         }
         double actualHeight = 0;
@@ -264,14 +262,14 @@ namespace VK_UI3.Controllers
         {
             get
             {
-                if (mediaPlayer == null) return 100;
-                return mediaPlayer.Volume * 100;
+                if (mediaPlayer.InnerPlayer == null) return 100;
+                return mediaPlayer.InnerPlayer.Volume * 100;
             }
             set
             {
                 var a = value / 100;
                 SettingsTable.SetSetting("Volume", a.ToString());
-                mediaPlayer.Volume = a;
+                mediaPlayer.InnerPlayer.Volume = a;
             }
         }
 
@@ -319,9 +317,9 @@ namespace VK_UI3.Controllers
 
         private void CommandManager_PreviousReceived(MediaPlaybackCommandManager sender, MediaPlaybackCommandManagerPreviousReceivedEventArgs args)
         {
-            if (mediaPlayer.Position.TotalSeconds >= 3)
+            if (mediaPlayer.InnerPlayer.Position.TotalSeconds >= 3)
             {
-                mediaPlayer.Position = new TimeSpan(0);
+                mediaPlayer.InnerPlayer.Position = new TimeSpan(0);
             }
             else
             {
@@ -457,7 +455,7 @@ namespace VK_UI3.Controllers
             var setting = DB.SettingsTable.GetSetting("DisableDiscordIntegration");
             if (setting != null && setting.settingValue.Equals("1"))
                 return;
-            discordRichPresenceManager.SetTrack(TrackDataThis, mediaPlayer);
+            discordRichPresenceManager.SetTrack(TrackDataThis, mediaPlayer.InnerPlayer);
         }
 
         private void PlayButton_Click(object sender, RoutedEventArgs e)
@@ -477,17 +475,19 @@ namespace VK_UI3.Controllers
 
         private void VolumeSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
+            // Только обновляем TrackPosition для UI, не трогаем плеер напрямую
             if (isManualChange)
             {
-                mediaPlayer.PlaybackSession.Position = TimeSpan.FromSeconds(e.NewValue);
+                TrackPosition = (int)e.NewValue;
             }
         }
         bool isManualChange = false;
 
-
         private void VolumeSlider_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
             isManualChange = false;
+            // При отпускании ползунка — перематываем плеер
+            mediaPlayer.Position = TimeSpan.FromSeconds(TrackPosition);
         }
 
 
@@ -513,14 +513,14 @@ namespace VK_UI3.Controllers
         private void Button_Play_Tapped(object sender, TappedRoutedEventArgs e)
         {
 
-            switch (mediaPlayer.CurrentState)
+            switch (mediaPlayer.InnerPlayer.CurrentState)
             {
                 case (MediaPlayerState)MediaPlaybackState.Playing:
 
-                    mediaPlayer.Pause();
+                    mediaPlayer.InnerPlayer.Pause();
                     break;
                 case (MediaPlayerState)MediaPlaybackState.Paused:
-                    mediaPlayer.Play();
+                    mediaPlayer.InnerPlayer.Play();
 
                     break;
                 case (MediaPlayerState)MediaPlaybackState.Buffering:
@@ -633,17 +633,16 @@ namespace VK_UI3.Controllers
             if (PlayingTrack != null)
             {
                 preTrack = PlayingTrack;
-                secDurPre = (int) mediaPlayer.Position.TotalSeconds;
+                secDurPre = (int) mediaPlayer.InnerPlayer.Position.TotalSeconds;
             }
             PlayingTrack = trackdata;
 
             
-            mediaPlayer.Pause();
+            mediaPlayer.InnerPlayer.Pause();
 
 
             if (new CheckFFmpeg().IsExist())
             {
-
                 var allSourcesTask = Task.WhenAll(_mediaSources.Select(b => b.OpenWithMediaPlayerAsync(mediaPlayer, trackdata.audio, _tokenSource.Token, equalizer: _equalizer)));
 
                 try
@@ -652,8 +651,6 @@ namespace VK_UI3.Controllers
                 }
                 catch
                 {
-                    // await unwraps AggregateException into only the first exception,
-                    // but we need to make sure that all exceptions are cancel ones
                     if (allSourcesTask.IsCanceled || allSourcesTask.Exception?.InnerExceptions.All(b => b is OperationCanceledException) is true)
                         return; // canceled
 
@@ -665,8 +662,7 @@ namespace VK_UI3.Controllers
                     PlayNextTrack();
                     return;
                 }
-
-                mediaPlayer.Source = mediaPlaybackItem;
+                // Если хотя бы один источник сработал — не трогаем mediaPlayer.Source (он уже установлен)
 
             }
             else
@@ -695,16 +691,16 @@ namespace VK_UI3.Controllers
                     props.Thumbnail = null;
                 mediaPlaybackItem.ApplyDisplayProperties(props);
 
-                mediaPlayer.PlaybackSession.Position = TimeSpan.FromMilliseconds(1);
+                mediaPlayer.InnerPlayer.PlaybackSession.Position = TimeSpan.FromMilliseconds(1);
                 MainWindow.mainWindow.requstDownloadFFMpegAsync();
-                mediaPlayer.Source = mediaPlaybackItem;
+                mediaPlayer.InnerPlayer.Source = mediaPlaybackItem;
             }
 
             if (position != null)
             {
-                mediaPlayer.Position = (TimeSpan)position;
+                mediaPlayer.InnerPlayer.Position = (TimeSpan)position;
             }
-            mediaPlayer.Play();
+            mediaPlayer.InnerPlayer.Play();
 
             _ = KrotosVK.sendVKAudioPlayStat(trackdata, preTrack, secDurPre);
 
@@ -965,5 +961,42 @@ namespace VK_UI3.Controllers
         {
 
         }
+    }
+
+    // Новый класс-наследник
+    public class CustomMediaPlayer
+    {
+        public MediaPlayer InnerPlayer { get; set; }
+        public event EventHandler<TimeSpan> PositionChanging;
+        public event EventHandler<TimeSpan> PositionChanged;
+
+        public CustomMediaPlayer()
+        {
+            InnerPlayer = new MediaPlayer();
+        }
+
+        public TimeSpan Position
+        {
+            get => InnerPlayer.Position;
+            set
+            {
+                PositionChanging?.Invoke(this, value);
+                InnerPlayer.Position = value;
+                PositionChanged?.Invoke(this, value);
+            }
+        }
+
+        public double Volume
+        {
+            get => InnerPlayer.Volume;
+            set => InnerPlayer.Volume = value;
+        }
+
+        public void Play() => InnerPlayer.Play();
+        public void Pause() => InnerPlayer.Pause();
+        public void SetSource(MediaSource source) => InnerPlayer.Source = source;
+        public MediaPlaybackSession PlaybackSession => InnerPlayer.PlaybackSession;
+        public MediaPlayerState CurrentState => InnerPlayer.CurrentState;
+        // ... проксируйте другие нужные методы/свойства ...
     }
 }
