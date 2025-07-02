@@ -1,6 +1,4 @@
-﻿
-
-//using CSCore.CoreAudioAPI;
+﻿//using CSCore.CoreAudioAPI;
 using FFMediaToolkit;
 using FFMediaToolkit.Audio;
 using FFMediaToolkit.Decoding;
@@ -37,6 +35,7 @@ using Windows.Media.MediaProperties;
 using Windows.Media.Playback;
 using Windows.Storage.Streams;
 using WinRT;
+using VK_UI3.Views.ModalsPages;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -255,6 +254,24 @@ namespace VK_UI3.Controllers
             mediaPlayer.CommandManager.NextBehavior.EnablingRule = MediaCommandEnablingRule.Always;
             mediaPlayer.CommandManager.PreviousBehavior.EnablingRule = MediaCommandEnablingRule.Always;
 
+            // Восстановление эквалайзера из настроек
+            try
+            {
+                var enabledSetting = VK_UI3.DB.SettingsTable.GetSetting("Equalizer_Enabled", "1");
+                if (enabledSetting.settingValue == "1")
+                {
+                    var eqControl = new EqualizerControl();
+                    eqControl.LoadSettings();
+                    AudioEqualizer eq = eqControl.getEqualizes();
+                    if (eq != null)
+                        Equalizer = eq;
+                }
+                else
+                {
+                    Equalizer = null;
+                }
+            }
+            catch { /* ignore errors */ }
         }
         double actualHeight = 0;
 
@@ -580,6 +597,8 @@ namespace VK_UI3.Controllers
 
         private async static Task PlayTrack(long? v = 0, TimeSpan? position = null)
         {
+            if (iVKGetAudio == null)
+                return;
 
             _tokenSource?.Cancel();
             _tokenSource?.Dispose();

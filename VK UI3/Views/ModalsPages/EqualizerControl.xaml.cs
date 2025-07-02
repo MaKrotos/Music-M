@@ -13,6 +13,8 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using VK_UI3.DB;
+using System.Text.Json;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -26,6 +28,7 @@ public sealed partial class EqualizerControl : UserControl
     public EqualizerControl()
     {
         this.InitializeComponent();
+        LoadSettings();
     }
 
     private void Slider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
@@ -218,6 +221,56 @@ public sealed partial class EqualizerControl : UserControl
         Slider16kHz.Value = 0;
     }
 
+    public void SaveSettings()
+    {
+        var values = new Dictionary<string, double>
+        {
+            {"30Hz", Slider30Hz.Value},
+            {"60Hz", Slider60Hz.Value},
+            {"80Hz", Slider80Hz.Value},
+            {"120Hz", Slider120Hz.Value},
+            {"250Hz", Slider250Hz.Value},
+            {"400Hz", Slider400Hz.Value},
+            {"600Hz", Slider600Hz.Value},
+            {"1kHz", Slider1kHz.Value},
+            {"2.5kHz", Slider2_5kHz.Value},
+            {"4kHz", Slider4kHz.Value},
+            {"6kHz", Slider6kHz.Value},
+            {"8kHz", Slider8kHz.Value},
+            {"10kHz", Slider10kHz.Value},
+            {"12kHz", Slider12kHz.Value},
+            {"16kHz", Slider16kHz.Value}
+        };
+        string json = JsonSerializer.Serialize(values);
+        SettingsTable.SetSetting("Equalizer_Settings", json);
+    }
+
+    public void LoadSettings()
+    {
+        var setting = SettingsTable.GetSetting("Equalizer_Settings");
+        if (setting == null) return;
+        try
+        {
+            var values = JsonSerializer.Deserialize<Dictionary<string, double>>(setting.settingValue);
+            if (values == null) return;
+            if (values.TryGetValue("30Hz", out var v)) Slider30Hz.Value = v;
+            if (values.TryGetValue("60Hz", out v)) Slider60Hz.Value = v;
+            if (values.TryGetValue("80Hz", out v)) Slider80Hz.Value = v;
+            if (values.TryGetValue("120Hz", out v)) Slider120Hz.Value = v;
+            if (values.TryGetValue("250Hz", out v)) Slider250Hz.Value = v;
+            if (values.TryGetValue("400Hz", out v)) Slider400Hz.Value = v;
+            if (values.TryGetValue("600Hz", out v)) Slider600Hz.Value = v;
+            if (values.TryGetValue("1kHz", out v)) Slider1kHz.Value = v;
+            if (values.TryGetValue("2.5kHz", out v)) Slider2_5kHz.Value = v;
+            if (values.TryGetValue("4kHz", out v)) Slider4kHz.Value = v;
+            if (values.TryGetValue("6kHz", out v)) Slider6kHz.Value = v;
+            if (values.TryGetValue("8kHz", out v)) Slider8kHz.Value = v;
+            if (values.TryGetValue("10kHz", out v)) Slider10kHz.Value = v;
+            if (values.TryGetValue("12kHz", out v)) Slider12kHz.Value = v;
+            if (values.TryGetValue("16kHz", out v)) Slider16kHz.Value = v;
+        }
+        catch { /* ignore errors */ }
+    }
 
     public bool IsEnabled
     {
