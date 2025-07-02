@@ -91,7 +91,8 @@ namespace VK_UI3.DownloadTrack
                 "avfilter-10.dll",
                 "avformat-61.dll",
                 "avutil-59.dll",
-                "swresample-5.dll"
+                "swresample-5.dll",
+                "swscale-8.dll"
             };
 
             foreach (string file in requiredFiles)

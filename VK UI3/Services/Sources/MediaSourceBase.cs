@@ -177,8 +177,7 @@ public abstract class MediaSourceBase : ITrackMediaSource
         {
             CanSeek = true,
             IsLive = true,
-            Duration = file.Audio.Info.Duration,
-            BufferTime = TimeSpan.Zero
+            Duration = file.Audio.Info.Duration
         };
         
         var position = TimeSpan.Zero;
