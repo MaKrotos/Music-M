@@ -17,6 +17,7 @@ using WinRT;
 namespace MusicX.Services.Player.Sources;
 
 using System.Collections.Generic;
+using System.Linq;
 
 public class AudioEqualizer
 {
@@ -41,7 +42,7 @@ public class AudioEqualizer
 
         public override string ToString()
         {
-            return $"equalizer=f={Frequency}:width_type={WidthType}:width={Width}:g={Gain}";
+            return $"f={Frequency}:t={WidthType}:w={Width}:g={Gain}";
         }
     }
 
@@ -104,7 +105,8 @@ public class AudioEqualizer
             }
         }
 
-        return filters.Count > 0 ? string.Join(",", filters) : string.Empty;
+        // Для нескольких полос: equalizer=...,equalizer=...
+        return filters.Count > 0 ? string.Join(",", filters.Select(f => $"equalizer={f}")) : string.Empty;
     }
 
     public void ApplyPreset(string presetName)
@@ -161,6 +163,13 @@ public abstract class MediaSourceBase : ITrackMediaSource
 
     public static MediaStreamSource CreateFFMediaStreamSource(MediaFile file)
     {
+        if (file == null)
+        {
+            // Можно заменить на ваш логгер, если он есть в статическом контексте
+            System.Diagnostics.Debug.WriteLine("[FFMedia] MediaFile.Open вернул null. Возможно, ошибка в фильтре эквалайзера или FFmpeg.");
+            throw new ArgumentNullException(nameof(file), "MediaFile.Open вернул null. Возможно, ошибка в фильтре эквалайзера или FFmpeg.");
+        }
+
         var properties =
             AudioEncodingProperties.CreatePcm((uint)file.Audio.Info.SampleRate, (uint)file.Audio.Info.NumChannels, 16);
 

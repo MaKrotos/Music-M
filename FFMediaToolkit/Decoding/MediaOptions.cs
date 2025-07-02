@@ -108,5 +108,10 @@ namespace FFMediaToolkit.Decoding
             var mode = (MediaMode)(1 << (int)type);
             return StreamsToLoad.HasFlag(mode);
         }
+
+        /// <summary>
+        /// Строка с параметрами эквалайзера FFmpeg (например, "frequency=1000:width_type=h:width=200:g=10"). Если null — эквалайзер не применяется.
+        /// </summary>
+        public string EqualizerArgs { get; set; } = null;
     }
 }

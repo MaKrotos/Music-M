@@ -18,6 +18,7 @@
         private bool reuseLastPacket;
         private bool flushing = false;
         private MediaPacket packet;
+        private AudioEqualizerFilter equalizerFilter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Decoder"/> class.
@@ -35,6 +36,10 @@
             {
                 case MediaType.Audio:
                     RecentlyDecodedFrame = new AudioFrame();
+                    if (owner.Options?.EqualizerArgs != null)
+                    {
+                        equalizerFilter = new AudioEqualizerFilter(codec, owner.Options.EqualizerArgs);
+                    }
                     break;
                 case MediaType.Video:
                     RecentlyDecodedFrame = new VideoFrame();
@@ -134,6 +139,7 @@
         {
             RecentlyDecodedFrame.Dispose();
             ffmpeg.avcodec_close(Pointer);
+            equalizerFilter?.Dispose();
         }
 
         private void ReadNextFrame()
@@ -158,6 +164,16 @@
             }
 
             error.ThrowIfError("An error occurred while decoding the frame.");
+
+            if (equalizerFilter != null && Info.Type == MediaType.Audio)
+            {
+                equalizerFilter.SendFrame(RecentlyDecodedFrame.Pointer);
+                int ret = equalizerFilter.ReceiveFrame(RecentlyDecodedFrame.Pointer);
+                if (ret < 0)
+                {
+                    ret.ThrowIfError("Equalizer receive frame");
+                }
+            }
         }
 
         private void DecodePacket()

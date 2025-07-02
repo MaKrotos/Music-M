@@ -64,7 +64,7 @@ public class VkMediaSource : MediaSourceBase
                     }
 
                     // Добавляем фильтры эквалайзера и loudnorm
-                    mediaOptions.DecoderOptions["af"] = $"{filterString},loudnorm=I=-16:TP=-1.5:LRA=11";
+                    mediaOptions.EqualizerArgs = $"{filterString}";
 
                     // Альтернативный вариант, если не работает через DecoderOptions:
                     // mediaOptions.DemuxerOptions.PrivateOptions["af"] = $"{filterString},loudnorm=I=-16:TP=-1.5:LRA=11";

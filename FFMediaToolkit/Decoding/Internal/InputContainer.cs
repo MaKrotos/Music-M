@@ -49,6 +49,11 @@
         public int MaxBufferSize { get; }
 
         /// <summary>
+        /// Опции, с которыми был открыт контейнер (для доступа к EqualizerArgs и другим параметрам).
+        /// </summary>
+        public MediaOptions Options { get; private set; }
+
+        /// <summary>
         /// Opens a media container and stream codecs from given path.
         /// </summary>
         /// <param name="path">A path to the multimedia file.</param>
@@ -163,6 +168,7 @@
             });
 
             var container = new InputContainer(context, read, seek, options.PacketBufferSizeLimit, avioStream);
+            container.Options = options;
             container.OpenStreams(options);
             return container;
         }
@@ -172,6 +178,7 @@
             var context = MakeContext(url, options, contextDelegate);
 
             var container = new InputContainer(context, options.PacketBufferSizeLimit);
+            container.Options = options;
             container.OpenStreams(options);
             return container;
         }
