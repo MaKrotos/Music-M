@@ -91,6 +91,7 @@
 	  <None Remove="Views\ModalsPages\MixControls\PicturedControl.xaml" />
 	  <None Remove="Views\ModalsPages\MixControls\SimpleButtons.xaml" />
 	  <None Remove="Views\ModalsPages\SettingMix.xaml" />
+	  <None Remove="Views\ModalsPages\vkid_captcha.html" />
 	  <None Remove="Views\Notification\NotifController.xaml" />
 	  <None Remove="Views\SectionView.xaml" />
 	  <None Remove="Views\Settings\SettingsPage.xaml" />
@@ -438,6 +439,12 @@
 
   <ItemGroup>
     <Resource Remove="Controls\Blocks\GroupsBlockControl.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AppxManifest Include="Views\ModalsPages\vkid_captcha.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AppxManifest>
   </ItemGroup>
 
   <ItemGroup>

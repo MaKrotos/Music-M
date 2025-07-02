@@ -97,7 +97,7 @@ public class AsyncCaptchaHandler : ICaptchaHandler
         if (context.RemainingSolveAttempts <= 0)
             return false;
         context.CaptchaSidTemp = captchaNeededException.Sid;
-        var task = _captchaSolver?.SolveAsync(captchaNeededException.Img!.AbsoluteUri);
+        var task = _captchaSolver?.SolveAsync(captchaNeededException.Img!.AbsoluteUri, redirectUri: captchaNeededException.RedirectUri.ToString());
         context.CaptchaKeyTemp =  task.HasValue ? await task.Value : null;
         context.RemainingSolveAttempts--;
         return context.CaptchaKeyTemp is not null;

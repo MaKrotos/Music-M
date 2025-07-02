@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media;
 using System;
@@ -8,7 +8,7 @@ using VK_UI3.Views.ModalsPages;
 using VkNet.Extensions.DependencyInjection;
 using VkNet.Model.Attachments;
 using System.Collections.Generic;
-
+using Microsoft.UI.Dispatching;
 
 namespace VK_UI3.VKs.Ext;
 
@@ -26,54 +26,50 @@ public class CaptchaSolverService : IAsyncCaptchaSolver
         _serviceProvider = serviceProvider;
     }
 
-    public async ValueTask<string?> SolveAsync(string url)
+    public async ValueTask<string?> SolveAsync(string url, string? redirectUri = null)
     {
-
         foreach (var item in contentDialogs)
         {
             if (item != null)
                 item.Hide();
-
         }
-
         contentDialogs.Clear();
-
 
         TaskCompletionSource<string?> Submitted = new();
         CaptchaEnter captchaEnter = new CaptchaEnter();
         captchaEnter.Submitted = Submitted;
-        captchaEnter.captchaUri = url;
+        captchaEnter.CaptchaUri = url;
+        captchaEnter.RedirectUri = redirectUri;
 
-        //.contentFrame.Navigate(typeof(CaptchaEnter), captchaEnter);
+        TaskCompletionSource<string?> dialogResult = new();
 
+        MainWindow.dispatcherQueue.TryEnqueue(async () =>
+        {
+            ContentDialog dialog = new CustomDialog();
+            dialog.Transitions = new TransitionCollection
+                            {
+                                new PopupThemeTransition()
+                            };
+            dialog.XamlRoot = MainWindow.contentFrame.XamlRoot;
 
-        ContentDialog dialog = new CustomDialog();
+            var a = new CaptchaEnter(captchaEnter);
+            a.ParentDialog = dialog;
+            dialog.Content = a;
+            dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+            contentDialogs.Add(dialog);
 
-        dialog.Transitions = new TransitionCollection
-                        {
-                            new PopupThemeTransition()
-                        };
+            await dialog.ShowAsync();
 
-        // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
-        dialog.XamlRoot = MainWindow.contentFrame.XamlRoot;
+            var enterede = await Submitted.Task;
 
+            dialog.Hide();
+            contentDialogs.Remove(dialog);
 
-        var a = new CaptchaEnter(captchaEnter);
-        dialog.Content = a;
-        dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
-        dialog.ShowAsync();
+            dialogResult.SetResult(enterede);
+        });
 
-        var enterede =  await Submitted.Task;
-
-
-        dialog.Hide();
-        contentDialogs.Remove(dialog);
-
-
-        contentDialogs.Add(dialog);
-
-
-        return new (enterede);
+        var result = await dialogResult.Task;
+        return result;
     }
 
     public ValueTask SolveFailedAsync()
