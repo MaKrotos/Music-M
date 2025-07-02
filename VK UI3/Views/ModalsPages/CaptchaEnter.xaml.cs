@@ -65,7 +65,6 @@ namespace VK_UI3.Views.ModalsPages
                 CaptchaWebView.WebMessageReceived += CaptchaWebView_WebMessageReceived;
                 CaptchaWebView.CoreWebView2.DOMContentLoaded += async (s, e) =>
                 {
-                    // Внедряем скрипт для отслеживания успешного прохождения Google reCAPTCHA
                     string script = @"
                         (function() {
                             // Перехват fetch для VK ID Captcha
