@@ -11,7 +11,6 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using MusicX.Services.Player;
 using MusicX.Services.Player.Sources;
-using StatSlyLib.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -723,8 +722,6 @@ namespace VK_UI3.Controllers
                 mediaPlayer.Position = (TimeSpan)position;
             }
             mediaPlayer.Play();
-
-            _ = KrotosVK.sendVKAudioPlayStat(trackdata, preTrack, secDurPre);
 
             iVKGetAudio.ChangePlayAudio(trackdata);
             
