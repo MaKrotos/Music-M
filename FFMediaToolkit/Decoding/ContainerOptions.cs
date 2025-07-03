@@ -71,9 +71,25 @@
         public bool SeekToAny { get; set; }
 
         /// <summary>
+        /// Enables or disables HTTP persistent connections (keep-alive). If null, не передаётся явно.
+        /// </summary>
+        public bool? HttpPersistent { get; set; }
+
+        /// <summary>
         /// Gets or sets the private demuxer-specific options.
         /// </summary>
         public Dictionary<string, string> PrivateOptions { get; set; } = new Dictionary<string, string>();
+
+        /// <summary>
+        /// Формирует итоговый словарь опций для передачи в FFmpeg, учитывая HttpPersistent.
+        /// </summary>
+        public Dictionary<string, string> GetFinalPrivateOptions()
+        {
+            var dict = new Dictionary<string, string>(PrivateOptions);
+            if (HttpPersistent.HasValue)
+                dict["http_persistent"] = HttpPersistent.Value ? "true" : "false";
+            return dict;
+        }
 
         /// <summary>
         /// Applies flag settings specified in this class to an instance of <see cref="AVFormatContext"/>.

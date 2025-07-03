@@ -239,19 +239,35 @@ public abstract class MediaSourceBase : ITrackMediaSource
         byte[]? ProcessSample()
         {
             AudioData frame;
+            int retryCount = 0;
+            const int maxRetries = 10;
             while (true)
             {
                 try
                 {
                     if (!file.Audio.TryGetNextFrame(out frame))
-                        return null;
+                        return null; // настоящий конец потока
 
                     position = file.Audio.Position;
-                    
                     break;
                 }
-                catch (FFmpegException)
+                catch (EndOfStreamException)
                 {
+                    // Конец потока
+                    return null;
+                }
+                catch (Exception ex)
+                {
+                    retryCount++;
+                    // Можно подключить логгер, если есть, например:
+                    // _logger?.Error(ex, $"Ошибка чтения аудиофрейма, попытка {retryCount}");
+                    if (retryCount >= maxRetries)
+                    {
+                        // После нескольких неудачных попыток — возвращаем null, чтобы не было бесконечного цикла
+                        return null;
+                    }
+                    // Краткая задержка перед повтором (можно убрать или уменьшить)
+                    Thread.Sleep(50);
                 }
             }
 

@@ -136,7 +136,7 @@
 
             var context = ffmpeg.avformat_alloc_context();
             options.DemuxerOptions.ApplyFlags(context);
-            var dict = new FFDictionary(options.DemuxerOptions.PrivateOptions, false).Pointer;
+            var dict = new FFDictionary(options.DemuxerOptions.GetFinalPrivateOptions(), false).Pointer;
 
             contextDelegate(context);
 
@@ -157,7 +157,7 @@
 
             var context = MakeContext(null, options, ctx =>
             {
-                int bufferLength = 4096;
+                int bufferLength = 65536;
                 var avioBuffer = (byte*)ffmpeg.av_malloc((ulong)bufferLength);
 
                 ctx->pb = ffmpeg.avio_alloc_context(avioBuffer, bufferLength, 0, null, read, null, seek);
