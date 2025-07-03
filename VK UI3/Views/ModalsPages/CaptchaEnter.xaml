@@ -1,49 +1,64 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <Page
-    x:Class="VK_UI3.Views.ModalsPages.CaptchaEnter"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="using:VK_UI3.Views.ModalsPages"
-	        Background="{ThemeResource AcrylicInAppFillColorBaseBrush}"
+	x:Class="VK_UI3.Views.ModalsPages.CaptchaEnter"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="using:VK_UI3.Views.ModalsPages"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	Background="{ThemeResource AcrylicInAppFillColorBaseBrush}"
+	Loaded="Page_Loaded"
+	mc:Ignorable="d">
 
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+	<Page.Resources>
+		<ThemeShadow x:Name="SharedShadow" />
+	</Page.Resources>
 
-    <Page.Resources>
-        <ThemeShadow x:Name="SharedShadow" />
-    </Page.Resources>
-
-    <Grid
-        Margin="0"
-        HorizontalAlignment="Center"
-        VerticalAlignment="Center"
-
-        CornerRadius="8"
-        Translation="0,0,100">
-  
+	<Grid
+		Margin="0"
+		HorizontalAlignment="Center"
+		VerticalAlignment="Center"
+		CornerRadius="8"
+		Translation="0,0,100">
 
 
 
-        <StackPanel
-            Margin="50"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Translation="0,0,0">
 
+		<StackPanel
+			Margin="50"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Center"
+			Translation="0,0,0">
 
+			<Image
+				x:Name="CaptchaImage"
+				Width="220"
+				Height="150"
+				Visibility="Collapsed" />
+			<TextBox
+				Name="CodeBox"
+				TextAlignment="Center"
+				Visibility="Collapsed" />
+			<Button
+				x:Name="ConfirmButton"
+				Margin="0,20,0,0"
+				HorizontalAlignment="Stretch"
+				Click="Button_Click"
+				Content="Подтвердить"
+				Visibility="Collapsed" />
 
-            <Image
-                Width="220"
-                Height="150"
-                Source="{x:Bind captchaUri}" />
-            <TextBox Name="CodeBox" TextAlignment="Center" />
-            <Button
-                Margin="0,20,0,0"
-                HorizontalAlignment="Stretch"
-                Click="Button_Click"
-                Content="Подтвердить" />
+			<WebView2
+				x:Name="CaptchaWebView"
+				Width="400"
+				Height="600"
+				Visibility="Collapsed" />
 
-        </StackPanel>
-    </Grid>
+			<Button
+				x:Name="CancelButton"
+				Margin="0,10,0,0"
+				HorizontalAlignment="Stretch"
+				Click="CancelButton_Click"
+				Content="Закрыть" />
+		</StackPanel>
+	</Grid>
 </Page>

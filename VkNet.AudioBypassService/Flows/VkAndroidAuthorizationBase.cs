@@ -106,9 +106,9 @@ internal abstract class VkAndroidAuthorizationBase : IAuthorizationFlow
         {
             var parameters = await BuildParameters(authParams);
             
-            parameters.Add("captcha_sid", sid);
-            parameters.Add("captcha_key", key);
-            
+            parameters.Add("success_token", key);
+
+
             await _rateLimiter.WaitNextAsync();
 
             var response = await _restClient.PostAsync(new Uri("https://api.vk.com/oauth/token"), parameters, Encoding.UTF8);

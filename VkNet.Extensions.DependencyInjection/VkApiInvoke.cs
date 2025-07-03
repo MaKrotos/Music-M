@@ -117,8 +117,7 @@ public class VkApiInvoke : IVkApiInvoke
         {
             if (sid is { } captchaSid)
             {
-                parameters.Add("captcha_sid", captchaSid.ToString());
-                parameters.Add("captcha_key", key);
+                parameters.Add("success_token", key);
             }
 
             await _rateLimiter.WaitNextAsync();

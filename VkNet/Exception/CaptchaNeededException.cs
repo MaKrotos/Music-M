@@ -22,6 +22,7 @@ namespace VkNet.Exception
 
 			Sid = response.CaptchaSid;
 			Img = response.CaptchaImg;
+			RedirectUri = response.RedirectUri;
 		}
 
 		/// <summary>
@@ -33,5 +34,6 @@ namespace VkNet.Exception
 		/// Uri-адрес изображения с капчей
 		/// </summary>
 		public Uri Img { get; }
-	}
+        public Uri RedirectUri { get; }
+    }
 }

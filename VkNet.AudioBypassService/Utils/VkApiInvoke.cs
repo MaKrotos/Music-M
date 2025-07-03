@@ -135,24 +135,29 @@ public class VkApiInvoke : IVkApiInvoke
         {
             if (sid is { } captchaSid)
             {
-
                 if (parameters.ContainsKey("captcha_sid"))
                 {
-                    parameters["captcha_sid"] = captchaSid.ToString();
+                    parameters["captcha_sid"] = sid.ToString();
+                    
                 }
                 else
                 {
-                    parameters.Add("captcha_sid", captchaSid.ToString());
+                    parameters.Add("captcha_sid", sid.ToString());
                 }
                 if (parameters.ContainsKey("captcha_key"))
                 {
-                    parameters["captcha_key"] = key;
+                    parameters.Remove("captcha_key");
+                }
+                if (parameters.ContainsKey("success_token"))
+                {
+                    parameters.Add("success_token", key);
                 }
                 else
                 {
-                    parameters.Add("captcha_key", key);
+                    parameters["success_token"] = key;
                 }
 
+                parameters["confirm"] = "1";
             }
 
             await _rateLimiter.WaitNextAsync();
