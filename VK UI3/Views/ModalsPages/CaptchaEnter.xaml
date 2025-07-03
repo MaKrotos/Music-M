@@ -50,7 +50,7 @@
 			<WebView2
 				x:Name="CaptchaWebView"
 				Width="400"
-				Height="400"
+				Height="600"
 				Visibility="Collapsed" />
 
 			<Button
