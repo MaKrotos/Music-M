@@ -17,6 +17,7 @@ using WinRT;
 namespace MusicX.Services.Player.Sources;
 
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 public class AudioEqualizer
