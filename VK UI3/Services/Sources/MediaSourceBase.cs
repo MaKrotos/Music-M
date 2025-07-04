@@ -43,7 +43,8 @@ public class AudioEqualizer
 
         public override string ToString()
         {
-            return $"f={Frequency}:t={WidthType}:w={Width}:g={Gain}";
+            return $"f={Frequency}:t={WidthType}:width={Width}:g={Gain}";
+            // Теперь используется `width` вместо `w`
         }
     }
 
@@ -97,17 +98,19 @@ public class AudioEqualizer
         if (!IsEnabled)
             return string.Empty;
 
-        List<string> filters = new List<string>();
+        List<string> activeFilters = new List<string>();
+
         foreach (var band in Bands)
         {
-            if (Math.Abs(band.Gain) > 0.01f)
+            if (Math.Abs(band.Gain) > 0.01f)  // Если усиление не нулевое
             {
-                filters.Add(band.ToString());
+                activeFilters.Add($"equalizer={band.ToString()}");
             }
         }
 
-        // Для нескольких полос: equalizer=...,equalizer=...
-        return filters.Count > 0 ? string.Join(",", filters.Select(f => $"equalizer={f}")) : string.Empty;
+        return activeFilters.Count > 0
+            ? string.Join(",", activeFilters)  // Объединяем фильтры через запятую
+            : string.Empty;
     }
 
     public void ApplyPreset(string presetName)
@@ -285,6 +288,36 @@ public abstract class MediaSourceBase : ITrackMediaSource
         return streamingSource;
     }
 
+    public static Task<FFmpegInteropX.FFmpegMediaSource> CreateWinRtMediaSource(Audio data, IReadOnlyDictionary<string, string>? customOptions = null, CancellationToken cancellationToken = default)
+    {
+        var options = new PropertySet();
+
+        foreach (var option in MediaOptions.DemuxerOptions.PrivateOptions)
+        {
+            options.Add(option.Key, option.Value);
+        }
+
+        
+
+        if (customOptions != null)
+            foreach (var (key, value) in customOptions)
+                options[key] = value;
+
+
+
+        return FFmpegInteropX.FFmpegMediaSource.CreateFromUriAsync(data.Url.ToString(), new()
+        {
+            FFmpegOptions = options,
+            General =
+            {
+                ReadAheadBufferEnabled = true,
+                SkipErrors = uint.MaxValue,
+                KeepMetadataOnMediaSourceClosed = false
+            }
+        }).AsTask(cancellationToken);
+
+
+    }
 
     protected static void RegisterSourceObjectReference(MediaPlayer player, IWinRTObject rtObject)
     {
