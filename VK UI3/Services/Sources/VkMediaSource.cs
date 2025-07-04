@@ -35,6 +35,7 @@ public class VkMediaSource : MediaSourceBase
                 FlagDiscardCorrupt = true,
                 FlagEnableFastSeek = true,
                 SeekToAny = true,
+                HttpPersistent = false,
                 PrivateOptions = new Dictionary<string, string>
                 {
                     ["http_persistent"] = "false",
