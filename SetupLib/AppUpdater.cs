@@ -95,9 +95,8 @@ namespace SetupLib
 
 
 
-        public async Task DownloadAndOpenFile(bool skip = false)
+        public async Task DownloadAndOpenFile(bool skip = false, bool forceInstall = false)
         {
-            bool isInstalled = IsAppInstalled("AppInstaller");
             if (!skip)
             {
                 // Проверяем, запущено ли приложение с правами администратора.
@@ -114,25 +113,25 @@ namespace SetupLib
                     await intsallCertAsync();
                 }
 
-
-
-                if (!isInstalled)
+                // Проверяем и устанавливаем необходимые зависимости
+                bool isAppInstallerInstalled = IsAppInstalled("AppInstaller");
+                if (!isAppInstallerInstalled)
                 {
                     await InstallAppInstallerAsync();
-                    if (!IsAppInstalled("WindowsAppRuntime.1.6"))
-                    {
-                        // Затем скачиваем AppRuntime
-                        await DownlloadAppRuntimeAsync();
-                    }
                 }
-                isInstalled = IsAppInstalled("AppInstaller");
+                
+                if (!IsAppInstalled("WindowsAppRuntime.1.6"))
+                {
+                    // Затем скачиваем AppRuntime
+                    await DownlloadAppRuntimeAsync();
+                }
             }
 
-            // Затем скачиваем обновление
-            await downloadUpdateAsync(isInstalled);
+            // Установка обновления
+            await downloadUpdateAsync(forceInstall);
         }
 
-        private async Task downloadUpdateAsync(bool isInstalled)
+        private async Task downloadUpdateAsync(bool forceInstall = false)
         {
             using (var response = await new HttpClient().GetAsync(UriDownloadMSIX))
             using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
@@ -167,34 +166,44 @@ namespace SetupLib
                     } while (isMoreToRead);
                 }
 
-                if (isInstalled)
+                string appName = "FDW.VKM";
+                string command;
+                
+                if (forceInstall)
                 {
-
-                    System.Diagnostics.Process process = new System.Diagnostics.Process();
-                    System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-                    startInfo.UseShellExecute = false;
-                    startInfo.CreateNoWindow = true;
-                    startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-                    startInfo.FileName = "powershell.exe";
-                    startInfo.Arguments = "-NoProfile -ExecutionPolicy unrestricted -Command &{" + path + "}";
-                    process.StartInfo = startInfo;
-                    process.Start();
-
+                    // Принудительная установка пакета через PowerShell Add-AppxPackage
+                    command = $"Add-AppxPackage -Path {path} -ForceUpdateFromAnyVersion; if ((Get-AppxPackage).Name -like '*{appName}*') {{ $pkg = (Get-AppxPackage -Name *{appName}*).PackageFamilyName; Start-Process \"explorer.exe\" -ArgumentList \"shell:AppsFolder\\$pkg!App\" }} else {{ Write-Output \"false\" }}";
                 }
                 else
                 {
-
-                    string appName = "FDW.VKM";
-                    string command = $"Add-AppxPackage -Path {path}; if ((Get-AppxPackage).Name -like '*{appName}*') {{ $pkg = (Get-AppxPackage -Name *{appName}*).PackageFamilyName; Start-Process \"explorer.exe\" -ArgumentList \"shell:AppsFolder\\$pkg!App\" }} else {{ Write-Output \"false\" }}";
-                    ProcessStartInfo startInfo = new ProcessStartInfo()
+                    // Проверяем, установлен ли AppInstaller для обычной установки
+                    bool isAppInstallerInstalled = IsAppInstalled("AppInstaller");
+                    
+                    if (isAppInstallerInstalled)
                     {
-                        FileName = "powershell.exe",
-                        Arguments = $"-Command \"{command}\"",
-                        RedirectStandardOutput = true,
-                        UseShellExecute = false,
-                        CreateNoWindow = true,
-                    };
-                    Process process = new Process() { StartInfo = startInfo };
+                        // Используем AppInstaller для установки
+                        command = $"& {path}";
+                    }
+                    else
+                    {
+                        // Используем Add-AppxPackage без принудительного обновления
+                        command = $"Add-AppxPackage -Path {path}; if ((Get-AppxPackage).Name -like '*{appName}*') {{ $pkg = (Get-AppxPackage -Name *{appName}*).PackageFamilyName; Start-Process \"explorer.exe\" -ArgumentList \"shell:AppsFolder\\$pkg!App\" }} else {{ Write-Output \"false\" }}";
+                    }
+                }
+                
+                ProcessStartInfo startInfo = new ProcessStartInfo();
+                Process process = new Process();
+                
+                if (forceInstall || !IsAppInstalled("AppInstaller"))
+                {
+                    // Для принудительной установки или когда AppInstaller не установлен
+                    startInfo.FileName = "powershell.exe";
+                    startInfo.Arguments = $"-Command \"{command}\"";
+                    startInfo.RedirectStandardOutput = true;
+                    startInfo.UseShellExecute = false;
+                    startInfo.CreateNoWindow = true;
+                    
+                    process.StartInfo = startInfo;
                     process.Start();
                     string output = process.StandardOutput.ReadToEnd();
                     process.WaitForExit();
@@ -203,8 +212,18 @@ namespace SetupLib
                     {
                         Console.WriteLine($"{appName} не найден");
                     }
-
-
+                }
+                else
+                {
+                    // Для обычной установки через AppInstaller
+                    startInfo.FileName = "powershell.exe";
+                    startInfo.Arguments = $"-NoProfile -ExecutionPolicy unrestricted -Command \"{command}\"";
+                    startInfo.UseShellExecute = false;
+                    startInfo.CreateNoWindow = true;
+                    startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                    
+                    process.StartInfo = startInfo;
+                    process.Start();
                 }
             }
         }
