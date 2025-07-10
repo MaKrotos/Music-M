@@ -166,7 +166,7 @@ namespace SetupLib
             using (var response = await httpClient.GetAsync(UriDownloadMSIX))
             using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
             {
-                var path = Path.Combine(Path.GetTempPath(), Path.GetFileName(UriDownloadMSIX));
+                var path = Path.Combine(Path.GetTempPath(), "update_" + Path.GetFileName(UriDownloadMSIX));
                 using (var streamToWriteTo = File.Create(path))
                 {
                     var totalRead = 0L;
@@ -266,10 +266,12 @@ namespace SetupLib
         private async Task DownlloadAppRuntimeAsync()
         {
             InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Скачивание WindowsAppRuntime..." });
+            var runtimeUri = GetOSArchitectureURI();
+            var runtimeInstallerPath = Path.Combine(Path.GetTempPath(), "runtime_" + Path.GetFileName(runtimeUri.ToString()));
             using (var httpClient = new HttpClient { Timeout = TimeSpan.FromMinutes(10) })
-            using (var response = await httpClient.GetAsync(GetOSArchitectureURI()))
+            using (var response = await httpClient.GetAsync(runtimeUri))
             using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
-            using (var streamToWriteTo = File.Create(Path.Combine(Path.GetTempPath(), Path.GetFileName(UriDownloadMSIX))))
+            using (var streamToWriteTo = File.Create(runtimeInstallerPath))
             {
                 var totalRead = 0L;
                 var buffer = new byte[8192];
@@ -294,7 +296,7 @@ namespace SetupLib
             }
 
             InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Установка WindowsAppRuntime..." });
-            string command = $"Add-AppxPackage -Path {Path.Combine(Path.GetTempPath(), Path.GetFileName(UriDownloadMSIX))}";
+            string command = $"Add-AppxPackage -Path \"{runtimeInstallerPath}\"";
             var startInfo = new ProcessStartInfo
             {
                 FileName = "powershell.exe",
@@ -320,7 +322,7 @@ namespace SetupLib
             using (var response = await httpClient.GetAsync(UriDownload, HttpCompletionOption.ResponseHeadersRead))
             using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
             {
-                var path = Path.Combine(Path.GetTempPath(), Path.GetFileName(UriDownload));
+                var path = Path.Combine(Path.GetTempPath(), "cert_" + Path.GetFileName(UriDownload));
                 using (var streamToWriteTo = File.Create(path))
                 {
                     await streamToReadFrom.CopyToAsync(streamToWriteTo);
@@ -452,7 +454,7 @@ namespace SetupLib
             using (var response = await httpClient.GetAsync(uri))
             using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
             {
-                var path = Path.Combine(Path.GetTempPath(), Path.GetFileName(uri));
+                var path = Path.Combine(Path.GetTempPath(), "appinstaller_" + Path.GetFileName(uri));
                 using (var streamToWriteTo = File.Create(path))
                 {
                     var totalRead = 0L;

@@ -378,7 +378,11 @@ namespace VK_UI3.Controllers
 
         private void MediaPlayer_MediaEnded(Windows.Media.Playback.MediaPlayer sender, object args)
         {
-            PlayNextTrack();
+
+            if (SettingsTable.GetSetting("playNext").settingValue.Equals("RepeatOne"))
+                PlayTrack();
+            else
+                PlayNextTrack();
         }
         private void PlaybackSession_PositionChanged(MediaPlaybackSession sender, object args)
         {
