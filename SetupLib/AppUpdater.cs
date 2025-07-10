@@ -29,6 +29,15 @@ namespace SetupLib
             public double Percentage { get; set; }
         }
 
+        // Новый делегат и событие для статуса установки
+        public delegate void InstallStatusChangedEventHandler(object sender, InstallStatusChangedEventArgs e);
+        public event InstallStatusChangedEventHandler InstallStatusChanged;
+
+        public class InstallStatusChangedEventArgs : EventArgs
+        {
+            public string Status { get; set; }
+        }
+
         public string version;
         public string Name { get; private set; }
         public string Tit { get; private set; }
@@ -39,27 +48,26 @@ namespace SetupLib
 
         public async Task<bool> CheckForUpdates()
         {
+            InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Проверка наличия обновлений..." });
             var releases = await client.Repository.Release.GetAll("MaKrotos", "Music-M");
 
             foreach (var release in releases)
             {
                 if (string.Compare(release.TagName, currentVersion) <= 0)
                 {
+                    InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = $"Установлена последняя версия: {release.TagName}" });
                     Console.WriteLine("Версия вашего приложения не ниже, чем последняя версия.");
                     return false;
                 }
 
                 string osArchitecture = GetOSArchitecture();
-
+                InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = $"Найдена новая версия: {release.TagName} ({osArchitecture})" });
 
                 var msixAsset = release.Assets.FirstOrDefault(asset => asset.Name.Contains(osArchitecture) && asset.Name.EndsWith(".msix"))
                                       ?? release.Assets.FirstOrDefault(asset => asset.Name.EndsWith(".msixbundle")) ?? null;
 
-
                 if (msixAsset != null)
                 {
-                    Console.WriteLine($"Доступна новая версия: {release.TagName}");
-
                     this.version = release.TagName;
                     this.Name = release.Name;
                     this.Tit = release.Body.ToString();
@@ -68,12 +76,13 @@ namespace SetupLib
 
                     if (cerAsset == null)
                     {
-                        // Если сертификат не найден, ищем его в более старых релизах
+                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Сертификат не найден в этом релизе, ищем в предыдущих..." });
                         foreach (var oldRelease in releases.Where(r => string.Compare(r.TagName, release.TagName) < 0))
                         {
                             cerAsset = oldRelease.Assets.FirstOrDefault(asset => asset.Name.EndsWith(".cer")) ?? null;
                             if (cerAsset != null)
                             {
+                                InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = $"Сертификат найден в релизе {oldRelease.TagName}" });
                                 break;
                             }
                         }
@@ -84,12 +93,17 @@ namespace SetupLib
                         this.sizeFile = msixAsset.Size;
                         this.UriDownload = cerAsset.BrowserDownloadUrl;
                         this.UriDownloadMSIX = msixAsset.BrowserDownloadUrl;
+                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Информация о релизе получена успешно." });
                         return true;
+                    }
+                    else
+                    {
+                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Сертификат не найден ни в одном релизе!" });
                     }
                 }
             }
 
-            Console.WriteLine("В папке релиза нет файла msixAsset.");
+            InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "В папке релиза нет файла msixAsset." });
             return false;
         }
 
@@ -97,43 +111,59 @@ namespace SetupLib
 
         public async Task DownloadAndOpenFile(bool skip = false, bool forceInstall = false)
         {
-            if (!skip)
+            try
             {
-                // Проверяем, запущено ли приложение с правами администратора.
-                bool isElevated;
-                using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
+                if (!skip)
                 {
-                    WindowsPrincipal principal = new WindowsPrincipal(identity);
-                    isElevated = principal.IsInRole(WindowsBuiltInRole.Administrator);
+                    InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Проверка прав администратора..." });
+                    bool isElevated;
+                    using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
+                    {
+                        WindowsPrincipal principal = new WindowsPrincipal(identity);
+                        isElevated = principal.IsInRole(WindowsBuiltInRole.Administrator);
+                    }
+
+                    if (isElevated)
+                    {
+                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Скачивание и установка сертификата..." });
+                        await intsallCertAsync();
+                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Сертификат установлен." });
+                    }
+
+                    InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Проверка наличия AppInstaller..." });
+                    bool isAppInstallerInstalled = IsAppInstalled("AppInstaller");
+                    if (!isAppInstallerInstalled)
+                    {
+                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Скачивание и установка AppInstaller..." });
+                        await InstallAppInstallerAsync();
+                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "AppInstaller установлен." });
+                    }
+                    
+                    InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Проверка наличия WindowsAppRuntime..." });
+                    if (!IsAppInstalled("WindowsAppRuntime.1.6"))
+                    {
+                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Скачивание и установка WindowsAppRuntime..." });
+                        await DownlloadAppRuntimeAsync();
+                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "WindowsAppRuntime установлен." });
+                    }
                 }
 
-                if (isElevated)
-                {
-                    // Сначала скачиваем и устанавливаем сертификат
-                    await intsallCertAsync();
-                }
-
-                // Проверяем и устанавливаем необходимые зависимости
-                bool isAppInstallerInstalled = IsAppInstalled("AppInstaller");
-                if (!isAppInstallerInstalled)
-                {
-                    await InstallAppInstallerAsync();
-                }
-                
-                if (!IsAppInstalled("WindowsAppRuntime.1.6"))
-                {
-                    // Затем скачиваем AppRuntime
-                    await DownlloadAppRuntimeAsync();
-                }
+                InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Скачивание и установка обновления..." });
+                await downloadUpdateAsync(forceInstall);
+                InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Обновление завершено!" });
             }
-
-            // Установка обновления
-            await downloadUpdateAsync(forceInstall);
+            catch (Exception ex)
+            {
+                InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = $"Ошибка: {ex.Message}" });
+                throw;
+            }
         }
 
         private async Task downloadUpdateAsync(bool forceInstall = false)
         {
-            using (var response = await new HttpClient().GetAsync(UriDownloadMSIX))
+            InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Скачивание файла обновления..." });
+            using (var httpClient = new HttpClient { Timeout = TimeSpan.FromMinutes(10) })
+            using (var response = await httpClient.GetAsync(UriDownloadMSIX))
             using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
             {
                 var path = Path.Combine(Path.GetTempPath(), Path.GetFileName(UriDownloadMSIX));
@@ -171,22 +201,21 @@ namespace SetupLib
                 
                 if (forceInstall)
                 {
-                    // Принудительная установка пакета через PowerShell Add-AppxPackage
+                    InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Принудительная установка пакета..." });
                     command = $"Add-AppxPackage -Path {path} -ForceUpdateFromAnyVersion; if ((Get-AppxPackage).Name -like '*{appName}*') {{ $pkg = (Get-AppxPackage -Name *{appName}*).PackageFamilyName; Start-Process \"explorer.exe\" -ArgumentList \"shell:AppsFolder\\$pkg!App\" }} else {{ Write-Output \"false\" }}";
                 }
                 else
                 {
-                    // Проверяем, установлен ли AppInstaller для обычной установки
                     bool isAppInstallerInstalled = IsAppInstalled("AppInstaller");
                     
                     if (isAppInstallerInstalled)
                     {
-                        // Используем AppInstaller для установки
+                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Запуск AppInstaller..." });
                         command = $"& {path}";
                     }
                     else
                     {
-                        // Используем Add-AppxPackage без принудительного обновления
+                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Установка пакета через PowerShell..." });
                         command = $"Add-AppxPackage -Path {path}; if ((Get-AppxPackage).Name -like '*{appName}*') {{ $pkg = (Get-AppxPackage -Name *{appName}*).PackageFamilyName; Start-Process \"explorer.exe\" -ArgumentList \"shell:AppsFolder\\$pkg!App\" }} else {{ Write-Output \"false\" }}";
                     }
                 }
@@ -196,7 +225,7 @@ namespace SetupLib
                 
                 if (forceInstall || !IsAppInstalled("AppInstaller"))
                 {
-                    // Для принудительной установки или когда AppInstaller не установлен
+                    InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Выполнение PowerShell-установки..." });
                     startInfo.FileName = "powershell.exe";
                     startInfo.Arguments = $"-Command \"{command}\"";
                     startInfo.RedirectStandardOutput = true;
@@ -208,14 +237,17 @@ namespace SetupLib
                     string output = process.StandardOutput.ReadToEnd();
                     process.WaitForExit();
 
+                    InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = $"Ответ PowerShell:\r\n{output}" });
+
                     if (output.Contains("false"))
                     {
+                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = $"Ошибка: {appName} не найден после установки!" });
                         Console.WriteLine($"{appName} не найден");
                     }
                 }
                 else
                 {
-                    // Для обычной установки через AppInstaller
+                    InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Запуск установки через AppInstaller..." });
                     startInfo.FileName = "powershell.exe";
                     startInfo.Arguments = $"-NoProfile -ExecutionPolicy unrestricted -Command \"{command}\"";
                     startInfo.UseShellExecute = false;
@@ -224,13 +256,18 @@ namespace SetupLib
                     
                     process.StartInfo = startInfo;
                     process.Start();
+                    string output = process.StandardOutput.ReadToEnd();
+                    process.WaitForExit();
+                    InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = $"Ответ PowerShell (AppInstaller):\r\n{output}" });
                 }
             }
         }
 
         private async Task DownlloadAppRuntimeAsync()
         {
-            using (var response = await new HttpClient().GetAsync(GetOSArchitectureURI()))
+            InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Скачивание WindowsAppRuntime..." });
+            using (var httpClient = new HttpClient { Timeout = TimeSpan.FromMinutes(10) })
+            using (var response = await httpClient.GetAsync(GetOSArchitectureURI()))
             using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
             using (var streamToWriteTo = File.Create(Path.Combine(Path.GetTempPath(), Path.GetFileName(UriDownloadMSIX))))
             {
@@ -256,6 +293,7 @@ namespace SetupLib
                 }
             }
 
+            InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Установка WindowsAppRuntime..." });
             string command = $"Add-AppxPackage -Path {Path.Combine(Path.GetTempPath(), Path.GetFileName(UriDownloadMSIX))}";
             var startInfo = new ProcessStartInfo
             {
@@ -270,12 +308,16 @@ namespace SetupLib
                 process.Start();
                 string output = process.StandardOutput.ReadToEnd();
                 process.WaitForExit();
+                InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = $"Ответ PowerShell (WindowsAppRuntime):\r\n{output}" });
             }
+            InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "WindowsAppRuntime установлен." });
         }
 
         private async Task intsallCertAsync()
         {
-            using (var response = await new HttpClient().GetAsync(UriDownload, HttpCompletionOption.ResponseHeadersRead))
+            InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Скачивание сертификата..." });
+            using (var httpClient = new HttpClient { Timeout = TimeSpan.FromMinutes(10) })
+            using (var response = await httpClient.GetAsync(UriDownload, HttpCompletionOption.ResponseHeadersRead))
             using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
             {
                 var path = Path.Combine(Path.GetTempPath(), Path.GetFileName(UriDownload));
@@ -284,20 +326,22 @@ namespace SetupLib
                     await streamToReadFrom.CopyToAsync(streamToWriteTo);
                 }
 
-                // Установка сертификата
+                InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Установка сертификата..." });
                 X509Certificate2 cert = new X509Certificate2(path);
                 X509Store store = new X509Store(StoreName.TrustedPeople, StoreLocation.LocalMachine);
                 store.Open(OpenFlags.ReadWrite);
-                // Проверка на существование сертификата и его срок действия
                 bool certificateExists = store.Certificates.Find(X509FindType.FindByThumbprint, cert.Thumbprint, false).Count > 0;
                 if (!certificateExists || cert.NotAfter <= DateTime.Now)
                 {
                     store.Add(cert);
+                    InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Сертификат добавлен в хранилище." });
                 }
-
+                else
+                {
+                    InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Сертификат уже существует и действителен." });
+                }
                 store.Close();
             }
-
         }
 
 
@@ -402,8 +446,10 @@ namespace SetupLib
 
         public async Task InstallAppInstallerAsync()
         {
+            InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Скачивание AppInstaller..." });
             var uri = "https://github.com/microsoft/winget-cli/releases/download/v1.7.10661/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle";
-            using (var response = await new HttpClient().GetAsync(uri))
+            using (var httpClient = new HttpClient { Timeout = TimeSpan.FromMinutes(10) })
+            using (var response = await httpClient.GetAsync(uri))
             using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
             {
                 var path = Path.Combine(Path.GetTempPath(), Path.GetFileName(uri));
@@ -436,8 +482,7 @@ namespace SetupLib
                     } while (isMoreToRead);
                 }
 
-
-
+                InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Установка AppInstaller..." });
                 string command = $"Add-AppxPackage -Path {path};";
                 ProcessStartInfo startInfo = new ProcessStartInfo()
                 {
@@ -451,10 +496,9 @@ namespace SetupLib
                 process.Start();
                 string output = process.StandardOutput.ReadToEnd();
                 process.WaitForExit();
-
+                InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = $"Ответ PowerShell (AppInstaller):\r\n{output}" });
             }
-
-
+            InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "AppInstaller установлен." });
         }
 
 

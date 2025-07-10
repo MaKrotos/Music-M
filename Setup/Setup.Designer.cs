@@ -11,7 +11,7 @@
         ///  Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override async void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
             {
@@ -48,6 +48,8 @@
             label10 = new Label();
             checkBox1 = new CheckBox();
             label11 = new Label();
+            logTextBox = new TextBox();
+            button2 = new Button();
             SuspendLayout();
             // 
             // progressBar1
@@ -121,7 +123,7 @@
             label1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label1.Location = new Point(18, 16);
             label1.Name = "label1";
-            label1.Size = new Size(374, 149);
+            label1.Size = new Size(374, 272);
             label1.TabIndex = 5;
             label1.Text = resources.GetString("label1.Text");
             label1.Click += label1_Click;
@@ -165,7 +167,7 @@
             label9.FlatStyle = FlatStyle.System;
             label9.Location = new Point(18, 113);
             label9.Name = "label9";
-            label9.Size = new Size(374, 118);
+            label9.Size = new Size(374, 241);
             label9.TabIndex = 13;
             // 
             // label10
@@ -194,18 +196,40 @@
             label11.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label11.AutoEllipsis = true;
             label11.FlatStyle = FlatStyle.System;
-            label11.Location = new Point(12, 552);
+            label11.Location = new Point(12, 545);
             label11.MaximumSize = new Size(374, 176);
             label11.Name = "label11";
-            label11.Size = new Size(374, 50);
+            label11.Size = new Size(374, 47);
             label11.TabIndex = 16;
             label11.Text = " (Активируйте, если у Вас отключены некоторые компоненты и службы Windows, или просто не устаанавливается по причине невозможности установить пакеты зависимостей.)";
+            // 
+            // logTextBox
+            // 
+            logTextBox.Location = new Point(12, 602);
+            logTextBox.Multiline = true;
+            logTextBox.Name = "logTextBox";
+            logTextBox.ReadOnly = true;
+            logTextBox.ScrollBars = ScrollBars.Vertical;
+            logTextBox.Size = new Size(380, 123);
+            logTextBox.TabIndex = 17;
+            // 
+            // button2
+            // 
+            button2.Location = new Point(237, 519);
+            button2.Name = "button2";
+            button2.Size = new Size(155, 27);
+            button2.TabIndex = 18;
+            button2.Text = "Тех поддержка";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
             // 
             // Setup
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(404, 611);
+            ClientSize = new Size(404, 734);
+            Controls.Add(button2);
+            Controls.Add(logTextBox);
             Controls.Add(label11);
             Controls.Add(checkBox1);
             Controls.Add(label10);
@@ -244,5 +268,7 @@
         protected internal Label label10;
         private CheckBox checkBox1;
         protected internal Label label11;
+        private System.Windows.Forms.TextBox logTextBox;
+        private Button button2;
     }
 }
