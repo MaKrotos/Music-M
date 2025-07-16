@@ -161,7 +161,6 @@
 		<Frame
 			Grid.Row="1"
 			VerticalAlignment="Bottom"
-			BorderBrush="{ThemeResource SystemControlAltHighAcrylicElementBrush}"
 			BorderThickness="0,1,0,0">
 			<custom:AudioPlayer Margin="0,0,0,0" />
 		</Frame>

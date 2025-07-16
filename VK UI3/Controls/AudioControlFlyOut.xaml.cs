@@ -661,29 +661,33 @@ namespace VK_UI3.Controls
 
                     GoArtist.Items.Add(menuItem);
                 }
-                if (dataTrack.audio.FeaturedArtists.Count() != 0)
-                {
-                    GoArtist.Items.Add(new MenuFlyoutSeparator());
-                }
-                foreach (var artist in dataTrack.audio.FeaturedArtists)
-                {
-                    var menuItem = new MenuFlyoutItem
-                    {
-                        Text = artist.Name,
-                        Icon = new SymbolIcon(Symbol.ContactInfo),
-                        Command = new RelayCommand(_ =>
-                        {
-                            try
-                            {
-                                MainView.OpenSection(artist.Id, SectionType.Artist);
-                            }
-                            catch (Exception ex)
-                            {
-                            }
-                        })
-                    };
 
-                    GoArtist.Items.Add(menuItem);
+                if (dataTrack.audio.FeaturedArtists != null)
+                {
+                    if (dataTrack.audio.FeaturedArtists.Count() != 0)
+                    {
+                        GoArtist.Items.Add(new MenuFlyoutSeparator());
+                    }
+                    foreach (var artist in dataTrack.audio.FeaturedArtists)
+                    {
+                        var menuItem = new MenuFlyoutItem
+                        {
+                            Text = artist.Name,
+                            Icon = new SymbolIcon(Symbol.ContactInfo),
+                            Command = new RelayCommand(_ =>
+                            {
+                                try
+                                {
+                                    MainView.OpenSection(artist.Id, SectionType.Artist);
+                                }
+                                catch (Exception ex)
+                                {
+                                }
+                            })
+                        };
+
+                        GoArtist.Items.Add(menuItem);
+                    }
                 }
 
 

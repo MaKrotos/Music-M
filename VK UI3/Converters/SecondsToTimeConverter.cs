@@ -11,17 +11,21 @@ namespace VK_UI3.Converters
 
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            if (value is double seconds)
-            {
-                TimeSpan time = TimeSpan.FromSeconds(seconds);
+            double totalMilliseconds = 0;
+            if (value is long l)
+                totalMilliseconds = l;
+            else if (value is int i)
+                totalMilliseconds = i;
+            else if (value is double d)
+                totalMilliseconds = d;
+            else
+                return "00:00";
+
+            var time = TimeSpan.FromMilliseconds(totalMilliseconds);
+            if (time.TotalHours >= 1)
+                return time.ToString(@"hh\:mm\:ss");
+            else
                 return time.ToString(@"mm\:ss");
-            }
-            if (value is int secondsS)
-            {
-                TimeSpan time = TimeSpan.FromSeconds(secondsS);
-                return time.ToString(@"mm\:ss");
-            }
-            return "00:00";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
@@ -29,22 +33,26 @@ namespace VK_UI3.Converters
             if (value is string timeString)
             {
                 string[] parts = timeString.Split(':');
-                if (parts.Length == 2)
+                int hours = 0, minutes = 0, seconds = 0;
+                if (parts.Length == 3)
                 {
-                    try
-                    {
-                        int minutes = Int32.Parse(parts[0]);
-                        int seconds = Int32.Parse(parts[1]);
-                        return minutes * 60 + seconds;
-                    }
-                    catch (FormatException)
-                    {
-                        // Обработка исключений, связанных с форматом
-                    }
+                    hours = int.Parse(parts[0]);
+                    minutes = int.Parse(parts[1]);
+                    seconds = int.Parse(parts[2]);
                 }
+                else if (parts.Length == 2)
+                {
+                    minutes = int.Parse(parts[0]);
+                    seconds = int.Parse(parts[1]);
+                }
+                else
+                {
+                    throw new ArgumentException("Invalid time format");
+                }
+                var ts = new TimeSpan(hours, minutes, seconds);
+                return (long)ts.TotalMilliseconds;
             }
             throw new ArgumentException("Invalid time format");
         }
-
     }
 }

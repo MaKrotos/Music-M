@@ -81,74 +81,43 @@ namespace VK_UI3.Controllers
 
 
 
-        private int _trackPosition;
+        private long _trackPositionMs;
+        public long TrackPositionMs
+        {
+            get { return _trackPositionMs; }
+            set
+            {
+                if (_trackPositionMs != value)
+                {
+                    _trackPositionMs = value;
+                    OnPropertyChanged(nameof(TrackPositionMs));
+                    UpdateRedFillPercent();
+                }
+            }
+        }
+
+        private long _trackDurationMs;
+        public long TrackDurationMs
+        {
+            get { return _trackDurationMs; }
+            set
+            {
+                if (_trackDurationMs != value)
+                {
+                    _trackDurationMs = value;
+                    OnPropertyChanged(nameof(TrackDurationMs));
+                    UpdateRedFillPercent();
+                }
+            }
+        }
+
+        // Оставляем старые свойства для совместимости с UI, если нужно
         public int TrackPosition
         {
-            get { return _trackPosition; }
-            set
-            {
-                if (_trackPosition != value)
-                {
-                    _trackPosition = value;
-                    OnPropertyChanged(nameof(TrackPosition));
-                }
-            }
+            get { return (int)(_trackPositionMs / 1000); }
+            set { TrackPositionMs = value * 1000; }
         }
-
-
-
-        private int _trackPosition2;
-
-        private static AudioEqualizer _equalizer = null;
-
-        public static AudioEqualizer Equalizer { get { return _equalizer; }
-            set
-            {
-                _equalizer = value;
-                PlayTrack(position: mediaPlayer.Position);
-            }
-        }
-
-
-        public static WeakEventManager TrackDataThisChanged = new WeakEventManager();
-
-
-
-        private static ExtendedAudio _trackDataThis;
-
-
-        public static async Task<ExtendedAudio> _TrackDataThisGet(bool prinud = false)
-        {
-            if (iVKGetAudio != null)
-                if (iVKGetAudio.countTracks != 0)
-                {
-                    return await iVKGetAudio.GetTrackPlay(prinud);
-                }
-            return _trackDataThis;
-        }
-
-
-        public ExtendedAudio TrackDataThis
-        {
-            get { return _TrackDataThisGet().Result; }
-        }
-
-
-
-
-        private int _trackDuration = 0;
-        public int TrackDuration
-        {
-            get { return _trackDuration; }
-            set
-            {
-                if (_trackDuration != value)
-                {
-                    _trackDuration = value;
-                    OnPropertyChanged(nameof(TrackDuration));
-                }
-            }
-        }
+        
 
 
         public string Thumbnail
@@ -171,6 +140,21 @@ namespace VK_UI3.Controllers
 
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private double _redFillPercent = 0; 
+        public double RedFillPercent
+        {
+            get => _redFillPercent;
+            set
+            {
+                if (_redFillPercent != value)
+                {
+                    _redFillPercent = value;
+                    AnimateRedRectangle();
+                    OnPropertyChanged(nameof(RedFillPercent));
+                }
+            }
+        }
 
 
         protected void OnPropertyChanged(string propertyName)
@@ -198,6 +182,10 @@ namespace VK_UI3.Controllers
         public AudioPlayer()
         {
             this.InitializeComponent();
+            this.SizeChanged += RootGrid_SizeChanged;
+            if (RootGrid != null)
+                RootGrid.SizeChanged += RootGrid_SizeChanged;
+            AnimateRedRectangle();
 
 
             changeIconPlayBTN = new AnimationsChangeFontIcon(this.PlayBTN, this.DispatcherQueue);
@@ -225,7 +213,7 @@ namespace VK_UI3.Controllers
             mediaPlayer.SystemMediaTransportControls.DisplayUpdater.Type = MediaPlaybackType.Music;
 
 
-            TrackDuration = 0;
+            TrackDurationMs = 0;
             TrackPosition = 0;
 
             TrackDataThisChanged.AddHandler(AudioPlayer_PropertyChanged);
@@ -388,15 +376,20 @@ namespace VK_UI3.Controllers
         {
             if (!isManualChange)
             {
-                TrackPosition = Convert.ToInt32(sender.Position.TotalSeconds);
-
+                TrackPositionMs = (long)sender.Position.TotalMilliseconds;
+                SliderPositionMs = TrackPositionMs;
+            }
+            else
+            {
+                TrackPositionMs = (long)sender.Position.TotalMilliseconds;
+                // SliderPositionMs не трогаем, пользователь двигает слайдер
             }
         }
 
         private void MediaPlayer_MediaOpened(Windows.Media.Playback.MediaPlayer sender, object args)
         {
             // Код для выполнения при открытии медиафайла
-            TrackDuration = (int)TrackDataThis.audio.Duration;
+            TrackDurationMs = (long)(TrackDataThis.audio.Duration * 1000);
         }
         private void MediaPlayer_MediaFailed(Windows.Media.Playback.MediaPlayer sender, Windows.Media.Playback.MediaPlayerFailedEventArgs args)
         {
@@ -450,10 +443,9 @@ namespace VK_UI3.Controllers
 
             var source = sender.Source as Windows.Media.Playback.MediaPlaybackItem;
 
-            TrackDuration = (int)TrackDataThis.audio.Duration;
+            TrackDurationMs = (long)(TrackDataThis.audio.Duration * 1000);
 
 
-            OnPropertyChanged(nameof(TrackDuration));
             OnPropertyChanged(nameof(TrackPosition));
             OnPropertyChanged(nameof(TrackDataThis));
 
@@ -499,7 +491,8 @@ namespace VK_UI3.Controllers
         {
             if (isManualChange)
             {
-                mediaPlayer.PlaybackSession.Position = TimeSpan.FromSeconds(e.NewValue);
+                SliderPositionMs = (long)e.NewValue;
+                mediaPlayer.PlaybackSession.Position = TimeSpan.FromMilliseconds(e.NewValue);
             }
         }
         bool isManualChange = false;
@@ -524,6 +517,8 @@ namespace VK_UI3.Controllers
         private void VolumeSlider_PointerExited(object sender, PointerRoutedEventArgs e)
         {
             isManualChange = false;
+            // После выхода синхронизируем слайдер с текущей позицией
+            SliderPositionMs = TrackPositionMs;
         }
 
 
@@ -983,6 +978,107 @@ namespace VK_UI3.Controllers
         private void OpenEqalizer_Tapped(object sender, TappedRoutedEventArgs e)
         {
 
+        }
+        // --- Исправление: добавляю обработчик изменения размера ---
+        private void RootGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            AnimateRedRectangle();
+            this.DispatcherQueue.TryEnqueue(() =>
+            {
+                sliderTrackGridUP.Width = RootGrid.ActualWidth;
+            });
+        }
+
+        // --- Исправление: проверяю, что AnimateRedRectangle объявлен ---
+        private void AnimateRedRectangle()
+        {
+            if (RootGrid == null || RedRectangle == null) return;
+            this.DispatcherQueue.TryEnqueue(() =>
+            {
+                double toWidth = RootGrid.ActualWidth * RedFillPercent;
+                var animation = new DoubleAnimation
+                {
+                    To = toWidth,
+                    Duration = new Duration(TimeSpan.FromMilliseconds(40)),
+                    EnableDependentAnimation = true,
+                    
+                };
+                Storyboard.SetTarget(animation, RedRectangle);
+                Storyboard.SetTargetProperty(animation, "Width");
+                var sb = new Storyboard();
+                sb.Children.Add(animation);
+                sb.Begin();
+                RedRectangle.Width = toWidth;
+            });
+        }
+
+        private void UpdateRedFillPercent()
+        {
+            if (TrackDurationMs > 0)
+                SetRedFillPercent((double)TrackPositionMs / TrackDurationMs);
+            else
+                SetRedFillPercent(0);
+        }
+
+        private void SetRedFillPercent(double percent)
+        {
+            if (percent < 0) percent = 0;
+            if (percent > 1) percent = 1;
+            RedFillPercent = percent;
+        }
+
+        private static AudioEqualizer _equalizer = null;
+        public static AudioEqualizer Equalizer
+        {
+            get { return _equalizer; }
+            set
+            {
+                _equalizer = value;
+                PlayTrack(position: mediaPlayer.Position);
+            }
+        }
+
+        public static WeakEventManager TrackDataThisChanged = new WeakEventManager();
+
+        private static ExtendedAudio _trackDataThis;
+        public static async Task<ExtendedAudio> _TrackDataThisGet(bool prinud = false)
+        {
+            if (iVKGetAudio != null)
+                if (iVKGetAudio.countTracks != 0)
+                {
+                    return await iVKGetAudio.GetTrackPlay(prinud);
+                }
+            return _trackDataThis;
+        }
+        public ExtendedAudio TrackDataThis
+        {
+            get { return _TrackDataThisGet().Result; }
+        }
+
+        private long _sliderPositionMs;
+        public long SliderPositionMs
+        {
+            get => _sliderPositionMs;
+            set
+            {
+                if (_sliderPositionMs != value)
+                {
+                    _sliderPositionMs = value;
+                    OnPropertyChanged(nameof(SliderPositionMs));
+                }
+            }
+        }
+
+        private void Page_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            var storyboard = (Storyboard)this.Resources["SliderTrackMoveUp"];
+            storyboard.Begin();
+        }
+
+        private void Page_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            var storyboard = (Storyboard)this.Resources["SliderTrackMoveDown"];
+            storyboard.Begin();
         }
     }
 }

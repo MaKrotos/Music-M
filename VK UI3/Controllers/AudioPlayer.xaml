@@ -10,26 +10,113 @@
 	xmlns:local1="using:VK_UI3.Converters"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	x:Name="pageRa"
+	Clip="{x:Null}"
 	IsEnabled="True"
+	PointerEntered="Page_PointerEntered"
+	PointerExited="Page_PointerExited"
 	mc:Ignorable="d">
 
 	<Page.Resources>
 		<ThemeShadow x:Name="SharedShadow" />
 		<local1:SecondsToTimeConverter x:Key="SecondsToTimeConverter" />
+		<local1:LongToDoubleConverter x:Key="LongToDoubleConverter" />
+		<Storyboard x:Key="SliderTrackMoveUp">
+			<DoubleAnimation
+				Storyboard.TargetName="sliderTrackGridUP"
+				Storyboard.TargetProperty="(Canvas.Top)"
+				To="-55"
+				Duration="0:0:0.3" />
+		</Storyboard>
+		<Storyboard x:Key="SliderTrackMoveDown">
+			<DoubleAnimation
+				Storyboard.TargetName="sliderTrackGridUP"
+				Storyboard.TargetProperty="(Canvas.Top)"
+				To="0"
+				Duration="0:0:0.3" />
+		</Storyboard>
 	</Page.Resources>
 
-	<Grid Padding="4">
-
+	<Grid
+		x:Name="RootGrid"
+		Padding="0"
+		Clip="{x:Null}">
+		<!--  FlyOutControl как скрытый элемент для доступа из кода  -->
 		<Grid.ContextFlyout>
 			<constrols:AudioControlFlyOut x:Name="FlyOutControl" />
 		</Grid.ContextFlyout>
 
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*" />
-		</Grid.ColumnDefinitions>
+		<Canvas
+			x:Name="MyCanvas"
+			Height="50"
+			VerticalAlignment="Top">
+			<Grid
+				x:Name="sliderTrackGridUP"
+				Canvas.Left="0"
+				Canvas.Top="-0"
+				Width="{Binding ActualWidth, ElementName=RootGrid, Mode=OneWay}"
+				Padding="10"
+				HorizontalAlignment="Stretch"
+				VerticalAlignment="Stretch"
+				Background="Transparent">
+
+				<Grid
+					x:Name="SliderTrack"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Stretch"
+					Background="{ThemeResource AcrylicInAppFillColorBaseBrush}"
+					CornerRadius="8">
+					<Grid.ColumnDefinitions>
+
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+
+					<TextBlock
+						x:Name="textBlock"
+						Grid.Column="0"
+						Margin="16,4,0,4"
+						VerticalAlignment="Center"
+						Text="{x:Bind TrackPositionMs, Mode=OneWay, Converter={StaticResource SecondsToTimeConverter}}" />
+
+					<Slider
+						x:Name="VolumeSlider"
+						Grid.Row="0"
+						Grid.Column="1"
+						Height="30"
+						Margin="8,4,8,4"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Center"
+						Clip="{x:Null}"
+						Maximum="{x:Bind TrackDurationMs, Mode=TwoWay, Converter={StaticResource LongToDoubleConverter}}"
+						Minimum="0"
+						PointerEntered="VolumeSlider_PointerEntered"
+						PointerExited="VolumeSlider_PointerExited"
+						StepFrequency="1"
+						ThumbToolTipValueConverter="{StaticResource SecondsToTimeConverter}"
+						ValueChanged="VolumeSlider_ValueChanged"
+						Value="{x:Bind SliderPositionMs, Mode=TwoWay, Converter={StaticResource LongToDoubleConverter}}" />
+					<TextBlock
+						Grid.Column="2"
+						Margin="0,4,16,4"
+						VerticalAlignment="Center"
+						Text="{x:Bind TrackDurationMs, Mode=OneWay, Converter={StaticResource SecondsToTimeConverter}}" />
 
 
-
+				</Grid>
+			</Grid>
+		</Canvas>
+		<Grid
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Stretch"
+			Background="{ThemeResource CustomAlternativeAcrylicInAppBrush}" />
+		<Rectangle
+			x:Name="RedRectangle"
+			Width="100"
+			Height="Auto"
+			HorizontalAlignment="Left"
+			Fill="{ThemeResource AccentAAFillColorDisabledBrush}" />
+		<!--  Основной контент  -->
 		<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto" />
@@ -42,9 +129,9 @@
 
 			<StackPanel
 				Grid.Column="2"
-				Padding="0,0,0,-4"
+				Padding="0,0,0,0"
 				HorizontalAlignment="Stretch"
-				VerticalAlignment="Stretch">
+				VerticalAlignment="Center">
 				<StackPanel
 					Grid.Column="1"
 					Margin="0,0,0,0"
@@ -53,7 +140,6 @@
 					VerticalAlignment="Stretch"
 					CornerRadius="8"
 					Orientation="Horizontal">
-
 
 					<Button
 						x:Name="openLirycBTN"
@@ -229,43 +315,6 @@
 						<FontIcon Glyph="&#xE712;" />
 					</Button>
 				</StackPanel>
-				<Grid
-					Grid.Row="0"
-					Grid.Column="1"
-					MinWidth="5"
-					Margin="0,-6,8,-3"
-					HorizontalAlignment="Stretch"
-					VerticalAlignment="Stretch">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="Auto" />
-					</Grid.ColumnDefinitions>
-
-					<TextBlock
-						x:Name="textBlock"
-						Grid.Column="0"
-						VerticalAlignment="Center"
-						Text="{x:Bind TrackPosition, Mode=OneWay, Converter={StaticResource SecondsToTimeConverter}}" />
-					<Slider
-						x:Name="VolumeSlider"
-						Grid.Column="1"
-						Margin="8,0,8,0"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Center"
-						Maximum="{x:Bind TrackDuration, Mode=TwoWay}"
-						Minimum="0"
-						PointerEntered="VolumeSlider_PointerEntered"
-						PointerExited="VolumeSlider_PointerExited"
-						StepFrequency="1"
-						ThumbToolTipValueConverter="{StaticResource SecondsToTimeConverter}"
-						ValueChanged="VolumeSlider_ValueChanged"
-						Value="{x:Bind TrackPosition, Mode=TwoWay}" />
-					<TextBlock
-						Grid.Column="2"
-						VerticalAlignment="Center"
-						Text="{x:Bind TrackDuration, Mode=OneWay, Converter={StaticResource SecondsToTimeConverter}}" />
-				</Grid>
 			</StackPanel>
 
 
@@ -273,8 +322,8 @@
 				Grid.Column="0"
 				Width="60"
 				Height="60"
-				Margin="0,0,8,0"
-				Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}"
+				Margin="6,6,6,6"
+				Background="{ThemeResource AccentAcrylicInAppFillColorBaseBrush}"
 				CornerRadius="8"
 				Tapped="Grid_Tapped"
 				Translation="0,0,8">
@@ -283,9 +332,9 @@
 			</Grid>
 			<Grid
 				Grid.Column="1"
-				Width="125"
+				Width="250"
 				MaxHeight="75"
-				Margin="0,0,8,0"
+				Margin="0,6,8,6"
 				Tapped="Grid_Tapped">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="*" />
@@ -309,6 +358,8 @@
 
 
 		</Grid>
+
+
 
 
 	</Grid>
