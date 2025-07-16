@@ -323,7 +323,7 @@
 				Width="60"
 				Height="60"
 				Margin="6,6,6,6"
-				Background="{ThemeResource AccentAcrylicInAppFillColorBaseBrush}"
+				Background="{ThemeResource CardBackgroundFillColorDefault}"
 				CornerRadius="8"
 				Tapped="Grid_Tapped"
 				Translation="0,0,8">
