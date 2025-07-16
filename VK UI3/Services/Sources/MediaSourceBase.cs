@@ -294,14 +294,16 @@ public abstract class MediaSourceBase : ITrackMediaSource
 
         foreach (var option in MediaOptions.DemuxerOptions.PrivateOptions)
         {
-            options.Add(option.Key, option.Value);
+            if (option.Key != null && option.Value != null)
+                options.Add(option.Key, option.Value);
         }
 
         
 
         if (customOptions != null)
             foreach (var (key, value) in customOptions)
-                options[key] = value;
+                if (key != null && value != null)
+                    options[key] = value;
 
 
 
