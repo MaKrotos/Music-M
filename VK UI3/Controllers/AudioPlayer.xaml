@@ -261,7 +261,7 @@
 			</Grid>
 			<Grid
 				Grid.Column="1"
-				Width="250"
+				Width="150"
 				MaxHeight="75"
 				Margin="0,6,8,6"
 				Tapped="Grid_Tapped">
@@ -269,20 +269,43 @@
 					<RowDefinition Height="*" />
 					<RowDefinition Height="*" />
 				</Grid.RowDefinitions>
-				<TextBlock
-					x:Name="TitleTextBlock"
+				<StackPanel
+					x:Name="TitleClipGrid"
 					Grid.Row="0"
 					VerticalAlignment="Bottom"
-					Opacity="1"
-					TextTrimming="CharacterEllipsis"
-					TextWrapping="Wrap" />
-				<TextBlock
-					x:Name="ArtistTextBlock"
+					Orientation="Horizontal"
+					SizeChanged="TitleClipGrid_SizeChanged">
+					<TextBlock
+						x:Name="TitleTextBlock"
+						MinWidth="0"
+						VerticalAlignment="Center"
+						Loaded="TitleTextBlock_Loaded"
+						Opacity="1"
+						TextTrimming="None"
+						TextWrapping="NoWrap">
+						<TextBlock.RenderTransform>
+							<TranslateTransform x:Name="TitleTranslate" />
+						</TextBlock.RenderTransform>
+					</TextBlock>
+				</StackPanel>
+				<StackPanel
+					x:Name="ArtistClipGrid"
 					Grid.Row="1"
 					VerticalAlignment="Top"
-					Opacity="0.6"
-					TextTrimming="CharacterEllipsis"
-					TextWrapping="Wrap" />
+					Orientation="Horizontal"
+					SizeChanged="ArtistClipGrid_SizeChanged">
+					<TextBlock
+						x:Name="ArtistTextBlock"
+						MinWidth="0"
+						Loaded="ArtistTextBlock_Loaded"
+						Opacity="0.6"
+						TextTrimming="None"
+						TextWrapping="NoWrap">
+						<TextBlock.RenderTransform>
+							<TranslateTransform x:Name="ArtistTranslate" />
+						</TextBlock.RenderTransform>
+					</TextBlock>
+				</StackPanel>
 			</Grid>
 
 			<StackPanel Grid.Column="3" Orientation="Horizontal">

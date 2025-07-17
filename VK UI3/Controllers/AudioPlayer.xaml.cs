@@ -35,6 +35,7 @@ using Windows.Media.Playback;
 using Windows.Storage.Streams;
 using WinRT;
 using VK_UI3.Views.ModalsPages;
+using Windows.Foundation;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -1069,16 +1070,126 @@ namespace VK_UI3.Controllers
             }
         }
 
-        private void Page_PointerEntered(object sender, PointerRoutedEventArgs e)
+        // === Поля для marquee ===
+        private bool isPointerOver = false;
+        private bool isTitleAnimating = false;
+        private bool isArtistAnimating = false;
+        private double titleMarqueeOffset = 0;
+        private double artistMarqueeOffset = 0;
+
+        // === TitleTextBlock Loaded ===
+        private void TitleTextBlock_Loaded(object sender, RoutedEventArgs e)
         {
+            TitleTranslate.X = 0;
+        }
+
+        // === ArtistTextBlock Loaded ===
+        private void ArtistTextBlock_Loaded(object sender, RoutedEventArgs e)
+        {
+            ArtistTranslate.X = 0;
+        }
+
+        private async void Page_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            isPointerOver = true;
             var storyboard = (Storyboard)this.Resources["SliderTrackMoveUp"];
             storyboard.Begin();
+            _ = StartTitleMarqueeIfNeeded();
+            _ = StartArtistMarqueeIfNeeded();
         }
 
         private void Page_PointerExited(object sender, PointerRoutedEventArgs e)
         {
+            isPointerOver = false;
             var storyboard = (Storyboard)this.Resources["SliderTrackMoveDown"];
             storyboard.Begin();
+            ReverseTitleMarquee();
+            ReverseArtistMarquee();
+        }
+
+        private void TitleClipGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            TitleClipGrid.Clip = new RectangleGeometry
+            {
+                Rect = new Rect(0, 0, TitleClipGrid.ActualWidth, TitleClipGrid.ActualHeight)
+            };
+        }
+        private void ArtistClipGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ArtistClipGrid.Clip = new RectangleGeometry
+            {
+                Rect = new Rect(0, 0, ArtistClipGrid.ActualWidth, ArtistClipGrid.ActualHeight)
+            };
+        }
+
+        private async Task AnimateTranslate(TranslateTransform transform, double to, double durationSeconds)
+        {
+            var storyboard = new Storyboard();
+            var animation = new DoubleAnimation
+            {
+                To = to,
+                Duration = TimeSpan.FromSeconds(durationSeconds),
+                EnableDependentAnimation = true,
+                EasingFunction = new SineEase { EasingMode = EasingMode.EaseInOut }
+            };
+            Storyboard.SetTarget(animation, transform);
+            Storyboard.SetTargetProperty(animation, "X");
+            storyboard.Children.Add(animation);
+            storyboard.Begin();
+            await Task.Delay((int)(durationSeconds * 1000));
+        }
+
+        private FrameworkElement GetTitleOuterGrid() => (FrameworkElement)TitleClipGrid.Parent;
+        private FrameworkElement GetArtistOuterGrid() => (FrameworkElement)ArtistClipGrid.Parent;
+
+        private async Task StartTitleMarqueeIfNeeded()
+        {
+            if (isTitleAnimating) return;
+            isTitleAnimating = true;
+            await Task.Delay(100); // Ждём отрисовки
+            double containerWidth = GetTitleOuterGrid().ActualWidth; // внешний Grid
+            double textWidth = TitleTextBlock.ActualWidth; // TextBlock
+            if (textWidth > containerWidth && isPointerOver)
+            {
+                titleMarqueeOffset = containerWidth - textWidth - 15;
+                while (isPointerOver)
+                {
+                    await AnimateTranslate(TitleTranslate, titleMarqueeOffset, 3);
+                    await AnimateTranslate(TitleTranslate, 0, 1);
+                    await Task.Delay(2000);
+                }
+            }
+            isTitleAnimating = false;
+        }
+
+        private void ReverseTitleMarquee()
+        {
+            _ = AnimateTranslate(TitleTranslate, 0, 1);
+        }
+
+        private async Task StartArtistMarqueeIfNeeded()
+        {
+            if (isArtistAnimating) return;
+            isArtistAnimating = true;
+            await Task.Delay(100);
+            double containerWidth = GetArtistOuterGrid().ActualWidth; // внешний Grid
+            double textWidth = ArtistTextBlock.ActualWidth; // TextBlock
+            if (textWidth > containerWidth && isPointerOver)
+            {
+                artistMarqueeOffset = containerWidth - textWidth - 15;
+                while (isPointerOver)
+                {
+                    await AnimateTranslate(ArtistTranslate, artistMarqueeOffset, 3);
+                    await AnimateTranslate(ArtistTranslate, 0, 1);
+                    await Task.Delay(2000);
+                }
+            }
+            isArtistAnimating = false;
+        }
+
+        private void ReverseArtistMarquee()
+        {
+            _ = AnimateTranslate(ArtistTranslate, 0, 1);
         }
     }
 }
