@@ -69,7 +69,8 @@
 				Padding="10"
 				HorizontalAlignment="Stretch"
 				VerticalAlignment="Stretch"
-				Background="Transparent">
+				Background="Transparent"
+				Opacity="0">
 
 				<Grid
 					x:Name="SliderTrack"
