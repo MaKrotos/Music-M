@@ -1,5 +1,6 @@
 ﻿using FFMediaToolkit.Audio;
 using FFMediaToolkit.Decoding;
+using MusicX.Shared.Player;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TagLib.Mpeg;
+using VK_UI3;
 using VkNet.Model.Attachments;
 using Windows.Media;
 using Windows.Media.Playback;
@@ -45,9 +47,36 @@ public class VkMediaSource : MediaSourceBase
 
             await rtMediaSource.OpenWithMediaPlayerAsync(player).AsTask(cancellationToken);
 
+            var playbackItem = player.Source as MediaPlaybackItem;
+
+                        MediaItemDisplayProperties props = playbackItem.GetDisplayProperties();
+            props.Type = Windows.Media.MediaPlaybackType.Music;
+            props.MusicProperties.Title = track.Title;
+            props.MusicProperties.AlbumArtist = track.Artist;
+
+
+            if (track.Album != null && track.Album.Thumb != null)
+            {
+                RandomAccessStreamReference imageStreamRef = RandomAccessStreamReference.CreateFromUri(new Uri(
+                    track.Album.Thumb.Photo600 ??
+                    track.Album.Thumb.Photo270 ??
+                    track.Album.Thumb.Photo300
+                    ));
+
+                props.Thumbnail = imageStreamRef;
+                playbackItem.ApplyDisplayProperties(props);
+
+                props.Thumbnail = imageStreamRef;
+
+            }
+            else
+                props.Thumbnail = null;
+            playbackItem.ApplyDisplayProperties(props);
+
+
             RegisterSourceObjectReference(player, rtMediaSource);
 
-            if (!string.IsNullOrEmpty(eq))
+            if (!string.IsNullOrEmpty(eq) || equalizer == null)
             {
                 rtMediaSource.SetFFmpegAudioFilters(eq, rtMediaSource.AudioStreams.First());
             }
@@ -109,6 +138,32 @@ public class VkMediaSource : MediaSourceBase
 
                 return CreateMediaPlaybackItem(file);
             }, cancellationToken);
+
+            MediaItemDisplayProperties props = playbackItem.GetDisplayProperties();
+            props.Type = Windows.Media.MediaPlaybackType.Music;
+            props.MusicProperties.Title = track.Title;
+            props.MusicProperties.AlbumArtist = track.Artist;
+
+
+            if (track.Album != null && track.Album.Thumb != null)
+            {
+                RandomAccessStreamReference imageStreamRef = RandomAccessStreamReference.CreateFromUri(new Uri(
+                    track.Album.Thumb.Photo600 ??
+                    track.Album.Thumb.Photo270 ??
+                    track.Album.Thumb.Photo300
+                    ));
+
+                props.Thumbnail = imageStreamRef;
+                playbackItem.ApplyDisplayProperties(props);
+
+                props.Thumbnail = imageStreamRef;
+
+            }
+            else
+                props.Thumbnail = null;
+            playbackItem.ApplyDisplayProperties(props);
+
+
 
             player.Source = playbackItem;
         }

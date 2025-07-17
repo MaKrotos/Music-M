@@ -443,12 +443,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <AppxManifest Include="Views\ModalsPages\vkid_captcha.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </AppxManifest>
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
