@@ -26,11 +26,21 @@
 				Storyboard.TargetProperty="(Canvas.Top)"
 				To="-55"
 				Duration="0:0:0.3" />
+			<DoubleAnimation
+				Storyboard.TargetName="sliderTrackGridUP"
+				Storyboard.TargetProperty="Opacity"
+				To="1"
+				Duration="0:0:0.3" />
 		</Storyboard>
 		<Storyboard x:Key="SliderTrackMoveDown">
 			<DoubleAnimation
 				Storyboard.TargetName="sliderTrackGridUP"
 				Storyboard.TargetProperty="(Canvas.Top)"
+				To="0"
+				Duration="0:0:0.3" />
+			<DoubleAnimation
+				Storyboard.TargetName="sliderTrackGridUP"
+				Storyboard.TargetProperty="Opacity"
 				To="0"
 				Duration="0:0:0.3" />
 		</Storyboard>
@@ -119,10 +129,10 @@
 		<!--  Основной контент  -->
 		<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="75" />
+				<ColumnDefinition Width="150" />
 				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="225" />
 			</Grid.ColumnDefinitions>
 
 
@@ -142,82 +152,21 @@
 					Orientation="Horizontal">
 
 					<Button
-						x:Name="openLirycBTN"
-						Grid.Column="0"
-						Width="25"
-						Height="25"
-						Margin="8,0,0,0"
-						Padding="0"
-						Background="Transparent"
-						Tapped="openLirycBTN_Tapped">
-						<TextBlock>T</TextBlock>
-						<ToolTipService.ToolTip>
-							<ToolTip Content="Открыть текст песни" />
-						</ToolTipService.ToolTip>
-
-					</Button>
-
-					<Button
-						x:Name="OpenEqalizer"
-						Grid.Column="0"
-						Width="25"
-						Height="25"
-						Margin="8,0,0,0"
-						Padding="0"
-						Background="Transparent"
-						Tapped="OpenEqalizer_Tapped">
-						<FontIcon Glyph="&#xE9E9;" />
-						<ToolTipService.ToolTip>
-							<ToolTip Content="Эквалайзер" />
-						</ToolTipService.ToolTip>
-						<Button.Flyout>
-							<Flyout>
-								<Flyout.FlyoutPresenterStyle>
-									<Style TargetType="FlyoutPresenter">
-										<Setter Property="MaxWidth" Value="4000" />
-										<!--  Максимальная ширина  -->
-										<Setter Property="MaxHeight" Value="6000" />
-										<!--  Максимальная высота  -->
-										<Setter Property="CornerRadius" Value="8" />
-										<!--  Опционально: можно также задать Padding, чтобы контент не прилипал к краям  -->
-										<Setter Property="Padding" Value="0" />
-									</Style>
-								</Flyout.FlyoutPresenterStyle>
-								<controls:EqualizerControlPage />
-							</Flyout>
-						</Button.Flyout>
-					</Button>
-
-					<Button
-						Grid.Column="0"
-						Width="30"
-						Height="30"
-						Margin="8,0,8,0"
-						Padding="0"
-						Background="Transparent"
-						Tapped="goToPlayList_BTN">
-						<SymbolIcon Symbol="List" />
-						<ToolTipService.ToolTip>
-							<ToolTip Content="Посмотреть текущий список воспроизведения" />
-						</ToolTipService.ToolTip>
-					</Button>
-
-					<Button
-						x:Name="TranslatetoStatus"
+						x:Name="repeatBTN"
+						Grid.Column="4"
 						Width="35"
 						Height="35"
 						Margin="0,0,8,0"
-						Padding="-2,-2,0,0"
+						Padding="0"
 						Background="Transparent"
-						Tapped="TranslatetoStatus_Tapped">
+						Tapped="repeatBTN_Tapped">
 						<FontIcon
-							x:Name="StatusBTNIcon"
-							FontSize="12"
-							Glyph="" />
-						<ToolTipService.ToolTip>
-							<ToolTip Content="Транслировать в статус ВК" />
-						</ToolTipService.ToolTip>
+							x:Name="repeatBTNIcon"
+							FontSize="14"
+							Glyph="" />
 					</Button>
+
+
 					<Button
 						x:Name="PreviousBTN"
 						Grid.Column="0"
@@ -258,20 +207,7 @@
 
 
 
-					<Button
-						x:Name="repeatBTN"
-						Grid.Column="4"
-						Width="35"
-						Height="35"
-						Margin="0,0,8,0"
-						Padding="0"
-						Background="Transparent"
-						Tapped="repeatBTN_Tapped">
-						<FontIcon
-							x:Name="repeatBTNIcon"
-							FontSize="14"
-							Glyph="" />
-					</Button>
+
 
 					<Button
 						Grid.Column="4"
@@ -303,17 +239,7 @@
 
 					</Button>
 
-					<Button
-						x:Name="trackDoingBTN"
-						Grid.Column="4"
-						Width="25"
-						Height="25"
-						Margin="8,0,8,0"
-						Padding="0"
-						Background="Transparent"
-						Tapped="trackDoingBTN_Tapped">
-						<FontIcon Glyph="&#xE712;" />
-					</Button>
+
 				</StackPanel>
 			</StackPanel>
 
@@ -355,6 +281,97 @@
 					TextTrimming="CharacterEllipsis"
 					TextWrapping="Wrap" />
 			</Grid>
+
+			<StackPanel Grid.Column="3" Orientation="Horizontal">
+				<Button
+					x:Name="openLirycBTN"
+					Grid.Column="0"
+					Width="30"
+					Height="30"
+					Margin="8,0,0,0"
+					Padding="0"
+					Background="Transparent"
+					Tapped="openLirycBTN_Tapped">
+					<TextBlock>T</TextBlock>
+					<ToolTipService.ToolTip>
+						<ToolTip Content="Открыть текст песни" />
+					</ToolTipService.ToolTip>
+
+				</Button>
+
+				<Button
+					x:Name="OpenEqalizer"
+					Grid.Column="0"
+					Width="30"
+					Height="30"
+					Margin="8,0,0,0"
+					Padding="0"
+					Background="Transparent"
+					Tapped="OpenEqalizer_Tapped">
+					<FontIcon Glyph="&#xE9E9;" />
+					<ToolTipService.ToolTip>
+						<ToolTip Content="Эквалайзер" />
+					</ToolTipService.ToolTip>
+					<Button.Flyout>
+						<Flyout>
+							<Flyout.FlyoutPresenterStyle>
+								<Style TargetType="FlyoutPresenter">
+									<Setter Property="MaxWidth" Value="4000" />
+									<!--  Максимальная ширина  -->
+									<Setter Property="MaxHeight" Value="6000" />
+									<!--  Максимальная высота  -->
+									<Setter Property="CornerRadius" Value="8" />
+									<!--  Опционально: можно также задать Padding, чтобы контент не прилипал к краям  -->
+									<Setter Property="Padding" Value="0" />
+								</Style>
+							</Flyout.FlyoutPresenterStyle>
+							<controls:EqualizerControlPage />
+						</Flyout>
+					</Button.Flyout>
+				</Button>
+
+				<Button
+					Grid.Column="0"
+					Width="30"
+					Height="30"
+					Margin="8,0,8,0"
+					Padding="0"
+					Background="Transparent"
+					Tapped="goToPlayList_BTN">
+					<SymbolIcon Symbol="List" />
+					<ToolTipService.ToolTip>
+						<ToolTip Content="Посмотреть текущий список воспроизведения" />
+					</ToolTipService.ToolTip>
+				</Button>
+
+				<Button
+					x:Name="TranslatetoStatus"
+					Width="30"
+					Height="30"
+					Margin="0,0,8,0"
+					Padding="-2,-2,0,0"
+					Background="Transparent"
+					Tapped="TranslatetoStatus_Tapped">
+					<FontIcon
+						x:Name="StatusBTNIcon"
+						FontSize="12"
+						Glyph="" />
+					<ToolTipService.ToolTip>
+						<ToolTip Content="Транслировать в статус ВК" />
+					</ToolTipService.ToolTip>
+				</Button>
+				<Button
+					x:Name="trackDoingBTN"
+					Grid.Column="4"
+					Width="30"
+					Height="30"
+					Margin="0,0,0,0"
+					Padding="0"
+					Background="Transparent"
+					Tapped="trackDoingBTN_Tapped">
+					<FontIcon Glyph="&#xE712;" />
+				</Button>
+			</StackPanel>
 
 
 		</Grid>
