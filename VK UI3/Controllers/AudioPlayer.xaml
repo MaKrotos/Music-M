@@ -27,10 +27,11 @@
 				To="-55"
 				Duration="0:0:0.3" />
 			<DoubleAnimation
+				BeginTime="0:0:0.2"
 				Storyboard.TargetName="sliderTrackGridUP"
 				Storyboard.TargetProperty="Opacity"
 				To="1"
-				Duration="0:0:0.3" />
+				Duration="0:0:0.1" />
 		</Storyboard>
 		<Storyboard x:Key="SliderTrackMoveDown">
 			<DoubleAnimation
@@ -39,10 +40,11 @@
 				To="0"
 				Duration="0:0:0.3" />
 			<DoubleAnimation
+				BeginTime="0:0:0.0"
 				Storyboard.TargetName="sliderTrackGridUP"
 				Storyboard.TargetProperty="Opacity"
 				To="0"
-				Duration="0:0:0.3" />
+				Duration="0:0:0.1" />
 		</Storyboard>
 	</Page.Resources>
 
@@ -119,7 +121,7 @@
 		<Grid
 			HorizontalAlignment="Stretch"
 			VerticalAlignment="Stretch"
-			Background="{ThemeResource CustomAlternativeAcrylicInAppBrush}" />
+			Background="Transparent" />
 		<Rectangle
 			x:Name="RedRectangle"
 			Width="100"
