@@ -230,9 +230,8 @@ namespace VK_UI3.Controls
             SecondsToTimeConverter converter = new SecondsToTimeConverter();
 
             // Преобразование секунд в строку времени
-            object timeString = converter.Convert(dataTrack.audio.Duration, null, null, null);
-            Console.WriteLine(timeString);
-            Time.Text = (string)timeString;
+            string timeString = SecondsToTimeString(dataTrack.audio.Duration);
+            Time.Text = timeString;
 
             try
             {
@@ -253,6 +252,15 @@ namespace VK_UI3.Controls
         }
 
 
+        public static string SecondsToTimeString(double totalSeconds)
+        {
+            var time = TimeSpan.FromSeconds(totalSeconds);
+
+            if (time.TotalHours >= 1)
+                return time.ToString(@"hh\:mm\:ss");
+            else
+                return time.ToString(@"mm\:ss");
+        }
 
         protected void OnPropertyChanged(string propertyName)
         {
