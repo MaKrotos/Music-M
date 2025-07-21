@@ -343,16 +343,6 @@ namespace VK_UI3.Controllers
 
         private void PlaybackSession_BufferedRangesChanged(MediaPlaybackSession sender, object args)
         {
-            if (TrackDataThis == null) return;
-            var a = (int)Math.Round(sender.NaturalDuration.TotalSeconds);
-            var b = TrackDataThis.audio.Duration;
-
-            if (Math.Abs(a - b) > 5)
-            {
-                PlayTrack();
-            }
-
-            //  throw new NotImplementedException();
         }
 
         private void AudioPlayer_PropertyChanged(object sender, EventArgs e)
@@ -848,21 +838,18 @@ namespace VK_UI3.Controllers
                 {
                     case "RepeatOne":
                         SettingsTable.SetSetting("playNext", "RepeatAll");
-
-                        break;
-
-                    case "Shuffle":
-                        SettingsTable.SetSetting("playNext", "RepeatOne");
-
                         break;
 
                     case "RepeatAll":
                         SettingsTable.SetSetting("playNext", "Shuffle");
-
                         break;
 
+                    case "Shuffle":
+                        SettingsTable.SetSetting("playNext", "RepeatOne");
+                        break;
 
                     default:
+                        SettingsTable.SetSetting("playNext", "RepeatOne");
                         break;
                 }
                 setButtonPlayNext();

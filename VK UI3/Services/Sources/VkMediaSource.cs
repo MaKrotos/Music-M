@@ -96,28 +96,14 @@ public class VkMediaSource : MediaSourceBase
 
             var mediaOptions = new MediaOptions
             {
-                StreamsToLoad = MediaMode.Audio,
-                AudioSampleFormat = SampleFormat.SignedWord,
-                DemuxerOptions =
-            {
-                FlagDiscardCorrupt = true,
-                FlagEnableFastSeek = true,
-                SeekToAny = true,
-                PrivateOptions = new Dictionary<string, string>
-                {
-                    ["http_persistent"] = "false",
-                    ["reconnect"] = "1",
-                    ["reconnect_streamed"] = "1",
-                    ["reconnect_on_network_error"] = "1",
-                    ["reconnect_delay_max"] = "30",
-                    ["reconnect_on_http_error"] = "4xx,5xx",
-                    ["stimeout"] = "30000000",
-                    ["timeout"] = "30000000",
-                    ["rw_timeout"] = "30000000"
-                }
-            }
+                StreamsToLoad = MediaOptions.StreamsToLoad,
+                AudioSampleFormat = MediaOptions.AudioSampleFormat,
             };
 
+            mediaOptions.DemuxerOptions.FlagDiscardCorrupt = MediaOptions.DemuxerOptions.FlagDiscardCorrupt;
+            mediaOptions.DemuxerOptions.FlagEnableFastSeek = MediaOptions.DemuxerOptions.FlagEnableFastSeek;
+            mediaOptions.DemuxerOptions.SeekToAny = MediaOptions.DemuxerOptions.SeekToAny;
+            mediaOptions.DemuxerOptions.PrivateOptions = new Dictionary<string, string>(MediaOptions.DemuxerOptions.PrivateOptions);
 
 
             // Добавляем эквалайзер, если он передан

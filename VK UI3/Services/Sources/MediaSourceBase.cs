@@ -129,7 +129,7 @@ public abstract class MediaSourceBase : ITrackMediaSource
         AudioSampleFormat = SampleFormat.SignedWord,
         DemuxerOptions =
         {
-            FlagDiscardCorrupt = true,
+            FlagDiscardCorrupt = false,
             FlagEnableFastSeek = true,
             SeekToAny = true,
             PrivateOptions =
@@ -142,7 +142,8 @@ public abstract class MediaSourceBase : ITrackMediaSource
                 ["reconnect_on_http_error"] = "4xx,5xx",
                 ["stimeout"] = "30000000",
                 ["timeout"] = "30000000",
-                ["rw_timeout"] = "30000000"
+                ["rw_timeout"] = "30000000",
+                ["avioflags"] = "direct"
             }
         }
     };
@@ -298,6 +299,8 @@ public abstract class MediaSourceBase : ITrackMediaSource
                 options.Add(option.Key, option.Value);
         }
 
+        if(!MediaOptions.DemuxerOptions.FlagDiscardCorrupt)
+            options.Add("err_detect", "ignore_err");
         
 
         if (customOptions != null)
