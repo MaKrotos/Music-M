@@ -48,6 +48,15 @@ Music M - По сути своей адаптация VK X и Music X, пере�
 ![image](https://github.com/user-attachments/assets/e98cbf79-a4a6-434c-b382-089c9abe7ffd)
 ![image](https://github.com/user-attachments/assets/b859710a-fc2c-4ac0-865f-90d2cbe36816)
 
+## Star History
+
+<a href="https://www.star-history.com/#MaKrotos/Music-M&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=MaKrotos/Music-M&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=MaKrotos/Music-M&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=MaKrotos/Music-M&type=Date" />
+ </picture>
+</a>
 
 ## Благодарочка
 Отдельная благодарность [Fooxboy/MusicX-WPF](https://github.com/Fooxboy/MusicX-WPF)https://github.com/Fooxboy/MusicX-WPF
