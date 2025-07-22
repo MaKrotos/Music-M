@@ -27,85 +27,122 @@ namespace VK_UI3.Views.Notification
 
         private void UserControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
-            if (DataContext is not Notification notification)
-                return;
-            
-
-            HeaderB.Text = notification.header;
-            TextB.Text = notification.Message;
-
-            if (string.IsNullOrEmpty(notification.header))
+            try
             {
-                HeaderB.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                HeaderB.Visibility = Visibility.Visible;
-            }
+                if (DataContext is not Notification notification)
+                    return;
 
-            if (string.IsNullOrEmpty(notification.Message))
-            {
-                TextB.Visibility = Visibility.Collapsed;
-            }
-            {
-                TextB.Visibility = Visibility.Visible;
-            }
 
-            BTNsGrid.Children.Clear();
-            BTNsGrid.ColumnDefinitions.Clear();
-            if (notification.button1 != null)
-            {
-                var btn = new Button();
-                btn.Content = notification.button1.Text;
-                if (notification.button1.BtnAction != null)
-                btn.Click += (sender, e) => notification.button1.BtnAction();
-                btn.HorizontalAlignment = HorizontalAlignment.Stretch;
-                BTNsGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
-                Grid.SetColumn(btn, 0);
-                BTNsGrid.Children.Add(btn);
+                HeaderB.Text = notification.header;
+                TextB.Text = notification.Message;
 
-                if (notification.button1.closeNotification)
+                if (notification.ContentPage != null)
                 {
-                    btn.Click += (sender, e) => notification.Delete();
+                    if (PageContent.Content != null && PageContent.Content != notification.ContentPage)
+                    {
+                        PageContent.Content = null;
+                    }
+                    PageContent.Content = notification.ContentPage;
+                    PageContent.Visibility = Visibility.Visible;
+                    TextB.Visibility = Visibility.Collapsed;
+                    HeaderB.Visibility = Visibility.Collapsed;
                 }
-            }
+                else
+                {
+                    PageContent.Content = null;
+                    PageContent.Visibility = Visibility.Collapsed;
+                    if (string.IsNullOrEmpty(notification.header))
+                    {
+                        HeaderB.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        HeaderB.Visibility = Visibility.Visible;
+                    }
 
-            if (notification.button2 != null)
-            {
-                var btn = new Button();
-                btn.Content = notification.button2.Text;
-                if (notification.button1.BtnAction != null)
-                btn.Click += (sender, e) => notification.button2.BtnAction();
-                btn.HorizontalAlignment = HorizontalAlignment.Stretch;
-                BTNsGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
-                btn.Click += (sender, e) => notification.Delete();
-                Grid.SetColumn(btn, 1);
-                BTNsGrid.Children.Add(btn);
-            }
-            /*
+                    if (string.IsNullOrEmpty(notification.Message))
+                    {
+                        TextB.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        TextB.Visibility = Visibility.Visible;
+                    }
+                }
 
-            if (notification.button1 != null)
-            {
-                BTNsGrid.add
 
-                txtBTN1.Text = notification.button1.Text;
-                BTN1.Visibility = Visibility.Visible;
-            }
-            else
-            { 
-                BTN1.Visibility = Visibility.Collapsed;
-            }
 
-            if (notification.button2 != null)
-            {
-                txtBTN2.Text = notification.button2.Text;
-                BTN2.Visibility = Visibility.Visible;
+                BTNsGrid.Children.Clear();
+                BTNsGrid.ColumnDefinitions.Clear();
+                if (notification.button1 != null)
+                {
+                    var btn = new Button();
+                    btn.Content = notification.button1.Text;
+                    if (notification.button1.BtnAction != null)
+                        btn.Click += (sender, e) => notification.button1.BtnAction();
+                    btn.HorizontalAlignment = HorizontalAlignment.Stretch;
+                    BTNsGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+                    Grid.SetColumn(btn, 0);
+                    BTNsGrid.Children.Add(btn);
+
+                    if (notification.button1.closeNotification)
+                    {
+                        btn.Click += (sender, e) => notification.Delete();
+                    }
+                }
+
+                if (notification.button2 != null)
+                {
+                    var btn = new Button();
+                    btn.Content = notification.button2.Text;
+                    if (notification.button1.BtnAction != null)
+                        btn.Click += (sender, e) => notification.button2.BtnAction();
+                    btn.HorizontalAlignment = HorizontalAlignment.Stretch;
+                    BTNsGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+                    btn.Click += (sender, e) => notification.Delete();
+                    Grid.SetColumn(btn, 1);
+                    BTNsGrid.Children.Add(btn);
+                }
+                /*
+
+                if (notification.button1 != null)
+                {
+                    BTNsGrid.add
+
+                    txtBTN1.Text = notification.button1.Text;
+                    BTN1.Visibility = Visibility.Visible;
+                }
+                else
+                { 
+                    BTN1.Visibility = Visibility.Collapsed;
+                }
+
+                if (notification.button2 != null)
+                {
+                    txtBTN2.Text = notification.button2.Text;
+                    BTN2.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    BTN2.Visibility = Visibility.Collapsed;
+                }
+                */
+
+                UpdateRowHeights();
             }
-            else
+            catch (Exception ex) { }
+        }
+
+        private void UpdateRowHeights()
+        {
+            // 0: HeaderB, 1: TextB, 2: PageContent, 3: BTNsGrid
+            if (MainGrid.RowDefinitions.Count >= 4)
             {
-                BTN2.Visibility = Visibility.Collapsed;
+                MainGrid.RowDefinitions[0].Height = HeaderB.Visibility == Visibility.Visible ? GridLength.Auto : new GridLength(0);
+                MainGrid.RowDefinitions[1].Height = TextB.Visibility == Visibility.Visible ? GridLength.Auto : new GridLength(0);
+                MainGrid.RowDefinitions[2].Height = PageContent.Visibility == Visibility.Visible ? GridLength.Auto : new GridLength(0);
+                MainGrid.RowDefinitions[3].Height = BTNsGrid.Visibility == Visibility.Visible ? GridLength.Auto : new GridLength(0);
             }
-            */
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

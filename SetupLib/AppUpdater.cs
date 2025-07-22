@@ -253,6 +253,7 @@ namespace SetupLib
                     startInfo.UseShellExecute = false;
                     startInfo.CreateNoWindow = true;
                     startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                    startInfo.RedirectStandardOutput = true;
                     
                     process.StartInfo = startInfo;
                     process.Start();

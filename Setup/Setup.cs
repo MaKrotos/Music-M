@@ -104,7 +104,7 @@ namespace Setup
 
                 appUpdater.DownloadProgressChanged += AppUpdater_DownloadProgressChanged;
 
-                await appUpdater.DownloadAndOpenFile();
+                await appUpdater.DownloadAndOpenFile(forceInstall: checkBox1.Checked);
 
                 //Close();
             }
@@ -112,11 +112,6 @@ namespace Setup
             {
                 MessageBox.Show("Ошибка при установке: " + ex.Message);
             }
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void button2_Click(object sender, EventArgs e)

@@ -17,8 +17,20 @@ namespace VK_UI3.Views.Notification
         public ButtonNotification button1;
         public ButtonNotification button2;
 
+        public object ContentPage { get; set; } // Может быть Page или UserControl
+
         public Notification(string header = null, string message = null, ButtonNotification button1 = null, ButtonNotification button2 = null)
         {
+            this.header = header;
+            Message = message;
+            this.button1 = button1;
+            this.button2 = button2;
+            Notifications.Add(this);
+        }
+
+        public Notification(object contentPage, string header = null, string message = null, ButtonNotification button1 = null, ButtonNotification button2 = null)
+        {
+            this.ContentPage = contentPage;
             this.header = header;
             Message = message;
             this.button1 = button1;

@@ -20,6 +20,7 @@ using VK_UI3.DB;
 using VK_UI3.DownloadTrack;
 using VK_UI3.Views;
 using VK_UI3.Views.LoginWindow;
+using VK_UI3.Views.Notification;
 using VK_UI3.Views.Upload;
 using VK_UI3.VKs;
 using Windows.ApplicationModel;
@@ -643,7 +644,8 @@ namespace VK_UI3
             {
                 dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
                 {
-                    ContentFrame.Navigate(typeof(UpdatePage), appUpdater, new DrillInNavigationTransitionInfo());
+                    new Notification(new UpdatePage(appUpdater));
+                    //ContentFrame.Navigate(typeof(UpdatePage), appUpdater, new DrillInNavigationTransitionInfo());
                 });
                 return true;
             }

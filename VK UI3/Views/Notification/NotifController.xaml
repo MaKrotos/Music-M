@@ -10,11 +10,12 @@
 	mc:Ignorable="d">
 
 	<Grid
+		x:Name="MainGrid"
 		Padding="10"
 		Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
 		ColumnSpacing="10"
 		CornerRadius="10"
-		RowSpacing="10">
+		RowSpacing="0">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="auto" />
 			<RowDefinition Height="auto" />
@@ -28,24 +29,35 @@
 		<TextBlock
 			x:Name="HeaderB"
 			Grid.Row="0"
+			Margin="0,0,0,10"
 			HorizontalAlignment="Stretch"
 			FontSize="20"
-			TextWrapping="Wrap" />
+			TextWrapping="Wrap"
+			Visibility="Collapsed" />
 		<TextBlock
 			x:Name="TextB"
 			Grid.Row="1"
+			Margin="0,0,0,10"
 			HorizontalAlignment="Stretch"
 			FontSize="14"
 			TextWrapping="Wrap"
 			Visibility="Collapsed" />
+		<ContentControl
+			x:Name="PageContent"
+			Grid.Row="2"
+			Margin="0,0,0,10"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Stretch"
+			Visibility="Collapsed" />
 		<Grid
 			x:Name="BTNsGrid"
-			Grid.Row="2"
+			Grid.Row="3"
+			Margin="0,0,0,10"
 			HorizontalAlignment="Stretch"
 			ColumnSpacing="5"
 			RowSpacing="5" />
 		<Button
-			Grid.Row="3"
+			Grid.Row="4"
 			HorizontalAlignment="Stretch"
 			Click="Button_Click">
 			Закрыть
