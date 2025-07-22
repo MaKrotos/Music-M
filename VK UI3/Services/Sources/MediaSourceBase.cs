@@ -109,7 +109,7 @@ public class AudioEqualizer
         }
 
         return activeFilters.Count > 0
-            ? string.Join(",", activeFilters)  // Объединяем фильтры через запятую
+        ? string.Join(",", activeFilters)  // Объединяем фильтры через запятую
             : string.Empty;
     }
 

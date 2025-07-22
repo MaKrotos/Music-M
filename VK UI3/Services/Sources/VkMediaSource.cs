@@ -76,13 +76,21 @@ public class VkMediaSource : MediaSourceBase
 
             RegisterSourceObjectReference(player, rtMediaSource);
 
-            if (!string.IsNullOrEmpty(eq) || equalizer == null)
+            if (equalizer == null)
             {
-                rtMediaSource.SetFFmpegAudioFilters(eq, rtMediaSource.AudioStreams.First());
+                rtMediaSource.ClearFFmpegAudioFilters();
             }
             else
             {
-                rtMediaSource.ClearFFmpegAudioFilters();
+                string filterString = equalizer.GetFFmpegFilterString();
+                if (!string.IsNullOrEmpty(filterString))
+                {
+                    rtMediaSource.SetFFmpegAudioFilters(filterString, rtMediaSource.AudioStreams.First());
+                }
+                else
+                {
+                    rtMediaSource.ClearFFmpegAudioFilters();
+                }
             }
         }
         catch (OperationCanceledException)
