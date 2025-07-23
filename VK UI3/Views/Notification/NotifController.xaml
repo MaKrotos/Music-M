@@ -23,8 +23,10 @@
 			<RowDefinition Height="auto" />
 
 			<RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
 
-		</Grid.RowDefinitions>
+
+        </Grid.RowDefinitions>
 
 		<TextBlock
 			x:Name="HeaderB"
@@ -55,7 +57,8 @@
 			Margin="0,0,0,10"
 			HorizontalAlignment="Stretch"
 			ColumnSpacing="5"
-			RowSpacing="5" />
+			RowSpacing="5"
+			Visibility="Collapsed" />
 		<Button
 			Grid.Row="4"
 			HorizontalAlignment="Stretch"

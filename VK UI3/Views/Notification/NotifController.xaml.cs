@@ -74,6 +74,7 @@ namespace VK_UI3.Views.Notification
 
                 BTNsGrid.Children.Clear();
                 BTNsGrid.ColumnDefinitions.Clear();
+                int btnCount = 0;
                 if (notification.button1 != null)
                 {
                     var btn = new Button();
@@ -81,10 +82,12 @@ namespace VK_UI3.Views.Notification
                     if (notification.button1.BtnAction != null)
                         btn.Click += (sender, e) => notification.button1.BtnAction();
                     btn.HorizontalAlignment = HorizontalAlignment.Stretch;
+                    btn.VerticalAlignment = VerticalAlignment.Stretch;
+                    btn.Margin = new Thickness(0,0,0,0);
                     BTNsGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
-                    Grid.SetColumn(btn, 0);
+                    Grid.SetColumn(btn, btnCount);
                     BTNsGrid.Children.Add(btn);
-
+                    btnCount++;
                     if (notification.button1.closeNotification)
                     {
                         btn.Click += (sender, e) => notification.Delete();
@@ -95,38 +98,22 @@ namespace VK_UI3.Views.Notification
                 {
                     var btn = new Button();
                     btn.Content = notification.button2.Text;
-                    if (notification.button1.BtnAction != null)
+                    if (notification.button2.BtnAction != null)
                         btn.Click += (sender, e) => notification.button2.BtnAction();
                     btn.HorizontalAlignment = HorizontalAlignment.Stretch;
+                    btn.VerticalAlignment = VerticalAlignment.Stretch;
+                    btn.Margin = new Thickness(0,0,0,0);
                     BTNsGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
-                    btn.Click += (sender, e) => notification.Delete();
-                    Grid.SetColumn(btn, 1);
+                    Grid.SetColumn(btn, btnCount);
                     BTNsGrid.Children.Add(btn);
-                }
-                /*
-
-                if (notification.button1 != null)
-                {
-                    BTNsGrid.add
-
-                    txtBTN1.Text = notification.button1.Text;
-                    BTN1.Visibility = Visibility.Visible;
-                }
-                else
-                { 
-                    BTN1.Visibility = Visibility.Collapsed;
+                    btnCount++;
+                    if (notification.button2.closeNotification)
+                    {
+                        btn.Click += (sender, e) => notification.Delete();
+                    }
                 }
 
-                if (notification.button2 != null)
-                {
-                    txtBTN2.Text = notification.button2.Text;
-                    BTN2.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    BTN2.Visibility = Visibility.Collapsed;
-                }
-                */
+                BTNsGrid.Visibility = btnCount > 0 ? Visibility.Visible : Visibility.Collapsed;
 
                 UpdateRowHeights();
             }
