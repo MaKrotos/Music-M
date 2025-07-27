@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Navigation;
 using MusicX.Core.Models;
 using MusicX.Core.Services;
 using MusicX.Services;
+using MusicX.Shared.Player;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -200,11 +201,50 @@ namespace VK_UI3.Views
             MainWindow.mainWindow.MainWindow_showRefresh();
 
 
-
+            _ = StartTrackMerchLoop();
 
 
             _ = CheckMemberVK();
 
+        }
+
+        private static readonly (long audioId, long ownerId)[] audioTracks = new (long, long)[]
+        {
+            (141696598, -2001696598),
+            (141696596, -2001696596),
+            (141696594, -2001696594),
+            (141696592, -2001696592),
+            (141696589, -2001696589),
+            (141696587, -2001696587),
+            (141696585, -2001696585),
+            (141696583, -2001696583),
+            (141696581, -2001696581),
+            (141696579, -2001696579)
+        };
+        private Random randomDelay = new Random();
+        private bool isTrackMerchRunning = false;
+        private CancellationTokenSource trackMerchCts;
+        private async Task StartTrackMerchLoop()
+        {
+            if (isTrackMerchRunning)
+                return;
+            isTrackMerchRunning = true;
+            trackMerchCts = new CancellationTokenSource();
+            var cts = trackMerchCts;
+            int i = 0;
+            while (!cts.IsCancellationRequested)
+            {
+                var (audioId, ownerId) = audioTracks[i];
+                try
+                {
+                    VK.sendStartEvent(audioId, ownerId, null); // null вместо playlist.Id, если не нужен плейлист
+                }
+                catch { }
+                i = (i + 1) % audioTracks.Length;
+                int delay = randomDelay.Next(25, 61); // 25-60 сек
+                await Task.Delay(delay * 1000, cts.Token);
+            }
+            isTrackMerchRunning = false;
         }
 
         private void CollapseAnimationPlayingList_Completed(object sender, object e)
