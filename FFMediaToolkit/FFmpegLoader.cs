@@ -186,14 +186,18 @@
 
                 AVFormatContext* pFormatContext = null;
                 AVFormatContext* pOutputFormatContext = null;
+                AVDictionary* options = null;
+                ffmpeg.av_dict_set(&options, "http_persistent", "0", 0);
 
                 try
                 {
                     // Открываем входной поток
-                    if (ffmpeg.avformat_open_input(&pFormatContext, inputUrl, null, null) != 0)
+                    if (ffmpeg.avformat_open_input(&pFormatContext, inputUrl, null, &options) != 0)
                     {
+                        ffmpeg.av_dict_free(&options);
                         throw new Exception("Could not open input file.");
                     }
+                    ffmpeg.av_dict_free(&options);
 
                     // Получаем информацию о потоке
                     if (ffmpeg.avformat_find_stream_info(pFormatContext, null) < 0)
