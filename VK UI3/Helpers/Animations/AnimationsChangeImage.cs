@@ -27,7 +27,7 @@ namespace VK_UI3.Helpers.Animations
         private static readonly ConcurrentDictionary<Uri, Task<BitmapImage>> _activeDownloads = new();
 
         // Настройки по умолчанию - можно изменить через статические методы
-        private static int _maxConcurrentDownloads = 4;
+        private static int _maxConcurrentDownloads = 10;
         private static bool _enableQueue = true;
 
         static AnimationsChangeImage()
@@ -111,6 +111,12 @@ namespace VK_UI3.Helpers.Animations
 
         public async void ChangeImageWithAnimation(Uri newImageSource, bool forceUpdate = false, bool setColorTheme = false)
         {
+            if (newImageSource == null)
+            {
+                _dispatcherQueue.TryEnqueue(() => HideAnimation(null));
+                return;
+            }
+
             if (_currentImageSource != null && _currentImageSource.Equals(newImageSource) && !forceUpdate)
                 return;
 

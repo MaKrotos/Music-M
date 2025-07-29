@@ -30,7 +30,7 @@ namespace MusicX.Core.Services
         public readonly IVkApiCategories vkApi;
         private readonly IVkApiInvoke apiInvoke;
         private readonly Logger logger;
-        private readonly string vkApiVersion = "8.110";
+        private readonly string vkApiVersion = "8.139";
 
         public bool IsAuth = false;
         private readonly IVkTokenStore tokenStore;
