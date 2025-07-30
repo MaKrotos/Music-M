@@ -49,8 +49,9 @@
 				<local:DisableDiscordIntegration />
 			</Border>
 
-
-
+			<Border>
+				<local:CreateDesktopShortcut />
+			</Border>
 
 			<Border>
 				<StackPanel>

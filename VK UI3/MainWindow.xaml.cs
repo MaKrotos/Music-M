@@ -18,6 +18,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using VK_UI3.DB;
 using VK_UI3.DownloadTrack;
+using VK_UI3.Helpers;
 using VK_UI3.Views;
 using VK_UI3.Views.LoginWindow;
 using VK_UI3.Views.Notification;
@@ -237,6 +238,12 @@ namespace VK_UI3
 
         private void InitializeNavigation()
         {
+            if (SettingsTable.GetSetting("createShortcut") is null)
+            {
+               _= ShortcutManager.CreateDesktopShortcutAsync();
+                SettingsTable.SetSetting("createShortcut", "1");
+            }
+
             var navigationInfo = new NavigationInfo { SourcePageType = this };
             if (AccountsDB.GetAllAccounts().Count == 0)
             {
