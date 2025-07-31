@@ -358,6 +358,13 @@ namespace VK_UI3.Controllers
         private void MediaPlayer_MediaEnded(Windows.Media.Playback.MediaPlayer sender, object args)
         {
 
+            var highlightSetting = SettingsTable.GetSetting("HighlightPlayedTracks");
+            if (highlightSetting != null && highlightSetting.settingValue.Equals("1") && PlayingTrack != null)
+            {
+
+                PlayingTrack.iVKGetAudio.SelectAudio(PlayingTrack);
+            }
+
             if (SettingsTable.GetSetting("playNext").settingValue.Equals("RepeatOne"))
                 PlayTrack();
             else
