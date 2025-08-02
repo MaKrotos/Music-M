@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using MusicX.Core.Models;
 using System;
@@ -96,7 +96,7 @@ namespace VK_UI3.Controls.Blocks
             {
 
 
-            
+
 
 
 
@@ -117,7 +117,7 @@ namespace VK_UI3.Controls.Blocks
                         break;
                 }
 
-                if (block.Meta != null && block.Meta.anchor == "vibes")
+                if (block.Meta != null && (block.Meta.anchor == "vibes" || block.Meta.anchor == "genres"))
 
                 {
                     myControl.ItemTemplate = this.Resources["compact"] as DataTemplate;
