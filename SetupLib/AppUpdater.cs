@@ -116,39 +116,43 @@ namespace SetupLib
             {
                 if (!skip)
                 {
-                    InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Проверка прав администратора..." });
-                    bool isElevated;
-                    using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
+                    // Новая логика: если есть Microsoft Store, не ставим зависимости
+                    if (IsMicrosoftStoreInstalled())
                     {
-                        WindowsPrincipal principal = new WindowsPrincipal(identity);
-                        isElevated = principal.IsInRole(WindowsBuiltInRole.Administrator);
+                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Обнаружен Microsoft Store. Пропускаем установку зависимостей." });
                     }
-
-                    if (isElevated)
+                    else
                     {
-                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Скачивание и установка сертификата..." });
-                        await intsallCertAsync();
-                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Сертификат установлен." });
-                    }
-
-                    InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Проверка наличия AppInstaller..." });
-                    bool isAppInstallerInstalled = IsAppInstalled("AppInstaller");
-                    if (!isAppInstallerInstalled)
-                    {
-                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Скачивание и установка AppInstaller..." });
-                        await InstallAppInstallerAsync();
-                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "AppInstaller установлен." });
-                    }
-                    
-                    InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Проверка наличия WindowsAppRuntime..." });
-                    if (!IsAppInstalled("WindowsAppRuntime.1.6"))
-                    {
-                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Скачивание и установка WindowsAppRuntime..." });
-                        await DownlloadAppRuntimeAsync();
-                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "WindowsAppRuntime установлен." });
+                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Проверка прав администратора..." });
+                        bool isElevated;
+                        using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
+                        {
+                            WindowsPrincipal principal = new WindowsPrincipal(identity);
+                            isElevated = principal.IsInRole(WindowsBuiltInRole.Administrator);
+                        }
+                        if (isElevated)
+                        {
+                            InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Скачивание и установка сертификата..." });
+                            await intsallCertAsync();
+                            InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Сертификат установлен." });
+                        }
+                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Проверка наличия AppInstaller..." });
+                        bool isAppInstallerInstalled = IsAppInstalled("AppInstaller");
+                        if (!isAppInstallerInstalled)
+                        {
+                            InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Скачивание и установка AppInstaller..." });
+                            await InstallAppInstallerAsync();
+                            InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "AppInstaller установлен." });
+                        }
+                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Проверка наличия WindowsAppRuntime..." });
+                        if (!IsAppInstalled("WindowsAppRuntime"))
+                        {
+                            InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Скачивание и установка WindowsAppRuntime..." });
+                            await DownlloadAppRuntimeAsync();
+                            InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "WindowsAppRuntime установлен." });
+                        }
                     }
                 }
-
                 InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Скачивание и установка обновления..." });
                 await downloadUpdateAsync(forceInstall);
                 InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Обновление завершено!" });
@@ -229,11 +233,11 @@ namespace SetupLib
                 {
                     InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Выполнение PowerShell-установки..." });
                     startInfo.FileName = "powershell.exe";
-                    startInfo.Arguments = $"-Command \"{command}\"";
+                    startInfo.Arguments = $"-Command \"$OutputEncoding = [Console]::OutputEncoding = [Text.Encoding]::UTF8; {command}\"";
                     startInfo.RedirectStandardOutput = true;
                     startInfo.UseShellExecute = false;
                     startInfo.CreateNoWindow = true;
-                    startInfo.StandardOutputEncoding = Encoding.Unicode;
+                    startInfo.StandardOutputEncoding = Encoding.UTF8;
                     
                     process.StartInfo = startInfo;
                     process.Start();
@@ -252,12 +256,12 @@ namespace SetupLib
                 {
                     InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Запуск установки через AppInstaller..." });
                     startInfo.FileName = "powershell.exe";
-                    startInfo.Arguments = $"-NoProfile -ExecutionPolicy unrestricted -Command \"{command}\"";
+                    startInfo.Arguments = $"-NoProfile -ExecutionPolicy unrestricted -Command \"$OutputEncoding = [Console]::OutputEncoding = [Text.Encoding]::UTF8; {command}\"";
                     startInfo.UseShellExecute = false;
                     startInfo.CreateNoWindow = true;
                     startInfo.WindowStyle = ProcessWindowStyle.Hidden;
                     startInfo.RedirectStandardOutput = true;
-                    startInfo.StandardOutputEncoding = Encoding.Unicode;
+                    startInfo.StandardOutputEncoding = Encoding.UTF8;
                     
                     process.StartInfo = startInfo;
                     process.Start();
@@ -309,11 +313,11 @@ namespace SetupLib
             var startInfo = new ProcessStartInfo
             {
                 FileName = "powershell.exe",
-                Arguments = $"-Command \"{command}\"",
+                Arguments = $"-Command \"$OutputEncoding = [Console]::OutputEncoding = [Text.Encoding]::UTF8; {command}\"",
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
                 CreateNoWindow = true,
-                StandardOutputEncoding = Encoding.Unicode
+                StandardOutputEncoding = Encoding.UTF8
             };
             using (var process = new Process { StartInfo = startInfo })
             {
@@ -444,12 +448,12 @@ namespace SetupLib
             ProcessStartInfo startInfo = new ProcessStartInfo()
             {
                 FileName = "powershell.exe",
-                Arguments = $"-Command \"{command}\"",
+                Arguments = $"-Command \"$OutputEncoding = [Console]::OutputEncoding = [Text.Encoding]::UTF8; {command}\"",
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
                 CreateNoWindow = true,
             };
-            startInfo.StandardOutputEncoding = Encoding.Unicode;
+            startInfo.StandardOutputEncoding = Encoding.UTF8;
             Process process = new Process() { StartInfo = startInfo };
             process.Start();
             string output = process.StandardOutput.ReadToEnd();
@@ -501,12 +505,12 @@ namespace SetupLib
                 ProcessStartInfo startInfo = new ProcessStartInfo()
                 {
                     FileName = "powershell.exe",
-                    Arguments = $"-Command \"{command}\"",
+                    Arguments = $"-Command \"$OutputEncoding = [Console]::OutputEncoding = [Text.Encoding]::UTF8; {command}\"",
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
                     CreateNoWindow = true,
                 };
-                startInfo.StandardOutputEncoding = Encoding.Unicode;
+                startInfo.StandardOutputEncoding = Encoding.UTF8;
                 Process process = new Process() { StartInfo = startInfo };
                 process.Start();
                 string output = process.StandardOutput.ReadToEnd();
@@ -598,6 +602,25 @@ namespace SetupLib
             {
                 throw new Exception("Неизвестная архитектура");
             }
+        }
+
+        bool IsMicrosoftStoreInstalled()
+        {
+            string command = "if (Get-AppxPackage -Name Microsoft.WindowsStore) { Write-Output \"True\" } else { Write-Output \"False\" }";
+            ProcessStartInfo startInfo = new ProcessStartInfo()
+            {
+                FileName = "powershell.exe",
+                Arguments = $"-Command \"{command}\"",
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+            };
+            startInfo.StandardOutputEncoding = Encoding.UTF8;
+            Process process = new Process() { StartInfo = startInfo };
+            process.Start();
+            string output = process.StandardOutput.ReadToEnd();
+            process.WaitForExit();
+            return output.Contains("True");
         }
 
     }
