@@ -97,7 +97,9 @@ jobs:
           $manifest = "D:\a\$repoName\$repoName\VK UI3 (Package)\Package.appxmanifest"
           [xml]$doc = Get-Content $csproj
           $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText
-          (Get-Content $manifest) -replace 'Version="[^"]*"', "Version=`"$version`"" | Set-Content $manifest
+          $content = Get-Content $manifest -Raw
+          $content = $content -replace 'Version="[^"]*"', "Version=`"$version`""
+          [System.IO.File]::WriteAllText($manifest, $content, [System.Text.Encoding]::UTF8)
         if: github.event.inputs.release == 'true'
 
       # Восстановить приложение для заполнения папки obj RuntimeIdentifiers
