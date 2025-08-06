@@ -108,12 +108,6 @@ jobs:
           name: PackageAppxManifest
           path: D:\a\Music-M\Music-M\VK UI3 (Package)\Package.appxmanifest
         if: github.event.inputs.release == 'true'
-
-      # Восстановить приложение для заполнения папки obj RuntimeIdentifiers
-      - name: Restore the application
-        run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
-        env:
-          Configuration: ${{ matrix.configuration }}
           
       - name: Clean publish directories
         run: |
