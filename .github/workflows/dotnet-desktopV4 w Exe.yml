@@ -128,80 +128,33 @@ jobs:
             $zipFile = "VK_UI3_$arch.zip"
             
             Write-Host "`n=== Processing $arch architecture ==="
-            Write-Host "Output directory: $outDir"
-            Write-Host "Zip file: $zipFile`n"
+            
+            # Очистка
+            Remove-Item -Recurse -Force $outDir, $zipFile -ErrorAction SilentlyContinue
+            
+            # Публикация без явного указания -o
+            dotnet publish "VK UI3/VK UI3.csproj" `
+              -c Release `
+              -r $runtimeId `
+              -p:PublishProfile=Properties\PublishProfiles\Unpackaged.pubxml `
+              -p:CsWinRTIIDOptimizerEnabled=false `
+              -p:DebugType=embedded `
+              -p:DebugSymbols=true `
+              -p:CopyOutputSymbolsToOutputDirectory=false `
+              -p:EnableMsixTooling=true `
+              -p:WindowsPackageType=None `
+              -p:SelfContained=true `
+              -p:PublishSingleFile=true `
+              -v:n
       
-            # Очистка предыдущих артефактов
-            try {
-              if (Test-Path $outDir) {
-                Remove-Item -Recurse -Force $outDir
-                Write-Host "Cleaned existing directory: $outDir"
-              }
-              if (Test-Path $zipFile) {
-                Remove-Item -Force $zipFile
-                Write-Host "Removed existing zip: $zipFile"
-              }
+            # Перемещение результатов в целевую директорию
+            if (Test-Path "bin\Release\net8.0-windows10.0.22000.0\$runtimeId\publish") {
+              Move-Item "bin\Release\net8.0-windows10.0.22000.0\$runtimeId\publish\*" $outDir -Force
             }
-            catch {
-              Write-Warning "Cleanup failed: $_"
-            }
-      
-            # Публикация с подробным логированием
-            try {
-              Write-Host "Starting publish for $runtimeId..."
-              
-              dotnet publish "VK UI3/VK UI3.csproj" `
-                -c Release `
-                -r $runtimeId `
-                -p:PublishProfile=Unpackaged `
-                -p:EnableMsixTooling=true `
-                -p:WindowsPackageType=None `
-                -p:SelfContained=true `
-                -p:PublishSingleFile=true `
-                -p:CsWinRTIIDOptimizerEnabled=false `
-                -p:DebugType=embedded `
-                -p:DebugSymbols=true `
-                -p:CopyOutputSymbolsToOutputDirectory=false `
-                -v:n `  # Подробное логирование
-                -o $outDir
-      
-              # Проверка результатов публикации
-              if (-not (Test-Path $outDir)) {
-                throw "Publish directory was not created!"
-              }
-      
-              $publishedFiles = Get-ChildItem -Path $outDir -Recurse -File
-              if ($publishedFiles.Count -eq 0) {
-                throw "No files were published to $outDir!"
-              }
-      
-              Write-Host "Successfully published $($publishedFiles.Count) files"
-      
-              # Создание архива
-              try {
-                Write-Host "Creating zip archive..."
-                Compress-Archive -Path "$outDir/*" -DestinationPath $zipFile -CompressionLevel Optimal
-                
-                if (Test-Path $zipFile) {
-                  $zipSize = (Get-Item $zipFile).Length / 1MB
-                  Write-Host "Created $zipFile (Size: $($zipSize.ToString('0.00')) MB)"
-                } else {
-                  Write-Warning "Zip file was not created!"
-                }
-              }
-              catch {
-                Write-Error "Failed to create zip: $_"
-              }
-            }
-            catch {
-              Write-Error "Publish failed for $arch`: $_"
-              # Дополнительная диагностика
-              Write-Host "`n=== Directory Structure ==="
-              Get-ChildItem -Recurse | Where-Object { $_.FullName -match "publish|obj|bin" } | Format-Table FullName, Length
-              exit 1
-            }
+            
+            # Создание архива
+            Compress-Archive -Path "$outDir\*" -DestinationPath $zipFile -CompressionLevel Optimal
           }
-
       - name: Zip x64 build
         run: |
           powershell Compress-Archive -Path publish-x64\* -DestinationPath VK_UI3_win-x64.zip
