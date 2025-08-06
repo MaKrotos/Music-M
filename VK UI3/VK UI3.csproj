@@ -52,6 +52,7 @@
 	  <!-- Конфигурации для публикации неупакованного приложения -->
 <PropertyGroup Condition="'$(PublishProfile)'=='Unpackaged'">
     <CsWinRTIIDOptimizerEnabled>false</CsWinRTIIDOptimizerEnabled>
+	<CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
     <EnableMsixTooling>true</EnableMsixTooling>
     <WindowsPackageType>None</WindowsPackageType>
     <SelfContained>true</SelfContained>
