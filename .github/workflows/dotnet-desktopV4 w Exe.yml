@@ -132,10 +132,14 @@ jobs:
             # Очистка
             Remove-Item -Recurse -Force $outDir, $zipFile -ErrorAction SilentlyContinue
             
-            # Публикация без явного указания -o
+            # Создаем целевую директорию
+            New-Item -ItemType Directory -Path $outDir -Force | Out-Null
+            
+            # Публикация с правильным параметром output
             dotnet publish "VK UI3/VK UI3.csproj" `
-              -c Release `
-              -r $runtimeId `
+              --configuration Release `
+              --runtime $runtimeId `
+              --output $outDir `
               -p:PublishProfile=Properties\PublishProfiles\Unpackaged.pubxml `
               -p:CsWinRTIIDOptimizerEnabled=false `
               -p:DebugType=embedded `
@@ -145,15 +149,29 @@ jobs:
               -p:WindowsPackageType=None `
               -p:SelfContained=true `
               -p:PublishSingleFile=true `
-              -v:n
+              --verbosity normal
       
-            # Перемещение результатов в целевую директорию
-            if (Test-Path "bin\Release\net8.0-windows10.0.22000.0\$runtimeId\publish") {
-              Move-Item "bin\Release\net8.0-windows10.0.22000.0\$runtimeId\publish\*" $outDir -Force
+            # Проверка результатов
+            if (-not (Test-Path "$outDir/VK UI3.exe")) {
+              Write-Host "##[error] Publish failed - main executable not found"
+              Get-ChildItem -Path $outDir -Recurse | Format-Table FullName
+              exit 1
             }
-            
+      
             # Создание архива
-            Compress-Archive -Path "$outDir\*" -DestinationPath $zipFile -CompressionLevel Optimal
+            try {
+              Compress-Archive -Path "$outDir/*" -DestinationPath $zipFile -CompressionLevel Optimal
+              if (Test-Path $zipFile) {
+                $size = (Get-Item $zipFile).Length / 1MB
+                Write-Host "Successfully created $zipFile ($($size.ToString('0.00')) MB)"
+              } else {
+                Write-Host "##[error] Zip file creation failed"
+                exit 1
+              }
+            } catch {
+              Write-Host "##[error] Error creating zip: $_"
+              exit 1
+            }
           }
       - name: Zip x64 build
         run: |
