@@ -47,7 +47,11 @@
     <DefineConstants>ARM64</DefineConstants>
     <RuntimeIdentifier>win-arm64</RuntimeIdentifier>
   </PropertyGroup>
-
+	
+	<PropertyGroup>
+		<CsWinRTIIDOptimizerEnabled Condition="'$(Configuration)' == 'Release'">false</CsWinRTIIDOptimizerEnabled>
+	</PropertyGroup>
+	
 
 	  <!-- Конфигурации для публикации неупакованного приложения -->
 <PropertyGroup Condition="'$(PublishProfile)'=='Unpackaged'">
