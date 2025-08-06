@@ -98,7 +98,7 @@ jobs:
           [xml]$doc = Get-Content $csproj
           $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText.Trim()
           $content = Get-Content $manifest -Raw
-          $content = $content -replace 'Version="[^"]*"', "Version=`"$version`""
+          $content = $content -replace '(<Identity[^>]+Version=")[^"]*"', "`$1$version`""
           [System.IO.File]::WriteAllText($manifest, $content, (New-Object System.Text.UTF8Encoding($false)))
         if: github.event.inputs.release == 'true'
 
