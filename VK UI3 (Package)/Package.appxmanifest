@@ -1,19 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
-<Package
-  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
-  
-  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
-  IgnorableNamespaces="uap uap5 rescap uap3">
+  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" IgnorableNamespaces="uap uap5 rescap uap3">
 
-  <Identity
-    Name="FDW.VKM"
-    Publisher="CN=FDW"
-    Version="0.3.4.6" />
+  <Identity Name="FDW.VKM" Publisher="CN=FDW" Version="$(AppxPackageVersion)" />
 
   <mp:PhoneIdentity PhoneProductId="b7c1f34e-9025-4935-9d7a-7d0a632a368d" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
@@ -33,23 +27,16 @@
   </Resources>
 
   <Applications>
-    <Application Id="App"
-      Executable="$targetnametoken$.exe"
-      EntryPoint="$targetentrypoint$">
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="$targetentrypoint$">
 
-		<Extensions>
-			<uap5:Extension Category="windows.startupTask">
-				<uap5:StartupTask TaskId="VK M" Enabled="true" DisplayName="VK M" />
-			</uap5:Extension>
-		</Extensions>
-		
-      <uap:VisualElements
-        DisplayName="VK M"
-        Description="VK M"
-        BackgroundColor="transparent"
-        Square150x150Logo="Images\Square150x150Logo.png"
-        Square44x44Logo="Images\Square44x44Logo.png">
-        <uap:DefaultTile Wide310x150Logo="Images\Wide310x150Logo.png"  Square71x71Logo="Images\SmallTile.png" Square310x310Logo="Images\LargeTile.png"/>
+      <Extensions>
+        <uap5:Extension Category="windows.startupTask">
+          <uap5:StartupTask TaskId="VK M" Enabled="true" DisplayName="VK M" />
+        </uap5:Extension>
+      </Extensions>
+
+      <uap:VisualElements DisplayName="VK M" Description="VK M" BackgroundColor="transparent" Square150x150Logo="Images\Square150x150Logo.png" Square44x44Logo="Images\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Images\Wide310x150Logo.png" Square71x71Logo="Images\SmallTile.png" Square310x310Logo="Images\LargeTile.png"/>
         <uap:SplashScreen Image="Images\SplashScreen.png" />
         <uap:LockScreen Notification="badge" BadgeLogo="Images\BadgeLogo.png"/>
       </uap:VisualElements>
@@ -58,8 +45,8 @@
 
   <Capabilities>
     <Capability Name="internetClient"/>
-	  <rescap:Capability Name="runFullTrust" />
-	  <rescap:Capability Name="broadFileSystemAccess" />
+    <rescap:Capability Name="runFullTrust" />
+    <rescap:Capability Name="broadFileSystemAccess" />
     <uap3:Capability Name="backgroundMediaPlayback"/>
   </Capabilities>
 </Package>
