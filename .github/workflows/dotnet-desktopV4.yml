@@ -67,6 +67,16 @@ jobs:
         run: |
           Get-ChildItem -Recurse | Sort-Object Length -Descending
 
+      # Установить .NET Core
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      # Добавить MSBuild в PATH: https://github.com/microsoft/setup-msbuild
+      - name: Setup MSBuild.exe
+        uses: microsoft/setup-msbuild@v2
+
       - name: Извлечь версию
         id: get_version
         run: |
@@ -89,16 +99,6 @@ jobs:
           $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText
           (Get-Content $manifest) -replace 'Version="[^"]*"', "Version=`"$version`"" | Set-Content $manifest
         if: github.event.inputs.release == 'true'
-
-      # Установить .NET Core
-      - name: Install .NET Core
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 8.0.x
-
-      # Добавить MSBuild в PATH: https://github.com/microsoft/setup-msbuild
-      - name: Setup MSBuild.exe
-        uses: microsoft/setup-msbuild@v2
 
       # Восстановить приложение для заполнения папки obj RuntimeIdentifiers
       - name: Restore the application
