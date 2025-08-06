@@ -97,9 +97,9 @@ jobs:
           $manifest = "D:\a\$repoName\$repoName\VK UI3 (Package)\Package.appxmanifest"
           [xml]$doc = Get-Content $csproj
           $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText.Trim()
-          $content = Get-Content $manifest -Raw
-          $content = $content -replace '(<Identity[^>]+Version=")[^"]*"', "`$1$version`""
-          [System.IO.File]::WriteAllText($manifest, $content, (New-Object System.Text.UTF8Encoding($false)))
+          [xml]$xml = Get-Content $manifest
+          $xml.Package.Identity.Version = $version
+          $xml.Save($manifest)
         if: github.event.inputs.release == 'true'
 
       - name: Upload Package.appxmanifest as artifact
