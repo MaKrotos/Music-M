@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
@@ -455,7 +456,7 @@ namespace VK_UI3.VKs
 
                 try
                 {
-                    var packageVersion = Package.Current.Id.Version;
+                    var packageVersion = Assembly.GetExecutingAssembly().GetName().Version;
                     var version = $"{packageVersion.Major}.{packageVersion.Minor}.{packageVersion.Build}.{packageVersion.Revision}";
                     var listParams = new List<EventParams>
                     {

@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using StatSlyLib.Models;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 using VK_UI3.DB;
 using VK_UI3.Views.ModalsPages;
@@ -81,7 +82,7 @@ namespace VK_UI3.Views.LoginWindow
 
                 EventParams eventParams = new EventParams("userID", UserUniqID.settingValue);
 
-                var packageVersion = Package.Current.Id.Version;
+                var packageVersion = Assembly.GetExecutingAssembly().GetName().Version;
                 var version = $"{packageVersion.Major}.{packageVersion.Minor}.{packageVersion.Build}.{packageVersion.Revision}";
                 var listParams = new List<EventParams>
                 {

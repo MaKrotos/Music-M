@@ -11,6 +11,7 @@ using StatSlyLib.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -211,8 +212,8 @@ namespace VK_UI3
 
                 var setting = DB.SettingsTable.GetSetting("UserUniqID");
                 string UserUniqID;
-                var packageVersion = Package.Current.Id.Version;
-                var version = $"{packageVersion.Major}.{packageVersion.Minor}.{packageVersion.Build}.{packageVersion.Revision}";
+                var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
+                var version = $"{assemblyVersion.Major}.{assemblyVersion.Minor}.{assemblyVersion.Build}.{assemblyVersion.Revision}";
                 if (setting == null)
                 {
                     UserUniqID = Helpers.SmallHelpers.GenerateRandomString(100);
@@ -331,8 +332,8 @@ namespace VK_UI3
             }
 
 
-            var packageVersion = Package.Current.Id.Version;
-            var version = $"{packageVersion.Major}.{packageVersion.Minor}.{packageVersion.Build}.{packageVersion.Revision}";
+            var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            var version = $"{assemblyVersion.Major}.{assemblyVersion.Minor}.{assemblyVersion.Build}.{assemblyVersion.Revision}";
 
 
             var listParams = new List<EventParams>

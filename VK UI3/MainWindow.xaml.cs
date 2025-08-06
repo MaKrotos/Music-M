@@ -639,10 +639,8 @@ namespace VK_UI3
         #region Updates and Downloads
         public async Task<bool> checkUpdate()
         {
-            Windows.ApplicationModel.Package package = Windows.ApplicationModel.Package.Current;
-            PackageId packageId = package.Id;
-            var version = packageId.Version;
-            var currentVersion = $"{version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
+            var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            var currentVersion = $"{assemblyVersion.Major}.{assemblyVersion.Minor}.{assemblyVersion.Build}.{assemblyVersion.Revision}";
 
             var appUpdater = new AppUpdater(currentVersion);
             var updateAvailable = await appUpdater.CheckForUpdates();

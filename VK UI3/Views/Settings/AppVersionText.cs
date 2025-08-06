@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using VK_UI3.VKs;
@@ -39,7 +40,7 @@ namespace VK_UI3.Views.Settings
 
         public string GetAppVersion()
         {
-            var version = Package.Current.Id.Version;
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
             return $"{version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
         }
 
