@@ -119,12 +119,26 @@ jobs:
         run: |
           Remove-Item -Recurse -Force publish-x64, publish-x86, publish-arm64 -ErrorAction SilentlyContinue
 
-      - name: Publish for all architectures
+      - name: Publish and package all architectures
         run: |
-          $archs = @("win-x64", "win-x86", "win-arm64")
-          foreach ($arch in $archs) {
-            $outDir = "publish-$($arch.Split('-')[1])"
-            dotnet publish "VK UI3/VK UI3.csproj" -c Release -r $arch `
+          $archs = @{
+            "x64"    = "win-x64"
+            "x86"    = "win-x86"
+            "arm64"  = "win-arm64"
+          }
+      
+          foreach ($arch in $archs.GetEnumerator()) {
+            $outDir = "publish-$($arch.Key)"
+            $zipFile = "VK_UI3_$($arch.Key).zip"
+            
+            # Очистка предыдущих артефактов
+            Remove-Item -Recurse -Force $outDir -ErrorAction SilentlyContinue
+            Remove-Item -Force $zipFile -ErrorAction SilentlyContinue
+            
+            # Публикация
+            dotnet publish "VK UI3/VK UI3.csproj" `
+              -c Release `
+              -r $arch.Value `
               -p:PublishProfile=Unpackaged `
               -p:EnableMsixTooling=true `
               -p:WindowsPackageType=None `
@@ -133,8 +147,19 @@ jobs:
               -p:CsWinRTIIDOptimizerEnabled=false `
               -p:DebugType=embedded `
               -o $outDir
-              
-            Compress-Archive -Path "$outDir/*" -DestinationPath "VK_UI3_$($arch.Split('-')[1]).zip"
+      
+            # Проверка существования файлов
+            if (Test-Path $outDir) {
+              # Создание архива с явным указанием файлов
+              $files = Get-ChildItem -Path $outDir -File -Recurse | Select-Object -ExpandProperty FullName
+              if ($files) {
+                Compress-Archive -Path $files -DestinationPath $zipFile
+              } else {
+                Write-Warning "No files found in $outDir"
+              }
+            } else {
+              Write-Error "Publish directory $outDir was not created"
+            }
           }
 
       - name: Zip x64 build
