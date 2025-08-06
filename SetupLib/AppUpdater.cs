@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Text.RegularExpressions;
+using System.Text;
 
 namespace SetupLib
 {
@@ -194,6 +195,7 @@ namespace SetupLib
                             });
                         }
                     } while (isMoreToRead);
+                    await streamToWriteTo.FlushAsync();
                 }
 
                 string appName = "FDW.VKM";
@@ -231,6 +233,7 @@ namespace SetupLib
                     startInfo.RedirectStandardOutput = true;
                     startInfo.UseShellExecute = false;
                     startInfo.CreateNoWindow = true;
+                    startInfo.StandardOutputEncoding = Encoding.Unicode;
                     
                     process.StartInfo = startInfo;
                     process.Start();
@@ -254,6 +257,7 @@ namespace SetupLib
                     startInfo.CreateNoWindow = true;
                     startInfo.WindowStyle = ProcessWindowStyle.Hidden;
                     startInfo.RedirectStandardOutput = true;
+                    startInfo.StandardOutputEncoding = Encoding.Unicode;
                     
                     process.StartInfo = startInfo;
                     process.Start();
@@ -272,30 +276,34 @@ namespace SetupLib
             using (var httpClient = new HttpClient { Timeout = TimeSpan.FromMinutes(10) })
             using (var response = await httpClient.GetAsync(runtimeUri))
             using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
-            using (var streamToWriteTo = File.Create(runtimeInstallerPath))
             {
-                var totalRead = 0L;
-                var buffer = new byte[8192];
-
-                while (true)
+                using (var streamToWriteTo = File.Create(runtimeInstallerPath))
                 {
-                    var read = await streamToReadFrom.ReadAsync(buffer, 0, buffer.Length);
-                    if (read == 0) break;
+                    var totalRead = 0L;
+                    var buffer = new byte[8192];
 
-                    await streamToWriteTo.WriteAsync(buffer, 0, read);
-
-                    totalRead += read;
-                    var percentage = totalRead * 100d / response.Content.Headers.ContentLength.Value;
-
-                    DownloadProgressChanged?.Invoke(this, new DownloadProgressChangedEventArgs
+                    while (true)
                     {
-                        TotalBytes = response.Content.Headers.ContentLength.Value,
-                        BytesDownloaded = totalRead,
-                        Percentage = percentage
-                    });
+                        var read = await streamToReadFrom.ReadAsync(buffer, 0, buffer.Length);
+                        if (read == 0) break;
+
+                        await streamToWriteTo.WriteAsync(buffer, 0, read);
+
+                        totalRead += read;
+                        var percentage = totalRead * 100d / response.Content.Headers.ContentLength.Value;
+
+                        DownloadProgressChanged?.Invoke(this, new DownloadProgressChangedEventArgs
+                        {
+                            TotalBytes = response.Content.Headers.ContentLength.Value,
+                            BytesDownloaded = totalRead,
+                            Percentage = percentage
+                        });
+                    }
+                    // Явно сбрасываем и закрываем поток
+                    await streamToWriteTo.FlushAsync();
                 }
             }
-
+            // Только после using запускаем процесс установки!
             InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Установка WindowsAppRuntime..." });
             string command = $"Add-AppxPackage -Path \"{runtimeInstallerPath}\"";
             var startInfo = new ProcessStartInfo
@@ -305,6 +313,7 @@ namespace SetupLib
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
                 CreateNoWindow = true,
+                StandardOutputEncoding = Encoding.Unicode
             };
             using (var process = new Process { StartInfo = startInfo })
             {
@@ -440,6 +449,7 @@ namespace SetupLib
                 UseShellExecute = false,
                 CreateNoWindow = true,
             };
+            startInfo.StandardOutputEncoding = Encoding.Unicode;
             Process process = new Process() { StartInfo = startInfo };
             process.Start();
             string output = process.StandardOutput.ReadToEnd();
@@ -483,8 +493,9 @@ namespace SetupLib
                             });
                         }
                     } while (isMoreToRead);
+                    await streamToWriteTo.FlushAsync();
                 }
-
+                // Только после выхода из using запускаем процесс установки
                 InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Установка AppInstaller..." });
                 string command = $"Add-AppxPackage -Path {path};";
                 ProcessStartInfo startInfo = new ProcessStartInfo()
@@ -495,6 +506,7 @@ namespace SetupLib
                     UseShellExecute = false,
                     CreateNoWindow = true,
                 };
+                startInfo.StandardOutputEncoding = Encoding.Unicode;
                 Process process = new Process() { StartInfo = startInfo };
                 process.Start();
                 string output = process.StandardOutput.ReadToEnd();
