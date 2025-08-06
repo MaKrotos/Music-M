@@ -48,11 +48,10 @@
     <RuntimeIdentifier>win-arm64</RuntimeIdentifier>
   </PropertyGroup>
 
-  <!-- Конфигурации для публикации неупакованного приложения -->
-  <PropertyGroup Condition="'$(PublishProfile)'=='Unpackaged'">
-	<CsWinRTIIDOptimizerEnabled>false</CsWinRTIIDOptimizerEnabled>
-<!-- Конфигурации для публикации неупакованного приложения -->
+
+	  <!-- Конфигурации для публикации неупакованного приложения -->
 <PropertyGroup Condition="'$(PublishProfile)'=='Unpackaged'">
+    <CsWinRTIIDOptimizerEnabled>false</CsWinRTIIDOptimizerEnabled>
     <EnableMsixTooling>true</EnableMsixTooling>
     <WindowsPackageType>None</WindowsPackageType>
     <SelfContained>true</SelfContained>
