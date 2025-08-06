@@ -50,6 +50,7 @@
 
   <!-- Конфигурации для публикации неупакованного приложения -->
   <PropertyGroup Condition="'$(PublishProfile)'=='Unpackaged'">
+    <EnableMsixTooling>true</EnableMsixTooling>
     <SelfContained>true</SelfContained>
     <PublishReadyToRun>true</PublishReadyToRun>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
