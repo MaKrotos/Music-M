@@ -7,7 +7,7 @@
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" IgnorableNamespaces="uap uap5 rescap uap3">
 
-  <Identity Name="FDW.VKM" Publisher="CN=FDW" Version="$(AppxPackageVersion)" />
+  <Identity Name="FDW.VKM" Publisher="CN=FDW" Version="0.3.4.7" />
 
   <mp:PhoneIdentity PhoneProductId="b7c1f34e-9025-4935-9d7a-7d0a632a368d" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
