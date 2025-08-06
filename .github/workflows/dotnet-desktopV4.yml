@@ -178,10 +178,11 @@ jobs:
 
       - name: Подставить версию в Package.appxmanifest
         run: |
-          $csproj = "D:\a\${{ github.repository.split('/')[1] }}\${{ github.repository.split('/')[1] }}\VK UI3\VK UI3.csproj"
-          $manifest = "D:\a\${{ github.repository.split('/')[1] }}\${{ github.repository.split('/')[1] }}\VK UI3 (Package)\Package.appxmanifest"
+          $repoName = "${{ github.repository }}".Split('/')[1]
+          $csproj = "D:\a\$repoName\$repoName\VK UI3\VK UI3.csproj"
+          $manifest = "D:\a\$repoName\$repoName\VK UI3 (Package)\Package.appxmanifest"
           [xml]$doc = Get-Content $csproj
-          $version = $doc.Project.PropertyGroup.AppxPackageVersion
+          $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText
           (Get-Content $manifest) -replace 'Version="[^"]*"', "Version=\"$version\"" | Set-Content $manifest
         if: github.event.inputs.release == 'true'
 
