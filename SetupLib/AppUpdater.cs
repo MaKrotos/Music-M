@@ -116,36 +116,37 @@ namespace SetupLib
             {
                 if (!skip)
                 {
-                    // Новая логика: если есть Microsoft Store, не ставим зависимости
-                    if (IsMicrosoftStoreInstalled())
+                    InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Проверка прав администратора..." });
+                    bool isElevated;
+                    using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
+                    {
+                        WindowsPrincipal principal = new WindowsPrincipal(identity);
+                        isElevated = principal.IsInRole(WindowsBuiltInRole.Administrator);
+                    }
+                    if (isElevated)
+                    {
+                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Скачивание и установка сертификата..." });
+                        await intsallCertAsync();
+                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Сертификат установлен." });
+                    }
+
+
+                    if (forceInstall == false && IsMicrosoftStoreInstalled()  )
                     {
                         InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Обнаружен Microsoft Store. Пропускаем установку зависимостей." });
                     }
                     else
                     {
-                        InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Проверка прав администратора..." });
-                        bool isElevated;
-                        using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
-                        {
-                            WindowsPrincipal principal = new WindowsPrincipal(identity);
-                            isElevated = principal.IsInRole(WindowsBuiltInRole.Administrator);
-                        }
-                        if (isElevated)
-                        {
-                            InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Скачивание и установка сертификата..." });
-                            await intsallCertAsync();
-                            InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Сертификат установлен." });
-                        }
                         InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Проверка наличия AppInstaller..." });
                         bool isAppInstallerInstalled = IsAppInstalled("AppInstaller");
-                        if (!isAppInstallerInstalled)
+                        if (!isAppInstallerInstalled || forceInstall)
                         {
                             InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Скачивание и установка AppInstaller..." });
                             await InstallAppInstallerAsync();
                             InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "AppInstaller установлен." });
                         }
                         InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Проверка наличия WindowsAppRuntime..." });
-                        if (!IsAppInstalled("WindowsAppRuntime"))
+                        if (!IsAppInstalled("WindowsAppRuntime")  || forceInstall)
                         {
                             InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Скачивание и установка WindowsAppRuntime..." });
                             await DownlloadAppRuntimeAsync();
