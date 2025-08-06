@@ -48,17 +48,23 @@
     <RuntimeIdentifier>win-arm64</RuntimeIdentifier>
   </PropertyGroup>
 
-  <!-- Конфигурации для публикации неупакованного приложения -->
-  <PropertyGroup Condition="'$(PublishProfile)'=='Unpackaged'">
+<!-- Конфигурации для публикации неупакованного приложения -->
+<PropertyGroup Condition="'$(PublishProfile)'=='Unpackaged'">
     <EnableMsixTooling>true</EnableMsixTooling>
+    <WindowsPackageType>None</WindowsPackageType>
     <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
     <PublishReadyToRun>true</PublishReadyToRun>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <UseAppHost>true</UseAppHost>
-  </PropertyGroup>
+    
+    <!-- Additional recommended settings for WinUI 3 -->
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <WinUISDKReferences>false</WinUISDKReferences>
+</PropertyGroup>
 
   <ItemGroup>
     <Content Remove="Assets\icons.xaml" />
