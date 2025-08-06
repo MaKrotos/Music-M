@@ -183,7 +183,7 @@ jobs:
           $manifest = "D:\a\$repoName\$repoName\VK UI3 (Package)\Package.appxmanifest"
           [xml]$doc = Get-Content $csproj
           $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText
-          (Get-Content $manifest) -replace 'Version="[^"]*"', "Version=\"$version\"" | Set-Content $manifest
+          (Get-Content $manifest) -replace 'Version="[^"]*"', 'Version="' + $version + '"' | Set-Content $manifest
         if: github.event.inputs.release == 'true'
 
       - name: Вывести версию
