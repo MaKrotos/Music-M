@@ -279,15 +279,21 @@ jobs:
 
       - name: Publish unpackaged WinUI3 (x64)
         run: |
-          dotnet publish "VK UI3/VK UI3.csproj" -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o publish-x64
-
+          dotnet publish "VK UI3/VK UI3.csproj" -c Release -r win-x64 \
+          -p:PublishProfile=Unpackaged \
+          -o publish-x64
+      
       - name: Publish unpackaged WinUI3 (x86)
         run: |
-          dotnet publish "VK UI3/VK UI3.csproj" -c Release -r win-x86 --self-contained true -p:PublishSingleFile=true -o publish-x86
-
+          dotnet publish "VK UI3/VK UI3.csproj" -c Release -r win-x86 \
+          -p:PublishProfile=Unpackaged \
+          -o publish-x86
+      
       - name: Publish unpackaged WinUI3 (arm64)
         run: |
-          dotnet publish "VK UI3/VK UI3.csproj" -c Release -r win-arm64 --self-contained true -p:PublishSingleFile=true -o publish-arm64
+          dotnet publish "VK UI3/VK UI3.csproj" -c Release -r win-arm64 \
+          -p:PublishProfile=Unpackaged \
+          -o publish-arm64
 
       - name: Zip x64 build
         run: |
