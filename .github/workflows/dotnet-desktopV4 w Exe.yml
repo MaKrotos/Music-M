@@ -1,7 +1,4 @@
-# This workflow will build, sign, and package a WinUI 3 MSIX desktop application
-# built on .NET.
-
-name: Автосборка Music M OLD
+name: Автосборка Music M with EXE
 
 on:
   workflow_dispatch:
@@ -38,20 +35,20 @@ jobs:
         platform: [x64]
 
     runs-on:
-      windows-latest # For a list of available runner types, refer to
-      # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+      windows-latest # Для получения списка доступных типов раннеров
+      # см. https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
 
     env:
-      Solution_Name: "VK UI3 (Package)" # Replace with your solution name, i.e. App1.sln.
+      Solution_Name: "VK UI3 (Package)" # Замените на имя вашего решения, например, App1.sln.
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           node-version: 16
           fetch-depth: 0
 
-      # Decode the base 64 encoded pfx and save the Signing_Certificate
+      # Декодируем закодированный в base64 pfx и сохраняем Signing_Certificate
       - name: Decode the pfx
         run: |
           $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
@@ -70,17 +67,49 @@ jobs:
         run: |
           Get-ChildItem -Recurse | Sort-Object Length -Descending
 
-      # Install the .NET Core workload
+      # Установить .NET Core
       - name: Install .NET Core
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
 
-      # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+      # Добавить MSBuild в PATH: https://github.com/microsoft/setup-msbuild
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v2
 
-      # Restore the application to populate the obj folder with RuntimeIdentifiers
+      - name: Извлечь версию
+        id: get_version
+        run: |
+          $repoName = "${{ github.repository }}".Split('/')[1]
+          $csprojPath = "D:\a\$repoName\$repoName\VK UI3\VK UI3.csproj"
+          $doc = New-Object xml
+          $doc.Load((Convert-Path $csprojPath))
+          $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText
+          echo "::set-output name=VERSION::$version"
+          echo "Версия: $version"
+        continue-on-error: true
+        if: github.event.inputs.release == 'true'
+
+      - name: Подставить версию в Package.appxmanifest
+        run: |
+          $repoName = "${{ github.repository }}".Split('/')[1]
+          $csproj = "D:\a\$repoName\$repoName\VK UI3\VK UI3.csproj"
+          $manifest = "D:\a\$repoName\$repoName\VK UI3 (Package)\Package.appxmanifest"
+          [xml]$doc = Get-Content $csproj
+          $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText.Trim()
+          [xml]$xml = Get-Content $manifest
+          $xml.Package.Identity.Version = $version
+          $xml.Save($manifest)
+        if: github.event.inputs.release == 'true'
+
+      - name: Upload Package.appxmanifest as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PackageAppxManifest
+          path: D:\a\Music-M\Music-M\VK UI3 (Package)\Package.appxmanifest
+        if: github.event.inputs.release == 'true'
+
+      # Восстановить приложение для заполнения папки obj RuntimeIdentifiers
       - name: Restore the application
         run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
         env:
@@ -111,7 +140,7 @@ jobs:
           $password = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -Force -AsPlainText
           Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation Cert:\LocalMachine\My -Password $password
 
-      # Create the app package by building and packaging the project
+      # Создание пакета приложения путем сборки и упаковки проекта
       - name: Create the app package
         run: |
           $platforms = "x64", "x86", "ARM64"
@@ -126,13 +155,13 @@ jobs:
           Configuration: ${{ matrix.configuration }}
           TOKEN_STAT_SLY: ${{ secrets.TOKEN_STAT_SLY }}
 
-      # Remove the pfx
+      # Удалить pfx
       - name: Remove the pfx
         run: |
           $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
           Remove-Item -path "$certificatePath"
 
-      # Rename the .cer file
+      # Переименовать .cer файл
       - name: Rename the .cer file
         run: |
           Get-ChildItem -Path "${{ env.Solution_Name }}\\Packages" -Filter *.cer -Recurse -Depth 1 | ForEach-Object {
@@ -158,27 +187,13 @@ jobs:
 
       # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
       - name: Upload MSIX package
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: MSIX Package
           path: |
             ${{ env.Solution_Name }}\\Packages\*.cer
             ${{ env.Solution_Name }}\\Packages\*.msixbundle
             ${{ env.Solution_Name }}\\Packages\*.msix
-
-      - name: Извлечь версию
-        id: get_version
-        run: |
-          $repoName = "${{ github.repository }}".Split('/')[1]
-          $doc = New-Object xml
-          $doc.Load((Convert-Path "D:\a\$repoName\$repoName\VK UI3 (Package)\Package.appxmanifest"))
-          $nsManager = New-Object System.Xml.XmlNamespaceManager($doc.NameTable)
-          $nsManager.AddNamespace('default', 'http://schemas.microsoft.com/appx/manifest/foundation/windows10')
-          $version = $doc.SelectSingleNode('//default:Identity', $nsManager).Version
-          echo "::set-output name=VERSION::$version"
-          echo "Версия: $version"
-        continue-on-error: true
-        if: github.event.inputs.release == 'true'
 
       - name: Вывести версию
         run: |
@@ -261,3 +276,75 @@ jobs:
           }
           $bodyJson = $body | ConvertTo-Json -Compress
           Invoke-RestMethod -Uri $uri -Method Post -Body $bodyJson -ContentType 'application/json'
+
+      - name: Publish unpackaged WinUI3 (x64)
+        run: |
+          dotnet publish "VK UI3/VK UI3.csproj" -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o publish-x64
+
+      - name: Publish unpackaged WinUI3 (x86)
+        run: |
+          dotnet publish "VK UI3/VK UI3.csproj" -c Release -r win-x86 --self-contained true -p:PublishSingleFile=true -o publish-x86
+
+      - name: Publish unpackaged WinUI3 (arm64)
+        run: |
+          dotnet publish "VK UI3/VK UI3.csproj" -c Release -r win-arm64 --self-contained true -p:PublishSingleFile=true -o publish-arm64
+
+      - name: Zip x64 build
+        run: |
+          powershell Compress-Archive -Path publish-x64\* -DestinationPath VK_UI3_win-x64.zip
+
+      - name: Zip x86 build
+        run: |
+          powershell Compress-Archive -Path publish-x86\* -DestinationPath VK_UI3_win-x86.zip
+
+      - name: Zip arm64 build
+        run: |
+          powershell Compress-Archive -Path publish-arm64\* -DestinationPath VK_UI3_win-arm64.zip
+
+      - name: Upload x64 ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: VK_UI3_win-x64
+          path: VK_UI3_win-x64.zip
+
+      - name: Upload x86 ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: VK_UI3_win-x86
+          path: VK_UI3_win-x86.zip
+
+      - name: Upload arm64 ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: VK_UI3_win-arm64
+          path: VK_UI3_win-arm64.zip
+
+      - name: Upload x64 ZIP to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.TOKEN }}
+          file: VK_UI3_win-x64.zip
+          asset_name: VK_UI3_win-x64_${{ steps.get_version.outputs.VERSION }}.zip
+          tag: ${{ steps.get_version.outputs.VERSION }}
+          overwrite: true
+        if: github.event.inputs.release == 'true'
+
+      - name: Upload x86 ZIP to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.TOKEN }}
+          file: VK_UI3_win-x86.zip
+          asset_name: VK_UI3_win-x86_${{ steps.get_version.outputs.VERSION }}.zip
+          tag: ${{ steps.get_version.outputs.VERSION }}
+          overwrite: true
+        if: github.event.inputs.release == 'true'
+
+      - name: Upload arm64 ZIP to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.TOKEN }}
+          file: VK_UI3_win-arm64.zip
+          asset_name: VK_UI3_win-arm64_${{ steps.get_version.outputs.VERSION }}.zip
+          tag: ${{ steps.get_version.outputs.VERSION }}
+          overwrite: true
+        if: github.event.inputs.release == 'true'
