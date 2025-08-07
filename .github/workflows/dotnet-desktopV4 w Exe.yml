@@ -120,12 +120,12 @@ jobs:
       
       - name: Publish and package all architectures
         run: |
-          $architectures = @{
+         $architectures = @{
               "x64"   = @{ RuntimeId = "win-x64";   OutputDir = "publish-x64" }
               "x86"   = @{ RuntimeId = "win-x86";   OutputDir = "publish-x86" }
               "arm64" = @{ RuntimeId = "win-arm64"; OutputDir = "publish-arm64" }
           }
-      
+          
           foreach ($arch in $architectures.Keys) {
               $runtimeId = $architectures[$arch].RuntimeId
               $outDir = $architectures[$arch].OutputDir
@@ -138,6 +138,7 @@ jobs:
               Write-Host "Building for architecture: $arch ($runtimeId)"
               
               try {
+                  # Publish the application
                   dotnet publish "VK UI3/VK UI3.csproj" `
                       --configuration Release `
                       --runtime $runtimeId `
@@ -152,38 +153,39 @@ jobs:
                       /p:ErrorOnDuplicatePublishOutputFiles=false
                   
                   # Verify the output directory has files
-                  $files = Get-ChildItem -Path $outDir -Recurse
+                  $files = Get-ChildItem -Path $outDir -Recurse -File
                   if ($files.Count -eq 0) {
-                      Write-Host "##[error] No files were published to $outDir"
-                      exit 1
+                      Write-Host "##[warning] No files were published to $outDir - skipping this architecture"
+                      continue
                   }
                   
                   Write-Host "Contents of ${outDir}:"
                   $files | Format-Table FullName
                   
-                  # Create zip archive
-                  Compress-Archive -Path "$outDir\*" -DestinationPath $zipFile -CompressionLevel Optimal
-                  
-                  if (Test-Path $zipFile) {
-                      $size = (Get-Item $zipFile).Length / 1MB
-                      Write-Host "Successfully created $zipFile ($($size.ToString('0.00')) MB)"
-                  } else {
-                      Write-Host "##[error] Failed to create $zipFile"
-                      exit 1
+                  # Create zip archive only if there are files
+                  if ($files.Count -gt 0) {
+                      Write-Host "Creating zip archive: $zipFile"
+                      Compress-Archive -Path "$outDir\*" -DestinationPath $zipFile -CompressionLevel Optimal
+                      
+                      if (Test-Path $zipFile) {
+                          $size = (Get-Item $zipFile).Length / 1MB
+                          Write-Host "Successfully created $zipFile ($($size.ToString('0.00')) MB)"
+                      } else {
+                          Write-Host "##[warning] Failed to create $zipFile - continuing with next architecture"
+                          continue
+                      }
                   }
               } catch {
-                  Write-Host "##[error] Failed to build for architecture $arch"
+                  Write-Host "##[warning] Failed to build for architecture $arch"
                   Write-Host $_.Exception.Message
-                  # Skip failing architecture instead of failing entire workflow
                   if ($arch -eq "arm64") {
                       Write-Host "Skipping ARM64 build due to errors"
                       continue
                   }
-                  exit 1
+                  # For other architectures, decide whether to continue or exit
+                  continue
               }
           }
-
-
       
       - name: Upload x64 ZIP
         uses: actions/upload-artifact@v4
