@@ -124,7 +124,10 @@ jobs:
           foreach ($arch in $architectures.Keys) {
               $runtimeId = $architectures[$arch].RuntimeId
               $outDir = $architectures[$arch].OutputDir
-              $zipFile = "VK_UI3_$arch.zip"
+              $zipFile = "VK_UI3_win-$arch.zip"
+              
+              # Create output directory if it doesn't exist
+              New-Item -ItemType Directory -Force -Path $outDir
               
               dotnet publish "VK UI3/VK UI3.csproj" `
                   --configuration Release `
@@ -152,38 +155,25 @@ jobs:
                   exit 1
               }
           }
-
-          
-      - name: Zip x64 build
-        run: |
-          powershell Compress-Archive -Path publish-x64\* -DestinationPath VK_UI3_win-x64.zip
-
-      - name: Zip x86 build
-        run: |
-          powershell Compress-Archive -Path publish-x86\* -DestinationPath VK_UI3_win-x86.zip
-
-      - name: Zip arm64 build
-        run: |
-          powershell Compress-Archive -Path publish-arm64\* -DestinationPath VK_UI3_win-arm64.zip
-
+      
       - name: Upload x64 ZIP
         uses: actions/upload-artifact@v4
         with:
           name: VK_UI3_win-x64
           path: VK_UI3_win-x64.zip
-
+      
       - name: Upload x86 ZIP
         uses: actions/upload-artifact@v4
         with:
           name: VK_UI3_win-x86
           path: VK_UI3_win-x86.zip
-
+      
       - name: Upload arm64 ZIP
         uses: actions/upload-artifact@v4
         with:
           name: VK_UI3_win-arm64
           path: VK_UI3_win-arm64.zip
-
+      
       - name: Upload x64 ZIP to release
         uses: svenstaro/upload-release-action@v2
         with:
@@ -193,7 +183,7 @@ jobs:
           tag: ${{ steps.get_version.outputs.VERSION }}
           overwrite: true
         if: github.event.inputs.release == 'true'
-
+      
       - name: Upload x86 ZIP to release
         uses: svenstaro/upload-release-action@v2
         with:
@@ -203,7 +193,7 @@ jobs:
           tag: ${{ steps.get_version.outputs.VERSION }}
           overwrite: true
         if: github.event.inputs.release == 'true'
-
+      
       - name: Upload arm64 ZIP to release
         uses: svenstaro/upload-release-action@v2
         with:
