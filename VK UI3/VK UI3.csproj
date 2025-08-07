@@ -51,9 +51,18 @@
 	<PropertyGroup>
 		<CsWinRTIIDOptimizerEnabled Condition="'$(Configuration)' == 'Release'">false</CsWinRTIIDOptimizerEnabled>
 	</PropertyGroup>
-	
 
-	  <!-- Конфигурации для публикации неупакованного приложения -->
+    <PropertyGroup>
+        <CsWinRTIIDOptimizerEnabled>false</CsWinRTIIDOptimizerEnabled>
+    </PropertyGroup>
+    <PropertyGroup>
+        <DebugType>none</DebugType>
+        <DebugSymbols>false</DebugSymbols>
+        <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
+    </PropertyGroup>
+
+
+    <!-- Конфигурации для публикации неупакованного приложения -->
 <PropertyGroup Condition="'$(PublishProfile)'=='Unpackaged'">
     <CsWinRTIIDOptimizerEnabled>false</CsWinRTIIDOptimizerEnabled>
 	<CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
