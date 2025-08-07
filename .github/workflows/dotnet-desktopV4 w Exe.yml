@@ -137,7 +137,7 @@ jobs:
                   -p:WindowsAppSDKSelfContained=true
       
               # Проверка содержимого папки
-              Write-Host "Contents of $outDir:"
+              Write-Host "Contents of ${outDir}:"
               Get-ChildItem -Path $outDir -Recurse | Format-Table FullName
               
               # Создание архива со всеми файлами
