@@ -113,8 +113,22 @@ jobs:
         run: |
           Remove-Item -Recurse -Force publish-x64, publish-x86, publish-arm64 -ErrorAction SilentlyContinue
 
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'  # Using stable LTS version instead of 9.0 preview
+      
+      - name: Install required workloads
+        run: |
+          dotnet workload install wasm-tools
+          dotnet workload install maui
+          dotnet workload install windowsdesktop
+      
       - name: Publish and package all architectures
         run: |
+          # Add NuGet package source for Windows App SDK
+          dotnet nuget add source --name "WindowsAppSDK" --source "https://api.nuget.org/v3/index.json"
+          
           $architectures = @{
               "x64"   = @{ RuntimeId = "win-x64";   OutputDir = "publish-x64" }
               "x86"   = @{ RuntimeId = "win-x86";   OutputDir = "publish-x86" }
@@ -126,35 +140,53 @@ jobs:
               $outDir = $architectures[$arch].OutputDir
               $zipFile = "VK_UI3_win-$arch.zip"
               
-              # Create output directory if it doesn't exist
+              # Clean and create output directory
+              Remove-Item -Path $outDir -Recurse -ErrorAction SilentlyContinue
               New-Item -ItemType Directory -Force -Path $outDir
               
-              dotnet publish "VK UI3/VK UI3.csproj" `
-                  --configuration Release `
-                  --runtime $runtimeId `
-                  --output $outDir `
-                  -p:PublishProfile=Properties\PublishProfiles\Unpackaged.pubxml `
-                  -p:SelfContained=true `
-                  -p:IncludeNativeLibrariesForSelfExtract=true `
-                  -p:WindowsPackageType=Win32 `
-                  -p:WindowsAppSDKSelfContained=true
-      
-              # Проверка содержимого папки
-              Write-Host "Contents of ${outDir}:"
-              Get-ChildItem -Path $outDir -Recurse | Format-Table FullName
+              Write-Host "Building for architecture: $arch ($runtimeId)"
               
-              # Создание архива со всеми файлами
-              Compress-Archive -Path "$outDir\*" -DestinationPath $zipFile -CompressionLevel Optimal
-              
-              # Проверка размера архива
-              if (Test-Path $zipFile) {
-                  $size = (Get-Item $zipFile).Length / 1MB
-                  Write-Host "Created $zipFile ($($size.ToString('0.00')) MB)"
-              } else {
-                  Write-Host "##[error] Failed to create $zipFile"
+              try {
+                  dotnet publish "VK UI3/VK UI3.csproj" `
+                      --configuration Release `
+                      --runtime $runtimeId `
+                      --output $outDir `
+                      -p:PublishProfile=Properties\PublishProfiles\Unpackaged.pubxml `
+                      -p:SelfContained=true `
+                      -p:IncludeNativeLibrariesForSelfExtract=true `
+                      -p:WindowsPackageType=Win32 `
+                      -p:WindowsAppSDKSelfContained=true `
+                      -p:SkipPriGeneration=true `
+                      -p:EnablePreviewMsixTooling=false `
+                      /p:ErrorOnDuplicatePublishOutputFiles=false
+                  
+                  # Verify the output directory has files
+                  $files = Get-ChildItem -Path $outDir -Recurse
+                  if ($files.Count -eq 0) {
+                      Write-Host "##[error] No files were published to $outDir"
+                      exit 1
+                  }
+                  
+                  Write-Host "Contents of ${outDir}:"
+                  $files | Format-Table FullName
+                  
+                  # Create zip archive
+                  Compress-Archive -Path "$outDir\*" -DestinationPath $zipFile -CompressionLevel Optimal
+                  
+                  if (Test-Path $zipFile) {
+                      $size = (Get-Item $zipFile).Length / 1MB
+                      Write-Host "Successfully created $zipFile ($($size.ToString('0.00')) MB)"
+                  } else {
+                      Write-Host "##[error] Failed to create $zipFile"
+                      exit 1
+                  }
+              } catch {
+                  Write-Host "##[error] Failed to build for architecture $arch"
+                  Write-Host $_.Exception.Message
                   exit 1
               }
           }
+
       
       - name: Upload x64 ZIP
         uses: actions/upload-artifact@v4
