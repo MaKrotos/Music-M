@@ -117,62 +117,64 @@ jobs:
         run: |
           # Настройки для разных архитектур
           $architectures = @{
-            "x64"   = @{ RuntimeId = "win-x64";   OutputDir = "publish-x64" }
-            "x86"   = @{ RuntimeId = "win-x86";   OutputDir = "publish-x86" }
-            "arm64" = @{ RuntimeId = "win-arm64"; OutputDir = "publish-arm64" }
+              "x64"   = @{ RuntimeId = "win-x64";   OutputDir = "publish-x64" }
+              "x86"   = @{ RuntimeId = "win-x86";   OutputDir = "publish-x86" }
+              "arm64" = @{ RuntimeId = "win-arm64"; OutputDir = "publish-arm64" }
           }
       
           foreach ($arch in $architectures.Keys) {
-            $runtimeId = $architectures[$arch].RuntimeId
-            $outDir = $architectures[$arch].OutputDir
-            $zipFile = "VK_UI3_$arch.zip"
-            
-            Write-Host "`n=== Processing $arch architecture ==="
-            
-            # Очистка
-            Remove-Item -Recurse -Force $outDir, $zipFile -ErrorAction SilentlyContinue
-            
-            # Создаем целевую директорию
-            New-Item -ItemType Directory -Path $outDir -Force | Out-Null
-            
-            # Публикация с правильным параметром output
-            dotnet publish "VK UI3/VK UI3.csproj" `
-              --configuration Release `
-              --runtime $runtimeId `
-              --output $outDir `
-              -p:PublishProfile=Properties\PublishProfiles\Unpackaged.pubxml `
-              -p:CsWinRTIIDOptimizerEnabled=false `
-              -p:DebugType=embedded `
-              -p:DebugSymbols=true `
-              -p:CopyOutputSymbolsToOutputDirectory=false `
-              -p:EnableMsixTooling=true `
-              -p:WindowsPackageType=None `
-              -p:SelfContained=true `
-              -p:PublishSingleFile=true `
-              --verbosity normal
+              $runtimeId = $architectures[$arch].RuntimeId
+              $outDir = $architectures[$arch].OutputDir
+              $zipFile = "VK_UI3_$arch.zip"
+              
+              Write-Host "`n=== Processing $arch architecture ==="
+              
+              # Очистка
+              Remove-Item -Recurse -Force $outDir, $zipFile -ErrorAction SilentlyContinue
+              
+              # Создаем целевую директорию
+              New-Item -ItemType Directory -Path $outDir -Force | Out-Null
+              
+              # Публикация с правильным параметром output
+              dotnet publish "VK UI3/VK UI3.csproj" `
+                  --configuration Release `
+                  --runtime $runtimeId `
+                  --output $outDir `
+                  -p:PublishProfile=Properties\PublishProfiles\Unpackaged.pubxml `
+                  -p:CsWinRTIIDOptimizerEnabled=false `
+                  -p:DebugType=none `
+                  -p:DebugSymbols=false `
+                  -p:CopyOutputSymbolsToOutputDirectory=false `
+                  -p:EnableMsixTooling=true `
+                  -p:WindowsPackageType=None `
+                  -p:SelfContained=true `
+                  -p:PublishSingleFile=true `
+                  --verbosity normal
       
-            # Проверка результатов
-            if (-not (Test-Path "$outDir/VK UI3.exe")) {
-              Write-Host "##[error] Publish failed - main executable not found"
-              Get-ChildItem -Path $outDir -Recurse | Format-Table FullName
-              exit 1
-            }
-      
-            # Создание архива
-            try {
-              Compress-Archive -Path "$outDir/*" -DestinationPath $zipFile -CompressionLevel Optimal
-              if (Test-Path $zipFile) {
-                $size = (Get-Item $zipFile).Length / 1MB
-                Write-Host "Successfully created $zipFile ($($size.ToString('0.00')) MB)"
-              } else {
-                Write-Host "##[error] Zip file creation failed"
-                exit 1
+              # Проверка результатов
+              if (-not (Test-Path "$outDir/VK UI3.exe")) {
+                  Write-Host "##[error] Publish failed - main executable not found"
+                  Get-ChildItem -Path $outDir -Recurse | Format-Table FullName
+                  exit 1
               }
-            } catch {
-              Write-Host "##[error] Error creating zip: $_"
-              exit 1
-            }
+      
+              # Создание архива
+              try {
+                  Compress-Archive -Path "$outDir/*" -DestinationPath $zipFile -CompressionLevel Optimal
+                  if (Test-Path $zipFile) {
+                      $size = (Get-Item $zipFile).Length / 1MB
+                      Write-Host "Successfully created $zipFile ($($size.ToString('0.00')) MB)"
+                  } else {
+                      Write-Host "##[error] Zip file creation failed"
+                      exit 1
+                  }
+              } catch {
+                  Write-Host "##[error] Error creating zip: $_"
+                  exit 1
+              }
           }
+
+          
       - name: Zip x64 build
         run: |
           powershell Compress-Archive -Path publish-x64\* -DestinationPath VK_UI3_win-x64.zip
