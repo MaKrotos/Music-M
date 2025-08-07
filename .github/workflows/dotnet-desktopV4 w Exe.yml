@@ -126,26 +126,15 @@ jobs:
               $outDir = $architectures[$arch].OutputDir
               $zipFile = "VK_UI3_$arch.zip"
               
-              Write-Host "=== Processing $arch architecture ==="
-              
-              # Очистка
-              Remove-Item -Recurse -Force $outDir, $zipFile -ErrorAction SilentlyContinue
-              
-              # Публикация
               dotnet publish "VK UI3/VK UI3.csproj" `
                   --configuration Release `
                   --runtime $runtimeId `
                   --output $outDir `
                   -p:PublishProfile=Properties\PublishProfiles\Unpackaged.pubxml `
-                  -p:CsWinRTIIDOptimizerEnabled=false `
-                  -p:DebugType=none `
-                  -p:DebugSymbols=false `
-                  -p:CopyOutputSymbolsToOutputDirectory=false `
-                  -p:EnableMsixTooling=true `
-                  -p:WindowsPackageType=None `
                   -p:SelfContained=true `
-                  -p:PublishSingleFile=true `
-                  --verbosity normal
+                  -p:IncludeNativeLibrariesForSelfExtract=true `
+                  -p:WindowsPackageType=Win32 `
+                  -p:WindowsAppSDKSelfContained=true
       
               # Проверка содержимого папки
               Write-Host "Contents of $outDir:"
