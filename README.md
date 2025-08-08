@@ -1,5 +1,6 @@
 [![TotalDownloads](https://img.shields.io/github/downloads/MaKrotos/Music-M/total?label=Загрузок)](https://github.com/MaKrotos/Music-M/releases "Download")
 [![OS - Windows](https://img.shields.io/badge/OS-Windows-blue?logo=windows&logoColor=white)](https://github.com/MaKrotos/Music-M/releases "Download")
+[![GitHub Release](https://img.shields.io/github/v/release/MaKrotos/Music-M?include_prereleases&label=Latest%20Release)](https://github.com/MaKrotos/Music-M/releases)
 
 ## Описание
 Music M — это абсолютно бесплатное приложение для прослушивания музыки в социальной сети VK.
