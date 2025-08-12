@@ -1,4 +1,4 @@
-name: Автосборка Music M (Unpacked)
+name: Автосборка Music M (Unpacked - все платформы)
 
 on:
   workflow_dispatch:
@@ -29,15 +29,12 @@ on:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        configuration: [Unpacked]
-        platform: [x64]
-
     runs-on: windows-latest
 
     env:
-      Project_Name: "VK UI3" # Имя основного проекта
+      Project_Name: "VK UI3"
+      Output_Dir: "${{ github.workspace }}\Output"
+      Configuration: "Unpacked"
 
     steps:
       - name: Checkout
@@ -45,17 +42,24 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Устанавливаем .NET 8.x вместо 9.x
       - name: Setup .NET 8.x
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
+
+      # Устанавливаем необходимые workload'ы
+      - name: Install required workloads
+        run: |
+          dotnet workload install wasm-tools
+          dotnet workload install maui
+          dotnet workload install windowsdesktop
 
       - name: Restore NuGet packages
         run: dotnet restore "$env:Project_Name/$env:Project_Name.csproj"
 
       - name: Обновить TOKEN_STAT_SLY
         run: |
-          $repoName = "${{ github.repository }}".Split('/')[1]
           $content = Get-Content -Path "$env:Project_Name/StaticParams.cs" -ErrorAction SilentlyContinue
           if ($content) {
             $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', '"${{ secrets.TOKEN_STAT_SLY }}"'
@@ -63,45 +67,66 @@ jobs:
             Write-Output $updatedContent
           }
 
-      - name: Build Unpacked Application
+      - name: Build and Publish for all platforms
         run: |
-          dotnet build "$env:Project_Name/$env:Project_Name.csproj" `
-            -c $env:Configuration `
-            -p:Platform=$env:Platform `
-            -p:WindowsPackageType=None `
-            -p:SelfContained=true `
-            -p:WindowsAppSDKSelfContained=true `
-            -p:RuntimeIdentifier=win-${{ matrix.platform }}
-        env:
-          Configuration: ${{ matrix.configuration }}
-          Platform: ${{ matrix.platform }}
+          # Явно указываем использовать .NET 8.x
+          $env:DOTNET_ROOT = "C:\Program Files\dotnet\sdk\8.0.400"
 
-      - name: Publish Unpacked Application
-        run: |
-          $outputDir = "${{ github.workspace }}\Output\${{ matrix.platform }}\${{ matrix.configuration }}"
-          New-Item -ItemType Directory -Path $outputDir -Force
-          dotnet publish "$env:Project_Name/$env:Project_Name.csproj" `
-            -c $env:Configuration `
-            -r win-${{ matrix.platform }} `
-            --self-contained true `
-            -p:WindowsPackageType=None `
-            -p:WindowsAppSDKSelfContained=true `
-            -o $outputDir
-        env:
-          Configuration: ${{ matrix.configuration }}
+          $platforms = @(
+            @{ Platform="x64"; Runtime="win-x64" },
+            @{ Platform="x86"; Runtime="win-x86" },
+            @{ Platform="ARM64"; Runtime="win-arm64" }
+          )
 
-      - name: Zip Unpacked Output
-        run: |
-          $outputDir = "${{ github.workspace }}\Output\${{ matrix.platform }}\${{ matrix.configuration }}"
-          $zipPath = "${{ github.workspace }}\Output\VK_UI3_Unpacked_${{ matrix.platform }}.zip"
-          Compress-Archive -Path "$outputDir\*" -DestinationPath $zipPath -Force
+          foreach ($platform in $platforms) {
+            Write-Host "Сборка для платформы $($platform.Platform)..."
 
-      - name: Upload Unpacked Artifact
+            # Очистка предыдущих выходных данных
+            Remove-Item -Path "bin\$($platform.Platform)\$env:Configuration" -Recurse -Force -ErrorAction SilentlyContinue
+            Remove-Item -Path "obj\$($platform.Platform)\$env:Configuration" -Recurse -Force -ErrorAction SilentlyContinue
+
+            # Сборка с явным указанием версии .NET
+            & "$env:DOTNET_ROOT\dotnet.exe" build "$env:Project_Name/$env:Project_Name.csproj" `
+              -c $env:Configuration `
+              -p:Platform=$($platform.Platform) `
+              -p:WindowsPackageType=None `
+              -p:SelfContained=true `
+              -p:WindowsAppSDKSelfContained=true `
+              -p:RuntimeIdentifier=$($platform.Runtime) `
+              -p:UseWindowsAppSDK=true `
+              -p:WindowsAppSDKSelfContainedDeployment=true
+
+            # Публикация
+            $outputDir = "$env:Output_Dir\$($platform.Platform)\$env:Configuration"
+            New-Item -ItemType Directory -Path $outputDir -Force
+            & "$env:DOTNET_ROOT\dotnet.exe" publish "$env:Project_Name/$env:Project_Name.csproj" `
+              -c $env:Configuration `
+              -r $($platform.Runtime) `
+              --self-contained true `
+              -p:WindowsPackageType=None `
+              -p:WindowsAppSDKSelfContained=true `
+              -p:Platform=$($platform.Platform) `
+              -p:UseWindowsAppSDK=true `
+              -p:WindowsAppSDKSelfContainedDeployment=true `
+              -o $outputDir
+
+            # Архивирование
+            $zipPath = "$env:Output_Dir\VK_UI3_Unpacked_$($platform.Platform).zip"
+            Compress-Archive -Path "$outputDir\*" -DestinationPath $zipPath -Force
+
+            Write-Host "Сборка для платформы $($platform.Platform) завершена"
+          }
+
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: VK_UI3_Unpacked_${{ matrix.platform }}
-          path: ${{ github.workspace }}\Output\VK_UI3_Unpacked_${{ matrix.platform }}.zip
+          name: VK_UI3_Unpacked_All
+          path: |
+            ${{ env.Output_Dir }}\VK_UI3_Unpacked_x64.zip
+            ${{ env.Output_Dir }}\VK_UI3_Unpacked_x86.zip
+            ${{ env.Output_Dir }}\VK_UI3_Unpacked_ARM64.zip
 
+      # Остальные шаги (версия, релиз, телеграм) остаются без изменений
       - name: Извлечь версию
         id: get_version
         run: |
@@ -150,8 +175,8 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.TOKEN }}
-          file: ${{ github.workspace }}\Output\VK_UI3_Unpacked_*.zip
-          asset_name: VK_UI3_Unpacked_${{ matrix.platform }}
+          file: ${{ env.Output_Dir }}\VK_UI3_Unpacked_*.zip
+          asset_name: VK_UI3_Unpacked
           tag: ${{ steps.get_version.outputs.version }}
           overwrite: true
           file_glob: true
