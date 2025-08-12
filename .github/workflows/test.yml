@@ -85,9 +85,8 @@ jobs:
           Write-Host "Current working directory: $(Get-Location)"
 
       # Создание пакета приложения путем сборки и упаковки проекта
-      - name: Create the app package
+      - name: Build the project (unpacked)
         run: |
-          $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
           $platforms = @{
             "x64"   = @{ PlatformTarget = "x64";   RuntimeId = "win-x64" }
             "x86"   = @{ PlatformTarget = "x86";   RuntimeId = "win-x86" }
@@ -97,23 +96,21 @@ jobs:
           foreach ($platform in $platforms.Keys) {
             Write-Host "Building for platform: $platform"
             
+            # Основная сборка проекта без создания пакета
             msbuild $env:Solution_Name `
               /p:Configuration=$env:Configuration `
               /p:Platform=$platform `
               /p:PlatformTarget=$($platforms[$platform].PlatformTarget) `
               /p:RuntimeIdentifier=$($platforms[$platform].RuntimeId) `
-              /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode `
-              /p:AppxBundle=$env:Appx_Bundle `
-              /p:PackageCertificateKeyFile="$certificatePath" `
-              /p:PackageCertificatePassword="${{ secrets.PFX_PASSWORD }}" `
-              /p:AppxPackageDir="$env:Appx_Package_Dir" `
-              /p:GenerateAppxPackageOnBuild=true `
+              /p:AppxPackageBuildMode=None `  # Отключаем создание пакета
               /p:TOKEN_STAT_SLY="${{ secrets.TOKEN_STAT_SLY }}"
+            
+            # Копируем выходные файлы в отдельную папку для каждой платформы
+            $outputPath = "${{ github.workspace }}\Output\$platform"
+            New-Item -ItemType Directory -Path $outputPath -Force
+            Copy-Item -Path "${{ github.workspace }}\$env:Solution_Name\bin\$platform\$env:Configuration\*" -Destination $outputPath -Recurse -Force
           }
         env:
-          Appx_Bundle: Never
-          Appx_Package_Build_Mode: SideloadOnly
-          Appx_Package_Dir: Packages\
           Configuration: ${{ matrix.configuration }}
 
       # Удалить pfx
