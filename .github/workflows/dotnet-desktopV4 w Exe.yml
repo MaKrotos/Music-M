@@ -78,8 +78,8 @@ jobs:
 
       - name: Restore NuGet packages
         run: dotnet restore "VK UI3/VK UI3.csproj"
-
-      - name: Publish Unpacked App
+      
+      - name: Publish Unpacked App with Proper Resource Generation
         run: |
           $architectures = @{
               "x64"   = @{ RuntimeId = "win-x64";   OutputDir = "publish-x64" }
@@ -90,22 +90,52 @@ jobs:
           foreach ($arch in $architectures.Keys) {
               $runtimeId = $architectures[$arch].RuntimeId
               $outDir = $architectures[$arch].OutputDir
+              $intermediateDir = "obj\Release\net8.0-windows10.0.22000.0\$runtimeId"
               $zipFile = "VK_UI3_win-$arch-unpacked.zip"
               
-              Write-Host "Building Unpacked version for $arch"
+              Write-Host "Building for architecture: $arch"
               
+              # 1. Clean previous builds
+              Remove-Item -Path $outDir, $intermediateDir -Recurse -Force -ErrorAction SilentlyContinue
+              
+              # 2. Restore and build (without publish)
+              dotnet build "VK UI3/VK UI3.csproj" `
+                  --configuration Release `
+                  --runtime $runtimeId `
+                  -p:WindowsPackageType=None `
+                  -p:GenerateAppxPackageOnBuild=false `
+                  -p:SkipPriGeneration=false `
+                  -p:AppxBundle=Never
+              
+              # 3. Verify PRI files were generated
+              $priFiles = Get-ChildItem -Path $intermediateDir -Filter "*.pri" -Recurse
+              if ($priFiles.Count -eq 0) {
+                  Write-Host "##[warning] No PRI files generated for $arch!"
+              }
+              
+              # 4. Publish with all resources
               dotnet publish "VK UI3/VK UI3.csproj" `
                   --configuration Release `
                   --runtime $runtimeId `
                   --output $outDir `
+                  --no-build `
                   -p:WindowsPackageType=None `
                   -p:WindowsAppSDKSelfContained=true `
                   -p:SelfContained=true `
-                  -p:IncludeNativeLibrariesForSelfExtract=true `
-                  /p:ErrorOnDuplicatePublishOutputFiles=false
+                  -p:IncludeNativeLibrariesForSelfExtract=true
               
+              # 5. Verify all files are present
+              $requiredFiles = @("*.exe", "*.dll", "*.pri", "*.config")
+              foreach ($pattern in $requiredFiles) {
+                  $files = Get-ChildItem -Path $outDir -Filter $pattern
+                  if ($files.Count -eq 0) {
+                      Write-Host "##[warning] Missing $pattern files in output!"
+                  }
+              }
+              
+              # 6. Create zip archive
               if (Test-Path $outDir) {
-                  Compress-Archive -Path "$outDir\*" -DestinationPath $zipFile
+                  Compress-Archive -Path "$outDir\*" -DestinationPath $zipFile -CompressionLevel Optimal
                   Write-Host "Created $zipFile"
               }
           }
