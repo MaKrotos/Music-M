@@ -90,7 +90,7 @@ jobs:
           foreach ($arch in $architectures.Keys) {
               $runtimeId = $architectures[$arch].RuntimeId
               $outDir = $architectures[$arch].OutputDir
-              $intermediateDir = "obj\Release\net8.0-windows10.0.22000.0\$runtimeId"
+              $intermediateDir = "obj\Unpacked\net8.0-windows10.0.22000.0\$runtimeId"
               $zipFile = "VK_UI3_win-$arch-unpacked.zip"
               
               Write-Host "Building for architecture: $arch"
@@ -100,7 +100,7 @@ jobs:
               
               # 2. Restore and build (without publish)
               dotnet build "VK UI3/VK UI3.csproj" `
-                  --configuration Release `
+                  --configuration Unpacked `
                   --runtime $runtimeId `
                   -p:WindowsPackageType=None `
                   -p:GenerateAppxPackageOnBuild=false `
@@ -115,7 +115,7 @@ jobs:
               
               # 4. Publish with all resources
               dotnet publish "VK UI3/VK UI3.csproj" `
-                  --configuration Release `
+                  --configuration Unpacked `
                   --runtime $runtimeId `
                   --output $outDir `
                   --no-build `
