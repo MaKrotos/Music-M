@@ -83,6 +83,7 @@ jobs:
       - name: Print working directory
         run: |
           Write-Host "Current working directory: $(Get-Location)"
+
       # Создание пакета приложения путем сборки и упаковки проекта
       - name: Create the app package
         run: |
