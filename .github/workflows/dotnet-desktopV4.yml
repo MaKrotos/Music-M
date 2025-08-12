@@ -1,4 +1,4 @@
-name: Автосборка Music M (Unpacked)
+name: Автосборка Music M
 
 on:
   workflow_dispatch:
@@ -31,94 +31,166 @@ jobs:
   build:
     strategy:
       matrix:
-        configuration: [Unpacked]
+        configuration: [Release]
         platform: [x64]
 
-    runs-on: windows-latest
+    runs-on:
+      windows-latest # Для получения списка доступных типов раннеров
+      # см. https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
 
     env:
-      Project_Name: "VK UI3" # Имя основного проекта
+      Solution_Name: "VK UI3 (Package)" # Замените на имя вашего решения, например, App1.sln.
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          node-version: 16
           fetch-depth: 0
 
-      - name: Setup .NET 8.x
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
-
-      - name: Restore NuGet packages
-        run: dotnet restore "$env:Project_Name/$env:Project_Name.csproj"
-
+      # Декодируем закодированный в base64 pfx и сохраняем Signing_Certificate
+      - name: Decode the pfx
+        run: |
+          $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
+          $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
+          [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
       - name: Обновить TOKEN_STAT_SLY
         run: |
           $repoName = "${{ github.repository }}".Split('/')[1]
-          $content = Get-Content -Path "$env:Project_Name/StaticParams.cs" -ErrorAction SilentlyContinue
-          if ($content) {
-            $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', '"${{ secrets.TOKEN_STAT_SLY }}"'
-            Set-Content -Path "$env:Project_Name/StaticParams.cs" -Value $updatedContent
-            Write-Output $updatedContent
+          $content = Get-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs"
+          $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', '"${{ secrets.TOKEN_STAT_SLY }}"'
+          Set-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs" -Value $updatedContent
+          Write-Output $updatedContent
+      - name: Display disk tree
+        run: |
+          Get-ChildItem -Recurse | Sort-Object Length -Descending
+      # Установить .NET Core
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      # Добавить MSBuild в PATH: https://github.com/microsoft/setup-msbuild
+      - name: Setup MSBuild.exe
+        uses: microsoft/setup-msbuild@v2
+
+      # Восстановить приложение для заполнения папки obj RuntimeIdentifiers
+      - name: Restore the application
+        run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
+        env:
+          Configuration: ${{ matrix.configuration }}
+
+      - name: Print working directory
+        run: |
+          Write-Host "Current working directory: $(Get-Location)"
+      - name: Get Certificate Thumbprint and Replace in Project File
+        run: |
+          $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
+          $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
+          [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
+          $pfxPassword = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -AsPlainText -Force
+          $pfxCert = Get-PfxCertificate -FilePath $certificatePath -Password $pfxPassword
+          Write-Host "Certificate Thumbprint: $($pfxCert.Thumbprint)"
+          $projectFile = "VK UI3 (Package)/VK UI3 (Package).wapproj"
+          $content = Get-Content -Path $projectFile -Raw
+          $content = $content -replace '(?<=<PackageCertificateThumbprint>).+?(?=</PackageCertificateThumbprint>)', $pfxCert.Thumbprint
+          Set-Content -Path $projectFile -Value $content
+      - name: Install PFX certificate
+        run: |
+          $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
+          $password = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -Force -AsPlainText
+          Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation Cert:\LocalMachine\My -Password $password
+      # Создание пакета приложения путем сборки и упаковки проекта
+      - name: Create the app package
+        run: |
+          $platforms = "x64", "x86", "ARM64"
+          foreach ($platform in $platforms) {
+            $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
+            msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$platform /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile="$certificatePath" /p:PackageCertificatePassword="${{ secrets.PFX_PASSWORD }}" /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true /p:TOKEN_STAT_SLY="${{ secrets.TOKEN_STAT_SLY }}"
           }
-
-      - name: Build Unpacked Application
-        run: |
-          dotnet build "$env:Project_Name/$env:Project_Name.csproj" `
-            -c $env:Configuration `
-            -p:Platform=$env:Platform `
-            -p:WindowsPackageType=None `
-            -p:SelfContained=true `
-            -p:WindowsAppSDKSelfContained=true `
-            -p:RuntimeIdentifier=win-${{ matrix.platform }}
         env:
+          Appx_Bundle: Never
+          Appx_Package_Build_Mode: SideloadOnly
+          Appx_Package_Dir: Packages\
           Configuration: ${{ matrix.configuration }}
-          Platform: ${{ matrix.platform }}
+          TOKEN_STAT_SLY: ${{ secrets.TOKEN_STAT_SLY }}
 
-      - name: Publish Unpacked Application
+      # Удалить pfx
+      - name: Remove the pfx
         run: |
-          $outputDir = "${{ github.workspace }}\Output\${{ matrix.platform }}\${{ matrix.configuration }}"
-          New-Item -ItemType Directory -Path $outputDir -Force
-          dotnet publish "$env:Project_Name/$env:Project_Name.csproj" `
-            -c $env:Configuration `
-            -r win-${{ matrix.platform }} `
-            --self-contained true `
-            -p:WindowsPackageType=None `
-            -p:WindowsAppSDKSelfContained=true `
-            -o $outputDir
-        env:
-          Configuration: ${{ matrix.configuration }}
-
-      - name: Zip Unpacked Output
+          $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
+          Remove-Item -path "$certificatePath"
+      # Переименовать .cer файл
+      - name: Rename the .cer file
         run: |
-          $outputDir = "${{ github.workspace }}\Output\${{ matrix.platform }}\${{ matrix.configuration }}"
-          $zipPath = "${{ github.workspace }}\Output\VK_UI3_Unpacked_${{ matrix.platform }}.zip"
-          Compress-Archive -Path "$outputDir\*" -DestinationPath $zipPath -Force
-
-      - name: Upload Unpacked Artifact
+          Get-ChildItem -Path "${{ env.Solution_Name }}\\Packages" -Filter *.cer -Recurse -Depth 1 | ForEach-Object {
+            Rename-Item -Path $_.FullName -NewName "Certificate.cer"
+          }
+      # Move .msix, .cer, and .msixbundle files from subfolders to the Packages folder
+      - name: Move files to the Packages folder
+        run: |
+          $fileTypes = "*.msix", "*.cer", "*.msixbundle"
+          foreach ($fileType in $fileTypes) {
+            Get-ChildItem -Path "${{ env.Solution_Name }}\\Packages" -Filter $fileType -Recurse -Depth 1 | ForEach-Object {
+              $destinationFile = "${{ env.Solution_Name }}\\Packages\\" + $_.Name
+              if (-Not (Test-Path -Path $destinationFile)) {
+                Move-Item -Path $_.FullName -Destination $destinationFile
+              }
+            }
+          }
+      - name: Display disk tree
+        run: |
+          Get-ChildItem -Recurse | Sort-Object Length -Descending
+      # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
+      - name: Upload MSIX package
         uses: actions/upload-artifact@v4
         with:
-          name: VK_UI3_Unpacked_${{ matrix.platform }}
-          path: ${{ github.workspace }}\Output\VK_UI3_Unpacked_${{ matrix.platform }}.zip
-
+          name: MSIX Package
+          path: |
+            ${{ env.Solution_Name }}\\Packages\*.cer
+            ${{ env.Solution_Name }}\\Packages\*.msixbundle
+            ${{ env.Solution_Name }}\\Packages\*.msix
       - name: Извлечь версию
         id: get_version
         run: |
-          $csprojPath = "$env:Project_Name/$env:Project_Name.csproj"
-          [xml]$doc = Get-Content $csprojPath
-          $version = $doc.Project.PropertyGroup.AppxPackageVersion
-          if (-not $version) {
-            $version = $doc.Project.PropertyGroup.Version
-          }
-          echo "version=$version" >> $GITHUB_OUTPUT
+          $repoName = "${{ github.repository }}".Split('/')[1]
+          $csprojPath = "D:\a\$repoName\$repoName\VK UI3\VK UI3.csproj"
+          $doc = New-Object xml
+          $doc.Load((Convert-Path $csprojPath))
+          $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText
+          echo "::set-output name=VERSION::$version"
           echo "Версия: $version"
+        continue-on-error: true
+        if: github.event.inputs.release == 'true'
+
+      - name: Подставить версию в Package.appxmanifest
+        run: |
+          $repoName = "${{ github.repository }}".Split('/')[1]
+          $csproj = "D:\a\$repoName\$repoName\VK UI3\VK UI3.csproj"
+          $manifest = "D:\a\$repoName\$repoName\VK UI3 (Package)\Package.appxmanifest"
+          [xml]$doc = Get-Content $csproj
+          $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText
+          (Get-Content $manifest) -replace 'Version="[^"]*"', 'Version="' + $version + '"' | Set-Content $manifest
+        if: github.event.inputs.release == 'true'
+
+      - name: Вывести версию
+        run: |
+          echo "Извлеченная версия: ${{ steps.get_version.outputs.VERSION }}"
+      - name: Получить релизы
+        id: get_releases
+        run: |
+          $headers = @{
+            "Authorization" = "token ${{ secrets.TOKEN }}"
+          }
+          $releases = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases" -Headers $headers
+          echo "::set-output name=releases::$releases"
+        shell: pwsh
         if: github.event.inputs.release == 'true'
 
       - name: Проверить существование релиза
         id: check_release
         run: |
-          $version = "${{ steps.get_version.outputs.version }}"
+          $version = "${{ steps.get_version.outputs.VERSION }}"
           $headers = @{
             "Authorization" = "token ${{ secrets.TOKEN }}"
           }
@@ -126,11 +198,12 @@ jobs:
           $release = $releases | Where-Object { $_.tag_name -eq $version -and $_.draft -eq $false -and $_.prerelease -eq $false }
           if ($release) {
             Write-Host "Релиз с тегом $version уже существует"
-            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "::set-output name=exists::true"
           } else {
             Write-Host "Релиз с тегом $version не найден"
-            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "::set-output name=exists::false"
           }
+        shell: pwsh
         if: github.event.inputs.release == 'true'
 
       - name: Создать релиз
@@ -139,7 +212,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
-          tag_name: ${{ steps.get_version.outputs.version }}
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
           release_name: ${{ github.event.inputs.namevers }}
           body: ${{ github.event.inputs.descr }}
           draft: false
@@ -150,9 +223,9 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.TOKEN }}
-          file: ${{ github.workspace }}\Output\VK_UI3_Unpacked_*.zip
-          asset_name: VK_UI3_Unpacked_${{ matrix.platform }}
-          tag: ${{ steps.get_version.outputs.version }}
+          file: ${{ env.Solution_Name }}/Packages/*
+          asset_name: ${{ env.Solution_Name }}-release-files
+          tag: ${{ steps.get_version.outputs.VERSION }}
           overwrite: true
           file_glob: true
         if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
@@ -161,14 +234,14 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          RELEASE_URL: https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.version }}
+          RELEASE_URL: https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}
         run: |
           $telegramBotToken = '${{ secrets.TELEGRAM_BOT_TOKEN }}'
           $telegramChatId = '${{ secrets.TELEGRAM_CHAT_ID }}'
-          $releaseUrl = 'https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.version }}'
+          $releaseUrl = 'https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}'
           $message = @"
           <b>🎉 Новый релиз:</b> ${{ github.event.inputs.namevers }}
-          <b>📦 Версия:</b> ${{ steps.get_version.outputs.version }}
+          <b>📦 Версия:</b> ${{ steps.get_version.outputs.VERSION }}
           <b>📝 Описание:</b> ${{ github.event.inputs.descr }}
           <b>🔗 <a href='$releaseUrl'>Ссылка на релиз</a></b>
           "@
