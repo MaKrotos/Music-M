@@ -54,7 +54,6 @@ jobs:
           $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
           $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
           [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
-
       - name: Обновить TOKEN_STAT_SLY
         run: |
           $repoName = "${{ github.repository }}".Split('/')[1]
@@ -62,11 +61,9 @@ jobs:
           $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', '"${{ secrets.TOKEN_STAT_SLY }}"'
           Set-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs" -Value $updatedContent
           Write-Output $updatedContent
-
       - name: Display disk tree
         run: |
           Get-ChildItem -Recurse | Sort-Object Length -Descending
-
       # Установить .NET Core
       - name: Install .NET Core
         uses: actions/setup-dotnet@v4
@@ -77,38 +74,6 @@ jobs:
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v2
 
-      - name: Извлечь версию
-        id: get_version
-        run: |
-          $repoName = "${{ github.repository }}".Split('/')[1]
-          $csprojPath = "D:\a\$repoName\$repoName\VK UI3\VK UI3.csproj"
-          $doc = New-Object xml
-          $doc.Load((Convert-Path $csprojPath))
-          $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText
-          echo "::set-output name=VERSION::$version"
-          echo "Версия: $version"
-        continue-on-error: true
-        if: github.event.inputs.release == 'true'
-
-      - name: Подставить версию в Package.appxmanifest
-        run: |
-          $repoName = "${{ github.repository }}".Split('/')[1]
-          $csproj = "D:\a\$repoName\$repoName\VK UI3\VK UI3.csproj"
-          $manifest = "D:\a\$repoName\$repoName\VK UI3 (Package)\Package.appxmanifest"
-          [xml]$doc = Get-Content $csproj
-          $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText.Trim()
-          [xml]$xml = Get-Content $manifest
-          $xml.Package.Identity.Version = $version
-          $xml.Save($manifest)
-        if: github.event.inputs.release == 'true'
-
-      - name: Upload Package.appxmanifest as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: PackageAppxManifest
-          path: D:\a\Music-M\Music-M\VK UI3 (Package)\Package.appxmanifest
-        if: github.event.inputs.release == 'true'
-
       # Восстановить приложение для заполнения папки obj RuntimeIdentifiers
       - name: Restore the application
         run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
@@ -118,28 +83,23 @@ jobs:
       - name: Print working directory
         run: |
           Write-Host "Current working directory: $(Get-Location)"
-
       - name: Get Certificate Thumbprint and Replace in Project File
         run: |
           $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
           $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
           [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
-
           $pfxPassword = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -AsPlainText -Force
           $pfxCert = Get-PfxCertificate -FilePath $certificatePath -Password $pfxPassword
           Write-Host "Certificate Thumbprint: $($pfxCert.Thumbprint)"
-
           $projectFile = "VK UI3 (Package)/VK UI3 (Package).wapproj"
           $content = Get-Content -Path $projectFile -Raw
           $content = $content -replace '(?<=<PackageCertificateThumbprint>).+?(?=</PackageCertificateThumbprint>)', $pfxCert.Thumbprint
           Set-Content -Path $projectFile -Value $content
-
       - name: Install PFX certificate
         run: |
           $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
           $password = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -Force -AsPlainText
           Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation Cert:\LocalMachine\My -Password $password
-
       # Создание пакета приложения путем сборки и упаковки проекта
       - name: Create the app package
         run: |
@@ -160,14 +120,12 @@ jobs:
         run: |
           $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
           Remove-Item -path "$certificatePath"
-
       # Переименовать .cer файл
       - name: Rename the .cer file
         run: |
           Get-ChildItem -Path "${{ env.Solution_Name }}\\Packages" -Filter *.cer -Recurse -Depth 1 | ForEach-Object {
             Rename-Item -Path $_.FullName -NewName "Certificate.cer"
           }
-
       # Move .msix, .cer, and .msixbundle files from subfolders to the Packages folder
       - name: Move files to the Packages folder
         run: |
@@ -180,11 +138,9 @@ jobs:
               }
             }
           }
-
       - name: Display disk tree
         run: |
           Get-ChildItem -Recurse | Sort-Object Length -Descending
-
       # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
       - name: Upload MSIX package
         uses: actions/upload-artifact@v4
@@ -194,11 +150,32 @@ jobs:
             ${{ env.Solution_Name }}\\Packages\*.cer
             ${{ env.Solution_Name }}\\Packages\*.msixbundle
             ${{ env.Solution_Name }}\\Packages\*.msix
+      - name: Извлечь версию
+        id: get_version
+        run: |
+          $repoName = "${{ github.repository }}".Split('/')[1]
+          $csprojPath = "D:\a\$repoName\$repoName\VK UI3\VK UI3.csproj"
+          $doc = New-Object xml
+          $doc.Load((Convert-Path $csprojPath))
+          $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText
+          echo "::set-output name=VERSION::$version"
+          echo "Версия: $version"
+        continue-on-error: true
+        if: github.event.inputs.release == 'true'
+
+      - name: Подставить версию в Package.appxmanifest
+        run: |
+          $repoName = "${{ github.repository }}".Split('/')[1]
+          $csproj = "D:\a\$repoName\$repoName\VK UI3\VK UI3.csproj"
+          $manifest = "D:\a\$repoName\$repoName\VK UI3 (Package)\Package.appxmanifest"
+          [xml]$doc = Get-Content $csproj
+          $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText
+          (Get-Content $manifest) -replace 'Version="[^"]*"', 'Version="' + $version + '"' | Set-Content $manifest
+        if: github.event.inputs.release == 'true'
 
       - name: Вывести версию
         run: |
           echo "Извлеченная версия: ${{ steps.get_version.outputs.VERSION }}"
-
       - name: Получить релизы
         id: get_releases
         run: |
