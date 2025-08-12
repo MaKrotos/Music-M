@@ -1,4 +1,4 @@
-name: Автосборка Music M w EXE
+name: Автосборка Music M (Unpacked)
 
 on:
   workflow_dispatch:
@@ -32,11 +32,9 @@ jobs:
     strategy:
       matrix:
         configuration: [Unpacked]
-        platform: [x64]
+        platform: [x64, x86, ARM64]
 
-    runs-on:
-      windows-latest
-
+    runs-on: windows-latest
     env:
       Solution_Name: "VK UI3 (Package)"
 
@@ -44,20 +42,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          node-version: 16
           fetch-depth: 0
 
       - name: Обновить TOKEN_STAT_SLY
         run: |
           $repoName = "${{ github.repository }}".Split('/')[1]
-          $content = Get-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs"
+          $content = Get-Content -Path "${{ github.workspace }}\VK UI3\StaticParams.cs"
           $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', '"${{ secrets.TOKEN_STAT_SLY }}"'
-          Set-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs" -Value $updatedContent
-          Write-Output $updatedContent
-
-      - name: Display disk tree
-        run: |
-          Get-ChildItem -Recurse | Sort-Object Length -Descending
+          Set-Content -Path "${{ github.workspace }}\VK UI3\StaticParams.cs" -Value $updatedContent
 
       - name: Install .NET Core
         uses: actions/setup-dotnet@v4
@@ -67,76 +59,55 @@ jobs:
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v2
 
-      - name: Restore the application
-        run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
-        env:
-          Configuration: ${{ matrix.configuration }}
+      - name: Restore dependencies
+        run: dotnet restore "VK UI3/VK UI3.csproj"
 
-      - name: Print working directory
+      - name: Build solution
         run: |
-          Write-Host "Current working directory: $(Get-Location)"
+          $platform = "${{ matrix.platform }}".ToLower()
+          $runtimeId = if ($platform -eq "x64") { "win-x64" } elseif ($platform -eq "x86") { "win-x86" } else { "win-arm64" }
+          
+          dotnet build "VK UI3/VK UI3.csproj" `
+            -c ${{ matrix.configuration }} `
+            -p:Platform=${{ matrix.platform }} `
+            -p:RuntimeIdentifier=$runtimeId `
+            -p:TOKEN_STAT_SLY="${{ secrets.TOKEN_STAT_SLY }}"
 
-      - name: Build the application
+      - name: Publish application
         run: |
-          $platforms = "x64", "x86", "ARM64"
-          foreach ($platform in $platforms) {
-            msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$platform /p:TOKEN_STAT_SLY="${{ secrets.TOKEN_STAT_SLY }}"
-          }
-        env:
-          Configuration: ${{ matrix.configuration }}
-          TOKEN_STAT_SLY: ${{ secrets.TOKEN_STAT_SLY }}
+          $platform = "${{ matrix.platform }}".ToLower()
+          $runtimeId = if ($platform -eq "x64") { "win-x64" } elseif ($platform -eq "x86") { "win-x86" } else { "win-arm64" }
+          
+          dotnet publish "VK UI3/VK UI3.csproj" `
+            -c ${{ matrix.configuration }} `
+            -r $runtimeId `
+            --self-contained true `
+            -o "publish/${{ matrix.platform }}" `
+            /p:Platform=${{ matrix.platform }} `
+            /p:TOKEN_STAT_SLY="${{ secrets.TOKEN_STAT_SLY }}"
 
-      - name: Publish the application
+      - name: Create zip archive
         run: |
-          $platforms = "x64", "x86", "ARM64"
-          foreach ($platform in $platforms) {
-            $outputPath = "publish/$platform"
-            dotnet publish "VK UI3/VK UI3.csproj" -c $env:Configuration -r $platform --self-contained -o $outputPath /p:TOKEN_STAT_SLY="${{ secrets.TOKEN_STAT_SLY }}"
-          }
-        env:
-          Configuration: ${{ matrix.configuration }}
-          TOKEN_STAT_SLY: ${{ secrets.TOKEN_STAT_SLY }}
-
-      - name: Zip the published files
-        run: |
-          $platforms = "x64", "x86", "ARM64"
-          foreach ($platform in $platforms) {
-            $outputPath = "publish/$platform"
-            $zipPath = "VK_UI3_$platform.zip"
-            Compress-Archive -Path "$outputPath/*" -DestinationPath $zipPath
-          }
+          $platform = "${{ matrix.platform }}"
+          $zipName = "VK_UI3_${platform}_${{ matrix.configuration }}.zip"
+          Compress-Archive -Path "publish/$platform/*" -DestinationPath $zipName
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: VK_UI3_Unpacked
+          name: VK_UI3_${{ matrix.platform }}_${{ matrix.configuration }}
           path: |
-            VK_UI3_x64.zip
-            VK_UI3_x86.zip
-            VK_UI3_ARM64.zip
+            VK_UI3_${{ matrix.platform }}_${{ matrix.configuration }}.zip
 
       - name: Извлечь версию
         id: get_version
         run: |
-          $repoName = "${{ github.repository }}".Split('/')[1]
-          $csprojPath = "D:\a\$repoName\$repoName\VK UI3\VK UI3.csproj"
+          $csprojPath = "${{ github.workspace }}\VK UI3\VK UI3.csproj"
           $doc = New-Object xml
           $doc.Load((Convert-Path $csprojPath))
           $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText
           echo "::set-output name=VERSION::$version"
           echo "Версия: $version"
-        continue-on-error: true
-        if: github.event.inputs.release == 'true'
-
-      - name: Получить релизы
-        id: get_releases
-        run: |
-          $headers = @{
-            "Authorization" = "token ${{ secrets.TOKEN }}"
-          }
-          $releases = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases" -Headers $headers
-          echo "::set-output name=releases::$releases"
-        shell: pwsh
         if: github.event.inputs.release == 'true'
 
       - name: Проверить существование релиза
@@ -176,7 +147,7 @@ jobs:
         with:
           repo_token: ${{ secrets.TOKEN }}
           file: VK_UI3_*.zip
-          asset_name: VK_UI3_Unpacked
+          asset_name: VK_UI3_Unpacked_${{ matrix.platform }}
           tag: ${{ steps.get_version.outputs.VERSION }}
           overwrite: true
           file_glob: true
@@ -205,3 +176,4 @@ jobs:
           }
           $bodyJson = $body | ConvertTo-Json -Compress
           Invoke-RestMethod -Uri $uri -Method Post -Body $bodyJson -ContentType 'application/json'
+        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
