@@ -34,9 +34,7 @@ jobs:
         configuration: [Unpacked]
         platform: [x64]
 
-    runs-on:
-      windows-latest # Для получения списка доступных типов раннеров
-      # см. https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+    runs-on: windows-latest
 
     env:
       Solution_Name: "VK UI3"
@@ -54,6 +52,7 @@ jobs:
           $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
           $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
           [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
+
       - name: Обновить TOKEN_STAT_SLY
         run: |
           $repoName = "${{ github.repository }}".Split('/')[1]
@@ -61,20 +60,22 @@ jobs:
           $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', '"${{ secrets.TOKEN_STAT_SLY }}"'
           Set-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs" -Value $updatedContent
           Write-Output $updatedContent
+
       - name: Display disk tree
         run: |
           Get-ChildItem -Recurse | Sort-Object Length -Descending
+
       # Установить .NET Core
       - name: Install .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
 
-      # Добавить MSBuild в PATH: https://github.com/microsoft/setup-msbuild
+      # Добавить MSBuild в PATH
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v2
 
-      # Восстановить приложение для заполнения папки obj RuntimeIdentifiers
+      # Восстановить приложение
       - name: Restore the application
         run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
         env:
@@ -84,7 +85,7 @@ jobs:
         run: |
           Write-Host "Current working directory: $(Get-Location)"
 
-      # Создание пакета приложения путем сборки и упаковки проекта
+      # Сборка проекта
       - name: Build the project (unpacked)
         run: |
           $platforms = @{
@@ -96,16 +97,14 @@ jobs:
           foreach ($platform in $platforms.Keys) {
             Write-Host "Building for platform: $platform"
             
-            # Основная сборка проекта без создания пакета
             msbuild $env:Solution_Name `
               /p:Configuration=$env:Configuration `
               /p:Platform=$platform `
               /p:PlatformTarget=$($platforms[$platform].PlatformTarget) `
               /p:RuntimeIdentifier=$($platforms[$platform].RuntimeId) `
-              /p:AppxPackageBuildMode=None `  # Отключаем создание пакета
+              /p:AppxPackageBuildMode=None `
               /p:TOKEN_STAT_SLY="${{ secrets.TOKEN_STAT_SLY }}"
             
-            # Копируем выходные файлы в отдельную папку для каждой платформы
             $outputPath = "${{ github.workspace }}\Output\$platform"
             New-Item -ItemType Directory -Path $outputPath -Force
             Copy-Item -Path "${{ github.workspace }}\$env:Solution_Name\bin\$platform\$env:Configuration\*" -Destination $outputPath -Recurse -Force
@@ -118,36 +117,17 @@ jobs:
         run: |
           $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
           Remove-Item -path "$certificatePath"
-      # Переименовать .cer файл
-      - name: Rename the .cer file
-        run: |
-          Get-ChildItem -Path "${{ env.Solution_Name }}\\Packages" -Filter *.cer -Recurse -Depth 1 | ForEach-Object {
-            Rename-Item -Path $_.FullName -NewName "Certificate.cer"
-          }
-      # Move .msix, .cer, and .msixbundle files from subfolders to the Packages folder
-      - name: Move files to the Packages folder
-        run: |
-          $fileTypes = "*.msix", "*.cer", "*.msixbundle"
-          foreach ($fileType in $fileTypes) {
-            Get-ChildItem -Path "${{ env.Solution_Name }}\\Packages" -Filter $fileType -Recurse -Depth 1 | ForEach-Object {
-              $destinationFile = "${{ env.Solution_Name }}\\Packages\\" + $_.Name
-              if (-Not (Test-Path -Path $destinationFile)) {
-                Move-Item -Path $_.FullName -Destination $destinationFile
-              }
-            }
-          }
-      - name: Display disk tree
-        run: |
-          Get-ChildItem -Recurse | Sort-Object Length -Descending
-      # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
-      - name: Upload MSIX package
+
+      # Upload the built executable and related files
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: MSIX Package
+          name: WinUI3-App
           path: |
-            ${{ env.Solution_Name }}\\Packages\*.cer
-            ${{ env.Solution_Name }}\\Packages\*.msixbundle
-            ${{ env.Solution_Name }}\\Packages\*.msix
+            ${{ env.Solution_Name }}\bin\x64\${{ matrix.configuration }}\*
+            ${{ env.Solution_Name }}\bin\x86\${{ matrix.configuration }}\*
+            ${{ env.Solution_Name }}\bin\ARM64\${{ matrix.configuration }}\*
+
       - name: Извлечь версию
         id: get_version
         run: |
@@ -174,6 +154,7 @@ jobs:
       - name: Вывести версию
         run: |
           echo "Извлеченная версия: ${{ steps.get_version.outputs.VERSION }}"
+
       - name: Получить релизы
         id: get_releases
         run: |
@@ -221,8 +202,8 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.TOKEN }}
-          file: ${{ env.Solution_Name }}/Packages/*
-          asset_name: ${{ env.Solution_Name }}-release-files
+          file: ${{ env.Solution_Name }}\bin\**\${{ matrix.configuration }}\*
+          asset_name: ${{ env.Solution_Name }}-${{ matrix.configuration }}-${{ steps.get_version.outputs.VERSION }}
           tag: ${{ steps.get_version.outputs.VERSION }}
           overwrite: true
           file_glob: true
