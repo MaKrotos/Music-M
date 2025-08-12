@@ -1,4 +1,4 @@
-name: Автосборка Music M
+name: Автосборка Music M w EXE
 
 on:
   workflow_dispatch:
