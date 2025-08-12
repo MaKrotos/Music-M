@@ -83,23 +83,7 @@ jobs:
       - name: Print working directory
         run: |
           Write-Host "Current working directory: $(Get-Location)"
-      - name: Get Certificate Thumbprint and Replace in Project File
-        run: |
-          $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
-          $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
-          [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
-          $pfxPassword = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -AsPlainText -Force
-          $pfxCert = Get-PfxCertificate -FilePath $certificatePath -Password $pfxPassword
-          Write-Host "Certificate Thumbprint: $($pfxCert.Thumbprint)"
-          $projectFile = "VK UI3/VK UI3.wapproj"
-          $content = Get-Content -Path $projectFile -Raw
-          $content = $content -replace '(?<=<PackageCertificateThumbprint>).+?(?=</PackageCertificateThumbprint>)', $pfxCert.Thumbprint
-          Set-Content -Path $projectFile -Value $content
-      - name: Install PFX certificate
-        run: |
-          $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
-          $password = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -Force -AsPlainText
-          Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation Cert:\LocalMachine\My -Password $password
+
       # Создание пакета приложения путем сборки и упаковки проекта
       - name: Create the app package
         run: |
