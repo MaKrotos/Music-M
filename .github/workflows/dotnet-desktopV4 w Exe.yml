@@ -32,24 +32,31 @@ jobs:
     strategy:
       matrix:
         configuration: [Unpacked]
-        platform: [x64, x86, ARM64]
+        platform: [x64]
 
     runs-on: windows-latest
+
     env:
-      Solution_Name: "VK UI3 (Package)"
+      Project_Name: "VK UI3" # Имя основного проекта
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          node-version: 16
           fetch-depth: 0
 
       - name: Обновить TOKEN_STAT_SLY
         run: |
           $repoName = "${{ github.repository }}".Split('/')[1]
-          $content = Get-Content -Path "${{ github.workspace }}\VK UI3\StaticParams.cs"
+          $content = Get-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs"
           $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', '"${{ secrets.TOKEN_STAT_SLY }}"'
-          Set-Content -Path "${{ github.workspace }}\VK UI3\StaticParams.cs" -Value $updatedContent
+          Set-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs" -Value $updatedContent
+          Write-Output $updatedContent
+
+      - name: Display disk tree
+        run: |
+          Get-ChildItem -Recurse | Sort-Object Length -Descending
 
       - name: Install .NET Core
         uses: actions/setup-dotnet@v4
@@ -59,55 +66,48 @@ jobs:
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v2
 
-      - name: Restore dependencies
-        run: dotnet restore "VK UI3/VK UI3.csproj"
-
-      - name: Build solution
+      - name: Print working directory
         run: |
-          $platform = "${{ matrix.platform }}".ToLower()
-          $runtimeId = if ($platform -eq "x64") { "win-x64" } elseif ($platform -eq "x86") { "win-x86" } else { "win-arm64" }
-          
-          dotnet build "VK UI3/VK UI3.csproj" `
-            -c ${{ matrix.configuration }} `
-            -p:Platform=${{ matrix.platform }} `
-            -p:RuntimeIdentifier=$runtimeId `
-            -p:TOKEN_STAT_SLY="${{ secrets.TOKEN_STAT_SLY }}"
+          Write-Host "Current working directory: $(Get-Location)"
 
-      - name: Publish application
+      - name: Build Unpacked Application
         run: |
-          $platform = "${{ matrix.platform }}".ToLower()
-          $runtimeId = if ($platform -eq "x64") { "win-x64" } elseif ($platform -eq "x86") { "win-x86" } else { "win-arm64" }
-          
-          dotnet publish "VK UI3/VK UI3.csproj" `
-            -c ${{ matrix.configuration }} `
-            -r $runtimeId `
-            --self-contained true `
-            -o "publish/${{ matrix.platform }}" `
-            /p:Platform=${{ matrix.platform }} `
-            /p:TOKEN_STAT_SLY="${{ secrets.TOKEN_STAT_SLY }}"
+          msbuild "$env:Project_Name\$env:Project_Name.csproj" /p:Configuration=$env:Configuration /p:Platform=$env:Platform /p:WindowsPackageType=None /p:SelfContained=true /p:WindowsAppSDKSelfContained=true
+        env:
+          Configuration: ${{ matrix.configuration }}
+          Platform: ${{ matrix.platform }}
 
-      - name: Create zip archive
+      - name: Publish Unpacked Application
         run: |
-          $platform = "${{ matrix.platform }}"
-          $zipName = "VK_UI3_${platform}_${{ matrix.configuration }}.zip"
-          Compress-Archive -Path "publish/$platform/*" -DestinationPath $zipName
+          $outputDir = "${{ github.workspace }}\Output\${{ matrix.platform }}\${{ matrix.configuration }}"
+          New-Item -ItemType Directory -Path $outputDir -Force
+          dotnet publish "$env:Project_Name\$env:Project_Name.csproj" -c $env:Configuration -r win-${{ matrix.platform }} --self-contained true -p:WindowsPackageType=None -p:WindowsAppSDKSelfContained=true -o $outputDir
+        env:
+          Configuration: ${{ matrix.configuration }}
 
-      - name: Upload artifacts
+      - name: Zip Unpacked Output
+        run: |
+          $outputDir = "${{ github.workspace }}\Output\${{ matrix.platform }}\${{ matrix.configuration }}"
+          $zipPath = "${{ github.workspace }}\Output\VK_UI3_Unpacked_${{ matrix.platform }}.zip"
+          Compress-Archive -Path "$outputDir\*" -DestinationPath $zipPath -Force
+
+      - name: Upload Unpacked Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: VK_UI3_${{ matrix.platform }}_${{ matrix.configuration }}
-          path: |
-            VK_UI3_${{ matrix.platform }}_${{ matrix.configuration }}.zip
+          name: VK_UI3_Unpacked_${{ matrix.platform }}
+          path: ${{ github.workspace }}\Output\VK_UI3_Unpacked_${{ matrix.platform }}.zip
 
       - name: Извлечь версию
         id: get_version
         run: |
-          $csprojPath = "${{ github.workspace }}\VK UI3\VK UI3.csproj"
+          $repoName = "${{ github.repository }}".Split('/')[1]
+          $csprojPath = "D:\a\$repoName\$repoName\VK UI3\VK UI3.csproj"
           $doc = New-Object xml
           $doc.Load((Convert-Path $csprojPath))
           $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText
           echo "::set-output name=VERSION::$version"
           echo "Версия: $version"
+        continue-on-error: true
         if: github.event.inputs.release == 'true'
 
       - name: Проверить существование релиза
@@ -146,7 +146,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.TOKEN }}
-          file: VK_UI3_*.zip
+          file: ${{ github.workspace }}\Output\VK_UI3_Unpacked_*.zip
           asset_name: VK_UI3_Unpacked_${{ matrix.platform }}
           tag: ${{ steps.get_version.outputs.VERSION }}
           overwrite: true
@@ -176,4 +176,3 @@ jobs:
           }
           $bodyJson = $body | ConvertTo-Json -Compress
           Invoke-RestMethod -Uri $uri -Method Post -Body $bodyJson -ContentType 'application/json'
-        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
