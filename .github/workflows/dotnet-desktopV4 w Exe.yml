@@ -1,4 +1,4 @@
-name: Автосборка Music M with EXE
+name: Автосборка Music M (Unpacked)
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
       namevers:
         description: "Название релиза"
         required: true
-        default: "🤖 Автосборка"
+        default: "🤖 Автосборка (Unpacked)"
       descr:
         description: "Описание релиза"
         required: true
@@ -34,93 +34,54 @@ jobs:
         configuration: [Release]
         platform: [x64]
 
-    runs-on:
-      windows-latest # Для получения списка доступных типов раннеров
-      # см. https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+    runs-on: windows-latest
 
     env:
-      Solution_Name: "VK UI3 (Package)" # Замените на имя вашего решения, например, App1.sln.
+      Solution_Name: "VK UI3 (Unpacked)"
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          node-version: 16
           fetch-depth: 0
-
-      # Декодируем закодированный в base64 pfx и сохраняем Signing_Certificate
-      - name: Decode the pfx
-        run: |
-          $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
-          $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
-          [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
 
       - name: Обновить TOKEN_STAT_SLY
         run: |
           $repoName = "${{ github.repository }}".Split('/')[1]
-          $content = Get-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs"
-          $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', '"${{ secrets.TOKEN_STAT_SLY }}"'
-          Set-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs" -Value $updatedContent
-          Write-Output $updatedContent
+          $content = Get-Content -Path "${{ github.workspace }}\VK UI3\StaticParams.cs" -ErrorAction SilentlyContinue
+          if ($content) {
+            $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', '"${{ secrets.TOKEN_STAT_SLY }}"'
+            Set-Content -Path "${{ github.workspace }}\VK UI3\StaticParams.cs" -Value $updatedContent
+          }
 
-      - name: Display disk tree
-        run: |
-          Get-ChildItem -Recurse | Sort-Object Length -Descending
-
-      # Установить .NET Core
       - name: Install .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
 
-      # Добавить MSBuild в PATH: https://github.com/microsoft/setup-msbuild
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v2
 
       - name: Извлечь версию
         id: get_version
         run: |
-          $repoName = "${{ github.repository }}".Split('/')[1]
-          $csprojPath = "D:\a\$repoName\$repoName\VK UI3\VK UI3.csproj"
           $doc = New-Object xml
-          $doc.Load((Convert-Path $csprojPath))
+          $doc.Load("${{ github.workspace }}\VK UI3\VK UI3.csproj")
           $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText
-          echo "::set-output name=VERSION::$version"
+          echo "version=$version" >> $GITHUB_OUTPUT
           echo "Версия: $version"
-        continue-on-error: true
         if: github.event.inputs.release == 'true'
 
-      - name: Подставить версию в Package.appxmanifest
-        run: |
-          $repoName = "${{ github.repository }}".Split('/')[1]
-          $csproj = "D:\a\$repoName\$repoName\VK UI3\VK UI3.csproj"
-          $manifest = "D:\a\$repoName\$repoName\VK UI3 (Package)\Package.appxmanifest"
-          [xml]$doc = Get-Content $csproj
-          $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText.Trim()
-          [xml]$xml = Get-Content $manifest
-          $xml.Package.Identity.Version = $version
-          $xml.Save($manifest)
-        if: github.event.inputs.release == 'true'
-
-      - name: Upload Package.appxmanifest as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: PackageAppxManifest
-          path: D:\a\Music-M\Music-M\VK UI3 (Package)\Package.appxmanifest
-        if: github.event.inputs.release == 'true'
-          
       - name: Clean publish directories
         run: |
-          Remove-Item -Recurse -Force publish-x64, publish-x86, publish-arm64 -ErrorAction SilentlyContinue
+          Remove-Item -Recurse -Force publish-* -ErrorAction SilentlyContinue
 
-      
-      
       - name: Restore NuGet packages
         run: dotnet restore "VK UI3/VK UI3.csproj"
-      
-      - name: Publish and package all architectures
+
+      - name: Publish Unpacked App
         run: |
-         $architectures = @{
+          $architectures = @{
               "x64"   = @{ RuntimeId = "win-x64";   OutputDir = "publish-x64" }
               "x86"   = @{ RuntimeId = "win-x86";   OutputDir = "publish-x86" }
               "arm64" = @{ RuntimeId = "win-arm64"; OutputDir = "publish-arm64" }
@@ -129,108 +90,44 @@ jobs:
           foreach ($arch in $architectures.Keys) {
               $runtimeId = $architectures[$arch].RuntimeId
               $outDir = $architectures[$arch].OutputDir
-              $zipFile = "VK_UI3_win-$arch.zip"
+              $zipFile = "VK_UI3_win-$arch-unpacked.zip"
               
-              # Clean and create output directory
-              Remove-Item -Path $outDir -Recurse -ErrorAction SilentlyContinue
-              New-Item -ItemType Directory -Force -Path $outDir
+              Write-Host "Building Unpacked version for $arch"
               
-              Write-Host "Building for architecture: $arch ($runtimeId)"
+              dotnet publish "VK UI3/VK UI3.csproj" `
+                  --configuration Release `
+                  --runtime $runtimeId `
+                  --output $outDir `
+                  -p:WindowsPackageType=None `
+                  -p:WindowsAppSDKSelfContained=true `
+                  -p:SelfContained=true `
+                  -p:IncludeNativeLibrariesForSelfExtract=true `
+                  /p:ErrorOnDuplicatePublishOutputFiles=false
               
-              try {
-                  # Publish the application
-                  dotnet publish "VK UI3/VK UI3.csproj" `
-                      --configuration Release `
-                      --runtime $runtimeId `
-                      --output $outDir `
-                      -p:PublishProfile=Properties\PublishProfiles\Unpackaged.pubxml `
-                      -p:SelfContained=true `
-                      -p:IncludeNativeLibrariesForSelfExtract=true `
-                      -p:WindowsPackageType=Win32 `
-                      -p:WindowsAppSDKSelfContained=true `
-                      -p:SkipPriGeneration=true `
-                      -p:EnablePreviewMsixTooling=false `
-                      /p:ErrorOnDuplicatePublishOutputFiles=false
-                  
-                  # Verify the output directory has files
-                  $files = Get-ChildItem -Path $outDir -Recurse -File
-                  if ($files.Count -eq 0) {
-                      Write-Host "##[warning] No files were published to $outDir - skipping this architecture"
-                      continue
-                  }
-                  
-                  Write-Host "Contents of ${outDir}:"
-                  $files | Format-Table FullName
-                  
-                  # Create zip archive only if there are files
-                  if ($files.Count -gt 0) {
-                      Write-Host "Creating zip archive: $zipFile"
-                      Compress-Archive -Path "$outDir\*" -DestinationPath $zipFile -CompressionLevel Optimal
-                      
-                      if (Test-Path $zipFile) {
-                          $size = (Get-Item $zipFile).Length / 1MB
-                          Write-Host "Successfully created $zipFile ($($size.ToString('0.00')) MB)"
-                      } else {
-                          Write-Host "##[warning] Failed to create $zipFile - continuing with next architecture"
-                          continue
-                      }
-                  }
-              } catch {
-                  Write-Host "##[warning] Failed to build for architecture $arch"
-                  Write-Host $_.Exception.Message
-                  if ($arch -eq "arm64") {
-                      Write-Host "Skipping ARM64 build due to errors"
-                      continue
-                  }
-                  # For other architectures, decide whether to continue or exit
-                  continue
+              if (Test-Path $outDir) {
+                  Compress-Archive -Path "$outDir\*" -DestinationPath $zipFile
+                  Write-Host "Created $zipFile"
               }
           }
-      
-      - name: Upload x64 ZIP
+
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: VK_UI3_win-x64
-          path: VK_UI3_win-x64.zip
-      
-      - name: Upload x86 ZIP
-        uses: actions/upload-artifact@v4
-        with:
-          name: VK_UI3_win-x86
-          path: VK_UI3_win-x86.zip
-      
-      - name: Upload arm64 ZIP
-        uses: actions/upload-artifact@v4
-        with:
-          name: VK_UI3_win-arm64
-          path: VK_UI3_win-arm64.zip
-      
-      - name: Upload x64 ZIP to release
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.TOKEN }}
-          file: VK_UI3_win-x64.zip
-          asset_name: VK_UI3_win-x64_${{ steps.get_version.outputs.VERSION }}.zip
-          tag: ${{ steps.get_version.outputs.VERSION }}
-          overwrite: true
+          name: Unpacked-Binaries
+          path: |
+            VK_UI3_win-x64-unpacked.zip
+            VK_UI3_win-x86-unpacked.zip
+            VK_UI3_win-arm64-unpacked.zip
+
+      - name: Create Release
         if: github.event.inputs.release == 'true'
-      
-      - name: Upload x86 ZIP to release
-        uses: svenstaro/upload-release-action@v2
+        uses: softprops/action-gh-release@v1
         with:
-          repo_token: ${{ secrets.TOKEN }}
-          file: VK_UI3_win-x86.zip
-          asset_name: VK_UI3_win-x86_${{ steps.get_version.outputs.VERSION }}.zip
-          tag: ${{ steps.get_version.outputs.VERSION }}
-          overwrite: true
-        if: github.event.inputs.release == 'true'
-      
-      - name: Upload arm64 ZIP to release
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.TOKEN }}
-          file: VK_UI3_win-arm64.zip
-          asset_name: VK_UI3_win-arm64_${{ steps.get_version.outputs.VERSION }}.zip
-          tag: ${{ steps.get_version.outputs.VERSION }}
-          overwrite: true
-        if: github.event.inputs.release == 'true'
+          name: ${{ github.event.inputs.namevers }}
+          body: ${{ github.event.inputs.descr }}
+          tag_name: ${{ steps.get_version.outputs.version }}
+          prerelease: ${{ github.event.inputs.prerelease }}
+          files: |
+            VK_UI3_win-x64-unpacked.zip
+            VK_UI3_win-x86-unpacked.zip
+            VK_UI3_win-arm64-unpacked.zip
