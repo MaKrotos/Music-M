@@ -30,7 +30,7 @@
         <PropertyGroup Condition="'$(Platform)'=='x86'">
                     <Platforms>x86</Platforms>
 
-                          <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+                          <RuntimeIdentifiers>win-x86</RuntimeIdentifiers>
 
     </PropertyGroup>
              <PropertyGroup Condition="'$(Platform)'=='ARM64'">
