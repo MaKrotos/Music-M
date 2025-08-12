@@ -87,17 +87,34 @@ jobs:
       # Создание пакета приложения путем сборки и упаковки проекта
       - name: Create the app package
         run: |
-          $platforms = "x64", "x86", "ARM64"
-          foreach ($platform in $platforms) {
-            $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
-            msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$platform /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile="$certificatePath" /p:PackageCertificatePassword="${{ secrets.PFX_PASSWORD }}" /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true /p:TOKEN_STAT_SLY="${{ secrets.TOKEN_STAT_SLY }}"
+          $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
+          $platforms = @{
+            "x64"   = @{ PlatformTarget = "x64";   RuntimeId = "win-x64" }
+            "x86"   = @{ PlatformTarget = "x86";   RuntimeId = "win-x86" }
+            "ARM64" = @{ PlatformTarget = "ARM64"; RuntimeId = "win-arm64" }
+          }
+          
+          foreach ($platform in $platforms.Keys) {
+            Write-Host "Building for platform: $platform"
+            
+            msbuild $env:Solution_Name `
+              /p:Configuration=$env:Configuration `
+              /p:Platform=$platform `
+              /p:PlatformTarget=$($platforms[$platform].PlatformTarget) `
+              /p:RuntimeIdentifier=$($platforms[$platform].RuntimeId) `
+              /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode `
+              /p:AppxBundle=$env:Appx_Bundle `
+              /p:PackageCertificateKeyFile="$certificatePath" `
+              /p:PackageCertificatePassword="${{ secrets.PFX_PASSWORD }}" `
+              /p:AppxPackageDir="$env:Appx_Package_Dir" `
+              /p:GenerateAppxPackageOnBuild=true `
+              /p:TOKEN_STAT_SLY="${{ secrets.TOKEN_STAT_SLY }}"
           }
         env:
           Appx_Bundle: Never
           Appx_Package_Build_Mode: SideloadOnly
           Appx_Package_Dir: Packages\
           Configuration: ${{ matrix.configuration }}
-          TOKEN_STAT_SLY: ${{ secrets.TOKEN_STAT_SLY }}
 
       # Удалить pfx
       - name: Remove the pfx
