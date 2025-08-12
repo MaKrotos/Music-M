@@ -9,6 +9,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <EnableMsixTooling>true</EnableMsixTooling>
+    <Configurations>Debug;Release;Unpacked</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

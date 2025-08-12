@@ -26,6 +26,7 @@
 			Список изменений: https://github.com/vknet/vk/milestone/42?closed=1
 		</PackageReleaseNotes>
 		<LangVersion>latest</LangVersion>
+		<Configurations>Debug;Release;Unpacked</Configurations>
 	</PropertyGroup>
 
 	<PropertyGroup>

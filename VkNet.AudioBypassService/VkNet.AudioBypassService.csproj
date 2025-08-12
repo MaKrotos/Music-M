@@ -11,7 +11,7 @@
 		<PackageId>VkNet.AudioBypassService</PackageId>
 		<PackageTags>vknet;vk;api;audio;bypass</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<Configurations>Debug;Release</Configurations>
+		<Configurations>Debug;Release;Unpacked</Configurations>
 		<Platforms>x64;AnyCPU</Platforms>
 	</PropertyGroup>
 	<ItemGroup>

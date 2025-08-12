@@ -227,10 +227,18 @@ namespace VK_UI3
 
         private void InitializeSystemIntegration()
         {
+            
             dispatcherQueue = this.DispatcherQueue;
             SubClassing();
-
-            string assetsPath = Windows.ApplicationModel.Package.Current.InstalledLocation.Path;
+            string assetsPath;
+            try
+            {
+                 assetsPath = Windows.ApplicationModel.Package.Current.InstalledLocation.Path;
+            }
+            catch (InvalidOperationException)
+            {
+                assetsPath = Path.Combine(AppContext.BaseDirectory, "Assets");
+            }
             string iconPath = Path.Combine(assetsPath, "icon.ico");
             LoadIcon(iconPath);
 

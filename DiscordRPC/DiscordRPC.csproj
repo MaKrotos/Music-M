@@ -7,6 +7,7 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <NoWin32Manifest>true</NoWin32Manifest>
+    <Configurations>Debug;Release;Unpacked</Configurations>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />

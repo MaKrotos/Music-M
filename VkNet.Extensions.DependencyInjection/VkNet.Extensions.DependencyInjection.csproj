@@ -4,7 +4,7 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Configurations>Debug;Release</Configurations>
+        <Configurations>Debug;Release;Unpacked</Configurations>
         <Platforms>x64;AnyCPU</Platforms>
     </PropertyGroup>
 

@@ -1,520 +1,497 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <AppxPackageVersion>0.3.4.7</AppxPackageVersion>
-    <Version>$(AppxPackageVersion)</Version>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows10.0.22000.0</TargetFramework>
-    <TargetPlatformMinVersion>10.0.22000.0</TargetPlatformMinVersion>
-    <WindowsSdkPackageVersion>10.0.22000.38</WindowsSdkPackageVersion>
-
-    <RootNamespace>VK_UI3</RootNamespace>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Platforms>x86;x64;ARM64</Platforms>
-    <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
-    <UseWinUI>true</UseWinUI>
-    <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
-    <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
-    <UserSecretsId>645ec4a4-9b68-4fbd-bdfd-4f49ee06b285</UserSecretsId>
-
-
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <DefineConstants>X64</DefineConstants>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <DefineConstants>X64</DefineConstants>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
-    <DefineConstants>X86</DefineConstants>
-    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
-    <DefineConstants>X86</DefineConstants>
-    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
-    <DefineConstants>ARM64</DefineConstants>
-    <RuntimeIdentifier>win-arm64</RuntimeIdentifier>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
-    <DefineConstants>ARM64</DefineConstants>
-    <RuntimeIdentifier>win-arm64</RuntimeIdentifier>
-  </PropertyGroup>
-	
-	<PropertyGroup>
-		<CsWinRTIIDOptimizerEnabled Condition="'$(Configuration)' == 'Release'">false</CsWinRTIIDOptimizerEnabled>
-	</PropertyGroup>
-
     <PropertyGroup>
-        <CsWinRTIIDOptimizerEnabled>false</CsWinRTIIDOptimizerEnabled>
+        
+        <AppxPackageVersion>0.3.4.7</AppxPackageVersion>
+        <Version>$(AppxPackageVersion)</Version>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net8.0-windows10.0.22000.0</TargetFramework>
+        <TargetPlatformMinVersion>10.0.22000.0</TargetPlatformMinVersion>
+        <WindowsSdkPackageVersion>10.0.22000.38</WindowsSdkPackageVersion>
+
+
+        <RootNamespace>VK_UI3</RootNamespace>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+
+        <UseWinUI>true</UseWinUI>
+        <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
+        <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+        <UserSecretsId>645ec4a4-9b68-4fbd-bdfd-4f49ee06b285</UserSecretsId>
+        <Configurations>Debug;Release;Unpacked</Configurations>
     </PropertyGroup>
-    <PropertyGroup>
-        <DebugType>none</DebugType>
-        <DebugSymbols>false</DebugSymbols>
-        <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+        <DefineConstants>X64</DefineConstants>
     </PropertyGroup>
 
+     <PropertyGroup Condition="'$(Platform)'=='x64'">
+                 <Platforms>x64</Platforms>
 
-    <!-- Конфигурации для публикации неупакованного приложения -->
-<PropertyGroup Condition="'$(PublishProfile)'=='Unpackaged'">
-    <CsWinRTIIDOptimizerEnabled>false</CsWinRTIIDOptimizerEnabled>
-	<CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
-    <EnableMsixTooling>true</EnableMsixTooling>
-    <WindowsPackageType>None</WindowsPackageType>
-    <SelfContained>true</SelfContained>
-    <PublishSingleFile>true</PublishSingleFile>
-    <PublishReadyToRun>true</PublishReadyToRun>
-    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
-    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
-    <DebugType>embedded</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <UseAppHost>true</UseAppHost>
+                 <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    </PropertyGroup>
+        <PropertyGroup Condition="'$(Platform)'=='x86'">
+                    <Platforms>x86</Platforms>
+
+                          <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+
+    </PropertyGroup>
+             <PropertyGroup Condition="'$(Platform)'=='ARM64'">
+                         <Platforms>ARM64</Platforms>
+                          <RuntimeIdentifiers>win-arm64</RuntimeIdentifiers>
+    </PropertyGroup>
+        
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+        <DefineConstants>X64</DefineConstants>
+    </PropertyGroup>
+        
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unpacked|x64'">
+      <DefineConstants>X64</DefineConstants>
+    </PropertyGroup>
     
-    <!-- Additional recommended settings for WinUI 3 -->
-    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
-    <WinUISDKReferences>false</WinUISDKReferences>
-</PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Unpacked'">
+        <AssemblyName>VK M</AssemblyName>
+        <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
+        <WindowsPackageType>None</WindowsPackageType>
+        <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+        <WindowsAppSDKBootstrapAutoInitializeOptions>OnNoMatch</WindowsAppSDKBootstrapAutoInitializeOptions>
+        <EnableDefaultApplicationClass>false</EnableDefaultApplicationClass>
+        <SelfContained>true</SelfContained>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Content Remove="Assets\icons.xaml" />
-  </ItemGroup>
+    <ItemGroup>
+        <Content Remove="Assets\icon.ico" />
+        <Content Remove="Assets\icons.xaml" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="Assets\SVGs\thumb-dislike-fill.svg" />
-    <None Remove="Assets\SVGs\thumb-dislike.svg" />
-    <None Remove="Assets\SVGs\thumbdislike.xaml" />
-    <None Remove="Assets\SVGs\thumbdislikefill.xaml" />
-    <None Remove="AudioControlFlyOut.xaml" />
-    <None Remove="Controllers\NavMenuController.xaml" />
-    <None Remove="Controllers\PlayListPage.xaml" />
-    <None Remove="Controls\BlockControl.xaml" />
-    <None Remove="Controls\Blocks\ArtistBannerBlockControl.xaml" />
-    <None Remove="Controls\Blocks\BigBannerControl.xaml" />
-    <None Remove="Controls\Blocks\Buttons.xaml" />
-    <None Remove="Controls\Blocks\CuratorBannerBlockControl.xaml" />
-    <None Remove="Controls\Blocks\Ext\ListTracksFull.xaml" />
-    <None Remove="Controls\Blocks\GroupsBlockControl.xaml" />
-    <None Remove="Controls\Blocks\ListLinks.xaml" />
-    <None Remove="Controls\Blocks\ListPlaylists.xaml" />
-    <None Remove="Controls\Blocks\ListVideo.xaml" />
-    <None Remove="Controls\Blocks\MixControl.xaml" />
-    <None Remove="Controls\Blocks\OwnerCell.xaml" />
-    <None Remove="Controls\Blocks\PlaceHolderBig.xaml" />
-    <None Remove="Controls\Blocks\PlaceholderBlockControl.xaml" />
-    <None Remove="Controls\Blocks\RecommsPlaylistBlock.xaml" />
-    <None Remove="Controls\Blocks\RecomUsersControl.xaml" />
-    <None Remove="Controls\Blocks\RemomendedUsersPlaylist.xaml" />
-    <None Remove="Controls\Blocks\TextsBlockControl.xaml" />
-    <None Remove="Controls\Blocks\UniversalList.xaml" />
-    <None Remove="Controls\DefaultControl.xaml" />
-    <None Remove="Controls\LinksController.xaml" />
-    <None Remove="Controls\ListTracks.xaml" />
-    <None Remove="Controls\PlaylistControl.xaml" />
-    <None Remove="Controls\RecommsPlaylist.xaml" />
-    <None Remove="Controls\SuggestionsControl.xaml" />
-    <None Remove="Controls\TitleBlockControl.xaml" />
-    <None Remove="Controls\TrackControl.xaml" />
-    <None Remove="Controls\VibeControl.xaml" />
-    <None Remove="Controls\VideoController.xaml" />
-    <None Remove="Fonts\HelveticaBlack.ttf" />
-    <None Remove="Fonts\VKSansDisplay-Bold.ttf" />
-    <None Remove="Fonts\VKSansDisplay-DemiBold.ttf" />
-    <None Remove="Fonts\VKSansDisplay-Medium.ttf" />
-    <None Remove="Fonts\VKSansDisplay-Regular.ttf" />
-    <None Remove="Helpers\Animations\AnimatedNavMenuController.xaml" />
-    <None Remove="Helpers\Animations\AnimatedSearch.xaml" />
-    <None Remove="Views\Controls\BannerControlUnivers.xaml" />
-    <None Remove="Views\Controls\BlockButtonView.xaml" />
-    <None Remove="Views\Controls\ChoosenControl.xaml" />
-    <None Remove="Views\Controls\CustomVideoTrailer.xaml" />
-    <None Remove="Views\Controls\EqualizerControl.xaml" />
-    <None Remove="Views\Controls\UniversalControl.xaml" />
-    <None Remove="Views\Download\DownloadController.xaml" />
-    <None Remove="Views\Download\DownloadFFmpegController.xaml" />
-    <None Remove="Views\Download\DOwnloadsList.xaml" />
-    <None Remove="Views\LoginWindow\AccountList.xaml" />
-    <None Remove="Views\MiniAppView.xaml" />
-    <None Remove="Views\ModalsPages\CreatePlayList.xaml" />
-    <None Remove="Views\ModalsPages\CustomDialog.xaml" />
-    <None Remove="Views\ModalsPages\DownLoadFFMpeg.xaml" />
-    <None Remove="Views\ModalsPages\EditTrack.xaml" />
-    <None Remove="Views\ModalsPages\EqualizerControlPage.xaml" />
-    <None Remove="Views\ModalsPages\MixControls\BTNSControl.xaml" />
-    <None Remove="Views\ModalsPages\MixControls\PicturedButton.xaml" />
-    <None Remove="Views\ModalsPages\MixControls\PicturedControl.xaml" />
-    <None Remove="Views\ModalsPages\MixControls\SimpleButtons.xaml" />
-    <None Remove="Views\ModalsPages\SettingMix.xaml" />
-    <None Remove="Views\ModalsPages\vkid_captcha.html" />
-    <None Remove="Views\Notification\NotifController.xaml" />
-    <None Remove="Views\SectionView.xaml" />
-    <None Remove="Views\Settings\SettingsPage.xaml" />
-    <None Remove="Views\Share\ConversationsList.xaml" />
-    <None Remove="Views\Share\FriendsList.xaml" />
-    <None Remove="Views\Share\ShareControllers\ConvController.xaml" />
-    <None Remove="Views\Share\ShareControllers\FriendsList.xaml" />
-    <None Remove="Views\Share\ShareControllers\UserControllers.xaml" />
-    <None Remove="Views\Tasks\TaskController.xaml" />
-    <None Remove="Views\Tasks\TaskList.xaml" />
-    <None Remove="Views\Upload\UploadController.xaml" />
-    <None Remove="Views\Upload\UploadList.xaml" />
-    <None Remove="Views\UserPlayList.xaml" />
-    <None Remove="Views\WaitView.xaml" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Remove="Assets\SVGs\thumb-dislike-fill.svg" />
+        <None Remove="Assets\SVGs\thumb-dislike.svg" />
+        <None Remove="Assets\SVGs\thumbdislike.xaml" />
+        <None Remove="Assets\SVGs\thumbdislikefill.xaml" />
+        <None Remove="AudioControlFlyOut.xaml" />
+        <None Remove="Controllers\NavMenuController.xaml" />
+        <None Remove="Controllers\PlayListPage.xaml" />
+        <None Remove="Controls\BlockControl.xaml" />
+        <None Remove="Controls\Blocks\ArtistBannerBlockControl.xaml" />
+        <None Remove="Controls\Blocks\BigBannerControl.xaml" />
+        <None Remove="Controls\Blocks\Buttons.xaml" />
+        <None Remove="Controls\Blocks\CuratorBannerBlockControl.xaml" />
+        <None Remove="Controls\Blocks\Ext\ListTracksFull.xaml" />
+        <None Remove="Controls\Blocks\GroupsBlockControl.xaml" />
+        <None Remove="Controls\Blocks\ListLinks.xaml" />
+        <None Remove="Controls\Blocks\ListPlaylists.xaml" />
+        <None Remove="Controls\Blocks\ListVideo.xaml" />
+        <None Remove="Controls\Blocks\MixControl.xaml" />
+        <None Remove="Controls\Blocks\OwnerCell.xaml" />
+        <None Remove="Controls\Blocks\PlaceHolderBig.xaml" />
+        <None Remove="Controls\Blocks\PlaceholderBlockControl.xaml" />
+        <None Remove="Controls\Blocks\RecommsPlaylistBlock.xaml" />
+        <None Remove="Controls\Blocks\RecomUsersControl.xaml" />
+        <None Remove="Controls\Blocks\RemomendedUsersPlaylist.xaml" />
+        <None Remove="Controls\Blocks\TextsBlockControl.xaml" />
+        <None Remove="Controls\Blocks\UniversalList.xaml" />
+        <None Remove="Controls\DefaultControl.xaml" />
+        <None Remove="Controls\LinksController.xaml" />
+        <None Remove="Controls\ListTracks.xaml" />
+        <None Remove="Controls\PlaylistControl.xaml" />
+        <None Remove="Controls\RecommsPlaylist.xaml" />
+        <None Remove="Controls\SuggestionsControl.xaml" />
+        <None Remove="Controls\TitleBlockControl.xaml" />
+        <None Remove="Controls\TrackControl.xaml" />
+        <None Remove="Controls\VibeControl.xaml" />
+        <None Remove="Controls\VideoController.xaml" />
+        <None Remove="Fonts\HelveticaBlack.ttf" />
+        <None Remove="Fonts\VKSansDisplay-Bold.ttf" />
+        <None Remove="Fonts\VKSansDisplay-DemiBold.ttf" />
+        <None Remove="Fonts\VKSansDisplay-Medium.ttf" />
+        <None Remove="Fonts\VKSansDisplay-Regular.ttf" />
+        <None Remove="Helpers\Animations\AnimatedNavMenuController.xaml" />
+        <None Remove="Helpers\Animations\AnimatedSearch.xaml" />
+        <None Remove="Views\Controls\BannerControlUnivers.xaml" />
+        <None Remove="Views\Controls\BlockButtonView.xaml" />
+        <None Remove="Views\Controls\ChoosenControl.xaml" />
+        <None Remove="Views\Controls\CustomVideoTrailer.xaml" />
+        <None Remove="Views\Controls\EqualizerControl.xaml" />
+        <None Remove="Views\Controls\UniversalControl.xaml" />
+        <None Remove="Views\Download\DownloadController.xaml" />
+        <None Remove="Views\Download\DownloadFFmpegController.xaml" />
+        <None Remove="Views\Download\DOwnloadsList.xaml" />
+        <None Remove="Views\LoginWindow\AccountList.xaml" />
+        <None Remove="Views\MiniAppView.xaml" />
+        <None Remove="Views\ModalsPages\CreatePlayList.xaml" />
+        <None Remove="Views\ModalsPages\CustomDialog.xaml" />
+        <None Remove="Views\ModalsPages\DownLoadFFMpeg.xaml" />
+        <None Remove="Views\ModalsPages\EditTrack.xaml" />
+        <None Remove="Views\ModalsPages\EqualizerControlPage.xaml" />
+        <None Remove="Views\ModalsPages\MixControls\BTNSControl.xaml" />
+        <None Remove="Views\ModalsPages\MixControls\PicturedButton.xaml" />
+        <None Remove="Views\ModalsPages\MixControls\PicturedControl.xaml" />
+        <None Remove="Views\ModalsPages\MixControls\SimpleButtons.xaml" />
+        <None Remove="Views\ModalsPages\SettingMix.xaml" />
+        <None Remove="Views\ModalsPages\vkid_captcha.html" />
+        <None Remove="Views\Notification\NotifController.xaml" />
+        <None Remove="Views\SectionView.xaml" />
+        <None Remove="Views\Settings\SettingsPage.xaml" />
+        <None Remove="Views\Share\ConversationsList.xaml" />
+        <None Remove="Views\Share\FriendsList.xaml" />
+        <None Remove="Views\Share\ShareControllers\ConvController.xaml" />
+        <None Remove="Views\Share\ShareControllers\FriendsList.xaml" />
+        <None Remove="Views\Share\ShareControllers\UserControllers.xaml" />
+        <None Remove="Views\Tasks\TaskController.xaml" />
+        <None Remove="Views\Tasks\TaskList.xaml" />
+        <None Remove="Views\Upload\UploadController.xaml" />
+        <None Remove="Views\Upload\UploadList.xaml" />
+        <None Remove="Views\UserPlayList.xaml" />
+        <None Remove="Views\WaitView.xaml" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Page Remove="Assets\SVGs\thumbdislike.xaml" />
-    <Page Remove="Assets\SVGs\thumbdislikefill.xaml" />
-    <Page Remove="Controls\ListPlaylists.xaml" />
-    <Page Remove="themes\icons.xaml" />
-  </ItemGroup>
+    <ItemGroup>
+        <Page Remove="Assets\SVGs\thumbdislike.xaml" />
+        <Page Remove="Assets\SVGs\thumbdislikefill.xaml" />
+        <Page Remove="Controls\ListPlaylists.xaml" />
+        <Page Remove="themes\icons.xaml" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="icon.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-     <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.0.5" />
-    <PackageReference Include="CommunityToolkit.WinUI.Controls.LayoutTransformControl" Version="8.1.240916" />
-    <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.1.240916" />
-    <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" Version="8.1.240916" />
-    <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.1.240916" />
-    <PackageReference Include="CommunityToolkit.WinUI.Lottie" Version="8.1.240821" />
-    <PackageReference Include="FFmpegInteropX" Version="2.0.0-pre3" />
-    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.2.0" />
-    <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.106">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.240923002" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1" />
-    <PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
-    <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
-    <PackageReference Include="System.Drawing.Common" Version="9.0.6" />
-    <PackageReference Include="TagLibSharp" Version="2.3.0" />
-    <PackageReference Include="WinUICommunity.Components" Version="6.9.0" />
-    <Manifest Include="$(ApplicationManifest)" />
-  </ItemGroup>
+    <ItemGroup>
+        <Content Include="icon.ico">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="CommunityToolkit.WinUI.Controls.LayoutTransformControl" Version="8.1.240916" />
+        <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.1.240916" />
+        <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" Version="8.1.240916" />
+        <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.1.240916" />
+        <PackageReference Include="CommunityToolkit.WinUI.Lottie" Version="8.1.240821" />
+        <PackageReference Include="FFmpegInteropX" Version="2.0.0-pre3" />
+        <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.2.0" />
+        <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.106">
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.240923002" />
+        <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1" />
+        <PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
+        <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
+        <PackageReference Include="System.Drawing.Common" Version="9.0.6" />
+        <PackageReference Include="TagLibSharp" Version="2.3.0" />
+        <PackageReference Include="WinUICommunity.Components" Version="6.9.0" />
+        <Manifest Include="$(ApplicationManifest)" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\DiscordRPC\DiscordRPC.csproj" />
-    <ProjectReference Include="..\FFMediaToolkit\FFMediaToolkit.csproj" />
-    <ProjectReference Include="..\MusicX.Core\MusicX.Core.csproj" />
-    <ProjectReference Include="..\MusicX.Shared\MusicX.Shared.csproj" />
-    <ProjectReference Include="..\SetupLib\SetupLib.csproj" />
-    <ProjectReference Include="..\StatSlyLib\StatSlyLib.csproj" />
-    <ProjectReference Include="..\VkNet.AudioBypassService\VkNet.AudioBypassService.csproj" />
-    <ProjectReference Include="..\VkNet.Extensions.DependencyInjection\VkNet.Extensions.DependencyInjection.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\DiscordRPC\DiscordRPC.csproj" />
+        <ProjectReference Include="..\FFMediaToolkit\FFMediaToolkit.csproj" />
+        <ProjectReference Include="..\MusicX.Core\MusicX.Core.csproj" />
+        <ProjectReference Include="..\MusicX.Shared\MusicX.Shared.csproj" />
+        <ProjectReference Include="..\SetupLib\SetupLib.csproj" />
+        <ProjectReference Include="..\StatSlyLib\StatSlyLib.csproj" />
+        <ProjectReference Include="..\VkNet.AudioBypassService\VkNet.AudioBypassService.csproj" />
+        <ProjectReference Include="..\VkNet.Extensions.DependencyInjection\VkNet.Extensions.DependencyInjection.csproj" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Content Update="Assets\StoreLogo.scale-400.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="Assets\SVGs\thumb-dislike-fill.svg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="Assets\SVGs\thumb-dislike.svg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="Assets\SVGs\thumbdislike.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="Assets\SVGs\thumbdislikefill.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+    <ItemGroup>
+        <Content Update="Assets\StoreLogo.scale-400.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="Assets\SVGs\thumb-dislike-fill.svg">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="Assets\SVGs\thumb-dislike.svg">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="Assets\SVGs\thumbdislike.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="Assets\SVGs\thumbdislikefill.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Controls\Blocks\BigBannerControl.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Controls\Blocks\Ext\ListTracksFull.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-    </Page>
-    <Page Update="Controls\Blocks\UniversalList.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Controls\Blocks\ListVideo.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Controls\Blocks\ListLinks.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Controls\Blocks\ListPlaylists.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Controls\Blocks\TextsBlockControl.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Controls\Blocks\PlaceholderBlockControl.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Controls\Blocks\RemomendedUsersPlaylist.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-    </Page>
-    <Page Update="Controls\DefaultControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Controls\BlockControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Controls\SuggestionsControl.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-    </Page>
-    <Page Update="Controls\VideoController.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-    </Page>
-    <Page Update="Controls\LinksController.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-    </Page>
-    <Page Update="Controls\VibeControl.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-    </Page>
-    <Page Update="Controls\TitleBlockControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Controls\ListTracks.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Controls\TrackControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Controls\Blocks\ArtistBannerBlockControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Controls\Blocks\RecommsPlaylistBlock.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Controllers\PlayListPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Controls\Blocks\RecomUsersControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Controls\Blocks\MixControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Controls\Blocks\Buttons.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Controls\Blocks\OwnerCell.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Controls\Blocks\PlaceHolderBig.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="AudioControlFlyOut.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Controls\Blocks\CuratorBannerBlockControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <None Update="Controls\ListPlaylists.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Assets\icons.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="DownloadTrack\ffmpeg.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <Page Update="Views\ModalsPages\EqualizerControlPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\Controls\EqualizerControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\MiniAppView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\Notification\NotifController.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\ModalsPages\MixControls\PicturedControl.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\ModalsPages\MixControls\BTNSControl.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\ModalsPages\MixControls\SimpleButtons.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\ModalsPages\MixControls\PicturedButton.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\ModalsPages\SettingMix.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\Controls\ChoosenControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Helpers\Animations\AnimatedSearch.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\Controls\CustomVideoTrailer.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\Controls\BannerControlUnivers.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\Controls\UniversalControl.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\Share\ShareControllers\FriendsList.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-    </Page>
-    <Page Update="Views\Share\ConversationsList.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-    </Page>
-    <Page Update="Views\Share\ShareControllers\ConvController.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\Share\ShareControllers\UserControllers.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\Share\FriendsList.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\ModalsPages\EditTrack.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Helpers\Animations\AnimatedNavMenuController.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\LoginWindow\AccountList.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\ModalsPages\CustomDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\Download\DownloadFFmpegController.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\ModalsPages\DownLoadFFMpeg.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\Download\DownloadController.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\Download\DownloadsList.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\ModalsPages\CreatePlayList.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\Tasks\TaskController.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\Tasks\TaskList.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-    </Page>
-    <Page Update="Views\Upload\UploadController.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\Upload\UploadList.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-    </Page>
-    <Page Update="Views\UserPlayList.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\Settings\SettingsPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Controls\PlaylistControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Controls\RecommsPlaylist.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\Controls\BlockButtonView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\WaitView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Controls\TrackControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <None Update="icon.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <Page Update="Views\SectionView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+    <ItemGroup>
+        <Page Update="Controls\Blocks\BigBannerControl.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Controls\Blocks\Ext\ListTracksFull.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+        </Page>
+        <Page Update="Controls\Blocks\UniversalList.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Controls\Blocks\ListVideo.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Controls\Blocks\ListLinks.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Controls\Blocks\ListPlaylists.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Controls\Blocks\TextsBlockControl.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Controls\Blocks\PlaceholderBlockControl.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Controls\Blocks\RemomendedUsersPlaylist.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+        </Page>
+        <Page Update="Controls\DefaultControl.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Controls\BlockControl.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Controls\SuggestionsControl.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+        </Page>
+        <Page Update="Controls\VideoController.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+        </Page>
+        <Page Update="Controls\LinksController.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+        </Page>
+        <Page Update="Controls\VibeControl.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+        </Page>
+        <Page Update="Controls\TitleBlockControl.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Controls\ListTracks.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Controls\TrackControl.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Controls\Blocks\ArtistBannerBlockControl.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Controls\Blocks\RecommsPlaylistBlock.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Controllers\PlayListPage.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Controls\Blocks\RecomUsersControl.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Controls\Blocks\MixControl.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Controls\Blocks\Buttons.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Controls\Blocks\OwnerCell.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Controls\Blocks\PlaceHolderBig.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="AudioControlFlyOut.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Controls\Blocks\CuratorBannerBlockControl.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <None Update="Assets\icon.ico">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Controls\ListPlaylists.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </None>
+        <None Update="Assets\icons.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </None>
+        <None Update="DownloadTrack\ffmpeg.exe">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <Page Update="Views\ModalsPages\EqualizerControlPage.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Views\Controls\EqualizerControl.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Views\MiniAppView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Views\Notification\NotifController.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Views\ModalsPages\MixControls\PicturedControl.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Views\ModalsPages\MixControls\BTNSControl.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Views\ModalsPages\MixControls\SimpleButtons.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Views\ModalsPages\MixControls\PicturedButton.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Views\ModalsPages\SettingMix.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Views\Controls\ChoosenControl.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Helpers\Animations\AnimatedSearch.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Views\Controls\CustomVideoTrailer.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Views\Controls\BannerControlUnivers.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Views\Controls\UniversalControl.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Views\Share\ShareControllers\FriendsList.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+        </Page>
+        <Page Update="Views\Share\ConversationsList.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+        </Page>
+        <Page Update="Views\Share\ShareControllers\ConvController.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Views\Share\ShareControllers\UserControllers.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Views\Share\FriendsList.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Views\ModalsPages\EditTrack.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Helpers\Animations\AnimatedNavMenuController.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Views\LoginWindow\AccountList.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Views\ModalsPages\CustomDialog.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Views\Download\DownloadFFmpegController.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Views\ModalsPages\DownLoadFFMpeg.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Views\Download\DownloadController.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Views\Download\DownloadsList.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Views\ModalsPages\CreatePlayList.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Views\Tasks\TaskController.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Views\Tasks\TaskList.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+        </Page>
+        <Page Update="Views\Upload\UploadController.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Views\Upload\UploadList.xaml">
+            <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+        </Page>
+        <Page Update="Views\UserPlayList.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Views\Settings\SettingsPage.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Controls\PlaylistControl.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Controls\RecommsPlaylist.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Views\Controls\BlockButtonView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Views\WaitView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Controls\TrackControl.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <None Update="icon.ico">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <Page Update="Views\SectionView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Controllers\NavMenuController.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+    <ItemGroup>
+        <Page Update="Controllers\NavMenuController.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Resource Include="Fonts\HelveticaBlack.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Fonts\VKSansDisplay-Bold.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Fonts\VKSansDisplay-DemiBold.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Fonts\VKSansDisplay-Medium.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Fonts\VKSansDisplay-Regular.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
+    <ItemGroup>
+        <Resource Include="Fonts\HelveticaBlack.ttf">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Resource>
+        <Resource Include="Fonts\VKSansDisplay-Bold.ttf">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Resource>
+        <Resource Include="Fonts\VKSansDisplay-DemiBold.ttf">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Resource>
+        <Resource Include="Fonts\VKSansDisplay-Medium.ttf">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Resource>
+        <Resource Include="Fonts\VKSansDisplay-Regular.ttf">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Resource>
+    </ItemGroup>
 
-  <ItemGroup>
-    <CustomAdditionalCompileInputs Remove="Controls\Blocks\GroupsBlockControl.xaml" />
-  </ItemGroup>
+    <ItemGroup>
+        <CustomAdditionalCompileInputs Remove="Controls\Blocks\GroupsBlockControl.xaml" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Resource Remove="Controls\Blocks\GroupsBlockControl.xaml" />
-  </ItemGroup>
+    <ItemGroup>
+        <Resource Remove="Controls\Blocks\GroupsBlockControl.xaml" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Update="Properties\Resources.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Resources.resx</DependentUpon>
+        </Compile>
+    </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Update="Properties\Resources.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+    </ItemGroup>
 </Project>

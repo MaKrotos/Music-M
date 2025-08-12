@@ -20,7 +20,7 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <LangVersion>11</LangVersion>
-    <Configurations>Debug;Release</Configurations>
+    <Configurations>Debug;Release;Unpacked</Configurations>
     <Platforms>x64</Platforms>
   </PropertyGroup>
 
