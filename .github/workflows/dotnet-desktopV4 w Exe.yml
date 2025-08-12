@@ -1,4 +1,4 @@
-name: Автосборка Music M (Unpacked)
+name: Автосборка Music M
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
       namevers:
         description: "Название релиза"
         required: true
-        default: "🤖 Автосборка (Unpacked)"
+        default: "🤖 Автосборка"
       descr:
         description: "Описание релиза"
         required: true
@@ -31,28 +31,33 @@ jobs:
   build:
     strategy:
       matrix:
-        configuration: [Release]
+        configuration: [Unpacked]
         platform: [x64]
 
-    runs-on: windows-latest
+    runs-on:
+      windows-latest
 
     env:
-      Solution_Name: "VK UI3 (Unpacked)"
+      Solution_Name: "VK UI3 (Package)"
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          node-version: 16
           fetch-depth: 0
 
       - name: Обновить TOKEN_STAT_SLY
         run: |
           $repoName = "${{ github.repository }}".Split('/')[1]
-          $content = Get-Content -Path "${{ github.workspace }}\VK UI3\StaticParams.cs" -ErrorAction SilentlyContinue
-          if ($content) {
-            $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', '"${{ secrets.TOKEN_STAT_SLY }}"'
-            Set-Content -Path "${{ github.workspace }}\VK UI3\StaticParams.cs" -Value $updatedContent
-          }
+          $content = Get-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs"
+          $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', '"${{ secrets.TOKEN_STAT_SLY }}"'
+          Set-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs" -Value $updatedContent
+          Write-Output $updatedContent
+
+      - name: Display disk tree
+        run: |
+          Get-ChildItem -Recurse | Sort-Object Length -Descending
 
       - name: Install .NET Core
         uses: actions/setup-dotnet@v4
@@ -62,102 +67,141 @@ jobs:
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v2
 
+      - name: Restore the application
+        run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
+        env:
+          Configuration: ${{ matrix.configuration }}
+
+      - name: Print working directory
+        run: |
+          Write-Host "Current working directory: $(Get-Location)"
+
+      - name: Build the application
+        run: |
+          $platforms = "x64", "x86", "ARM64"
+          foreach ($platform in $platforms) {
+            msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$platform /p:TOKEN_STAT_SLY="${{ secrets.TOKEN_STAT_SLY }}"
+          }
+        env:
+          Configuration: ${{ matrix.configuration }}
+          TOKEN_STAT_SLY: ${{ secrets.TOKEN_STAT_SLY }}
+
+      - name: Publish the application
+        run: |
+          $platforms = "x64", "x86", "ARM64"
+          foreach ($platform in $platforms) {
+            $outputPath = "publish/$platform"
+            dotnet publish "VK UI3/VK UI3.csproj" -c $env:Configuration -r $platform --self-contained -o $outputPath /p:TOKEN_STAT_SLY="${{ secrets.TOKEN_STAT_SLY }}"
+          }
+        env:
+          Configuration: ${{ matrix.configuration }}
+          TOKEN_STAT_SLY: ${{ secrets.TOKEN_STAT_SLY }}
+
+      - name: Zip the published files
+        run: |
+          $platforms = "x64", "x86", "ARM64"
+          foreach ($platform in $platforms) {
+            $outputPath = "publish/$platform"
+            $zipPath = "VK_UI3_$platform.zip"
+            Compress-Archive -Path "$outputPath/*" -DestinationPath $zipPath
+          }
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: VK_UI3_Unpacked
+          path: |
+            VK_UI3_x64.zip
+            VK_UI3_x86.zip
+            VK_UI3_ARM64.zip
+
       - name: Извлечь версию
         id: get_version
         run: |
+          $repoName = "${{ github.repository }}".Split('/')[1]
+          $csprojPath = "D:\a\$repoName\$repoName\VK UI3\VK UI3.csproj"
           $doc = New-Object xml
-          $doc.Load("${{ github.workspace }}\VK UI3\VK UI3.csproj")
+          $doc.Load((Convert-Path $csprojPath))
           $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText
-          echo "version=$version" >> $GITHUB_OUTPUT
+          echo "::set-output name=VERSION::$version"
           echo "Версия: $version"
+        continue-on-error: true
         if: github.event.inputs.release == 'true'
 
-      - name: Clean publish directories
+      - name: Получить релизы
+        id: get_releases
         run: |
-          Remove-Item -Recurse -Force publish-* -ErrorAction SilentlyContinue
-
-      - name: Restore NuGet packages
-        run: dotnet restore "VK UI3/VK UI3.csproj"
-      
-      - name: Publish Unpacked App with Proper Resource Generation
-        run: |
-          $architectures = @{
-              "x64"   = @{ RuntimeId = "win-x64";   OutputDir = "publish-x64" }
-              "x86"   = @{ RuntimeId = "win-x86";   OutputDir = "publish-x86" }
-              "arm64" = @{ RuntimeId = "win-arm64"; OutputDir = "publish-arm64" }
+          $headers = @{
+            "Authorization" = "token ${{ secrets.TOKEN }}"
           }
-          
-          foreach ($arch in $architectures.Keys) {
-              $runtimeId = $architectures[$arch].RuntimeId
-              $outDir = $architectures[$arch].OutputDir
-              $intermediateDir = "obj\Unpacked\net8.0-windows10.0.22000.0\$runtimeId"
-              $zipFile = "VK_UI3_win-$arch-unpacked.zip"
-              
-              Write-Host "Building for architecture: $arch"
-              
-              # 1. Clean previous builds
-              Remove-Item -Path $outDir, $intermediateDir -Recurse -Force -ErrorAction SilentlyContinue
-              
-              # 2. Restore and build (without publish)
-              dotnet build "VK UI3/VK UI3.csproj" `
-                  --configuration Unpacked `
-                  --runtime $runtimeId `
-                  -p:WindowsPackageType=None `
-                  -p:GenerateAppxPackageOnBuild=false `
-                  -p:SkipPriGeneration=false `
-                  -p:AppxBundle=Never
-              
-              # 3. Verify PRI files were generated
-              $priFiles = Get-ChildItem -Path $intermediateDir -Filter "*.pri" -Recurse
-              if ($priFiles.Count -eq 0) {
-                  Write-Host "##[warning] No PRI files generated for $arch!"
-              }
-              
-              # 4. Publish with all resources
-              dotnet publish "VK UI3/VK UI3.csproj" `
-                  --configuration Unpacked `
-                  --runtime $runtimeId `
-                  --output $outDir `
-                  --no-build `
-                  -p:WindowsPackageType=None `
-                  -p:WindowsAppSDKSelfContained=true `
-                  -p:SelfContained=true `
-                  -p:IncludeNativeLibrariesForSelfExtract=true
-              
-              # 5. Verify all files are present
-              $requiredFiles = @("*.exe", "*.dll", "*.pri", "*.config")
-              foreach ($pattern in $requiredFiles) {
-                  $files = Get-ChildItem -Path $outDir -Filter $pattern
-                  if ($files.Count -eq 0) {
-                      Write-Host "##[warning] Missing $pattern files in output!"
-                  }
-              }
-              
-              # 6. Create zip archive
-              if (Test-Path $outDir) {
-                  Compress-Archive -Path "$outDir\*" -DestinationPath $zipFile -CompressionLevel Optimal
-                  Write-Host "Created $zipFile"
-              }
-          }
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: Unpacked-Binaries
-          path: |
-            VK_UI3_win-x64-unpacked.zip
-            VK_UI3_win-x86-unpacked.zip
-            VK_UI3_win-arm64-unpacked.zip
-
-      - name: Create Release
+          $releases = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases" -Headers $headers
+          echo "::set-output name=releases::$releases"
+        shell: pwsh
         if: github.event.inputs.release == 'true'
-        uses: softprops/action-gh-release@v1
+
+      - name: Проверить существование релиза
+        id: check_release
+        run: |
+          $version = "${{ steps.get_version.outputs.VERSION }}"
+          $headers = @{
+            "Authorization" = "token ${{ secrets.TOKEN }}"
+          }
+          $releases = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases" -Headers $headers
+          $release = $releases | Where-Object { $_.tag_name -eq $version -and $_.draft -eq $false -and $_.prerelease -eq $false }
+          if ($release) {
+            Write-Host "Релиз с тегом $version уже существует"
+            echo "::set-output name=exists::true"
+          } else {
+            Write-Host "Релиз с тегом $version не найден"
+            echo "::set-output name=exists::false"
+          }
+        shell: pwsh
+        if: github.event.inputs.release == 'true'
+
+      - name: Создать релиз
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
-          name: ${{ github.event.inputs.namevers }}
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          release_name: ${{ github.event.inputs.namevers }}
           body: ${{ github.event.inputs.descr }}
-          tag_name: ${{ steps.get_version.outputs.version }}
+          draft: false
           prerelease: ${{ github.event.inputs.prerelease }}
-          files: |
-            VK_UI3_win-x64-unpacked.zip
-            VK_UI3_win-x86-unpacked.zip
-            VK_UI3_win-arm64-unpacked.zip
+        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
+
+      - name: Загрузить файлы в релиз
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.TOKEN }}
+          file: VK_UI3_*.zip
+          asset_name: VK_UI3_Unpacked
+          tag: ${{ steps.get_version.outputs.VERSION }}
+          overwrite: true
+          file_glob: true
+        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
+
+      - name: Отправить сообщение в Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RELEASE_URL: https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}
+        run: |
+          $telegramBotToken = '${{ secrets.TELEGRAM_BOT_TOKEN }}'
+          $telegramChatId = '${{ secrets.TELEGRAM_CHAT_ID }}'
+          $releaseUrl = 'https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}'
+          $message = @"
+          <b>🎉 Новый релиз:</b> ${{ github.event.inputs.namevers }}
+          <b>📦 Версия:</b> ${{ steps.get_version.outputs.VERSION }}
+          <b>📝 Описание:</b> ${{ github.event.inputs.descr }}
+          <b>🔗 <a href='$releaseUrl'>Ссылка на релиз</a></b>
+          "@
+          $uri = 'https://api.telegram.org/bot' + $telegramBotToken + '/sendMessage'
+          $body = @{
+              chat_id = $telegramChatId
+              text = $message
+              parse_mode = 'HTML'
+          }
+          $bodyJson = $body | ConvertTo-Json -Compress
+          Invoke-RestMethod -Uri $uri -Method Post -Body $bodyJson -ContentType 'application/json'
