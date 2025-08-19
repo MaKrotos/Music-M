@@ -76,6 +76,47 @@ jobs:
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v2
 
+        ################################
+      - name: Извлечь версию
+        id: get_version
+        run: |
+          $repoName = "${{ github.repository }}".Split('/')[1]
+          $csprojPath = "D:\a\$repoName\$repoName\VK UI3\VK UI3.csproj"
+          $doc = New-Object xml
+          $doc.Load((Convert-Path $csprojPath))
+          $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText
+          echo "::set-output name=VERSION::$version"
+          echo "Версия: $version"
+        continue-on-error: true
+        if: github.event.inputs.release == 'true'
+
+      - name: Подставить версию в Package.appxmanifest
+        run: |
+          $repoName = "${{ github.repository }}".Split('/')[1]
+          $csproj = "D:\a\$repoName\$repoName\VK UI3\VK UI3.csproj"
+          $manifest = "D:\a\$repoName\$repoName\VK UI3 (Package)\Package.appxmanifest"
+          [xml]$doc = Get-Content $csproj
+          $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText.Trim()
+          [xml]$xml = Get-Content $manifest
+          $xml.Package.Identity.Version = $version
+          $xml.Save($manifest)
+        if: github.event.inputs.release == 'true'
+
+      - name: Upload Package.appxmanifest as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PackageAppxManifest
+          path: D:\a\Music-M\Music-M\VK UI3 (Package)\Package.appxmanifest
+        if: github.event.inputs.release == 'true'
+          
+      - name: Clean publish directories
+        run: |
+          Remove-Item -Recurse -Force publish-x64, publish-x86, publish-arm64 -ErrorAction SilentlyContinue
+
+
+        
+        ################################
+
       # Восстановить приложение для заполнения папки obj RuntimeIdentifiers
       - name: Restore the application
         run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
@@ -152,32 +193,7 @@ jobs:
             ${{ env.Solution_Name }}\\Packages\*.cer
             ${{ env.Solution_Name }}\\Packages\*.msixbundle
             ${{ env.Solution_Name }}\\Packages\*.msix
-      - name: Извлечь версию
-        id: get_version
-        run: |
-          $repoName = "${{ github.repository }}".Split('/')[1]
-          $csprojPath = "D:\a\$repoName\$repoName\VK UI3\VK UI3.csproj"
-          $doc = New-Object xml
-          $doc.Load((Convert-Path $csprojPath))
-          $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText
-          echo "::set-output name=VERSION::$version"
-          echo "Версия: $version"
-        continue-on-error: true
-        if: github.event.inputs.release == 'true'
-
-      - name: Подставить версию в Package.appxmanifest
-        run: |
-          $repoName = "${{ github.repository }}".Split('/')[1]
-          $csproj = "D:\a\$repoName\$repoName\VK UI3\VK UI3.csproj"
-          $manifest = "D:\a\$repoName\$repoName\VK UI3 (Package)\Package.appxmanifest"
-          [xml]$doc = Get-Content $csproj
-          $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText
-          (Get-Content $manifest) -replace 'Version="[^"]*"', 'Version="' + $version + '"' | Set-Content $manifest
-        if: github.event.inputs.release == 'true'
-
-      - name: Вывести версию
-        run: |
-          echo "Извлеченная версия: ${{ steps.get_version.outputs.VERSION }}"
+      
       - name: Получить релизы
         id: get_releases
         run: |
