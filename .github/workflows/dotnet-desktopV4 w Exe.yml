@@ -31,16 +31,12 @@ jobs:
   build:
     strategy:
       matrix:
-        # Указание архитектур для сборки
         rid: [win-x64, win-x86, win-arm64]
 
     runs-on: windows-latest
 
     env:
-      # Имя проекта для сборки
       Project_Name: "VK UI3"
-      # Имя решения
-      Solution_Name: "VK UI3.sln"
 
     steps:
       - name: Checkout
@@ -49,52 +45,38 @@ jobs:
           node-version: 16
           fetch-depth: 0
 
-      # Декодируем закодированный в base64 pfx и сохраняем Signing_Certificate
-      - name: Decode the pfx
-        run: |
-          $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
-          $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
-          [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
-
-      # Обновить TOKEN_STAT_SLY
-      - name: Обновить TOKEN_STAT_SLY
+      - name: Update TOKEN_STAT_SLY
         run: |
           $repoName = "${{ github.repository }}".Split('/')[1]
-          $content = Get-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs"
+          $content = Get-Content -Path "D:\a\$repoName\$repoName\${{ env.Project_Name }}\StaticParams.cs"
           $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', '"${{ secrets.TOKEN_STAT_SLY }}"'
-          Set-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs" -Value $updatedContent
+          Set-Content -Path "D:\a\$repoName\$repoName\${{ env.Project_Name }}\StaticParams.cs" -Value $updatedContent
           Write-Output $updatedContent
 
-      # Установить .NET Core
       - name: Install .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
-          
-      # Добавить MSBuild в PATH
-      - name: Setup MSBuild.exe
-        uses: microsoft/setup-msbuild@v2
 
-      # Восстановить зависимости
       - name: Restore dependencies
-        run: dotnet restore "VK UI3\VK UI3.csproj"
+        run: dotnet restore "${{ env.Project_Name }}\${{ env.Project_Name }}.csproj"
 
-      # Устанавливаем сертификат, чтобы signtool мог его найти
-      - name: Install PFX certificate
+      - name: Decode PFX and install certificate
         run: |
+          $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
           $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
+          [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
+          
           $password = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -Force -AsPlainText
           Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation Cert:\LocalMachine\My -Password $password
 
-      # Сборка, публикация и подпись исполняемого файла
       - name: Build, Sign, and Zip the executable
         env:
           SIGN_PASSWORD: ${{ secrets.PFX_PASSWORD }}
         run: |
           $projectFile = "${{ env.Project_Name }}\${{ env.Project_Name }}.csproj"
-          $outputDir = "build_output"
+          $outputDir = "build_output_${{ matrix.rid }}"
           
-          # Публикуем приложение как автономный исполняемый файл
           dotnet publish `
             $projectFile `
             -c Unpacked `
@@ -105,80 +87,62 @@ jobs:
             
           $exePath = Get-ChildItem -Path "$outputDir" -Filter "*.exe" | Select-Object -First 1 | ForEach-Object { $_.FullName }
           
-          if (-not $exePath) {
-            throw "Исполняемый файл не найден в $outputDir"
-          }
-          
-          # Подписываем исполняемый файл
-          $signToolPath = (Get-Item "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\signtool.exe").FullName | Select-Object -First 1
-          
-          if ($signToolPath) {
-            Write-Host "Найден Signtool: $signToolPath"
-            & "$signToolPath" sign /f "${{ github.workspace }}\GitHubActionsWorkflow.pfx" /p "${{ secrets.PFX_PASSWORD }}" /t http://timestamp.digicert.com /v $exePath
+          if ($exePath) {
+            $signToolPath = (Get-Item "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\signtool.exe").FullName | Select-Object -First 1
+            if ($signToolPath) {
+              Write-Host "Found Signtool: $signToolPath"
+              & "$signToolPath" sign /f "${{ github.workspace }}\GitHubActionsWorkflow.pfx" /p "${{ secrets.PFX_PASSWORD }}" /t http://timestamp.digicert.com /v $exePath
+            } else {
+              Write-Host "Signtool not found. Signing skipped."
+            }
           } else {
-            Write-Host "Signtool не найден. Подпись пропущена."
+            throw "Executable file not found in $outputDir"
           }
           
-          # Упаковываем в ZIP-архив
           $zipName = "${{ env.Project_Name }}_${{ matrix.rid }}.zip"
           Compress-Archive -Path "$outputDir\*" -DestinationPath "$zipName" -Force
-          
-          # Сохраняем путь к ZIP-архиву как переменную среды, чтобы использовать в следующем шаге
-          echo "::set-output name=zip_file_path::$zipName"
-          echo "::set-output name=zip_file_name::$zipName"
 
-      # Удалить pfx
-      - name: Remove the pfx
-        run: |
-          $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
-          Remove-Item -path "$certificatePath"
-      
-      # Загружаем ZIP-архивы как артефакты сборки
       - name: Upload zip artifact
         uses: actions/upload-artifact@v4
         with:
           name: Executable ${{ matrix.rid }}
           path: "*.zip"
 
-      # === Шаги для создания релиза и уведомлений ===
+      - name: Remove the pfx
+        run: |
+          $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
+          Remove-Item -path "$certificatePath"
       
-      - name: Извлечь версию
+      # === Шаги для создания релиза и уведомлений (выполняются только для win-x64) ===
+      
+      - name: Get version
         id: get_version
         run: |
-          $repoName = "${{ github.repository }}".Split('/')[1]
-          $csprojPath = "D:\a\$repoName\$repoName\${{ env.Project_Name }}\${{ env.Project_Name }}.csproj"
-          $doc = New-Object xml
-          $doc.Load((Convert-Path $csprojPath))
-          # Ищем тег <Version>
+          $csprojPath = "${{ env.Project_Name }}\${{ env.Project_Name }}.csproj"
+          [xml]$doc = Get-Content $csprojPath
           $version = $doc.SelectSingleNode('//Version').InnerText
           echo "::set-output name=VERSION::$version"
-          echo "Версия: $version"
-        continue-on-error: true
-        if: github.event.inputs.release == 'true'
+          echo "Version: $version"
+        if: github.event.inputs.release == 'true' && matrix.rid == 'win-x64'
 
-      - name: Вывести версию
-        run: |
-          echo "Извлеченная версия: ${{ steps.get_version.outputs.VERSION }}"
-      - name: Проверить существование релиза
+      - name: Check if release exists
         id: check_release
         run: |
           $version = "${{ steps.get_version.outputs.VERSION }}"
-          $headers = @{
-            "Authorization" = "token ${{ secrets.TOKEN }}"
-          }
+          $headers = @{ "Authorization" = "token ${{ secrets.TOKEN }}" }
           $releases = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases" -Headers $headers
           $release = $releases | Where-Object { $_.tag_name -eq $version -and $_.draft -eq $false -and $_.prerelease -eq $false }
           if ($release) {
-            Write-Host "Релиз с тегом $version уже существует"
+            echo "Release with tag $version already exists"
             echo "::set-output name=exists::true"
           } else {
-            Write-Host "Релиз с тегом $version не найден"
+            echo "Release with tag $version not found"
             echo "::set-output name=exists::false"
           }
         shell: pwsh
-        if: github.event.inputs.release == 'true'
+        if: github.event.inputs.release == 'true' && matrix.rid == 'win-x64'
 
-      - name: Создать релиз
+      - name: Create release
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -189,9 +153,9 @@ jobs:
           body: ${{ github.event.inputs.descr }}
           draft: false
           prerelease: ${{ github.event.inputs.prerelease }}
-        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
+        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true' && matrix.rid == 'win-x64'
 
-      - name: Загрузить файлы в релиз
+      - name: Upload files to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.TOKEN }}
@@ -199,9 +163,9 @@ jobs:
           tag: ${{ steps.get_version.outputs.VERSION }}
           overwrite: true
           file_glob: true
-        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
+        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true' && matrix.rid == 'win-x64'
 
-      - name: Отправить сообщение в Telegram
+      - name: Send Telegram notification
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -223,4 +187,6 @@ jobs:
               parse_mode = 'HTML'
           }
           $bodyJson = $body | ConvertTo-Json -Compress
+          Invoke-RestMethod -Uri $uri -Method Post -Body $bodyJson -ContentType 'application/json'
+        if: github.event.inputs.release == 'true' && matrix.rid == 'win-x64'
           Invoke-RestMethod -Uri $uri -Method Post -Body $bodyJson -ContentType 'application/json'
