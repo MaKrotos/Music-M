@@ -365,3 +365,28 @@ jobs:
           overwrite: true
           file_glob: true
         if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
+
+
+      - name: Отправить сообщение в Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RELEASE_URL: https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}
+        run: |
+          $telegramBotToken = '${{ secrets.TELEGRAM_BOT_TOKEN }}'
+          $telegramChatId = '${{ secrets.TELEGRAM_CHAT_ID }}'
+          $releaseUrl = 'https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}'
+          $message = @"
+          <b>🎉 Новый релиз:</b> ${{ github.event.inputs.namevers }}
+          <b>📦 Версия:</b> ${{ steps.get_version.outputs.VERSION }}
+          <b>📝 Описание:</b> ${{ github.event.inputs.descr }}
+          <b>🔗 <a href='$releaseUrl'>Ссылка на релиз</a></b>
+          "@
+          $uri = 'https://api.telegram.org/bot' + $telegramBotToken + '/sendMessage'
+          $body = @{
+              chat_id = $telegramChatId
+              text = $message
+              parse_mode = 'HTML'
+          }
+          $bodyJson = $body | ConvertTo-Json -Compress
+          Invoke-RestMethod -Uri $uri -Method Post -Body $bodyJson -ContentType 'application/json'
