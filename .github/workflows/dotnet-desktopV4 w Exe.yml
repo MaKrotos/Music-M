@@ -28,165 +28,69 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  build-unpacked:
     strategy:
       matrix:
-        rid: [win-x64, win-x86, win-arm64]
-
+        arch: [x64, x86, ARM64]
     runs-on: windows-latest
 
     env:
-      Project_Name: "VK UI3"
+      Solution_Name: "VK UI3"
+      Configuration: Unpacked
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          node-version: 16
           fetch-depth: 0
 
-      - name: Update TOKEN_STAT_SLY
+      # Декодируем pfx
+      - name: Decode the pfx
         run: |
-          $repoName = "${{ github.repository }}".Split('/')[1]
-          $content = Get-Content -Path "D:\a\$repoName\$repoName\${{ env.Project_Name }}\StaticParams.cs"
-          $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', '"${{ secrets.TOKEN_STAT_SLY }}"'
-          Set-Content -Path "D:\a\$repoName\$repoName\${{ env.Project_Name }}\StaticParams.cs" -Value $updatedContent
-          Write-Output $updatedContent
+          $pfxBytes = [Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
+          $certPath = "${{ github.workspace }}\signcert.pfx"
+          [IO.File]::WriteAllBytes($certPath, $pfxBytes)
 
-      - name: Install .NET Core
+      - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
 
-      - name: Restore dependencies
-        run: dotnet restore "${{ env.Project_Name }}\${{ env.Project_Name }}.csproj"
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
 
-      - name: Decode PFX and install certificate
-        run: |
-          $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
-          $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
-          [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
-          
-          $password = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -Force -AsPlainText
-          Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation Cert:\LocalMachine\My -Password $password
+      - name: Restore
+        run: msbuild $env:Solution_Name\$env:Solution_Name.csproj /t:Restore /p:Configuration=$env:Configuration
 
-      - name: Build, Sign, and Zip the executable
-        env:
-          SIGN_PASSWORD: ${{ secrets.PFX_PASSWORD }}
+      - name: Build ${{ matrix.arch }}
         run: |
-          $projectFile = "${{ env.Project_Name }}\${{ env.Project_Name }}.csproj"
-          $outputDir = "build_output_${{ matrix.rid }}"
-          
-          dotnet publish `
-            $projectFile `
-            -c Unpacked `
-            -r ${{ matrix.rid }} `
-            --self-contained true `
-            -o "$outputDir" `
-            /p:PublishSingleFile=true
-            
-          $exePath = Get-ChildItem -Path "$outputDir" -Filter "*.exe" | Select-Object -First 1 | ForEach-Object { $_.FullName }
-          
-          if ($exePath) {
-            $signToolPath = (Get-Item "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\signtool.exe").FullName | Select-Object -First 1
-            if ($signToolPath) {
-              Write-Host "Found Signtool: $signToolPath"
-              & "$signToolPath" sign /f "${{ github.workspace }}\GitHubActionsWorkflow.pfx" /p "${{ secrets.PFX_PASSWORD }}" /t http://timestamp.digicert.com /v $exePath
-            } else {
-              Write-Host "Signtool not found. Signing skipped."
-            }
-          } else {
-            throw "Executable file not found in $outputDir"
-          }
-          
-          $zipName = "${{ env.Project_Name }}_${{ matrix.rid }}.zip"
-          Compress-Archive -Path "$outputDir\*" -DestinationPath "$zipName" -Force
+          msbuild $env:Solution_Name\$env:Solution_Name.csproj `
+            /p:Configuration=$env:Configuration `
+            /p:Platform=${{ matrix.arch }}
 
-      - name: Upload zip artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Executable ${{ matrix.rid }}
-          path: "*.zip"
+      # Подпись exe
+      - name: Sign exe
+        run: |
+          $certPath = "${{ github.workspace }}\signcert.pfx"
+          $password = "${{ secrets.PFX_PASSWORD }}"
+          $exePath = Get-ChildItem "VK UI3\bin\${{ matrix.arch }}\Unpacked\*.exe" | Select-Object -First 1
+          & "C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe" sign `
+            /f $certPath /p $password /tr http://timestamp.digicert.com /td sha256 /fd sha256 $exePath.FullName
 
-      - name: Remove the pfx
+      # Архивирование
+      - name: Create zip
         run: |
-          $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
-          Remove-Item -path "$certificatePath"
-      
-      # === Шаги для создания релиза и уведомлений (выполняются только для win-x64) ===
-      
-      - name: Get version
-        id: get_version
-        run: |
-          $csprojPath = "${{ env.Project_Name }}\${{ env.Project_Name }}.csproj"
-          [xml]$doc = Get-Content $csprojPath
-          $version = $doc.SelectSingleNode('//Version').InnerText
-          echo "::set-output name=VERSION::$version"
-          echo "Version: $version"
-        if: github.event.inputs.release == 'true' && matrix.rid == 'win-x64'
-
-      - name: Check if release exists
-        id: check_release
-        run: |
-          $version = "${{ steps.get_version.outputs.VERSION }}"
-          $headers = @{ "Authorization" = "token ${{ secrets.TOKEN }}" }
-          $releases = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases" -Headers $headers
-          $release = $releases | Where-Object { $_.tag_name -eq $version -and $_.draft -eq $false -and $_.prerelease -eq $false }
-          if ($release) {
-            echo "Release with tag $version already exists"
-            echo "::set-output name=exists::true"
-          } else {
-            echo "Release with tag $version not found"
-            echo "::set-output name=exists::false"
-          }
+          $exePath = Get-ChildItem "VK UI3\bin\${{ matrix.arch }}\Unpacked\*.exe" | Select-Object -First 1
+          $zipName = "VK_UI3_${{ matrix.arch }}.zip"
+          Compress-Archive -Path $exePath.FullName -DestinationPath $zipName
         shell: pwsh
-        if: github.event.inputs.release == 'true' && matrix.rid == 'win-x64'
 
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
-        with:
-          tag_name: ${{ steps.get_version.outputs.VERSION }}
-          release_name: ${{ github.event.inputs.namevers }}
-          body: ${{ github.event.inputs.descr }}
-          draft: false
-          prerelease: ${{ github.event.inputs.prerelease }}
-        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true' && matrix.rid == 'win-x64'
-
-      - name: Upload files to release
+      # Загрузка в релиз
+      - name: Upload to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.TOKEN }}
-          file: "*.zip"
-          tag: ${{ steps.get_version.outputs.VERSION }}
+          file: VK_UI3_${{ matrix.arch }}.zip
+          asset_name: VK_UI3_${{ matrix.arch }}.zip
+          tag: ${{ github.ref_name }}
           overwrite: true
-          file_glob: true
-        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true' && matrix.rid == 'win-x64'
-
-      - name: Send Telegram notification
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          RELEASE_URL: https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}
-        run: |
-          $telegramBotToken = '${{ secrets.TELEGRAM_BOT_TOKEN }}'
-          $telegramChatId = '${{ secrets.TELEGRAM_CHAT_ID }}'
-          $releaseUrl = 'https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}'
-          $message = @"
-          <b>🎉 Новый релиз:</b> ${{ github.event.inputs.namevers }}
-          <b>📦 Версия:</b> ${{ steps.get_version.outputs.VERSION }}
-          <b>📝 Описание:</b> ${{ github.event.inputs.descr }}
-          <b>🔗 <a href='$releaseUrl'>Ссылка на релиз</a></b>
-          "@
-          $uri = 'https://api.telegram.org/bot' + $telegramBotToken + '/sendMessage'
-          $body = @{
-              chat_id = $telegramChatId
-              text = $message
-              parse_mode = 'HTML'
-          }
-          $bodyJson = $body | ConvertTo-Json -Compress
-          Invoke-RestMethod -Uri $uri -Method Post -Body $bodyJson -ContentType 'application/json'
-        if: github.event.inputs.release == 'true' && matrix.rid == 'win-x64'
-          Invoke-RestMethod -Uri $uri -Method Post -Body $bodyJson -ContentType 'application/json'
