@@ -40,41 +40,64 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Зафиксировать .NET SDK 8.x (msbuild будет резолвить именно его)
+      - name: Pin .NET SDK 8 via global.json
+        run: |
+          Set-Content -Path global.json -Value '{ "sdk": { "version": "8.0.100", "rollForward": "feature" } }'
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      # PFX
       - name: Decode PFX
         run: |
           $bytes = [Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
           $certPath = "${{ github.workspace }}\signcert.pfx"
           [IO.File]::WriteAllBytes($certPath, $bytes)
 
-      - name: Setup .NET & MSBuild
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 8.0.x
-      - uses: microsoft/setup-msbuild@v2
-
+      # Restore
       - name: Restore
         run: msbuild "$env:Solution_Name\$env:Solution_Name.csproj" /t:Restore /p:Configuration=$env:Configuration
 
-      - name: Build, sign and zip all archs
+      # Сборка, подпись и упаковка для всех архитектур
+      - name: Build, sign, zip (x64, x86, ARM64)
+        shell: pwsh
         run: |
           $certPath = "${{ github.workspace }}\signcert.pfx"
           $password = "${{ secrets.PFX_PASSWORD }}"
+          $arches = @(
+            @{ Platform = "x64";   RID = "win-x64"   },
+            @{ Platform = "x86";   RID = "win-x86"   },
+            @{ Platform = "ARM64"; RID = "win-arm64" }
+          )
 
-          $arches = @("x64", "x86", "ARM64")
-          foreach ($arch in $arches) {
-            Write-Host "=== Сборка $arch ==="
-            msbuild "$env:Solution_Name\$env:Solution_Name.csproj" /p:Configuration=$env:Configuration /p:Platform=$arch
+          foreach ($a in $arches) {
+            Write-Host "=== Build $($a.Platform) (RID=$($a.RID)) ==="
 
-            $exePath = Get-ChildItem "$env:Solution_Name\bin\$arch\$env:Configuration\*.exe" | Select-Object -First 1
+            msbuild "$env:Solution_Name\$env:Solution_Name.csproj" `
+              /p:Configuration=$env:Configuration `
+              /p:Platform=$($a.Platform) `
+              /p:RuntimeIdentifier=$($a.RID) `
+              /p:DisableRuntimeIdentifierInference=true
+
+            # EXE может оказаться глубже (при указании RID у SDK появляются доп. подпапки)
+            $exe = Get-ChildItem "$env:Solution_Name\bin\$($a.Platform)\$env:Configuration" -Recurse -Include *.exe | Select-Object -First 1
+            if (-not $exe) { throw "Не найден exe для $($a.Platform)" }
 
             & "C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe" sign `
-              /f $certPath /p $password /tr http://timestamp.digicert.com /td sha256 /fd sha256 $exePath.FullName
+              /f $certPath /p $password /tr http://timestamp.digicert.com /td sha256 /fd sha256 $exe.FullName
 
-            $zipName = "VK_UI3_${arch}.zip"
-            Compress-Archive -Path $exePath.FullName -DestinationPath $zipName -Force
+            $zipName = "VK_UI3_$($a.Platform).zip"
+            if (Test-Path $zipName) { Remove-Item $zipName -Force }
+            Compress-Archive -Path $exe.FullName -DestinationPath $zipName -Force
           }
-        shell: pwsh
 
+      # Загрузка всех zip в релиз (предполагается, что тег релиза уже существует)
       - name: Upload all zips to release
         uses: svenstaro/upload-release-action@v2
         with:
