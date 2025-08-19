@@ -73,15 +73,16 @@ jobs:
           foreach ($a in $arches) {
             Write-Host "=== Build $($a.Platform) ==="
             msbuild "$env:Solution_Name\$env:Solution_Name.csproj" `
+              "/p:Configuration=$env:Configuration" `
+              "/p:Platform=$($a.Platform)" `
+              "/p:RuntimeIdentifier=$($a.RID)" `
               /restore `
-              /p:Configuration=$env:Configuration `
-              /p:Platform=$($a.Platform) `
-              /p:RuntimeIdentifier=$($a.RID) `
               /p:DisableRuntimeIdentifierInference=true `
               /p:EnableNETAnalyzers=false `
               /p:WarningLevel=0 `
               /p:TreatWarningsAsErrors=false `
               /clp:ErrorsOnly
+
           }
 
 # 2. Подпись
