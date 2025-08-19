@@ -332,6 +332,7 @@ jobs:
           tag: ${{ steps.get_version.outputs.VERSION }}
           overwrite: true
           file_glob: true
+        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
 
       - name: Загрузить файлы в релиз
         uses: svenstaro/upload-release-action@v2
