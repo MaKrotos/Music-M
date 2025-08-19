@@ -199,11 +199,20 @@ jobs:
 #-------------------------------------------------------EXE
 
 
+
+
+
       - name: Clean build artifacts
         run: msbuild $env:Solution_Name /t:Clean /p:Configuration=$env:Configuration
         env:
           Configuration: ${{ matrix.configuration }}\
-          
+
+      # PFX
+      - name: Decode PFX
+        run: |
+          $bytes = [Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
+          $certPath = "${{ github.workspace }}\signcert.pfx"
+          [IO.File]::WriteAllBytes($certPath, $bytes)
 
       # 1. Сборка
       - name: Build EXE
