@@ -111,7 +111,7 @@ jobs:
 
       # Восстановить приложение для заполнения папки obj RuntimeIdentifiers
       - name: Restore the application
-        run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
+        run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration /clp:Minimal
         env:
           Configuration: ${{ matrix.configuration }}
 
