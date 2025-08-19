@@ -77,7 +77,7 @@ jobs:
 
       # Восстановить зависимости
       - name: Restore dependencies
-        run: dotnet restore ${{ env.Project_Name }}\${{ env.Project_Name }}.csproj
+        run: dotnet restore "VK UI3\VK UI3.csproj"
 
       # Устанавливаем сертификат, чтобы signtool мог его найти
       - name: Install PFX certificate
