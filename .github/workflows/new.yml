@@ -100,11 +100,6 @@ jobs:
           $xml.Package.Identity.Version = $version
           $xml.Save($manifest)
 
-      - name: Upload Package.appxmanifest as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: PackageAppxManifest
-          path: D:\a\Music-M\Music-M\VK UI3 (Package)\Package.appxmanifest
           
       - name: Clean publish directories
         run: |
