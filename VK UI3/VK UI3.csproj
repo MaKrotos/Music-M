@@ -54,6 +54,7 @@
         <WindowsAppSDKBootstrapAutoInitializeOptions>OnNoMatch</WindowsAppSDKBootstrapAutoInitializeOptions>
         <EnableDefaultApplicationClass>false</EnableDefaultApplicationClass>
         <SelfContained>true</SelfContained>
+        <CsWinRTEnabled>false</CsWinRTEnabled>
     </PropertyGroup>
 
     <ItemGroup>
