@@ -285,7 +285,12 @@ jobs:
             Compress-Archive -Path "$buildDir\*" -DestinationPath $zipName -Force
           }
 
-
+      - name: Upload zips to artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: VK_UI3_Zips_${{ github.run_id }}
+          path: VK_UI3_*.zip
+          retention-days: 30
 
 
 
