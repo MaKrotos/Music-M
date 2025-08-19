@@ -310,7 +310,7 @@ jobs:
         run: |
           $version = "${{ steps.get_version.outputs.VERSION }}"
           $headers = @{
-            "Authorization" = "token ${{ secrets.GITHUB_TOKEN }}"
+            "Authorization" = "token ${{ secrets.TOKEN }}"
             "Accept" = "application/vnd.github.v3+json"
           }
           try {
@@ -334,7 +334,7 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
           tag_name: ${{ steps.get_version.outputs.VERSION }}
           release_name: ${{ github.event.inputs.namevers }}
@@ -350,7 +350,7 @@ jobs:
         with:
           files: VK_UI3_*.zip
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
         if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
       
       - name: Загрузить файлы в релиз
@@ -358,5 +358,5 @@ jobs:
         with:
           files: ${{ env.Solution_Name }}/Packages/*
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
         if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
