@@ -319,15 +319,14 @@ jobs:
       
       - name: Создать релиз
         id: create_release
-        uses: softprops/action-gh-release@v1
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          tag: ${{ steps.get_version.outputs.VERSION }}
           name: ${{ github.event.inputs.namevers }}
           body: ${{ github.event.inputs.descr }}
           draft: false
           prerelease: ${{ github.event.inputs.prerelease == 'true' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
         if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
       
       # Загрузка в релиз
