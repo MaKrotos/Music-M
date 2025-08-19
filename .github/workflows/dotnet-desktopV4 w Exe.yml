@@ -60,48 +60,48 @@ jobs:
           $certPath = "${{ github.workspace }}\signcert.pfx"
           [IO.File]::WriteAllBytes($certPath, $bytes)
 
-# Сборка, подпись, упаковка
-- name: Build, sign, zip all
-  shell: pwsh
-  run: |
-    $certPath = "${{ github.workspace }}\signcert.pfx"
-    $password = "${{ secrets.PFX_PASSWORD }}"
-
-    # Ищем signtool.exe динамически (x64)
-    $signtool = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter signtool.exe |
-                Where-Object { $_.FullName -match 'x64' } |
-                Select-Object -First 1 -ExpandProperty FullName
-    if (-not $signtool) { throw "signtool.exe не найден" }
-
-    $arches = @(
-      @{ Platform = "x64";   RID = "win-x64"   },
-      @{ Platform = "x86";   RID = "win-x86"   },
-      @{ Platform = "ARM64"; RID = "win-arm64" }
-    )
-
-    foreach ($a in $arches) {
-      Write-Host "=== Build $($a.Platform) (RID=$($a.RID)) ==="
-
-      msbuild "$env:Solution_Name\$env:Solution_Name.csproj" `
-        /restore `                                # встроенный restore для нужного RID
-        /p:Configuration=$env:Configuration `
-        /p:Platform=$($a.Platform) `
-        /p:RuntimeIdentifier=$($a.RID) `
-        /p:DisableRuntimeIdentifierInference=true `
-        /p:EnableNETAnalyzers=false `             # вырубает .NET анализаторы (их варнинги)
-        /p:WarningLevel=0 `                       # скрывает C# предупреждения (csc)
-        /p:TreatWarningsAsErrors=false `          # на всякий случай, чтобы предупреждения не валили билд
-        /clp:ErrorsOnly                           # выводит в консоль только ошибки
-
-      $exe = Get-ChildItem "$env:Solution_Name\bin\$($a.Platform)\$env:Configuration" -Recurse -Include *.exe | Select-Object -First 1
-      if (-not $exe) { throw "Не найден exe для $($a.Platform)" }
-
-      & $signtool sign /f $certPath /p $password /tr http://timestamp.digicert.com /td sha256 /fd sha256 $exe.FullName
-
-      $zipName = "VK_UI3_$($a.Platform).zip"
-      if (Test-Path $zipName) { Remove-Item $zipName -Force }
-      Compress-Archive -Path $exe.FullName -DestinationPath $zipName -Force
-    }
+      # Сборка, подпись, упаковка
+      - name: Build, sign, zip all
+        shell: pwsh
+        run: |
+          $certPath = "${{ github.workspace }}\signcert.pfx"
+          $password = "${{ secrets.PFX_PASSWORD }}"
+      
+          # Ищем signtool.exe динамически (x64)
+          $signtool = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter signtool.exe |
+                      Where-Object { $_.FullName -match 'x64' } |
+                      Select-Object -First 1 -ExpandProperty FullName
+          if (-not $signtool) { throw "signtool.exe не найден" }
+      
+          $arches = @(
+            @{ Platform = "x64";   RID = "win-x64"   },
+            @{ Platform = "x86";   RID = "win-x86"   },
+            @{ Platform = "ARM64"; RID = "win-arm64" }
+          )
+      
+          foreach ($a in $arches) {
+            Write-Host "=== Build $($a.Platform) (RID=$($a.RID)) ==="
+      
+            msbuild "$env:Solution_Name\$env:Solution_Name.csproj" `
+              /restore `                                # встроенный restore для нужного RID
+              /p:Configuration=$env:Configuration `
+              /p:Platform=$($a.Platform) `
+              /p:RuntimeIdentifier=$($a.RID) `
+              /p:DisableRuntimeIdentifierInference=true `
+              /p:EnableNETAnalyzers=false `             # вырубает .NET анализаторы (их варнинги)
+              /p:WarningLevel=0 `                       # скрывает C# предупреждения (csc)
+              /p:TreatWarningsAsErrors=false `          # на всякий случай, чтобы предупреждения не валили билд
+              /clp:ErrorsOnly                           # выводит в консоль только ошибки
+      
+            $exe = Get-ChildItem "$env:Solution_Name\bin\$($a.Platform)\$env:Configuration" -Recurse -Include *.exe | Select-Object -First 1
+            if (-not $exe) { throw "Не найден exe для $($a.Platform)" }
+      
+            & $signtool sign /f $certPath /p $password /tr http://timestamp.digicert.com /td sha256 /fd sha256 $exe.FullName
+      
+            $zipName = "VK_UI3_$($a.Platform).zip"
+            if (Test-Path $zipName) { Remove-Item $zipName -Force }
+            Compress-Archive -Path $exe.FullName -DestinationPath $zipName -Force
+          }
 
 
       # Загрузка в релиз
