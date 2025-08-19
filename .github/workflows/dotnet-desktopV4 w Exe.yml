@@ -28,12 +28,8 @@ on:
     branches: [main]
 
 jobs:
-  build-unpacked:
-    strategy:
-      matrix:
-        arch: [x64, x86, ARM64]
+  build-unpacked-all:
     runs-on: windows-latest
-
     env:
       Solution_Name: "VK UI3"
       Configuration: Unpacked
@@ -44,53 +40,46 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Декодируем pfx
-      - name: Decode the pfx
+      - name: Decode PFX
         run: |
-          $pfxBytes = [Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
+          $bytes = [Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
           $certPath = "${{ github.workspace }}\signcert.pfx"
-          [IO.File]::WriteAllBytes($certPath, $pfxBytes)
+          [IO.File]::WriteAllBytes($certPath, $bytes)
 
-      - name: Setup .NET
+      - name: Setup .NET & MSBuild
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
-
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v2
+      - uses: microsoft/setup-msbuild@v2
 
       - name: Restore
-        run: msbuild $env:Solution_Name\$env:Solution_Name.csproj /t:Restore /p:Configuration=$env:Configuration
+        run: msbuild "$env:Solution_Name\$env:Solution_Name.csproj" /t:Restore /p:Configuration=$env:Configuration
 
-      - name: Build ${{ matrix.arch }}
-        run: |
-          msbuild $env:Solution_Name\$env:Solution_Name.csproj `
-            /p:Configuration=$env:Configuration `
-            /p:Platform=${{ matrix.arch }}
-
-      # Подпись exe
-      - name: Sign exe
+      - name: Build, sign and zip all archs
         run: |
           $certPath = "${{ github.workspace }}\signcert.pfx"
           $password = "${{ secrets.PFX_PASSWORD }}"
-          $exePath = Get-ChildItem "VK UI3\bin\${{ matrix.arch }}\Unpacked\*.exe" | Select-Object -First 1
-          & "C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe" sign `
-            /f $certPath /p $password /tr http://timestamp.digicert.com /td sha256 /fd sha256 $exePath.FullName
 
-      # Архивирование
-      - name: Create zip
-        run: |
-          $exePath = Get-ChildItem "VK UI3\bin\${{ matrix.arch }}\Unpacked\*.exe" | Select-Object -First 1
-          $zipName = "VK_UI3_${{ matrix.arch }}.zip"
-          Compress-Archive -Path $exePath.FullName -DestinationPath $zipName
+          $arches = @("x64", "x86", "ARM64")
+          foreach ($arch in $arches) {
+            Write-Host "=== Сборка $arch ==="
+            msbuild "$env:Solution_Name\$env:Solution_Name.csproj" /p:Configuration=$env:Configuration /p:Platform=$arch
+
+            $exePath = Get-ChildItem "$env:Solution_Name\bin\$arch\$env:Configuration\*.exe" | Select-Object -First 1
+
+            & "C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe" sign `
+              /f $certPath /p $password /tr http://timestamp.digicert.com /td sha256 /fd sha256 $exePath.FullName
+
+            $zipName = "VK_UI3_${arch}.zip"
+            Compress-Archive -Path $exePath.FullName -DestinationPath $zipName -Force
+          }
         shell: pwsh
 
-      # Загрузка в релиз
-      - name: Upload to release
+      - name: Upload all zips to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.TOKEN }}
-          file: VK_UI3_${{ matrix.arch }}.zip
-          asset_name: VK_UI3_${{ matrix.arch }}.zip
+          file: VK_UI3_*.zip
           tag: ${{ github.ref_name }}
           overwrite: true
+          file_glob: true
