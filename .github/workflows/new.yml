@@ -40,6 +40,8 @@ jobs:
 
     env:
       Solution_Name: "VK UI3 (Package)" # Замените на имя вашего решения, например, App1.sln.
+      Solution_Name_Unpacked: "VK UI3"
+      Configuration_unpacked: Unpacked
 
     steps:
       - name: Checkout
@@ -196,6 +198,13 @@ jobs:
 
 #-------------------------------------------------------EXE
 
+
+      - name: Clean build artifacts
+        run: msbuild $env:Solution_Name /t:Clean /p:Configuration=$env:Configuration
+        env:
+          Configuration: ${{ matrix.configuration }}\
+          
+
       # 1. Сборка
       - name: Build EXE
         shell: pwsh
@@ -208,8 +217,8 @@ jobs:
       
           foreach ($a in $arches) {
             Write-Host "=== Build $($a.Platform) ==="
-            msbuild "$env:Solution_Name\$env:Solution_Name.csproj" `
-              "/p:Configuration=$env:Configuration" `
+            msbuild "$env:Solution_Name_Unpacked\$env:Solution_Name_Unpacked.csproj" `
+              "/p:Configuration=$env:Configuration_unpacked" `
               "/p:Platform=$($a.Platform)" `
               "/p:RuntimeIdentifier=$($a.RID)" `
               /restore `
@@ -234,7 +243,7 @@ jobs:
       
           $arches = @("x64","x86","ARM64")
           foreach ($platform in $arches) {
-            $exe = Get-ChildItem "$env:Solution_Name\bin\$platform\$env:Configuration" -Recurse -Include *.exe | Select-Object -First 1
+            $exe = Get-ChildItem "$env:Solution_Name_Unpacked\bin\$platform\$env:Configuration_unpacked" -Recurse -Include *.exe | Select-Object -First 1
             if (-not $exe) { throw "Не найден exe для $platform" }
             & $signtool sign /f $certPath /p $password /tr http://timestamp.digicert.com /td sha256 /fd sha256 $exe.FullName
           }
@@ -245,7 +254,7 @@ jobs:
         run: |
           $arches = @("x64","x86","ARM64")
           foreach ($platform in $arches) {
-            $buildDir = Join-Path "$env:Solution_Name\bin" "$platform\$env:Configuration"
+            $buildDir = Join-Path "$env:Solution_Name_Unpacked\bin" "$platform\$env:Configuration_unpacked"
             if (-not (Test-Path $buildDir)) { throw "Папка сборки для $platform не найдена" }
       
             $zipName = "VK_UI3_$platform.zip"
