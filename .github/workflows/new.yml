@@ -358,3 +358,4 @@ jobs:
           }
           $bodyJson = $body | ConvertTo-Json -Compress
           Invoke-RestMethod -Uri $uri -Method Post -Body $bodyJson -ContentType 'application/json'
+        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
