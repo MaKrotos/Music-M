@@ -88,7 +88,6 @@ jobs:
           echo "::set-output name=VERSION::$version"
           echo "Версия: $version"
         continue-on-error: true
-        if: github.event.inputs.release == 'true'
 
       - name: Подставить версию в Package.appxmanifest
         run: |
@@ -100,14 +99,12 @@ jobs:
           [xml]$xml = Get-Content $manifest
           $xml.Package.Identity.Version = $version
           $xml.Save($manifest)
-        if: github.event.inputs.release == 'true'
 
       - name: Upload Package.appxmanifest as artifact
         uses: actions/upload-artifact@v4
         with:
           name: PackageAppxManifest
           path: D:\a\Music-M\Music-M\VK UI3 (Package)\Package.appxmanifest
-        if: github.event.inputs.release == 'true'
           
       - name: Clean publish directories
         run: |
