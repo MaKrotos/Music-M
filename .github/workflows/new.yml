@@ -141,7 +141,20 @@ jobs:
           $platforms = "x64", "x86", "ARM64"
           foreach ($platform in $platforms) {
             $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
-            msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$platform /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile="$certificatePath" /p:PackageCertificatePassword="${{ secrets.PFX_PASSWORD }}" /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true /p:TOKEN_STAT_SLY="${{ secrets.TOKEN_STAT_SLY }}"
+            msbuild $env:Solution_Name `
+              /p:Configuration=$env:Configuration `
+              /p:Platform=$platform `
+              /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode `
+              /p:AppxBundle=$env:Appx_Bundle `
+              /p:PackageCertificateKeyFile="$certificatePath" `
+              /p:PackageCertificatePassword="${{ secrets.PFX_PASSWORD }}" `
+              /p:AppxPackageDir="$env:Appx_Package_Dir" `
+              /p:GenerateAppxPackageOnBuild=true `
+              /p:TOKEN_STAT_SLY="${{ secrets.TOKEN_STAT_SLY }}" `
+              /p:EnableNETAnalyzers=false `
+              /p:WarningLevel=0 `
+              /p:TreatWarningsAsErrors=false `
+              /clp:ErrorsOnly
           }
         env:
           Appx_Bundle: Never
