@@ -42,7 +42,7 @@ jobs:
 
       # Устанавливаем нужный Windows SDK 22000 (UWP)
       - name: Install Windows SDK 10.0.22000
-        run: choco install windows-sdk-10-version-22621-all -y
+        run: choco install windows-sdk-10.0 -y --no-progress
         shell: pwsh
 
       # Фиксируем SDK 8.0
