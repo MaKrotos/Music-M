@@ -60,6 +60,7 @@
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <WinUISDKReferences>false</WinUISDKReferences>
+	<CsWinRTEnabled>false</CsWinRTEnabled>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
     <PackageCertificateKeyFile>VK UI3 %28Package%29_TemporaryKey.pfx</PackageCertificateKeyFile>

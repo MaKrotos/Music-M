@@ -4,11 +4,12 @@
         <AppxPackageVersion>0.3.4.7</AppxPackageVersion>
         <Version>$(AppxPackageVersion)</Version>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net8.0-windows10.0.22000.0</TargetFramework>
-        <TargetPlatformMinVersion>10.0.22000.0</TargetPlatformMinVersion>
-        <WindowsSdkPackageVersion>10.0.22000.38</WindowsSdkPackageVersion>
+		<TargetFramework>net8.0-windows10.0.22000.0</TargetFramework>
+		<TargetPlatformMinVersion>10.0.22000.0</TargetPlatformMinVersion>
+		<WindowsSdkPackageVersion>10.0.22000.38</WindowsSdkPackageVersion>
 
 
+		<CsWinRTEnabled>false</CsWinRTEnabled>
         <RootNamespace>VK_UI3</RootNamespace>
         <ApplicationManifest>app.manifest</ApplicationManifest>
 
@@ -54,7 +55,6 @@
         <WindowsAppSDKBootstrapAutoInitializeOptions>OnNoMatch</WindowsAppSDKBootstrapAutoInitializeOptions>
         <EnableDefaultApplicationClass>false</EnableDefaultApplicationClass>
         <SelfContained>true</SelfContained>
-        <CsWinRTEnabled>false</CsWinRTEnabled>
     </PropertyGroup>
 
     <ItemGroup>
