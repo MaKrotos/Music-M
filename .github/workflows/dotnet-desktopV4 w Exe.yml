@@ -40,7 +40,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Зафиксировать .NET SDK 8.x (msbuild будет резолвить именно его)
+      # Устанавливаем нужный Windows SDK 22000 (UWP)
+      - name: Install Windows SDK 10.0.22000
+        run: |
+          choco install windows-sdk-10-version-2104-all -y
+        shell: pwsh
+
+      # Фиксируем SDK 8.0
       - name: Pin .NET SDK 8 via global.json
         run: |
           Set-Content -Path global.json -Value '{ "sdk": { "version": "8.0.100", "rollForward": "feature" } }'
@@ -64,12 +70,19 @@ jobs:
       - name: Restore
         run: msbuild "$env:Solution_Name\$env:Solution_Name.csproj" /t:Restore /p:Configuration=$env:Configuration
 
-      # Сборка, подпись и упаковка для всех архитектур
-      - name: Build, sign, zip (x64, x86, ARM64)
+      # Сборка, подпись, упаковка
+      - name: Build, sign, zip all
         shell: pwsh
         run: |
           $certPath = "${{ github.workspace }}\signcert.pfx"
           $password = "${{ secrets.PFX_PASSWORD }}"
+
+          # Ищем signtool.exe динамически
+          $signtool = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter signtool.exe |
+                      Where-Object { $_.FullName -match 'x64' } |
+                      Select-Object -First 1 -ExpandProperty FullName
+          if (-not $signtool) { throw "signtool.exe не найден" }
+
           $arches = @(
             @{ Platform = "x64";   RID = "win-x64"   },
             @{ Platform = "x86";   RID = "win-x86"   },
@@ -85,20 +98,18 @@ jobs:
               /p:RuntimeIdentifier=$($a.RID) `
               /p:DisableRuntimeIdentifierInference=true
 
-            # EXE может оказаться глубже (при указании RID у SDK появляются доп. подпапки)
             $exe = Get-ChildItem "$env:Solution_Name\bin\$($a.Platform)\$env:Configuration" -Recurse -Include *.exe | Select-Object -First 1
             if (-not $exe) { throw "Не найден exe для $($a.Platform)" }
 
-            & "C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe" sign `
-              /f $certPath /p $password /tr http://timestamp.digicert.com /td sha256 /fd sha256 $exe.FullName
+            & $signtool sign /f $certPath /p $password /tr http://timestamp.digicert.com /td sha256 /fd sha256 $exe.FullName
 
             $zipName = "VK_UI3_$($a.Platform).zip"
             if (Test-Path $zipName) { Remove-Item $zipName -Force }
             Compress-Archive -Path $exe.FullName -DestinationPath $zipName -Force
           }
 
-      # Загрузка всех zip в релиз (предполагается, что тег релиза уже существует)
-      - name: Upload all zips to release
+      # Загрузка в релиз
+      - name: Upload zips to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.TOKEN }}
@@ -106,3 +117,4 @@ jobs:
           tag: ${{ github.ref_name }}
           overwrite: true
           file_glob: true
+
