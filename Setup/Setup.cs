@@ -39,7 +39,7 @@ namespace Setup
             }
         }
 
-        private void AppUpdater_InstallStatusChanged(object sender, AppUpdater.InstallStatusChangedEventArgs e)
+        private void AppUpdater_InstallStatusChanged(object sender, InstallStatusChangedEventArgs e)
         {
             if (InvokeRequired)
             {
@@ -53,7 +53,7 @@ namespace Setup
             logTextBox.ScrollToCaret();
         }
 
-        private void AppUpdater_DownloadProgressChanged(object sender, AppUpdater.DownloadProgressChangedEventArgs e)
+        private void AppUpdater_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             if (InvokeRequired)
             {
