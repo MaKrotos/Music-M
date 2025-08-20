@@ -8,13 +8,12 @@ namespace SetupLib.Interfaces
 {
     public interface IInstallationService
     {
-
-        void InstallLatestDotNetRuntime();
-
         event EventHandler<InstallStatusChangedEventArgs> InstallStatusChanged;
-        Task InstallUpdateAsync(AppUpdater appUpdater, bool skipCertCheck, bool forceInstall);
+        Task InstallUpdateAsync(AppUpdater appUpdater, bool skipCertCheck, bool forceInstall, string? PathInstallZIP = null);
         Task InstallAppInstallerAsync();
         Task InstallCertificateAsync(string certificateUrl);
         Task InstallAppRuntimeAsync();
+        void InstallLatestDotNetRuntime();
     }
+
 }

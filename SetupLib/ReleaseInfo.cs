@@ -11,9 +11,15 @@ namespace SetupLib
         public string Version { get; set; }
         public string Name { get; set; }
         public string Body { get; set; }
-        public int Size { get; set; }
+        public Dictionary<PackageType, PackageAsset> Assets { get; set; } = new Dictionary<PackageType, PackageAsset>();
         public string CertificateUrl { get; set; }
-        public string MsixUrl { get; set; }
         public bool IsNewVersionAvailable { get; set; }
+    }
+
+    public class PackageAsset
+    {
+        public string Url { get; set; }
+        public int Size { get; set; }
+        public string Architecture { get; set; }
     }
 }

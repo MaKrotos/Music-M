@@ -251,6 +251,11 @@ namespace VK_UI3
             {
                _= ShortcutManager.CreateDesktopShortcutAsync();
                 SettingsTable.SetSetting("createShortcut", "1");
+
+                if (!Packaged.IsPackaged())
+                {
+                   _= ShortcutManager.CreateStartMenuShortcutAsync();
+                }
             }
 
             var navigationInfo = new NavigationInfo { SourcePageType = this };
@@ -650,17 +655,34 @@ namespace VK_UI3
         {
             var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
             var currentVersion = $"{assemblyVersion.Major}.{assemblyVersion.Minor}.{assemblyVersion.Build}.{assemblyVersion.Revision}";
-
             var appUpdater = new AppUpdater(currentVersion);
+            appUpdater.SelectedPackageType = Packaged.IsPackaged() ? PackageType.MSIX : PackageType.ZIP;
             var updateAvailable = await appUpdater.CheckForUpdates();
 
             if (updateAvailable)
             {
-                dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+                if (Packaged.IsPackaged())
                 {
-                    new Notification(new UpdatePage(appUpdater));
-                    //ContentFrame.Navigate(typeof(UpdatePage), appUpdater, new DrillInNavigationTransitionInfo());
-                });
+                    if (!appUpdater._currentReleaseInfo.Assets.ContainsKey(PackageType.MSIX))
+                    {
+                        return false;
+
+                    }
+                }
+                else
+                {
+                    if (!appUpdater._currentReleaseInfo.Assets.ContainsKey(PackageType.ZIP))
+                    {
+                        return false;
+                    }
+                }
+
+
+                dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+                    {
+                        new Notification(new UpdatePage(appUpdater));
+                        //ContentFrame.Navigate(typeof(UpdatePage), appUpdater, new DrillInNavigationTransitionInfo());
+                    });
                 return true;
             }
             return false;

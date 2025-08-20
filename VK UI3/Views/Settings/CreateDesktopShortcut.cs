@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Threading.Tasks;
@@ -48,6 +48,10 @@ namespace VK_UI3.Views.Settings
 
                 var success = await ShortcutManager.CreateDesktopShortcutAsync();
 
+                if (!Packaged.IsPackaged())
+                {
+                   _= ShortcutManager.CreateStartMenuShortcutAsync();
+                }
                 if (success)
                 {
                     ShowNotification("Ярлык успешно создан на рабочем столе!", true);

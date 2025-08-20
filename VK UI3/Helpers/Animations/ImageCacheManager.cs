@@ -24,7 +24,7 @@ namespace VK_UI3.Helpers.Animations
         {
             // Формируем путь к папке кэша
             string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            _cacheFolderPath = Path.Combine(appDataPath, cacheFolderName);
+            _cacheFolderPath = Path.Combine(appDataPath, "VKMMKZ", cacheFolderName);
             _dispatcherQueue = dispatcherQueue;
 
             if (!Directory.Exists(_cacheFolderPath))

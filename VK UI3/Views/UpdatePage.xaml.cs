@@ -65,12 +65,13 @@ namespace VK_UI3.Views
             appUpdater.DownloadProgressChanged += AppUpdater_DownloadProgressChanged;
             UpdateBTN.IsEnabled = false;
 
+
             // Start the download and open the file
-            await appUpdater.DownloadAndOpenFile(true, false);
+            await appUpdater.DownloadAndOpenFile(true, false, PathInstallZIP: "");
         }
 
 
-        private void AppUpdater_DownloadProgressChanged(object sender, AppUpdater.DownloadProgressChangedEventArgs e)
+        private void AppUpdater_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             // Update the ProgressBar and the TextBlock with the download progress
             if (viewModel != null)

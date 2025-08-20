@@ -43,20 +43,24 @@
             label1 = new Label();
             label6 = new Label();
             label7 = new Label();
-            label8 = new Label();
-            label9 = new Label();
             label10 = new Label();
             checkBox1 = new CheckBox();
             label11 = new Label();
             logTextBox = new TextBox();
             button2 = new Button();
+            MSIXRadio = new RadioButton();
+            EXERadio = new RadioButton();
+            label9 = new Label();
+            whatsNews = new TextBox();
             SuspendLayout();
             // 
             // progressBar1
             // 
             progressBar1.Location = new Point(18, 385);
+            progressBar1.MarqueeAnimationSpeed = 50;
             progressBar1.Name = "progressBar1";
             progressBar1.Size = new Size(374, 23);
+            progressBar1.Style = ProgressBarStyle.Marquee;
             progressBar1.TabIndex = 2;
             // 
             // button1
@@ -123,7 +127,7 @@
             label1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label1.Location = new Point(18, 16);
             label1.Name = "label1";
-            label1.Size = new Size(374, 272);
+            label1.Size = new Size(374, 67);
             label1.TabIndex = 5;
             label1.Text = resources.GetString("label1.Text");
             // 
@@ -148,26 +152,6 @@
             label7.Size = new Size(34, 15);
             label7.TabIndex = 11;
             label7.Text = "0 МБ";
-            // 
-            // label8
-            // 
-            label8.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            label8.AutoEllipsis = true;
-            label8.FlatStyle = FlatStyle.System;
-            label8.Location = new Point(18, 164);
-            label8.MaximumSize = new Size(374, 176);
-            label8.Name = "label8";
-            label8.Size = new Size(374, 176);
-            label8.TabIndex = 12;
-            // 
-            // label9
-            // 
-            label9.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            label9.FlatStyle = FlatStyle.System;
-            label9.Location = new Point(18, 113);
-            label9.Name = "label9";
-            label9.Size = new Size(374, 241);
-            label9.TabIndex = 13;
             // 
             // label10
             // 
@@ -222,18 +206,65 @@
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
             // 
+            // MSIXRadio
+            // 
+            MSIXRadio.AutoSize = true;
+            MSIXRadio.Enabled = false;
+            MSIXRadio.Location = new Point(18, 296);
+            MSIXRadio.Name = "MSIXRadio";
+            MSIXRadio.Size = new Size(85, 19);
+            MSIXRadio.TabIndex = 20;
+            MSIXRadio.TabStop = true;
+            MSIXRadio.Text = "MSIX пакет";
+            MSIXRadio.UseVisualStyleBackColor = true;
+            MSIXRadio.CheckedChanged += Radio_CheckedChanged;
+            // 
+            // EXERadio
+            // 
+            EXERadio.AutoSize = true;
+            EXERadio.Enabled = false;
+            EXERadio.Location = new Point(18, 321);
+            EXERadio.Name = "EXERadio";
+            EXERadio.Size = new Size(44, 19);
+            EXERadio.TabIndex = 20;
+            EXERadio.TabStop = true;
+            EXERadio.Text = "EXE";
+            EXERadio.UseVisualStyleBackColor = true;
+            EXERadio.CheckedChanged += Radio_CheckedChanged;
+            // 
+            // label9
+            // 
+            label9.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            label9.FlatStyle = FlatStyle.System;
+            label9.Location = new Point(18, 113);
+            label9.Name = "label9";
+            label9.Size = new Size(374, 36);
+            label9.TabIndex = 13;
+            // 
+            // whatsNews
+            // 
+            whatsNews.Location = new Point(18, 167);
+            whatsNews.Multiline = true;
+            whatsNews.Name = "whatsNews";
+            whatsNews.ReadOnly = true;
+            whatsNews.ScrollBars = ScrollBars.Vertical;
+            whatsNews.Size = new Size(374, 123);
+            whatsNews.TabIndex = 21;
+            // 
             // Setup
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(404, 734);
+            Controls.Add(whatsNews);
+            Controls.Add(EXERadio);
+            Controls.Add(MSIXRadio);
             Controls.Add(button2);
             Controls.Add(logTextBox);
             Controls.Add(label11);
             Controls.Add(checkBox1);
             Controls.Add(label10);
             Controls.Add(label9);
-            Controls.Add(label8);
             Controls.Add(label7);
             Controls.Add(label6);
             Controls.Add(label5);
@@ -262,12 +293,14 @@
         protected internal Label label1;
         protected internal Label label6;
         protected internal Label label7;
-        protected internal Label label8;
-        protected internal Label label9;
         protected internal Label label10;
         private CheckBox checkBox1;
         protected internal Label label11;
         private System.Windows.Forms.TextBox logTextBox;
         private Button button2;
+        private RadioButton MSIXRadio;
+        private RadioButton EXERadio;
+        protected internal Label label9;
+        private TextBox whatsNews;
     }
 }

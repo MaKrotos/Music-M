@@ -15,15 +15,24 @@ namespace SetupLib
         private readonly IFileDownloadService _fileDownloadService;
         private readonly ISystemService _systemService;
         private readonly IInstallationService _installationService;
+        public PackageType SelectedPackageType { get; set; } = PackageType.MSIX;
+        public ReleaseInfo _currentReleaseInfo;
+
 
         public string currentVersion;
         public string version;
         public string Name { get; private set; }
         public string Tit { get; private set; }
         public string date { get; private set; }
-        public int sizeFile;
-        public string UriDownload { get; private set; }
-        public string UriDownloadMSIX { get; private set; }
+        public int sizeFile => GetSelectedPackage()?.Size ?? 0;
+        public string UriDownload => GetSelectedPackage()?.Url;
+        public string UriDownloadMSIX => GetSelectedPackage()?.Url;
+
+        private PackageAsset GetSelectedPackage()
+        {
+            return _currentReleaseInfo?.Assets.GetValueOrDefault(SelectedPackageType);
+        }
+
 
         public AppUpdater(string currentVersion)
         {
@@ -52,38 +61,47 @@ namespace SetupLib
         {
             InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Проверка наличия обновлений..." });
 
-            var releaseInfo = await _gitHubClientService.GetLatestReleaseInfo("MaKrotos", "Music-M", currentVersion);
+            _currentReleaseInfo = await _gitHubClientService.GetLatestReleaseInfo("MaKrotos", "Music-M", currentVersion);
 
-            if (releaseInfo == null)
+            if (_currentReleaseInfo == null)
             {
-                InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "В папке релиза нет файла msixAsset." });
+                InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Не найдено подходящих релизов." });
                 return false;
             }
 
-            if (!releaseInfo.IsNewVersionAvailable)
+            if (!_currentReleaseInfo.IsNewVersionAvailable)
             {
-                InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = $"Установлена последняя версия: {releaseInfo.Version}" });
+                InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = $"Установлена последняя версия: {_currentReleaseInfo.Version}" });
                 return false;
             }
 
-            this.version = releaseInfo.Version;
-            this.Name = releaseInfo.Name;
-            this.Tit = releaseInfo.Body;
-            this.sizeFile = releaseInfo.Size;
-            this.UriDownload = releaseInfo.CertificateUrl;
-            this.UriDownloadMSIX = releaseInfo.MsixUrl;
+            this.version = _currentReleaseInfo.Version;
+            this.Name = _currentReleaseInfo.Name;
+            this.Tit = _currentReleaseInfo.Body;
 
-            InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = $"Найдена новая версия: {releaseInfo.Version} ({_systemService.GetOSArchitecture()})" });
+            InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs
+            {
+                Status = $"Найдена новая версия: {_currentReleaseInfo.Version} ({_systemService.GetOSArchitecture()})\n" +
+                        $"Доступные форматы: {string.Join(", ", _currentReleaseInfo.Assets.Keys)}"
+            });
+
             InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Информация о релизе получена успешно." });
 
             return true;
         }
 
-        public async Task DownloadAndOpenFile(bool skip = false, bool forceInstall = false)
+        public List<PackageType> GetAvailablePackageTypes()
+        {
+            return _currentReleaseInfo?.Assets.Keys.ToList() ?? new List<PackageType>();
+        }
+
+
+
+        public async Task DownloadAndOpenFile(bool skip = false, bool forceInstall = false, string? PathInstallZIP = null)
         {
             try
             {
-                await _installationService.InstallUpdateAsync(this, skip, forceInstall);
+                await _installationService.InstallUpdateAsync(this, skip, forceInstall, PathInstallZIP);
             }
             catch (Exception ex)
             {

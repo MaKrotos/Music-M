@@ -28,10 +28,25 @@ namespace Setup
 
                 label10.Text = appUpdater.version;
                 label9.Text = appUpdater.Name;
-                label8.Text = appUpdater.Tit;
+                whatsNews.Text = appUpdater.Tit;
                 label7.Text = Math.Round((float)appUpdater.sizeFile / 1024 / 1024, 2).ToString() + " Мб";
                 label10.Text = appUpdater.version;
                 button1.Enabled = true;
+                progressBar1.Style = ProgressBarStyle.Blocks;
+                if (appUpdater._currentReleaseInfo.Assets.ContainsKey(PackageType.MSIX))
+                {
+                    MSIXRadio.Enabled = true;
+                    MSIXRadio.Checked = true;
+                }
+                if (appUpdater._currentReleaseInfo.Assets.ContainsKey(PackageType.ZIP))
+                {
+                    if (!MSIXRadio.Checked)
+                    {
+                        MSIXRadio.Checked = true;
+
+                    }
+                    EXERadio.Enabled = true;
+                }
             }
             catch (Exception ex)
             {
@@ -47,7 +62,7 @@ namespace Setup
                 return;
             }
             installLog += e.Status + "\r\n";
-            label8.Text = e.Status;
+            whatsNews.Text = e.Status;
             logTextBox.Text = installLog;
             logTextBox.SelectionStart = logTextBox.Text.Length;
             logTextBox.ScrollToCaret();
@@ -69,6 +84,8 @@ namespace Setup
             try
             {
                 button1.Enabled = false;
+                MSIXRadio.Enabled = false;
+                EXERadio.Enabled = false;
 
                 bool a = appUpdater.IsVersionInstalled(RuntimeInformation.FrameworkDescription);
 
@@ -106,6 +123,8 @@ namespace Setup
 
                 await appUpdater.DownloadAndOpenFile(forceInstall: checkBox1.Checked);
 
+
+
                 //Close();
             }
             catch (Exception ex)
@@ -122,6 +141,19 @@ namespace Setup
                 UseShellExecute = true
             };
             System.Diagnostics.Process.Start(psi);
+        }
+
+        private void Radio_CheckedChanged(object sender, EventArgs e)
+        {
+            if ((sender as RadioButton).Name == MSIXRadio.Name)
+            {
+                appUpdater.SelectedPackageType = PackageType.MSIX;
+            }
+            else
+            {
+                appUpdater.SelectedPackageType = PackageType.ZIP;
+            }
+            label7.Text = Math.Round((float)appUpdater.sizeFile / 1024 / 1024, 2).ToString() + " Мб";
         }
     }
 }
