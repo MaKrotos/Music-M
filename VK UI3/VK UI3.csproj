@@ -13,6 +13,10 @@
         <RootNamespace>VK_UI3</RootNamespace>
         <ApplicationManifest>app.manifest</ApplicationManifest>
 
+        <PublishTrimmed>true</PublishTrimmed>
+        <TrimMode>partial</TrimMode>
+        <IlcGenerateStackTraceData>false</IlcGenerateStackTraceData>
+
         <UseWinUI>true</UseWinUI>
         <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
         <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
@@ -55,6 +59,7 @@
         <WindowsAppSDKBootstrapAutoInitializeOptions>OnNoMatch</WindowsAppSDKBootstrapAutoInitializeOptions>
         <EnableDefaultApplicationClass>false</EnableDefaultApplicationClass>
         <SelfContained>true</SelfContained>
+        <PublishReadyToRun>true</PublishReadyToRun>
     </PropertyGroup>
 
     <ItemGroup>
