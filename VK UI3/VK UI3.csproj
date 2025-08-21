@@ -16,6 +16,7 @@
         <PublishTrimmed>true</PublishTrimmed>
         <TrimMode>partial</TrimMode>
         <IlcGenerateStackTraceData>false</IlcGenerateStackTraceData>
+        <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
 
         <UseWinUI>true</UseWinUI>
         <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
@@ -61,6 +62,21 @@
         <SelfContained>true</SelfContained>
         <PublishReadyToRun>true</PublishReadyToRun>
     </PropertyGroup>
+
+    <ItemGroup>
+        <!-- Основные сборки WinUI 3 -->
+        <TrimmerRootAssembly Include="Microsoft.UI.Xaml" />
+        <TrimmerRootAssembly Include="Microsoft.WinUI" />
+        <TrimmerRootAssembly Include="Microsoft.Windows.SDK.BuildTools" />
+
+        <!-- Системные сборки -->
+        <TrimmerRootAssembly Include="System.Runtime" />
+        <TrimmerRootAssembly Include="System.Collections" />
+        <TrimmerRootAssembly Include="System.Linq" />
+
+        <!-- Ваша основная сборка -->
+        <TrimmerRootAssembly Include="VK UI3" />
+    </ItemGroup>
 
     <ItemGroup>
         <Content Remove="Assets\icon.ico" />
