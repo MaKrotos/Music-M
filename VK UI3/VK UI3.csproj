@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        
+
         <AppxPackageVersion>0.3.4.6</AppxPackageVersion>
         <Version>$(AppxPackageVersion)</Version>
         <OutputType>WinExe</OutputType>
-		<TargetFramework>net8.0-windows10.0.22000.0</TargetFramework>
-		<TargetPlatformMinVersion>10.0.22000.0</TargetPlatformMinVersion>
-		<WindowsSdkPackageVersion>10.0.22000.38</WindowsSdkPackageVersion>
+        <TargetFramework>net8.0-windows10.0.22000.0</TargetFramework>
+        <TargetPlatformMinVersion>10.0.22000.0</TargetPlatformMinVersion>
+        <WindowsSdkPackageVersion>10.0.22000.38</WindowsSdkPackageVersion>
 
 
-		<CsWinRTEnabled>false</CsWinRTEnabled>
+        <CsWinRTEnabled>false</CsWinRTEnabled>
         <RootNamespace>VK_UI3</RootNamespace>
         <ApplicationManifest>app.manifest</ApplicationManifest>
 
@@ -23,30 +23,30 @@
         <DefineConstants>X64</DefineConstants>
     </PropertyGroup>
 
-     <PropertyGroup Condition="'$(Platform)'=='x64'">
-                 <Platforms>x64</Platforms>
+    <PropertyGroup Condition="'$(Platform)'=='x64'">
+        <Platforms>x64</Platforms>
 
-                 <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+        <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
     </PropertyGroup>
-        <PropertyGroup Condition="'$(Platform)'=='x86'">
-                    <Platforms>x86</Platforms>
+    <PropertyGroup Condition="'$(Platform)'=='x86'">
+        <Platforms>x86</Platforms>
 
-                          <RuntimeIdentifiers>win-x86</RuntimeIdentifiers>
+        <RuntimeIdentifiers>win-x86</RuntimeIdentifiers>
 
     </PropertyGroup>
-             <PropertyGroup Condition="'$(Platform)'=='ARM64'">
-                         <Platforms>ARM64</Platforms>
-                          <RuntimeIdentifiers>win-arm64</RuntimeIdentifiers>
+    <PropertyGroup Condition="'$(Platform)'=='ARM64'">
+        <Platforms>ARM64</Platforms>
+        <RuntimeIdentifiers>win-arm64</RuntimeIdentifiers>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
         <DefineConstants>X64</DefineConstants>
     </PropertyGroup>
-        
+
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unpacked|x64'">
-      <DefineConstants>X64</DefineConstants>
+        <DefineConstants>X64</DefineConstants>
     </PropertyGroup>
-    
+
     <PropertyGroup Condition="'$(Configuration)'=='Unpacked'">
         <AssemblyName>VK M</AssemblyName>
         <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
@@ -57,6 +57,7 @@
         <SelfContained>true</SelfContained>
         <PublishReadyToRun>true</PublishReadyToRun>
     </PropertyGroup>
+
 
     <ItemGroup>
         <Content Remove="Assets\icon.ico" />
@@ -305,7 +306,7 @@
             <Generator>MSBuild:Compile</Generator>
         </Page>
         <None Update="Assets\icon.ico">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="Controls\ListPlaylists.xaml">
             <Generator>MSBuild:Compile</Generator>

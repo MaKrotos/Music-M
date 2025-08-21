@@ -549,7 +549,7 @@ namespace VK_UI3
         {
             string iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, aIconName);
             var hwnd = new HWND(WinRT.Interop.WindowNative.GetWindowHandle(this));
-            iIcon = PInvoke.LoadImage(null, iconPath, GDI_IMAGE_TYPE.IMAGE_ICON, 16, 16, IMAGE_FLAGS.LR_LOADFROMFILE);
+            iIcon = PInvoke.LoadImage(null, iconPath, GDI_IMAGE_TYPE.IMAGE_ICON, 128, 128, IMAGE_FLAGS.LR_LOADFROMFILE);
             PInvoke.SendMessage(hwnd, PInvoke.WM_SETICON, new WPARAM(0), new LPARAM(iIcon.DangerousGetHandle()));
         }
 
