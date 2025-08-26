@@ -1,4 +1,4 @@
-// ReSharper disable once RedundantUsingDirective
+﻿// ReSharper disable once RedundantUsingDirective
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -695,7 +695,7 @@ namespace VkNet
 		{
 			if (!parameters.ContainsKey(Constants.Version))
 			{
-				parameters.Add(Constants.Version, VkApiVersion.Version);
+				parameters.TryAdd(Constants.Version, VkApiVersion.Version);
 			}
 
 			if (!parameters.ContainsKey(Constants.AccessToken))
