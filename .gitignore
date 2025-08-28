@@ -363,3 +363,4 @@ FodyWeavers.xsd
 /VK UI3/Generated Files/WinRTEventHelpers.cs
 /FFmpegInteropX/Generated Files
 /Build/Unpacked
+/Build/Unpacked/net6.0/VkNet.dll
