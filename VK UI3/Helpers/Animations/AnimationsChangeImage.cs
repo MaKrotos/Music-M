@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -122,7 +123,18 @@ namespace VK_UI3.Helpers.Animations
 
             _currentImageSource = newImageSource;
 
-            // Проверяем кэш
+            // Для локальных файлов не проверяем кэш
+            if (IsLocalFile(newImageSource))
+            {
+                var localImage = await LoadLocalImage(newImageSource);
+                if (localImage != null)
+                {
+                    UpdateImage(localImage);
+                }
+                return;
+            }
+
+            // Проверяем кэш только для HTTP URI
             var cachedImage = await _cacheManager.GetCachedImageAsync(newImageSource, setColorTheme);
             if (cachedImage != null)
             {
@@ -140,7 +152,19 @@ namespace VK_UI3.Helpers.Animations
 
         private async Task ProcessImageDownload(Uri imageUri, bool setColorTheme)
         {
-            // Проверяем, не загружается ли уже это изображение в другом потоке
+            // Проверяем, является ли URI локальным файлом
+            if (IsLocalFile(imageUri))
+            {
+                // Для локальных файлов не используем очередь и кэш
+                var localImage = await LoadLocalImage(imageUri);
+                if (localImage != null && _currentImageSource == imageUri)
+                {
+                    UpdateImage(localImage);
+                }
+                return;
+            }
+
+            // Проверяем, не загружается ли уже это изображение в другом потоке (только для HTTP)
             if (_activeDownloads.TryGetValue(imageUri, out var existingDownload))
             {
                 try
@@ -158,7 +182,7 @@ namespace VK_UI3.Helpers.Animations
                 return;
             }
 
-            // Создаем новую задачу загрузки
+            // Создаем новую задачу загрузки (только для HTTP)
             var downloadTask = DownloadAndSetImage(imageUri, setColorTheme);
             _activeDownloads.TryAdd(imageUri, downloadTask);
 
@@ -174,6 +198,12 @@ namespace VK_UI3.Helpers.Animations
 
         private async Task<BitmapImage> DownloadAndSetImage(Uri imageUri, bool setColorTheme)
         {
+            // Для локальных файлов этот метод не должен вызываться
+            if (IsLocalFile(imageUri))
+            {
+                return await LoadLocalImage(imageUri);
+            }
+
             if (_enableQueue)
             {
                 await _downloadSemaphore.WaitAsync();
@@ -211,6 +241,42 @@ namespace VK_UI3.Helpers.Animations
             }
         }
 
+        private bool IsLocalFile(Uri uri)
+        {
+            return uri.IsFile ||
+                   uri.Scheme.Equals("file", StringComparison.OrdinalIgnoreCase) ||
+                   !uri.IsAbsoluteUri ||
+                   string.IsNullOrEmpty(uri.Host);
+        }
+
+        private Task<BitmapImage> LoadLocalImage(Uri fileUri)
+        {
+            var tcs = new TaskCompletionSource<BitmapImage>();
+
+            _dispatcherQueue.TryEnqueue(() =>
+            {
+                try
+                {
+                    string filePath = fileUri.IsFile ? fileUri.LocalPath : fileUri.ToString();
+
+                    if (!File.Exists(filePath))
+                    {
+                        tcs.SetResult(null);
+                        return;
+                    }
+
+                    var bitmapImage = new BitmapImage();
+                    bitmapImage.UriSource = fileUri;
+                    tcs.SetResult(bitmapImage);
+                }
+                catch (Exception ex)
+                {
+                    tcs.SetResult(null);
+                }
+            });
+
+            return tcs.Task;
+        }
         private void UpdateImage(BitmapImage image)
         {
             this._dispatcherQueue.TryEnqueue(() =>

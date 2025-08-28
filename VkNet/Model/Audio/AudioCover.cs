@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Newtonsoft.Json;
 using VkNet.Utils;
 
@@ -64,14 +64,20 @@ namespace VkNet.Model
 		[JsonProperty("height")]
 		public long Height { get; set; }
 
-	#region Методы
+        public string? GetBestAvailablePhoto()
+        {
+            // Порядок приоритета: от средних к большим, затем к малым
+            return Photo300 ?? Photo600 ?? Photo1200 ?? Photo270 ?? Photo135 ?? Photo68 ?? Photo34;
+        }
 
-		/// <summary>
-		/// Разобрать из json.
-		/// </summary>
-		/// <param name="response"> Ответ сервера. </param>
-		/// <returns> </returns>
-		public static AudioCover FromJson(VkResponse response)
+        #region Методы
+
+        /// <summary>
+        /// Разобрать из json.
+        /// </summary>
+        /// <param name="response"> Ответ сервера. </param>
+        /// <returns> </returns>
+        public static AudioCover FromJson(VkResponse response)
 		{
 			var album = new AudioCover
 			{

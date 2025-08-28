@@ -1102,6 +1102,30 @@ namespace MusicX.Core.Services
             }
         }
 
+        public async Task DeletePlayListCoveAsync(long ownerId, long id)
+        {
+            try
+            {
+                var parameters = new VkParameters
+                {
+
+                    {"device_id", await _deviceIdStore.GetDeviceIdAsync()},
+                    { "v", 5.143},
+                    {"owner_id", ownerId},
+                    {"playlist_id", id}
+                };
+
+
+                var json = await apiInvoke.InvokeAsync("audio.deletePlaylistCoverPhoto", parameters);
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error("VK API ERROR:");
+                logger.Error(ex, ex.Message);
+                throw;
+            }
+        }
         public async Task SetPlaylistCoverAsync(long ownerId, long playlistId, string hash, string photo)
         {
             try

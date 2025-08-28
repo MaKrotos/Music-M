@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using MusicX.Core.Models;
 using System;
@@ -80,22 +80,25 @@ namespace VK_UI3.Views.ModalsPages
         private void CreatePlayList_Loaded(object sender, RoutedEventArgs e)
         {
             animationsChangeImage = new Helpers.Animations.AnimationsChangeImage(PlaylistImage, this.DispatcherQueue);
-
+            deleteFromAlbum.Visibility = Visibility.Collapsed;
             if (audioPlaylist != null && !genByPlayList)
             {
-                animationsChangeImage.ChangeImageWithAnimation(audioPlaylist.Cover);
-                this.Title.Text = audioPlaylist.Title;
+                if (!string.IsNullOrEmpty(audioPlaylist.Photo.GetBestAvailablePhoto()) &&audioPlaylist.Thumbs == null)
+                {
+                    animationsChangeImage.ChangeImageWithAnimation(audioPlaylist.Photo.GetBestAvailablePhoto());
+                    deleteFromAlbum.Visibility = Visibility.Visible;
+                }
+                
+                    this.Title.Text = audioPlaylist.Title;
                 this.Description.Text = audioPlaylist.Description;
                 this.HideFromSearch.IsOn = audioPlaylist.No_discover;
-         
-
             }
             else
             if (iVKGetAudio != null || genByPlayList)
             {
                 SaveBTN.Content = "Генерировать";
                 if (
-                    iVKGetAudio != null   
+                    iVKGetAudio != null
                 )
                 {
                     GenText.Visibility = Visibility.Visible;
@@ -122,7 +125,6 @@ namespace VK_UI3.Views.ModalsPages
         }
 
         string CoverPath;
-
         private async Task UploadCoverPlaylist()
         {
             if (!string.IsNullOrEmpty(CoverPath))
@@ -132,6 +134,13 @@ namespace VK_UI3.Views.ModalsPages
                 var image = await VK.vkService.UploadPhotoToServer(uploadServer, CoverPath);
 
                 await VK.vkService.SetPlaylistCoverAsync(AccountsDB.activeAccount.id, audioPlaylist.Id, image.Hash, image.Photo);
+            }
+            else
+            {
+                if (pressedDeleteImage)
+                {
+                    await VK.vkService.DeletePlayListCoveAsync(audioPlaylist.OwnerId, audioPlaylist.Id);
+                }
             }
         }
         private async Task EditAsync()
@@ -215,6 +224,7 @@ namespace VK_UI3.Views.ModalsPages
                     {
                         animationsChangeImage.ChangeImageWithAnimation(storageFile.Path);
                         CoverPath = storageFile.Path;
+                        deleteFromAlbum.Visibility = Visibility.Visible;
                         // PlaylistImage.Source = bitmapImage;
                     }
                     else
@@ -260,6 +270,7 @@ namespace VK_UI3.Views.ModalsPages
             {
                 animationsChangeImage.ChangeImageWithAnimation(file.Path);
                 CoverPath = file.Path;
+                deleteFromAlbum.Visibility = Visibility.Visible;
             }
 
 
@@ -297,6 +308,14 @@ namespace VK_UI3.Views.ModalsPages
                 await EditAsync();
             }
             TempPlayLists.TempPlayLists.updateNextRequest = true;
+        }
+        bool pressedDeleteImage = false;
+        private void deleteFromAlbum_Click(object sender, RoutedEventArgs e)
+        {
+            pressedDeleteImage = true;
+            deleteFromAlbum.Visibility = Visibility.Collapsed;
+            animationsChangeImage.ChangeImageWithAnimation((string) null);
+            CoverPath = null;
         }
     }
 

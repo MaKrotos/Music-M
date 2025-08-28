@@ -1,4 +1,4 @@
-<Page
+﻿<Page
 	x:Class="VK_UI3.Views.ModalsPages.CreatePlayList"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -35,12 +35,25 @@
 					Drop="PlaylistImage_Drop"
 					PointerPressed="PlaylistImage_PointerPressed"
 					Translation="0,0,8">
+
 					<Image
 						x:Name="PlaylistImage"
 						HorizontalAlignment="Center"
 						VerticalAlignment="Center"
 						Stretch="UniformToFill" />
 					<SymbolIcon Symbol="Edit" />
+					<Button
+						Visibility="Collapsed"
+						x:Name="deleteFromAlbum"
+						Width="40"
+						Height="40"
+						Margin="10"
+						HorizontalAlignment="Right"
+						VerticalAlignment="Top"
+						Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
+						Click="deleteFromAlbum_Click">
+						<FontIcon FontSize="16" Glyph="&#xE74D;" />
+					</Button>
 				</Grid>
 				<TextBox
 					x:Name="Title"
