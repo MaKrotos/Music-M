@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml.Media.Animation;
+ï»¿using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using MusicX.Core.Exceptions.Boom;
 using MusicX.Core.Models;
@@ -77,7 +77,8 @@ namespace VK_UI3.Views
             frameSection.Navigate(typeof(waitPage), null, new DrillInNavigationTransitionInfo());
 
             var waitView = e.Parameter as WaitParameters;
-            if (waitView == null) return;
+            if (waitView == null)
+                return;
             waitParameters = waitView;
 
 
@@ -103,7 +104,7 @@ namespace VK_UI3.Views
             }
             catch (Exception ex)
             {
-
+                throw ex;
             }
         }
 
@@ -118,7 +119,7 @@ namespace VK_UI3.Views
             catch (Exception ex)
             {
 
-
+                throw ex;
             }
         }
 
@@ -126,8 +127,8 @@ namespace VK_UI3.Views
         {
             try
             {
-                if (query == null
-                    ) return;
+                if (query == null)
+                    return;
 
                 var res = await VK.vkService.GetAudioSearchAsync(query);
 
@@ -156,7 +157,7 @@ namespace VK_UI3.Views
             catch (Exception ex)
             {
 
-
+                throw ex;
             }
         }
 
@@ -177,8 +178,8 @@ namespace VK_UI3.Views
                     SectionType.Artist => LoadArtistSection(waitParameters.SectionID),
                     SectionType.UserSection => LoadUserCestion(waitParameters.SectionID),
 
-                    SectionType.Search => string.IsNullOrEmpty(waitParameters.searchText) ? 
-                                            loadSection(waitParameters.SectionID) : 
+                    SectionType.Search => string.IsNullOrEmpty(waitParameters.searchText) ?
+                                            loadSection(waitParameters.SectionID) :
                                             LoadSearchSection(waitParameters.searchText),
 
                     SectionType.PlayList => LoadPlayList(handlerContainer),
@@ -187,10 +188,11 @@ namespace VK_UI3.Views
                     SectionType.ConversDialogs => LoadDialogs(),
                     SectionType.LoadFriends => LoadFriends(),
                     SectionType.CustomIVKGetAudio => LoadCustomiVKGetAudio(handlerContainer),
-  
+
 
                     _ => throw new ArgumentOutOfRangeException()
-                }); ;
+                });
+                ;
 
                 if (waitParameters.sectionType == SectionType.Search)
                 {
@@ -202,16 +204,21 @@ namespace VK_UI3.Views
 
                 }
             }
+            catch (Exception ex)
+            {
+                frameSection.Navigate(typeof(ErrorPage), ex.Message);
+            }
             finally
             {
 
             }
         }
 
-    
+
 
         private async Task LoadDialogs()
         {
+
             _ = Task.Run(async () =>
             {
                 var parameters = new GetConversationsParams();
@@ -227,24 +234,27 @@ namespace VK_UI3.Views
                 var a = (await VK.api.Messages.GetConversationsAsync(parameters));
 
                 ConversationsListParams conversationsListParams;
-                if (waitParameters.moreParams != null && waitParameters.moreParams is ConversationsListParams paramss) conversationsListParams = paramss;
-                else conversationsListParams = new();
+                if (waitParameters.moreParams != null && waitParameters.moreParams is ConversationsListParams paramss)
+                    conversationsListParams = paramss;
+                else
+                    conversationsListParams = new();
                 conversationsListParams.result = a;
-                if (a.Count < 50) conversationsListParams.itsAll = true;
+                if (a.Count < 50)
+                    conversationsListParams.itsAll = true;
 
                 this.DispatcherQueue.TryEnqueue(() =>
                 {
                     frameSection.Navigate(typeof(ConversationsList), conversationsListParams, new DrillInNavigationTransitionInfo());
                 });
             });
-                
+
         }
 
         private async Task LoadFriends()
         {
 
-            _ = Task.Run(async () =>
-            { 
+            await Task.Run(async () =>
+            {
                 var parameters = new VkParameters
             {
                 { "count", 25 },
@@ -253,18 +263,21 @@ namespace VK_UI3.Views
                 { "order", "name" }
             };
 
-            var a = (await VK.api.CallAsync("friends.get", parameters)).ToVkCollectionOf<User>(
-                x => parameters["fields"] != null
-                      ? x
-                      : new User
-                      {
-                          Id = x
-                      }
-                );
+                var a = (await VK.api.CallAsync("friends.get", parameters)).ToVkCollectionOf<User>(
+                    x => parameters["fields"] != null
+                          ? x
+                          : new User
+                          {
+                              Id = x
+                          }
+                    );
                 FriendsListParametrs userPlayListParameters;
-                if (waitParameters.moreParams != null && waitParameters.moreParams is FriendsListParametrs paramss) userPlayListParameters = paramss;
-                else userPlayListParameters = new();
-                if (a.Count < 25) userPlayListParameters.itsAll = true;
+                if (waitParameters.moreParams != null && waitParameters.moreParams is FriendsListParametrs paramss)
+                    userPlayListParameters = paramss;
+                else
+                    userPlayListParameters = new();
+                if (a.Count < 25)
+                    userPlayListParameters.itsAll = true;
                 userPlayListParameters.friends = a;
                 this.DispatcherQueue.TryEnqueue(() =>
                 {
@@ -275,7 +288,7 @@ namespace VK_UI3.Views
 
         private async Task UserPlayListList()
         {
-            _ = Task.Run(async () =>
+            await Task.Run(async () =>
             {
                 var id = long.Parse(waitParameters.SectionID);
                 var list = await VK.api.Audio.GetPlaylistsAsync(id, 100);
@@ -295,7 +308,7 @@ namespace VK_UI3.Views
 
         private async Task LoadPlayList(HandlerContainer handlerContainer)
         {
-            _ = Task.Run(async () =>
+            await Task.Run(async () =>
             {
                 if (waitParameters.iVKGetAudio == null)
                     waitParameters.iVKGetAudio = new PlayListVK(this.waitParameters.Playlist, this.DispatcherQueue);
@@ -315,7 +328,7 @@ namespace VK_UI3.Views
                             //    iVKGetAudio.onListUpdate.RemoveHandler(handlerContainer.Handler);
                             this.DispatcherQueue.TryEnqueue(async () =>
                             {
-                                handlerContainer.Handler = null; // Îñâîáîäèòü ññûëêó íà îáðàáîò÷èê
+                                handlerContainer.Handler = null; // ÐžÑÐ²Ð¾Ð±Ð¾Ð´Ð¸Ñ‚ÑŒ ÑÑÑ‹Ð»ÐºÑƒ Ð½Ð° Ð¾Ð±Ñ€Ð°Ð±Ð¾Ñ‚Ñ‡Ð¸Ðº
                                 frameSection.Navigate(typeof(PlayListPage), waitParameters.iVKGetAudio, new DrillInNavigationTransitionInfo());
                             });
                             waitParameters.iVKGetAudio.onListUpdate -= (handlerContainer.Handler);
@@ -371,15 +384,12 @@ namespace VK_UI3.Views
                     frameSection.Navigate(typeof(PlayListPage), waitParameters.iVKGetAudio, new DrillInNavigationTransitionInfo());
                 });
             }
-
-
-
         }
 
-   
+
         private async Task loadSection(string sectionID, bool showTitle = false)
         {
-            _ = Task.Run(async () =>
+            await Task.Run(async () =>
             {
                 try
                 {
@@ -392,7 +402,7 @@ namespace VK_UI3.Views
                 }
                 catch (Exception ex)
                 {
-
+                    throw ex;
                 }
             });
         }

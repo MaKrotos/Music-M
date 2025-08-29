@@ -356,7 +356,12 @@ namespace VK_UI3.Views
             {
                 try
                 {
-
+                    this.DispatcherQueue.TryEnqueue(async () =>
+                    {
+                        // Удаляем существующую кнопку повторной попытки, если она есть
+                        var existingRetryButton = NavWiv.MenuItems.OfType<NavigationViewItem>()
+                        .FirstOrDefault(item => item.Tag?.ToString() == "retry_button");
+                    });
 
                     ObservableCollection<NavSettings> navSettings = new ObservableCollection<NavSettings>();
 
@@ -428,16 +433,56 @@ namespace VK_UI3.Views
                 }
                 catch (OperationCanceledException)
                 {
-
+                    this.DispatcherQueue.TryEnqueue(async () =>
+                    {
+                        AddRetryButton();
+                    });
                 }
                 catch (Exception e)
                 {
-
+                    this.DispatcherQueue.TryEnqueue(async () =>
+                    {
+                        AddRetryButton();
+                    });
                 }
 
 
             }, token);
         }
+
+        // Метод для добавления кнопки повторной попытки
+        private void AddRetryButton()
+        {
+            // Удаляем существующую кнопку повторной попытки, если она есть
+            var existingRetryButton = NavWiv.MenuItems.OfType<NavigationViewItem>()
+                .FirstOrDefault(item => item.Tag?.ToString() == "retry_button");
+
+            if (existingRetryButton != null)
+            {
+                NavWiv.MenuItems.Remove(existingRetryButton);
+            }
+
+            // Создаем новую кнопку "Запросить повторно"
+
+
+
+            var retryButton = new NavigationViewItem
+            {
+                Content = "Запросить повторно",
+                Icon = new FontIcon { Glyph = "\uE149" }, // Иконка обновления
+                Tag = "retry_button"
+            };
+
+            // Добавляем обработчик клика
+            retryButton.Tapped += async (sender, args) =>
+            {
+                CreateNavigation();
+            };
+
+            // Добавляем кнопку в меню
+            NavWiv.MenuItems.Add(retryButton);
+        }
+
 
         private void ClearMenuItems()
         {
@@ -896,10 +941,15 @@ namespace VK_UI3.Views
                     case "вложения":
                         OpenMyPage(SectionType.ConversDialogs);
                         break;
+                    case "Запросить повторно":
+                        return;
+                        break;
 
-               
+
                     default:
                         var Item = NavWiv.SelectedItem as NavMenuController;
+                        if (Item == null)
+                            return;
                         OpenSection(Item.navSettings.section.Id);
 
 

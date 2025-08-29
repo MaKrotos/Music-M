@@ -117,6 +117,7 @@
         <None Remove="Views\Download\DownloadController.xaml" />
         <None Remove="Views\Download\DownloadFFmpegController.xaml" />
         <None Remove="Views\Download\DOwnloadsList.xaml" />
+        <None Remove="Views\ErrorPage.xaml" />
         <None Remove="Views\LoginWindow\AccountList.xaml" />
         <None Remove="Views\MiniAppView.xaml" />
         <None Remove="Views\ModalsPages\CreatePlayList.xaml" />
@@ -317,6 +318,9 @@
         <None Update="DownloadTrack\ffmpeg.exe">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <Page Update="Views\ErrorPage.xaml">
+          <Generator>MSBuild:Compile</Generator>
+        </Page>
         <Page Update="Views\ModalsPages\EqualizerControlPage.xaml">
             <Generator>MSBuild:Compile</Generator>
         </Page>
