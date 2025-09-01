@@ -122,7 +122,7 @@ namespace VK_UI3.Helpers.Animations
                 return;
 
             _currentImageSource = newImageSource;
-
+            _dispatcherQueue.TryEnqueue(() => HideAnimation(null));
             // Для локальных файлов не проверяем кэш
             if (IsLocalFile(newImageSource))
             {
@@ -222,7 +222,7 @@ namespace VK_UI3.Helpers.Animations
 
                     if (cachedImage != null && _currentImageSource == imageUri)
                     {
-                        _dispatcherQueue.TryEnqueue(() => UpdateImage(cachedImage));
+                        _dispatcherQueue.TryEnqueue(() => ShowImage(cachedImage));
                     }
 
                     return cachedImage;
@@ -284,7 +284,7 @@ namespace VK_UI3.Helpers.Animations
                 if (_storyboard != null)
                     _storyboard.Pause();
 
-
+                // Всегда использовать анимацию, даже для изображений из кеша
                 if (AnimatableElement == null || AnimatableElement.Opacity == 0 || _currentImageSource == null)
                 {
                     if (AnimatableElement != null)
