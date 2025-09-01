@@ -164,6 +164,9 @@ namespace VK_UI3.Views
         public class HandlerContainer
         {
             public EventHandler Handler { get; set; }
+
+            public EventHandler HandlerException { get; set; }
+           
         }
         HandlerContainer handlerContainer = new HandlerContainer();
         public async Task LoadAsync()
@@ -354,9 +357,26 @@ namespace VK_UI3.Views
                     frameSection.Navigate(typeof(PlayListPage), waitParameters.iVKGetAudio, new DrillInNavigationTransitionInfo());
                 });
                 waitParameters.iVKGetAudio.onListUpdate -= (handlerContainer.Handler);
+                waitParameters.iVKGetAudio.onErrorLoad += (handlerContainer.HandlerException);
             };
 
+            handlerContainer.HandlerException = (sender, e) =>
+            {
+
+                this.DispatcherQueue.TryEnqueue(async () =>
+                {
+                    handlerContainer.Handler = null;
+                    frameSection.Navigate(typeof(ErrorPage), (e as ErrorLoad).exception.Message);
+                    
+                });
+                waitParameters.iVKGetAudio.onListUpdate -= (handlerContainer.Handler);
+                waitParameters.iVKGetAudio.onErrorLoad += (handlerContainer.HandlerException);
+            };
+
+
             waitParameters.iVKGetAudio.onListUpdate += (handlerContainer.Handler);
+            waitParameters.iVKGetAudio.onErrorLoad += (handlerContainer.HandlerException);
+
         }
 
         private async Task LoadCustomiVKGetAudio(HandlerContainer handlerContainer)

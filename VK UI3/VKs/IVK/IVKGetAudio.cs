@@ -20,6 +20,17 @@ namespace VK_UI3.VKs.IVK
         public abstract void GetTracks(int offset);
     }
 
+    public class ErrorLoad : EventArgs
+    {
+        
+        public Exception exception;
+
+        public ErrorLoad(Exception exception)
+        {
+            this.exception = exception;
+        }
+    }
+
     public abstract class IVKGetAudio
     {
         public IVkApi api;
@@ -86,6 +97,7 @@ namespace VK_UI3.VKs.IVK
 
         public EventHandler onListUpdate;
 
+        public EventHandler onErrorLoad;
 
 
         public WeakEventManager onCountUpDated = new WeakEventManager();
@@ -209,18 +221,31 @@ namespace VK_UI3.VKs.IVK
             DispatcherQueue = dispatcher;
             Task.Run(() =>
             {
-                name = getName();
-                onNameUpdated?.RaiseEvent(this, EventArgs.Empty);
-                photoUri = getPhoto();
-                onPhotoUpdated?.RaiseEvent(this, EventArgs.Empty);
+                try
+                {
+                    name = getName();
+                    onNameUpdated?.RaiseEvent(this, EventArgs.Empty);
+                    photoUri = getPhoto();
+                    onPhotoUpdated?.RaiseEvent(this, EventArgs.Empty);
+
+                }
+                catch (Exception e)
+                {
+                }
+
+                try
+                {
+                    countTracks = getCount();
+                    onCountUpDated?.RaiseEvent(this, EventArgs.Empty);
+                    GetTracks();
+                }
+                catch (Exception e)
+                { 
+                    onErrorLoad.Invoke(this, new ErrorLoad(e));
+                }
             });
 
-            Task.Run(() =>
-            {
-                countTracks = getCount();
-                onCountUpDated?.RaiseEvent(this, EventArgs.Empty);
-                GetTracks();
-            });
+            
 
         }
 
@@ -272,6 +297,10 @@ namespace VK_UI3.VKs.IVK
             {
 
             }
+        }
+        public void NotifyonErrorLoad(Exception e)
+        {
+            onErrorLoad?.Invoke(this, new ErrorLoad(e));
         }
 
         public void NotifyOnListUpdate()

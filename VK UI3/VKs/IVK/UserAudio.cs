@@ -1,4 +1,4 @@
-using Microsoft.UI.Dispatching;
+п»їusing Microsoft.UI.Dispatching;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,7 +73,7 @@ namespace VK_UI3.VKs.IVK
 
         public override void GetTracks()
         {
-            semaphore.Wait(); // Ожидает освобождения семафора
+            semaphore.Wait(); // РћР¶РёРґР°РµС‚ РѕСЃРІРѕР±РѕР¶РґРµРЅРёСЏ СЃРµРјР°С„РѕСЂР°
 
             try
             {
@@ -105,11 +105,11 @@ namespace VK_UI3.VKs.IVK
                             DispatcherQueue.TryEnqueue(() =>
                             {
                                 listAudio.Add(extendedAudio);
-                                resetEvent.Set(); // Сигнализирует о завершении задачи
+                                resetEvent.Set(); // РЎРёРіРЅР°Р»РёР·РёСЂСѓРµС‚ Рѕ Р·Р°РІРµСЂС€РµРЅРёРё Р·Р°РґР°С‡Рё
                             });
 
-                            resetEvent.WaitOne(); // Ожидает сигнала о завершении задачи
-                            resetEvent.Reset(); // Сбрасывает событие для следующей итерации
+                            resetEvent.WaitOne(); // РћР¶РёРґР°РµС‚ СЃРёРіРЅР°Р»Р° Рѕ Р·Р°РІРµСЂС€РµРЅРёРё Р·Р°РґР°С‡Рё
+                            resetEvent.Reset(); // РЎР±СЂР°СЃС‹РІР°РµС‚ СЃРѕР±С‹С‚РёРµ РґР»СЏ СЃР»РµРґСѓСЋС‰РµР№ РёС‚РµСЂР°С†РёРё
                         }
 
                         if (countTracks == listAudio.Count()) itsAll = true;
@@ -122,13 +122,13 @@ namespace VK_UI3.VKs.IVK
             }
             finally
             {
-                semaphore.Release(); // Освобождает семафор
+                semaphore.Release(); // РћСЃРІРѕР±РѕР¶РґР°РµС‚ СЃРµРјР°С„РѕСЂ
             }
         }
 
         public void GetTracks(int counter)
         {
-            semaphore.Wait(); // Ожидает освобождения семафора
+            semaphore.Wait(); // РћР¶РёРґР°РµС‚ РѕСЃРІРѕР±РѕР¶РґРµРЅРёСЏ СЃРµРјР°С„РѕСЂР°
 
             try
             {
@@ -160,11 +160,11 @@ namespace VK_UI3.VKs.IVK
                             DispatcherQueue.TryEnqueue(() =>
                             {
                                 listAudio.Add(extendedAudio);
-                                resetEvent.Set(); // Сигнализирует о завершении задачи
+                                resetEvent.Set(); // РЎРёРіРЅР°Р»РёР·РёСЂСѓРµС‚ Рѕ Р·Р°РІРµСЂС€РµРЅРёРё Р·Р°РґР°С‡Рё
                             });
 
-                            resetEvent.WaitOne(); // Ожидает сигнала о завершении задачи
-                            resetEvent.Reset(); // Сбрасывает событие для следующей итерации
+                            resetEvent.WaitOne(); // РћР¶РёРґР°РµС‚ СЃРёРіРЅР°Р»Р° Рѕ Р·Р°РІРµСЂС€РµРЅРёРё Р·Р°РґР°С‡Рё
+                            resetEvent.Reset(); // РЎР±СЂР°СЃС‹РІР°РµС‚ СЃРѕР±С‹С‚РёРµ РґР»СЏ СЃР»РµРґСѓСЋС‰РµР№ РёС‚РµСЂР°С†РёРё
                         }
 
                         if (countTracks == listAudio.Count()) itsAll = true;
@@ -174,11 +174,16 @@ namespace VK_UI3.VKs.IVK
                     task = null;
                     NotifyOnListUpdate();
                 });
-            }
+            }catch (Exception e)
+            {
+                semaphore.Release(); // РћСЃРІРѕР±РѕР¶РґР°РµС‚ СЃРµРјР°С„РѕСЂ
+                throw e;
+            } 
             finally
             {
-                semaphore.Release(); // Освобождает семафор
+                semaphore.Release(); // РћСЃРІРѕР±РѕР¶РґР°РµС‚ СЃРµРјР°С„РѕСЂ
             }
+           
         }
     }
 }
