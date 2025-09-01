@@ -6,7 +6,6 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="using:VK_UI3.Views"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
 	mc:Ignorable="d">
 
 	<Grid>

@@ -209,7 +209,7 @@ namespace VK_UI3.Views
             }
             catch (Exception ex)
             {
-                frameSection.Navigate(typeof(ErrorPage), ex.Message);
+                frameSection.Navigate(typeof(ErrorPage), ex.Message, new DrillInNavigationTransitionInfo());
             }
             finally
             {
@@ -366,8 +366,9 @@ namespace VK_UI3.Views
                 this.DispatcherQueue.TryEnqueue(async () =>
                 {
                     handlerContainer.Handler = null;
-                    frameSection.Navigate(typeof(ErrorPage), (e as ErrorLoad).exception.Message);
-                    
+                    frameSection.Navigate(typeof(ErrorPage), (e as ErrorLoad).exception.Message, new DrillInNavigationTransitionInfo());
+
+
                 });
                 waitParameters.iVKGetAudio.onListUpdate -= (handlerContainer.Handler);
                 waitParameters.iVKGetAudio.onErrorLoad += (handlerContainer.HandlerException);

@@ -10,11 +10,13 @@ using Microsoft.UI.Xaml.Navigation;
 using MusicX.Core.Models;
 using MusicX.Core.Services;
 using MusicX.Services;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,6 +29,7 @@ using VK_UI3.Views.Notification;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
 using VkNet.Model.Attachments;
+using static System.Collections.Specialized.BitVector32;
 using static VK_UI3.DB.AccountsDB;
 using static VK_UI3.Views.SectionView;
 
@@ -433,10 +436,7 @@ namespace VK_UI3.Views
                 }
                 catch (OperationCanceledException)
                 {
-                    this.DispatcherQueue.TryEnqueue(async () =>
-                    {
-                        AddRetryButton();
-                    });
+                    
                 }
                 catch (Exception e)
                 {
@@ -463,24 +463,27 @@ namespace VK_UI3.Views
             }
 
             // Создаем новую кнопку "Запросить повторно"
+            var navSet =  new NavSettings() { Icon = "\uE149", MyMusicItem = "Запросить повторно", section = null };
 
-
-
-            var retryButton = new NavigationViewItem
+            int index = 0;
+            this.DispatcherQueue.TryEnqueue(async () =>
             {
-                Content = "Запросить повторно",
-                Icon = new FontIcon { Glyph = "\uE149" }, // Иконка обновления
-                Tag = "retry_button"
-            };
+                index = NavWiv.MenuItems.IndexOf(NavWiv.MenuItems.OfType<NavigationViewItemHeader>().First());
+            });
 
-            // Добавляем обработчик клика
-            retryButton.Tapped += async (sender, args) =>
+            this.DispatcherQueue.TryEnqueue(async () =>
             {
-                CreateNavigation();
-            };
+                    var navViewItem = new AnimatedNavMenuController
+                    {
+                        navSettings = navSet,
+                        Content = navSet.MyMusicItem,
+                        Icon = new FontIcon { Glyph = navSet.Icon }
+                    };
+                    NavWiv.MenuItems.Insert(index, navViewItem);
+                    navMenuControllers.Add(navViewItem);
+                    index++;
+            });
 
-            // Добавляем кнопку в меню
-            NavWiv.MenuItems.Add(retryButton);
         }
 
 
@@ -536,7 +539,7 @@ namespace VK_UI3.Views
         }
 
 
-        private NavSettings? CreateNavSettings(Section section, List<string> icons)
+        private NavSettings? CreateNavSettings(MusicX.Core.Models.Section section, List<string> icons)
         {
             string icon;
 
@@ -941,7 +944,8 @@ namespace VK_UI3.Views
                     case "вложения":
                         OpenMyPage(SectionType.ConversDialogs);
                         break;
-                    case "Запросить повторно":
+                    case "запросить повторно":
+                        CreateNavigation();
                         return;
                         break;
 

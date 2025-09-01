@@ -33,7 +33,7 @@ namespace VK_UI3.Views
 
         private void RetryButton_Click(object sender, RoutedEventArgs e)
         {
-            RetryRequested?.Invoke(this, EventArgs.Empty);
+            MainWindow.onRefreshClickedvoid();
         }
 
         private async void CopyErrorButton_Click(object sender, RoutedEventArgs e)
