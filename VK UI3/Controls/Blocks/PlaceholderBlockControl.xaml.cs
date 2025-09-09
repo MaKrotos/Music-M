@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -42,8 +42,15 @@ namespace VK_UI3.Controls.Blocks
             
             block = (Block)DataContext;
 
-          
 
+            if (block.Placeholders == null || block.Placeholders.Count == 0)
+            {
+
+                this.icon.Visibility = Visibility.Collapsed;
+                this.Title.Visibility = Visibility.Collapsed;
+                ActionButton.Visibility = Visibility.Collapsed;
+                return;
+            }
             var placeholder = block.Placeholders[0];
 
 
