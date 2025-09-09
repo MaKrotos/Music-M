@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -37,7 +37,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает список объектов документов.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/docs.get
+        /// Страница документации ВКонтакте http://vk.ru/dev/docs.get
         /// </remarks>
         Task<VkCollection<Document>> GetAsync(int? count = null, int? offset = null, long? ownerId = null, DocFilter? type = null);
 
@@ -50,7 +50,7 @@ namespace VkNet.Abstractions
         /// </param>
         /// <returns> После успешного выполнения возвращает список объектов документов. </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/docs.getById
+        /// Страница документации ВКонтакте http://vk.ru/dev/docs.getById
         /// </remarks>
         Task<ReadOnlyCollection<Document>> GetByIdAsync(IEnumerable<Document> docs);
 
@@ -66,7 +66,7 @@ namespace VkNet.Abstractions
         /// </param>
         /// <returns> После успешного выполнения возвращает объект UploadServerInfo </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/docs.getUploadServer
+        /// Страница документации ВКонтакте http://vk.ru/dev/docs.getUploadServer
         /// </remarks>
         Task<UploadServerInfo> GetUploadServerAsync(long? groupId = null);
 
@@ -81,7 +81,7 @@ namespace VkNet.Abstractions
         /// </param>
         /// <returns> После успешного выполнения возвращает объект UploadServerInfo </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/docs.getWallUploadServer
+        /// Страница документации ВКонтакте http://vk.ru/dev/docs.getWallUploadServer
         /// </remarks>
         Task<UploadServerInfo> GetWallUploadServerAsync(long? groupId = null);
 
@@ -97,7 +97,7 @@ namespace VkNet.Abstractions
         /// <param name="tags"> Метки для поиска. </param>
         /// <returns> Возвращает массив с загруженными объектами. </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/docs.save
+        /// Страница документации ВКонтакте http://vk.ru/dev/docs.save
         /// </remarks>
         Task<ReadOnlyCollection<Attachment>> SaveAsync(string file, string title, string tags = null);
 
@@ -120,7 +120,7 @@ namespace VkNet.Abstractions
         /// </param>
         /// <returns> После успешного выполнения возвращает 1. </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/docs.delete
+        /// Страница документации ВКонтакте http://vk.ru/dev/docs.delete
         /// </remarks>
         Task<bool> DeleteAsync(long ownerId, long docId);
 
@@ -146,7 +146,7 @@ namespace VkNet.Abstractions
         /// документа (did).
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/docs.add
+        /// Страница документации ВКонтакте http://vk.ru/dev/docs.add
         /// </remarks>
         Task<long> AddAsync(long ownerId, long docId, string accessKey = null);
 
@@ -173,7 +173,7 @@ namespace VkNet.Abstractions
         /// int (числовое значение).
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/docs.getTypes
+        /// Страница документации ВКонтакте http://vk.ru/dev/docs.getTypes
         /// </remarks>
         Task<VkCollection<DocumentType>> GetTypesAsync(long ownerId);
 
@@ -200,7 +200,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает список объектов документов.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/docs.search
+        /// Страница документации ВКонтакте http://vk.ru/dev/docs.search
         /// </remarks>
         Task<VkCollection<Document>> SearchAsync(string query, bool searchOwn, long? count = null, long? offset = null);
 
@@ -234,7 +234,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает <c> true </c>.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/docs.edit
+        /// Страница документации ВКонтакте http://vk.ru/dev/docs.edit
         /// </remarks>
         Task<bool> EditAsync(long ownerId, long docId, string title, IEnumerable<string> tags);
 

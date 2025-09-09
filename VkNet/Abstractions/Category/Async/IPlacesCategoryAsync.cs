@@ -22,7 +22,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает идентификатор созданного места (pid).
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/places.add
+        /// Страница документации ВКонтакте http://vk.ru/dev/places.add
         /// </remarks>
         Task<long> AddAsync(PlacesAddParams placesAddParams);
 
@@ -36,7 +36,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает идентификатор созданной отметки.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/places.checkin
+        /// Страница документации ВКонтакте http://vk.ru/dev/places.checkin
         /// </remarks>
         Task<long> CheckinAsync(PlacesCheckinParams placesCheckinParams);
 
@@ -61,7 +61,7 @@ namespace VkNet.Abstractions
         /// city, address.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/places.getById
+        /// Страница документации ВКонтакте http://vk.ru/dev/places.getById
         /// </remarks>
         Task<ReadOnlyCollection<Place>> GetByIdAsync(IEnumerable<ulong> places);
 
@@ -111,7 +111,7 @@ namespace VkNet.Abstractions
         /// указанном в параметре uid.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/places.getCheckins
+        /// Страница документации ВКонтакте http://vk.ru/dev/places.getCheckins
         /// </remarks>
         Task<VkCollection<Checkin>> GetCheckinsAsync(PlacesGetCheckinsParams placesGetCheckinsParams);
 
@@ -123,7 +123,7 @@ namespace VkNet.Abstractions
         /// содержит поля tid, title и icon.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/places.getTypes
+        /// Страница документации ВКонтакте http://vk.ru/dev/places.getTypes
         /// </remarks>
         Task<ReadOnlyCollection<PlaceType>> GetTypesAsync();
 
@@ -156,7 +156,7 @@ namespace VkNet.Abstractions
         /// Если не задан параметр radius, то по умолчанию он будет иметь значение 1.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/places.search
+        /// Страница документации ВКонтакте http://vk.ru/dev/places.search
         /// </remarks>
         Task<VkCollection<Place>> SearchAsync(PlacesSearchParams placesSearchParams);
     }

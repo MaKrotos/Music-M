@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using VkNet.Exception;
 using VkNet.Utils;
 
@@ -6,8 +6,8 @@ namespace VkNet.Model
 {
 	/// <summary>
 	/// Координаты места, в котором была сделана запись.
-	/// См. описание <see href="http://vk.com/pages?oid=-1&amp;p=Описание_поля_geo" />.
-	/// Официальная страница http://vk.com/dev/post
+	/// См. описание <see href="http://vk.ru/pages?oid=-1&amp;p=Описание_поля_geo" />.
+	/// Официальная страница http://vk.ru/dev/post
 	/// молчит о том, что возвращаются географические координаты.
 	/// </summary>
 	[Serializable]

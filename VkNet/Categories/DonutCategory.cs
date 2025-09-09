@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using VkNet.Abstractions;
 using VkNet.Model;
 using VkNet.Utils;
@@ -15,7 +15,7 @@ namespace VkNet.Categories
 		private readonly IVkApiInvoke _vk;
 
 		/// <summary>
-		/// api vk.com
+		/// api vk.ru
 		/// </summary>
 		/// <param name="vk"> API. </param>
 		public DonutCategory(IVkApiInvoke vk)

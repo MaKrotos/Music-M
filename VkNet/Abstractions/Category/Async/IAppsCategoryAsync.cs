@@ -24,7 +24,7 @@ namespace VkNet.Abstractions
 		/// </returns>
 		/// <remarks>
 		/// К методу можно делать не более 60 запросов в минуту с одного IP или id.
-		/// Страница документации ВКонтакте http://vk.com/dev/apps.getCatalog
+		/// Страница документации ВКонтакте http://vk.ru/dev/apps.getCatalog
 		/// </remarks>
 		Task<VkCollection<App>> GetCatalogAsync(AppGetCatalogParams @params, bool skipAuthorization = false);
 
@@ -37,7 +37,7 @@ namespace VkNet.Abstractions
 		/// После успешного выполнения возвращает объект приложения.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/apps.get
+		/// Страница документации ВКонтакте http://vk.ru/dev/apps.get
 		/// </remarks>
 		Task<AppGetObject> GetAsync(AppGetParams @params, bool skipAuthorization = false);
 
@@ -52,7 +52,7 @@ namespace VkNet.Abstractions
 		/// 10013.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/apps.sendRequest
+		/// Страница документации ВКонтакте http://vk.ru/dev/apps.sendRequest
 		/// </remarks>
 		Task<long> SendRequestAsync(AppSendRequestParams @params);
 
@@ -63,7 +63,7 @@ namespace VkNet.Abstractions
 		/// В случае успешного выполнения возвращает <c> true </c>.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/apps.deleteAppRequests
+		/// Страница документации ВКонтакте http://vk.ru/dev/apps.deleteAppRequests
 		/// </remarks>
 		Task<bool> DeleteAppRequestsAsync();
 
@@ -93,7 +93,7 @@ namespace VkNet.Abstractions
 		/// После успешного выполнения возвращает список пользователей.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/apps.getFriendsList
+		/// Страница документации ВКонтакте http://vk.ru/dev/apps.getFriendsList
 		/// </remarks>
 		Task<VkCollection<User>> GetFriendsListAsync(AppRequestType type
 													, bool? extended = null
@@ -128,7 +128,7 @@ namespace VkNet.Abstractions
 		/// по убыванию текущего уровня или количества очков.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/apps.getLeaderboard
+		/// Страница документации ВКонтакте http://vk.ru/dev/apps.getLeaderboard
 		/// </remarks>
 		Task<LeaderboardResult> GetLeaderboardAsync(AppRatingType type, bool? global = null, bool? extended = null);
 
@@ -146,7 +146,7 @@ namespace VkNet.Abstractions
 		/// После успешного выполнения возвращает число очков для пользователя.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/apps.getScore
+		/// Страница документации ВКонтакте http://vk.ru/dev/apps.getScore
 		/// </remarks>
 		Task<long> GetScoreAsync(long userId);
 	}

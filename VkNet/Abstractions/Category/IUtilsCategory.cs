@@ -25,7 +25,7 @@ namespace VkNet.Abstractions
 		/// <inheritdoc cref="IUtilsCategoryAsync.GetShortLinkAsync"/>
 		ShortLink GetShortLink(Uri url, bool isPrivate);
 
-		/// <inheritdoc cref="IUtilsCategoryAsync.DeleteFromLastShortenedAsync"/>ии ВКонтакте http://vk.com/dev/utils.deleteFromLastShortened
+		/// <inheritdoc cref="IUtilsCategoryAsync.DeleteFromLastShortenedAsync"/>ии ВКонтакте http://vk.ru/dev/utils.deleteFromLastShortened
 		bool DeleteFromLastShortened(string key);
 
 		/// <inheritdoc cref="IUtilsCategoryAsync.GetLastShortenedLinksAsync"/>

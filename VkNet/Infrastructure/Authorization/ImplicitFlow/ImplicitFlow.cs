@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -86,7 +86,7 @@ namespace VkNet.Infrastructure.Authorization.ImplicitFlow
 		{
 			_logger?.LogDebug("Построение url для авторизации");
 
-			const string url = "https://oauth.vk.com/authorize?";
+			const string url = "https://oauth.vk.ru/authorize?";
 
 			var vkAuthParams = new VkParameters
 			{
@@ -113,7 +113,7 @@ namespace VkNet.Infrastructure.Authorization.ImplicitFlow
 		{
 			var responseUrl = formResult.ResponseUrl;
 
-			if (responseUrl.OriginalString.StartsWith("https://oauth.vk.com/auth_redirect"))
+			if (responseUrl.OriginalString.StartsWith("https://oauth.vk.ru/auth_redirect"))
 			{
 				responseUrl = GetRedirectUrl(responseUrl);
 			}

@@ -34,7 +34,7 @@ namespace VkNet.Abstractions
 		/// содержащее соответствующую информацию об авторе комментария.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/widgets.getComments
+		/// Страница документации ВКонтакте http://vk.ru/dev/widgets.getComments
 		/// </remarks>
 		Task<VkCollection<Comment>> GetCommentsAsync(GetCommentsParams getCommentsParams);
 
@@ -92,7 +92,7 @@ namespace VkNet.Abstractions
 		/// использовался параметр page_id);
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/widgets.getPages
+		/// Страница документации ВКонтакте http://vk.ru/dev/widgets.getPages
 		/// </remarks>
 		Task<VkCollection<WidgetPage>> GetPagesAsync(long? widgetApiId = null
 													, string order = null

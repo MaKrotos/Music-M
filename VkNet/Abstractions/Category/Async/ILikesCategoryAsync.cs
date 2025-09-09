@@ -25,7 +25,7 @@ namespace VkNet.Abstractions
 		/// нравится.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/likes.getList
+		/// Страница документации ВКонтакте http://vk.ru/dev/likes.getList
 		/// </remarks>
 		Task<VkCollection<long>> GetListAsync(LikesGetListParams @params, bool skipAuthorization = false);
 
@@ -40,7 +40,7 @@ namespace VkNet.Abstractions
 		/// свой список Мне нравится.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/likes.getList
+		/// Страница документации ВКонтакте http://vk.ru/dev/likes.getList
 		/// </remarks>
 		Task<UserOrGroup> GetListExAsync(LikesGetListParams @params);
 
@@ -54,7 +54,7 @@ namespace VkNet.Abstractions
 		/// добавили данный объект в свой список Мне нравится.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/likes.add
+		/// Страница документации ВКонтакте http://vk.ru/dev/likes.add
 		/// </remarks>
 		Task<long> AddAsync(LikesAddParams @params);
 
@@ -76,7 +76,7 @@ namespace VkNet.Abstractions
 		/// добавили данный объект в свой список Мне нравится.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/likes.delete
+		/// Страница документации ВКонтакте http://vk.ru/dev/likes.delete
 		/// </remarks>
 		Task<long> DeleteAsync(LikeObjectType type, long itemId, long? ownerId = null);
 
@@ -113,7 +113,7 @@ namespace VkNet.Abstractions
 		/// идентификатором user_id.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/likes.isLiked
+		/// Страница документации ВКонтакте http://vk.ru/dev/likes.isLiked
 		/// </remarks>
 		Task<bool> IsLikedAsync(LikeObjectType type, long itemId, long? userId = null, long? ownerId = null);
 	}

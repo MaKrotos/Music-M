@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -11,7 +11,7 @@ namespace VkNet.Model.Attachments
 	/// Фотография.
 	/// </summary>
 	/// <remarks>
-	/// См. описание http://vk.com/dev/photo
+	/// См. описание http://vk.ru/dev/photo
 	/// </remarks>
 	[Serializable]
 	public class Photo : MediaAttachment, IGroupUpdate

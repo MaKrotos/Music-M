@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using VkNet.Utils;
@@ -7,7 +7,7 @@ namespace VkNet.Enums.Filters
 {
 	/// <summary>
 	/// Права доступа приложений.
-	/// См. описание <see href="https://vk.com/dev/permissions" />.
+	/// См. описание <see href="https://vk.ru/dev/permissions" />.
 	/// </summary>
 	public sealed class Settings
 	{

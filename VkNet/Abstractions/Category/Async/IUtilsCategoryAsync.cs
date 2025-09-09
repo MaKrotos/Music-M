@@ -20,7 +20,7 @@ namespace VkNet.Abstractions
 		/// <param name="url"> Внешняя ссылка, которую необходимо проверить. </param>
 		/// <returns> Статус ссылки </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/utils.checkLink
+		/// Страница документации ВКонтакте http://vk.ru/dev/utils.checkLink
 		/// </remarks>
 		Task<LinkAccessType> CheckLinkAsync([NotNull]
 											string url);
@@ -32,7 +32,7 @@ namespace VkNet.Abstractions
 		/// <param name="url"> Внешняя ссылка, которую необходимо проверить. </param>
 		/// <returns> Статус ссылки </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/utils.checkLink
+		/// Страница документации ВКонтакте http://vk.ru/dev/utils.checkLink
 		/// </remarks>
 		Task<LinkAccessType> CheckLinkAsync([NotNull]
 											Uri url);
@@ -44,7 +44,7 @@ namespace VkNet.Abstractions
 		/// <param name="screenName"> Короткое имя </param>
 		/// <returns> Тип объекта </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/utils.resolveScreenName
+		/// Страница документации ВКонтакте http://vk.ru/dev/utils.resolveScreenName
 		/// </remarks>
 		Task<VkObject> ResolveScreenNameAsync([NotNull]
 											string screenName);
@@ -54,7 +54,7 @@ namespace VkNet.Abstractions
 		/// </summary>
 		/// <returns> Время на сервере ВКонтакте в unixtime </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/utils.getServerTime
+		/// Страница документации ВКонтакте http://vk.ru/dev/utils.getServerTime
 		/// </remarks>
 		Task<DateTime> GetServerTimeAsync();
 
@@ -72,7 +72,7 @@ namespace VkNet.Abstractions
 		/// После успешного выполнения возвращает 1.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/utils.deleteFromLastShortened
+		/// Страница документации ВКонтакте http://vk.ru/dev/utils.deleteFromLastShortened
 		/// </remarks>
 		Task<bool> DeleteFromLastShortenedAsync(string key);
 
@@ -86,7 +86,7 @@ namespace VkNet.Abstractions
 		/// описывающих ссылки.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/utils.getLastShortenedLinks
+		/// Страница документации ВКонтакте http://vk.ru/dev/utils.getLastShortenedLinks
 		/// </remarks>
 		Task<VkCollection<ShortLink>> GetLastShortenedLinksAsync(ulong count = 10, ulong offset = 0);
 

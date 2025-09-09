@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Newtonsoft.Json;
 using VkNet.Enums.Filters;
 using VkNet.Enums.SafetyEnums;
@@ -28,7 +28,7 @@ namespace VkNet.Model
 
 		/// <summary>
 		/// Права доступа приложений
-		/// См. описание <see href="https://vk.com/dev/permissions" />
+		/// См. описание <see href="https://vk.ru/dev/permissions" />
 		/// </summary>
 		/// <remarks>
 		/// ВНИМАНИЕ!!! Settings.All по умолчанию не содержит Settings.Offline и

@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System;
@@ -43,7 +43,7 @@ namespace VK_UI3.Controls.Blocks
             {
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = "https://vk.com/" + block.Groups[0].ScreenName,
+                    FileName = "https://vk.ru/" + block.Groups[0].ScreenName,
                     UseShellExecute = true
                 });
             }

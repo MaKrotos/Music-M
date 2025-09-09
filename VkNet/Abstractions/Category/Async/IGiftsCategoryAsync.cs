@@ -43,7 +43,7 @@ namespace VkNet.Abstractions
 		/// скрыто, сообщение видно только получателю).
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/gifts.get
+		/// Страница документации ВКонтакте http://vk.ru/dev/gifts.get
 		/// </remarks>
 		Task<VkCollection<GiftItem>> GetAsync(long? userId = null, int? count = null, int? offset = null);
 	}

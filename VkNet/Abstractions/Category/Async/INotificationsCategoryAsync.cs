@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using VkNet.Model;
@@ -251,7 +251,7 @@ namespace VkNet.Abstractions
 		/// id6492).
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/notifications.get
+		/// Страница документации ВКонтакте http://vk.ru/dev/notifications.get
 		/// </remarks>
 		Task<NotificationGetResult> GetAsync(ulong? count = null, string startFrom = null, IEnumerable<string> filters = null,
 											long? startTime = null, long? endTime = null, CancellationToken token = default);
@@ -267,7 +267,7 @@ namespace VkNet.Abstractions
 		/// случае возвращает 0.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/notifications.markAsViewed
+		/// Страница документации ВКонтакте http://vk.ru/dev/notifications.markAsViewed
 		/// </remarks>
 		Task<bool> MarkAsViewedAsync(CancellationToken token);
 
@@ -290,7 +290,7 @@ namespace VkNet.Abstractions
 		/// 4 —  приложение не установлено.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/notifications.sendMessage
+		/// Страница документации ВКонтакте http://vk.ru/dev/notifications.sendMessage
 		/// </remarks>
 		Task<IEnumerable<NotificationsSendMessageResult>> SendMessageAsync(NotificationsSendMessageParams sendMessageParams,
 																			CancellationToken token);

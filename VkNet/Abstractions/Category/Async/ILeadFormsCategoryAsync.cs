@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using VkNet.Model;
@@ -24,7 +24,7 @@ namespace VkNet.Abstractions.Category.Async
 		/// url — ссылка на форму.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/leadForms.create
+		/// Страница документации ВКонтакте http://vk.ru/dev/leadForms.create
 		/// </remarks>
 		Task<LeadFormCreateResult> CreateAsync(LeadFormsCreateParams createParams);
 
@@ -41,7 +41,7 @@ namespace VkNet.Abstractions.Category.Async
 		/// Возвращает идентификатор удалённой формы
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/leadForms.delete
+		/// Страница документации ВКонтакте http://vk.ru/dev/leadForms.delete
 		/// </remarks>
 		Task<LeadFormCreateResult> DeleteAsync(long groupId, long formId);
 
@@ -62,7 +62,7 @@ namespace VkNet.Abstractions.Category.Async
 		/// url — ссылка на форму.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/leadForms.get
+		/// Страница документации ВКонтакте http://vk.ru/dev/leadForms.get
 		/// </remarks>
 		Task<LeadFormCreateResult> GetAsync(long groupId, long formId);
 
@@ -94,7 +94,7 @@ namespace VkNet.Abstractions.Category.Async
 		/// ad_id — идентификатор рекламного объявления, с которого пришла заявка (поле отсутствует в случае, если заявка пришла не из рекламного объявления).
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/leadForms.getLeads
+		/// Страница документации ВКонтакте http://vk.ru/dev/leadForms.getLeads
 		/// </remarks>
 		Task<ReadOnlyCollection<LeadFormsGetLeadResult>> GetLeadsAsync(long groupId, long formId, string nextPageToken, ulong? limit = null);
 
@@ -105,7 +105,7 @@ namespace VkNet.Abstractions.Category.Async
 		/// Возвращает URL для загрузки обложки для формы.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/leadForms.getUploadURl
+		/// Страница документации ВКонтакте http://vk.ru/dev/leadForms.getUploadURl
 		/// </remarks>
 		Task<Uri> GetUploadURLAsync();
 
@@ -119,7 +119,7 @@ namespace VkNet.Abstractions.Category.Async
 		/// Возвращает массив структур с описанием форм. Подробнее о структуре описания формы см. метод leadForms.get.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/leadForms.list
+		/// Страница документации ВКонтакте http://vk.ru/dev/leadForms.list
 		/// </remarks>
 		Task<ReadOnlyCollection<LeadFormCreateResult>> ListAsync(long groupId);
 
@@ -135,7 +135,7 @@ namespace VkNet.Abstractions.Category.Async
 		/// url — ссылка на форму.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/leadForms.update
+		/// Страница документации ВКонтакте http://vk.ru/dev/leadForms.update
 		/// </remarks>
 		Task<LeadFormCreateResult> UpdateAsync(LeadFormsUpdateParams updateParams);
 	}

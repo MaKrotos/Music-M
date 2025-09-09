@@ -13,7 +13,7 @@ namespace VkNet.Categories
 		private readonly IVkApiInvoke _vk;
 
 		/// <summary>
-		/// api vk.com
+		/// api vk.ru
 		/// </summary>
 		/// <param name="vk"> API. </param>
 		public DownloadedGamesCategory(IVkApiInvoke vk)

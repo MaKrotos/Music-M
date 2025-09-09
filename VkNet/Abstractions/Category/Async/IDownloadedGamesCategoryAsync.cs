@@ -19,7 +19,7 @@ namespace VkNet.Abstractions
 		/// В случае успеха возвращает объект с полем is_paid, которое может принимать значения true (если пользователь купил игру) или false (если пользователь игру не покупал));
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/downloadedGames.getPaidStatus
+		/// Страница документации ВКонтакте http://vk.ru/dev/downloadedGames.getPaidStatus
 		/// </remarks>
 		Task<GetPaidStatusResult> GetPaidStatusAsync(ulong? userId = null, CancellationToken token = default);
 	}

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using VkNet.Model;
 using VkNet.Model.Attachments;
@@ -19,7 +19,7 @@ namespace VkNet.Abstractions.Async
 		/// </param>
 		/// <returns>После успешного выполнения возвращает идентификатор созданной заметки (nid).</returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/notifications.get
+		/// Страница документации ВКонтакте http://vk.ru/dev/notifications.get
 		/// </remarks>
 		Task<long> AddAsync(NotesAddParams notesAddParams);
 
@@ -31,7 +31,7 @@ namespace VkNet.Abstractions.Async
 		/// После успешного выполнения возвращает идентификатор созданного комментария (cid).
 		///</returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/notifications.createComment
+		/// Страница документации ВКонтакте http://vk.ru/dev/notifications.createComment
 		/// </remarks>
 		Task<long> CreateCommentAsync(NotesCreateCommentParams createCommentParams);
 
@@ -41,7 +41,7 @@ namespace VkNet.Abstractions.Async
 		/// <param name="noteId">идентификатор заметки.</param>
 		/// <returns>После успешного выполнения возвращает true.</returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/notifications.delete
+		/// Страница документации ВКонтакте http://vk.ru/dev/notifications.delete
 		/// </remarks>
 		Task<bool> DeleteAsync(long noteId);
 
@@ -51,7 +51,7 @@ namespace VkNet.Abstractions.Async
 		/// <param name="deleteCommentParams">Входные параметры запроса</param>
 		/// <returns>После успешного выполнения возвращает true. </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/notifications.deleteComment
+		/// Страница документации ВКонтакте http://vk.ru/dev/notifications.deleteComment
 		/// </remarks>
 		Task<bool> DeleteCommentAsync(NotesDeleteCommentParams deleteCommentParams);
 
@@ -61,7 +61,7 @@ namespace VkNet.Abstractions.Async
 		/// <param name="editParams">Входные параметры запроса</param>
 		/// <returns>После успешного выполнения возвращает true.</returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/notifications.edit
+		/// Страница документации ВКонтакте http://vk.ru/dev/notifications.edit
 		/// </remarks>
 		Task<bool> EditAsync(NotesEditParams editParams);
 
@@ -71,7 +71,7 @@ namespace VkNet.Abstractions.Async
 		/// <param name="editCommentParams">Входные параметры запроса</param>
 		/// <returns>После успешного выполнения возвращает true.</returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/notifications.editComment
+		/// Страница документации ВКонтакте http://vk.ru/dev/notifications.editComment
 		/// </remarks>
 		Task<bool> EditCommentAsync(NotesEditCommentParams editCommentParams);
 
@@ -81,7 +81,7 @@ namespace VkNet.Abstractions.Async
 		/// <param name="notesGetParams">Входные параметры запроса</param>
 		/// <returns>возвращает список объектов заметок</returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/notifications.get
+		/// Страница документации ВКонтакте http://vk.ru/dev/notifications.get
 		/// </remarks>
 		Task<IEnumerable<Note>> GetAsync(NotesGetParams notesGetParams);
 
@@ -91,7 +91,7 @@ namespace VkNet.Abstractions.Async
 		/// <param name="getByIdParams">Входные параметры запроса</param>
 		/// <returns>Возвращает заметку</returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/notifications.getById
+		/// Страница документации ВКонтакте http://vk.ru/dev/notifications.getById
 		/// </remarks>
 		Task<Note> GetByIdAsync(NotesGetByIdParams getByIdParams);
 
@@ -101,7 +101,7 @@ namespace VkNet.Abstractions.Async
 		/// <param name="getCommentParams">Входные параметры запроса</param>
 		/// <returns>Возвращает массив объектов comment</returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/notifications.getComments
+		/// Страница документации ВКонтакте http://vk.ru/dev/notifications.getComments
 		/// </remarks>
 		Task<IEnumerable<CommentNote>> GetCommentsAsync(NotesGetCommentParams getCommentParams);
 
@@ -111,7 +111,7 @@ namespace VkNet.Abstractions.Async
 		/// <param name="restoreCommentParams">Входные параметры запроса</param>
 		/// <returns>После успешного выполнения возвращает true</returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/notifications.restoreComment
+		/// Страница документации ВКонтакте http://vk.ru/dev/notifications.restoreComment
 		/// </remarks>
 		Task<bool> RestoreCommentAsync(NotesRestoreCommentParams restoreCommentParams);
 	}

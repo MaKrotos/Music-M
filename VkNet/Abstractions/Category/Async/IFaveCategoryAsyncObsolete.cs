@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using VkNet.Model;
 using VkNet.Model.Attachments;
@@ -16,7 +16,7 @@ namespace VkNet.Abstractions
         /// </summary>
         /// <param name="link">
         /// Адрес добавляемой ссылки. Поддерживаются только внутренние ссылки на
-        /// http://vk.com/. строка,
+        /// http://vk.ru/. строка,
         /// обязательный параметр (Строка, обязательный параметр).
         /// </param>
         /// <param name="text"> Текст ссылки. строка (Строка). </param>
@@ -24,7 +24,7 @@ namespace VkNet.Abstractions
         /// В случае успешного выполнения возвращает <c> true </c>.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/fave.addLink
+        /// Страница документации ВКонтакте http://vk.ru/dev/fave.addLink
         /// </remarks>
         [Obsolete(ObsoleteText.Obsolete + "Используйте вместо него Task<bool> AddLinkAsync(Uri link)")]
         Task<bool> AddLinkAsync(Uri link, string text);
@@ -46,7 +46,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает список объектов пользователей.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/fave.getUsers
+        /// Страница документации ВКонтакте http://vk.ru/dev/fave.getUsers
         /// </remarks>
         [Obsolete(ObsoleteText.Obsolete)]
         Task<VkCollection<User>> GetUsersAsync(int? count = null, int? offset = null);
@@ -74,7 +74,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает список объектов фотографий.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/fave.getPhotos
+        /// Страница документации ВКонтакте http://vk.ru/dev/fave.getPhotos
         /// </remarks>
         [Obsolete(ObsoleteText.Obsolete)]
         Task<VkCollection<Photo>> GetPhotosAsync(int? count = null, int? offset = null, bool? photoSizes = null);
@@ -102,7 +102,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает список объектов записей на стене.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/fave.getPosts
+        /// Страница документации ВКонтакте http://vk.ru/dev/fave.getPosts
         /// </remarks>
         [Obsolete(ObsoleteText.Obsolete)]
         Task<WallGetObject> GetPostsAsync(int? count = null, int? offset = null, bool extended = false);
@@ -129,7 +129,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает список объектов видеозаписей.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/fave.getVideos
+        /// Страница документации ВКонтакте http://vk.ru/dev/fave.getVideos
         /// </remarks>
         [Obsolete(ObsoleteText.Obsolete)]
         Task<FaveVideoEx> GetVideosAsync(int? count = null, int? offset = null, bool extended = false);
@@ -153,7 +153,7 @@ namespace VkNet.Abstractions
         /// поля id, URL, title, description, photo_50 и photo_100.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/fave.getLinks
+        /// Страница документации ВКонтакте http://vk.ru/dev/fave.getLinks
         /// </remarks>
         [Obsolete(ObsoleteText.Obsolete)]
         Task<VkCollection<ExternalLink>> GetLinksAsync(int? count = null, int? offset = null);
@@ -170,7 +170,7 @@ namespace VkNet.Abstractions
         /// В случае успешного выполнения возвращает <c> true </c>.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/fave.addUser
+        /// Страница документации ВКонтакте http://vk.ru/dev/fave.addUser
         /// </remarks>
         [Obsolete(ObsoleteText.Obsolete)]
         Task<bool> AddUserAsync(long userId);
@@ -187,7 +187,7 @@ namespace VkNet.Abstractions
         /// В случае успешного выполнения возвращает <c> true </c>.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/fave.removeUser
+        /// Страница документации ВКонтакте http://vk.ru/dev/fave.removeUser
         /// </remarks>
         [Obsolete(ObsoleteText.Obsolete)]
         Task<bool> RemoveUserAsync(long userId);
@@ -204,7 +204,7 @@ namespace VkNet.Abstractions
         /// В случае успешного выполнения возвращает <c> true </c>.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/fave.addGroup
+        /// Страница документации ВКонтакте http://vk.ru/dev/fave.addGroup
         /// </remarks>
         [Obsolete(ObsoleteText.Obsolete)]
         Task<bool> AddGroupAsync(long groupId);
@@ -221,7 +221,7 @@ namespace VkNet.Abstractions
         /// В случае успешного выполнения возвращает <c> true </c>.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/fave.removeGroup
+        /// Страница документации ВКонтакте http://vk.ru/dev/fave.removeGroup
         /// </remarks>
         [Obsolete(ObsoleteText.Obsolete)]
         Task<bool> RemoveGroupAsync(long groupId);
@@ -249,7 +249,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает список объектов товаров.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/fave.getMarketItems
+        /// Страница документации ВКонтакте http://vk.ru/dev/fave.getMarketItems
         /// </remarks>
         [Obsolete(ObsoleteText.Obsolete)]
         Task<VkCollection<Market>> GetMarketItemsAsync(ulong? count = null, ulong? offset = null, bool? extended = null);

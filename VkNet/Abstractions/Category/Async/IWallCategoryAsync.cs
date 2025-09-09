@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using VkNet.Enums;
 using VkNet.Enums.Filters;
@@ -26,7 +26,7 @@ namespace VkNet.Abstractions
         /// filter equal to Suggests;ownerId
         /// </exception>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/wall.get
+        /// Страница документации ВКонтакте http://vk.ru/dev/wall.get
         /// </remarks>
         Task<WallGetObject> GetAsync(WallGetParams @params, bool skipAuthorization = false);
 
@@ -51,7 +51,7 @@ namespace VkNet.Abstractions
         /// отрицательный offset).
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/wall.getComments
+        /// Страница документации ВКонтакте http://vk.ru/dev/wall.getComments
         /// </remarks>
         Task<WallGetCommentsResult> GetCommentsAsync(WallGetCommentsParams @params, bool skipAuthorization = false);
 
@@ -107,7 +107,7 @@ namespace VkNet.Abstractions
         /// записей со стены, репостом которых является текущая.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/wall.getById
+        /// Страница документации ВКонтакте http://vk.ru/dev/wall.getById
         /// </remarks>
         Task<WallGetObject> GetByIdAsync(IEnumerable<string> posts
                                         , bool? extended = null
@@ -123,7 +123,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает идентификатор созданной записи (post_id).
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/wall.post
+        /// Страница документации ВКонтакте http://vk.ru/dev/wall.post
         /// </remarks>
         Task<long> PostAsync(WallPostParams @params);
 
@@ -155,7 +155,7 @@ namespace VkNet.Abstractions
         /// likes_count — число отметок «Мне нравится» у объекта.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/wall.repost
+        /// Страница документации ВКонтакте http://vk.ru/dev/wall.repost
         /// </remarks>
         Task<RepostResult> RepostAsync(string @object, string message, long? groupId, bool markAsAds);
 
@@ -167,7 +167,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает post_id — идентификатор отредактированного поста.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/wall.edit
+        /// Страница документации ВКонтакте http://vk.ru/dev/wall.edit
         /// </remarks>
         Task<long> EditAsync(WallEditParams @params);
 
@@ -191,7 +191,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает <c> true </c>.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/wall.delete
+        /// Страница документации ВКонтакте http://vk.ru/dev/wall.delete
         /// </remarks>
         Task<bool> DeleteAsync(long? ownerId = null, long? postId = null);
 
@@ -216,7 +216,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает <c> true </c>.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/wall.restore
+        /// Страница документации ВКонтакте http://vk.ru/dev/wall.restore
         /// </remarks>
         Task<bool> RestoreAsync(long? ownerId = null, long? postId = null);
 
@@ -229,7 +229,7 @@ namespace VkNet.Abstractions
         /// (comment_id).
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/wall.createComment
+        /// Страница документации ВКонтакте http://vk.ru/dev/wall.createComment
         /// </remarks>
         Task<long> CreateCommentAsync(WallCreateCommentParams @params);
 
@@ -254,7 +254,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает <c> true </c>.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/wall.deleteComment
+        /// Страница документации ВКонтакте http://vk.ru/dev/wall.deleteComment
         /// </remarks>
         Task<bool> DeleteCommentAsync(long? ownerId, long commentId);
 
@@ -281,7 +281,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает <c> true </c>.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/wall.restoreComment
+        /// Страница документации ВКонтакте http://vk.ru/dev/wall.restoreComment
         /// </remarks>
         Task<bool> RestoreCommentAsync(long commentId, long? ownerId);
 
@@ -294,7 +294,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает список объектов записей на стене.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/wall.search
+        /// Страница документации ВКонтакте http://vk.ru/dev/wall.search
         /// </remarks>
         Task<WallGetObject> SearchAsync(WallSearchParams @params, bool skipAuthorization = false);
 
@@ -337,7 +337,7 @@ namespace VkNet.Abstractions
         /// groups — содержит информацию о сообществах.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/wall.getReposts
+        /// Страница документации ВКонтакте http://vk.ru/dev/wall.getReposts
         /// </remarks>
         Task<WallGetObject> GetRepostsAsync(long? ownerId, long? postId, long? offset, long? count, bool skipAuthorization = false);
 
@@ -362,7 +362,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает <c> true </c>.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/wall.pin
+        /// Страница документации ВКонтакте http://vk.ru/dev/wall.pin
         /// </remarks>
         Task<bool> PinAsync(long postId, long? ownerId = null);
 
@@ -387,7 +387,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает <c> true </c>.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/wall.unpin
+        /// Страница документации ВКонтакте http://vk.ru/dev/wall.unpin
         /// </remarks>
         Task<bool> UnpinAsync(long postId, long? ownerId = null);
 
@@ -414,7 +414,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает <c> true </c>.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/wall.editComment
+        /// Страница документации ВКонтакте http://vk.ru/dev/wall.editComment
         /// </remarks>
         Task<bool> EditCommentAsync(long commentId, string message, long? ownerId = null, IEnumerable<MediaAttachment> attachments = null);
 
@@ -446,7 +446,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает <c> true </c>.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/wall.reportPost
+        /// Страница документации ВКонтакте http://vk.ru/dev/wall.reportPost
         /// </remarks>
         Task<bool> ReportPostAsync(long ownerId, long postId, ReportReason? reason = null);
 
@@ -478,7 +478,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает <c> true </c>.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/wall.reportComment
+        /// Страница документации ВКонтакте http://vk.ru/dev/wall.reportComment
         /// </remarks>
         Task<bool> ReportCommentAsync(long ownerId, long commentId, ReportReason? reason);
 
@@ -490,7 +490,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает <c> true </c>.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/wall.editAdsStealth
+        /// Страница документации ВКонтакте http://vk.ru/dev/wall.editAdsStealth
         /// </remarks>
         Task<bool> EditAdsStealthAsync(EditAdsStealthParams @params);
 
@@ -504,7 +504,7 @@ namespace VkNet.Abstractions
         /// Идентификатор созданной записи
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/wall.postAdsStealth
+        /// Страница документации ВКонтакте http://vk.ru/dev/wall.postAdsStealth
         /// </remarks>
         Task<long> PostAdsStealthAsync(PostAdsStealthParams @params);
 
@@ -529,7 +529,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает <c> true </c>.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/wall.openComments
+        /// Страница документации ВКонтакте http://vk.ru/dev/wall.openComments
         /// </remarks>
         Task<bool> OpenCommentsAsync(long ownerId, long postId);
 
@@ -552,7 +552,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает <c> true </c>.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/wall.closeComments
+        /// Страница документации ВКонтакте http://vk.ru/dev/wall.closeComments
         /// </remarks>
         Task<bool> CloseCommentsAsync(long ownerId, long postId);
 
@@ -566,7 +566,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает <c> true </c>.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте https://vk.com/dev/wall.checkCopyrightLink
+        /// Страница документации ВКонтакте https://vk.ru/dev/wall.checkCopyrightLink
         /// </remarks>
         Task<bool> CheckCopyrightLinkAsync(string link);
 
@@ -592,7 +592,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает <c> true </c>.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/wall.getComment
+        /// Страница документации ВКонтакте http://vk.ru/dev/wall.getComment
         /// </remarks>
         Task<WallGetCommentResult> GetCommentAsync(int ownerId, int commentId, bool? extended = null, string fields = null, bool skipAuthorization = false);
 

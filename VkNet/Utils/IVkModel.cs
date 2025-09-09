@@ -1,7 +1,7 @@
 ﻿namespace VkNet.Utils
 {
 	/// <summary>
-	/// Модель данных vk.com
+	/// Модель данных vk.ru
 	/// </summary>
 	public interface IVkModel
 	{

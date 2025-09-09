@@ -21,7 +21,7 @@ namespace VkNet.AudioBypassService.Utils;
 
 public class VkApiInvoke : IVkApiInvoke
 {
-    private readonly Uri _apiBaseUri = new("https://api.vk.com/method/");
+    private readonly Uri _apiBaseUri = new("https://api.vk.ru/method/");
     private readonly IEnumerable<JsonConverter> _defaultConverters = new JsonConverter[]
     {
         new VkCollectionJsonConverter(),

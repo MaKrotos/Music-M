@@ -6,7 +6,7 @@ namespace VkNet.Model
 {
 	/// <summary>
 	/// Информация о статусе пользователя.
-	/// См. описание http://vk.com/dev/status.get
+	/// См. описание http://vk.ru/dev/status.get
 	/// </summary>
 	[Serializable]
 	public class Status

@@ -144,7 +144,7 @@ namespace VkNet.Model
 		/// <summary>
 		/// Cсылка на рекламируемый объект в формате.
 		/// http://yoursite.cоm, или
-		/// https://vk.com/wall-22822305_383737, или
+		/// https://vk.ru/wall-22822305_383737, или
 		/// http://vk.cоm/club1
 		/// </summary>
 		[JsonProperty(propertyName: "link_url")]

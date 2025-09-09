@@ -67,7 +67,7 @@ public partial class AuthCategory : IAuthCategory
         }
 
         const string url =
-            "https://id.vk.com/qr_auth?scheme=vkcom_dark&app_id=7913379&origin=https%3A%2F%2Fvk.com&initial_stats_info=eyJzb3VyY2UiOiJtYWluIiwic2NyZWVuIjoic3RhcnQifQ%3D%3D";
+            "https://id.vk.ru/qr_auth?scheme=vkcom_dark&app_id=7913379&origin=https%3A%2F%2Fvk.ru&initial_stats_info=eyJzb3VyY2UiOiJtYWluIiwic2NyZWVuIjoic3RhcnQifQ%3D%3D";
 
         var response = await _restClient.GetAsync(new(url), ImmutableDictionary<string, string>.Empty, Encoding.UTF8);
 
@@ -134,8 +134,8 @@ public partial class AuthCategory : IAuthCategory
 
                 var content = new FormUrlEncodedContent(parameters);
                 client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");
-                client.DefaultRequestHeaders.Add("Origin", "https://id.vk.com");
-                var response = await client.PostAsync("https://login.vk.com/?act=connect_code_auth", content);
+                client.DefaultRequestHeaders.Add("Origin", "https://id.vk.ru");
+                var response = await client.PostAsync("https://login.vk.ru/?act=connect_code_auth", content);
                 response.EnsureSuccessStatusCode();
                 var str = await response.Content.ReadAsStringAsync();
 
@@ -182,10 +182,10 @@ public partial class AuthCategory : IAuthCategory
                 { "access_token", "" }
             };
                 client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");
-                client.DefaultRequestHeaders.Add("Origin", "https://id.vk.com");
+                client.DefaultRequestHeaders.Add("Origin", "https://id.vk.ru");
 
                 var content = new FormUrlEncodedContent(parameters);
-                var response = await client.PostAsync("https://api.vk.com/method/auth.getAuthCode?v=5.207&client_id=7913379", content);
+                var response = await client.PostAsync("https://api.vk.ru/method/auth.getAuthCode?v=5.207&client_id=7913379", content);
                 response.EnsureSuccessStatusCode();
 
                 var jsonResponse = JObject.Parse(await response.Content.ReadAsStringAsync())["response"];
@@ -243,7 +243,7 @@ public partial class AuthCategory : IAuthCategory
 
     public async Task<PasskeyBeginResponse> BeginPasskeyAsync(string sid)
     {
-        var response = await _restClient.PostAsync(new("https://api.vk.com/oauth/passkey_begin"), new VkParameters
+        var response = await _restClient.PostAsync(new("https://api.vk.ru/oauth/passkey_begin"), new VkParameters
         {
             { "sid", sid },
             { "anonymous_token", _tokenStore.Token },

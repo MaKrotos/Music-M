@@ -35,7 +35,7 @@ namespace VkNet.Abstractions
 		/// <c> true </c>.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/auth.checkPhone
+		/// Страница документации ВКонтакте http://vk.ru/dev/auth.checkPhone
 		/// </remarks>
 		Task<bool> CheckPhoneAsync(string phone, string clientSecret, long? clientId = null, bool? authByPhone = null);
 
@@ -47,7 +47,7 @@ namespace VkNet.Abstractions
 		/// Возвращает результат выполнения метода.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/auth.signup
+		/// Страница документации ВКонтакте https://vk.ru/dev/auth.signup
 		/// </remarks>
 		Task<string> SignupAsync(AuthSignupParams @params);
 
@@ -60,7 +60,7 @@ namespace VkNet.Abstractions
 		/// Возвращает результат выполнения метода.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/auth.confirm
+		/// Страница документации ВКонтакте https://vk.ru/dev/auth.confirm
 		/// </remarks>
 		Task<AuthConfirmResult> ConfirmAsync(AuthConfirmParams @params);
 
@@ -73,7 +73,7 @@ namespace VkNet.Abstractions
 		/// Возвращает результат выполнения метода.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/auth.restore
+		/// Страница документации ВКонтакте https://vk.ru/dev/auth.restore
 		/// </remarks>
 		Task<string> RestoreAsync(string phone, string lastName);
 	}

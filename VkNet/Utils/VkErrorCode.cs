@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace VkNet.Utils
 {
@@ -15,7 +15,7 @@ namespace VkNet.Utils
 
 		/// <summary>
 		/// Приложение выключено.
-		/// Необходимо включить приложение в настройках https://vk.com/editapp?id={Ваш
+		/// Необходимо включить приложение в настройках https://vk.ru/editapp?id={Ваш
 		/// API_ID} или использовать тестовый режим
 		/// (test_mode=1)
 		/// </summary>
@@ -24,14 +24,14 @@ namespace VkNet.Utils
 		/// <summary>
 		/// Передан неизвестный метод.
 		/// Проверьте, правильно ли указано название вызываемого метода:
-		/// http://vk.com/dev/methods.
+		/// http://vk.ru/dev/methods.
 		/// </summary>
 		public const int UnknownMethod = 3;
 
 		/// <summary>
 		/// Неверная подпись.
 		/// Проверьте правильность формирования подписи запроса:
-		/// https://vk.com/dev/api_nohttps
+		/// https://vk.ru/dev/api_nohttps
 		/// </summary>
 		public const int InvalidSignature = 4;
 
@@ -39,8 +39,8 @@ namespace VkNet.Utils
 		/// Авторизация пользователя не удалась.
 		/// Убедитесь, что Вы используете верную схему авторизации. Для работы с методами
 		/// без префикса secure Вам нужно
-		/// авторизовать пользователя одним из этих способов: http://vk.com/dev/auth_sites,
-		/// http://vk.com/dev/auth_mobile.
+		/// авторизовать пользователя одним из этих способов: http://vk.ru/dev/auth_sites,
+		/// http://vk.ru/dev/auth_mobile.
 		/// </summary>
 		public const int AuthorizationFailed = 5;
 
@@ -48,7 +48,7 @@ namespace VkNet.Utils
 		/// Слишком много запросов в секунду.
 		/// Задайте больший интервал между вызовами или используйте метод execute.
 		/// Подробнее об ограничениях на частоту вызовов
-		/// см. на странице http://vk.com/dev/api_requests.
+		/// см. на странице http://vk.ru/dev/api_requests.
 		/// </summary>
 		public const int TooManyRequestsPerSecond = 6;
 
@@ -83,7 +83,7 @@ namespace VkNet.Utils
 		/// <summary>
 		/// В тестовом режиме приложение должно быть выключено или пользователь должен быть
 		/// залогинен.
-		/// Выключите приложение в настройках https://vk.com/editapp?id={Ваш API_ID}
+		/// Выключите приложение в настройках https://vk.ru/editapp?id={Ваш API_ID}
 		/// </summary>
 		public const int OffAppOrLogin = 11;
 
@@ -144,8 +144,8 @@ namespace VkNet.Utils
 		/// Данное действие запрещено для не Standalone приложений.
 		/// Если ошибка возникает несмотря на то, что Ваше приложение имеет тип Standalone,
 		/// убедитесь, что при авторизации Вы
-		/// используете redirect_uri=https://oauth.vk.com/blank.html. Подробнее см.
-		/// http://vk.com/dev/auth_mobile.
+		/// используете redirect_uri=https://oauth.vk.ru/blank.html. Подробнее см.
+		/// http://vk.ru/dev/auth_mobile.
 		/// </summary>
 		public const int NonStandaloneApplications = 20;
 
@@ -168,7 +168,7 @@ namespace VkNet.Utils
 		/// <summary>
 		/// Метод был выключен.
 		/// Все актуальные методы ВК API, которые доступны в настоящий момент, перечислены
-		/// здесь: http://vk.com/dev/methods.
+		/// здесь: http://vk.ru/dev/methods.
 		/// </summary>
 		public const int MethodHasBeenSwitchedOff = 23;
 
@@ -202,7 +202,7 @@ namespace VkNet.Utils
 		/// <summary>
 		/// Неверный API ID приложения.
 		/// Найдите приложение в списке администрируемых на странице
-		/// http://vk.com/apps?act=settings и укажите в запросе верный
+		/// http://vk.ru/apps?act=settings и укажите в запросе верный
 		/// API_ID (идентификатор приложения).
 		/// </summary>
 		public const int InvalidAppId = 101;
@@ -404,7 +404,7 @@ namespace VkNet.Utils
 		/// <summary>
 		/// Действие запрещено. Вы должны включить переводы голосов в настройках
 		/// приложения.
-		/// Проверьте настройки приложения: http://vk.com/editapp?id={Ваш API_ID}&amp;
+		/// Проверьте настройки приложения: http://vk.ru/editapp?id={Ваш API_ID}&amp;
 		/// section=payments
 		/// </summary>
 		public const int PermissionDenied = 500;

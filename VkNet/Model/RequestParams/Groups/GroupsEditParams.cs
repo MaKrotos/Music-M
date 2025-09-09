@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Newtonsoft.Json;
@@ -122,7 +122,7 @@ namespace VkNet.Model.RequestParams
 		/// <summary>
 		/// Адрес rss для импорта новостей (доступен только группам, получившим
 		/// соответствующее разрешение, обратитесь в
-		/// http://vk.com/support для получения разрешения). строка.
+		/// http://vk.ru/support для получения разрешения). строка.
 		/// </summary>
 		public string Rss { get; set; }
 

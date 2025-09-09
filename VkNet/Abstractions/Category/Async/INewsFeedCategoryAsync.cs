@@ -23,7 +23,7 @@ namespace VkNet.Abstractions
         /// Возвращает результат выполнения метода.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/newsfeed.get
+        /// Страница документации ВКонтакте http://vk.ru/dev/newsfeed.get
         /// </remarks>
         Task<NewsFeed> GetAsync(NewsFeedGetParams @params);
 
@@ -35,7 +35,7 @@ namespace VkNet.Abstractions
         /// Возвращает результат выполнения метода.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/newsfeed.getRecommended
+        /// Страница документации ВКонтакте http://vk.ru/dev/newsfeed.getRecommended
         /// </remarks>
         Task<NewsFeed> GetRecommendedAsync(NewsFeedGetRecommendedParams @params);
 
@@ -48,7 +48,7 @@ namespace VkNet.Abstractions
         /// Возвращает результат выполнения метода.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/newsfeed.getComments
+        /// Страница документации ВКонтакте http://vk.ru/dev/newsfeed.getComments
         /// </remarks>
         Task<NewsFeed> GetCommentsAsync(NewsFeedGetCommentsParams @params);
 
@@ -81,7 +81,7 @@ namespace VkNet.Abstractions
         /// Возвращает результат выполнения метода.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/newsfeed.getMentions
+        /// Страница документации ВКонтакте http://vk.ru/dev/newsfeed.getMentions
         /// </remarks>
         Task<VkCollection<Mention>> GetMentionsAsync(long? ownerId = null
                                                     , DateTime? startTime = null
@@ -95,7 +95,7 @@ namespace VkNet.Abstractions
         /// </summary>
         /// <returns> Возвращает результат выполнения метода. </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/newsfeed.getBanned
+        /// Страница документации ВКонтакте http://vk.ru/dev/newsfeed.getBanned
         /// </remarks>
         Task<NewsBannedList> GetBannedAsync();
 
@@ -112,7 +112,7 @@ namespace VkNet.Abstractions
         /// Возвращает результат выполнения метода.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/newsfeed.getBanned
+        /// Страница документации ВКонтакте http://vk.ru/dev/newsfeed.getBanned
         /// </remarks>
         Task<NewsBannedExList> GetBannedExAsync(UsersFields fields = null, NameCase nameCase = null);
 
@@ -134,7 +134,7 @@ namespace VkNet.Abstractions
         /// Возвращает результат выполнения метода.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/newsfeed.addBan
+        /// Страница документации ВКонтакте http://vk.ru/dev/newsfeed.addBan
         /// </remarks>
         Task<bool> AddBanAsync(IEnumerable<long> userIds, IEnumerable<long> groupIds);
 
@@ -154,7 +154,7 @@ namespace VkNet.Abstractions
         /// Возвращает результат выполнения метода.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/newsfeed.deleteBan
+        /// Страница документации ВКонтакте http://vk.ru/dev/newsfeed.deleteBan
         /// </remarks>
         Task<bool> DeleteBanAsync(IEnumerable<long> userIds, IEnumerable<long> groupIds);
 
@@ -171,7 +171,7 @@ namespace VkNet.Abstractions
         /// Возвращает результат выполнения метода.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/newsfeed.ignoreItem
+        /// Страница документации ВКонтакте http://vk.ru/dev/newsfeed.ignoreItem
         /// </remarks>
         Task<bool> IgnoreItemAsync(NewsObjectTypes type, long ownerId, long itemId);
 
@@ -186,7 +186,7 @@ namespace VkNet.Abstractions
         /// </param>
         /// <param name="itemId"> Идентификатор объекта. </param>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/newsfeed.unignoreItem
+        /// Страница документации ВКонтакте http://vk.ru/dev/newsfeed.unignoreItem
         /// </remarks>
         Task<bool> UnignoreItemAsync(NewsObjectTypes type, long ownerId, long itemId);
 
@@ -199,7 +199,7 @@ namespace VkNet.Abstractions
         /// Возвращает результат выполнения метода.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/newsfeed.search
+        /// Страница документации ВКонтакте http://vk.ru/dev/newsfeed.search
         /// </remarks>
         Task<NewsSearchResult> SearchAsync(NewsFeedSearchParams @params);
 
@@ -215,7 +215,7 @@ namespace VkNet.Abstractions
         /// Метод возвращает список объектов пользовательских списков.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/newsfeed.getLists
+        /// Страница документации ВКонтакте http://vk.ru/dev/newsfeed.getLists
         /// </remarks>
         Task<VkCollection<NewsUserListItem>> GetListsAsync(IEnumerable<long> listIds, bool? extended = null);
 
@@ -241,7 +241,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает Идентификатор списка.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/newsfeed.saveList
+        /// Страница документации ВКонтакте http://vk.ru/dev/newsfeed.saveList
         /// </remarks>
         Task<long> SaveListAsync(string title, IEnumerable<long> sourceIds, long? listId = null, bool? noReposts = null);
 
@@ -253,7 +253,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает <c> true </c>.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/newsfeed.deleteList
+        /// Страница документации ВКонтакте http://vk.ru/dev/newsfeed.deleteList
         /// </remarks>
         Task<bool> DeleteListAsync(long listId);
 
@@ -270,7 +270,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает <c> true </c>.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/newsfeed.unsubscribe
+        /// Страница документации ВКонтакте http://vk.ru/dev/newsfeed.unsubscribe
         /// </remarks>
         Task<bool> UnsubscribeAsync(CommentObjectType type, long itemId, long? ownerId = null);
 
@@ -304,7 +304,7 @@ namespace VkNet.Abstractions
         /// Список объектов пользователей и групп.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/newsfeed.getSuggestedSources
+        /// Страница документации ВКонтакте http://vk.ru/dev/newsfeed.getSuggestedSources
         /// </remarks>
         Task<NewsSuggestions> GetSuggestedSourcesAsync(long? offset = null
                                                         , long? count = null

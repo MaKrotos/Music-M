@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Newtonsoft.Json;
@@ -13,7 +13,7 @@ namespace VkNet.Model
 {
 	/// <summary>
 	/// Информация о сообществе (группе).
-	/// См. описание http://vk.com/dev/fields_groups
+	/// См. описание http://vk.ru/dev/fields_groups
 	/// </summary>
 	[DebuggerDisplay("[{Id}] {Name}")]
 	[Serializable]

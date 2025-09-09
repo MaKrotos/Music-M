@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using VkNet.Utils;
@@ -7,7 +7,7 @@ namespace VkNet.Model.Attachments
 {
 	/// <summary>
 	/// Граффити.
-	/// См. описание http://vk.com/dev/attachments_w
+	/// См. описание http://vk.ru/dev/attachments_w
 	/// </summary>
 	[Serializable]
 	public class Graffiti : MediaAttachment

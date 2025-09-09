@@ -14,7 +14,7 @@ namespace VkNet.Categories
 		private readonly IVkApiInvoke _vk;
 
 		/// <summary>
-		/// api vk.com
+		/// api vk.ru
 		/// </summary>
 		public SearchCategory(IVkApiInvoke vk)
 		{

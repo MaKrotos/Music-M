@@ -11,7 +11,7 @@ namespace VkNet.Enums.SafetyEnums
 	public class PostSourceType : SafetyEnum<PostSourceType>
 	{
 		/// <summary>
-		/// Запись создана через основной интерфейс сайта (http://vk.com/).
+		/// Запись создана через основной интерфейс сайта (http://vk.ru/).
 		/// </summary>
 		public static readonly PostSourceType Vk = RegisterPossibleValue(value: "vk");
 

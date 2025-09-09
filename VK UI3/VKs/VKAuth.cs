@@ -162,7 +162,7 @@ namespace VK_UI3.VKs
                 if (nextStep is null || nextStep.VerificationMethod == LoginWay.Password)
                 {
 
-                    Profile = new EcosystemProfile("Незнакомец", string.Empty, llogin, false, false, "https://vk.com/images/camera_200.png");
+                    Profile = new EcosystemProfile("Незнакомец", string.Empty, llogin, false, false, "https://vk.ru/images/camera_200.png");
 
                     Password passview = new Password();
 
@@ -450,7 +450,7 @@ namespace VK_UI3.VKs
                 AccountsDB.activeAccount.Name = $"{profile.FirstName} {profile.LastName}";
 
 
-                AccountsDB.activeAccount.UserPhoto = (profile.PhotoMax ?? profile.Photo400Orig ?? profile.Photo200Orig ?? profile.Photo200 ?? profile.Photo100 ?? new Uri("https://vk.com/images/camera_200.png")).ToString();
+                AccountsDB.activeAccount.UserPhoto = (profile.PhotoMax ?? profile.Photo400Orig ?? profile.Photo200Orig ?? profile.Photo200 ?? profile.Photo100 ?? new Uri("https://vk.ru/images/camera_200.png")).ToString();
 
                 AccountsDB.activeAccount.Update();
 

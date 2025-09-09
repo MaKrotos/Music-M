@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
@@ -87,7 +87,7 @@ namespace VkNet.Utils
 		public Uri CreateAuthorizeUrl()
 		{
 			_logger?.LogDebug("Построение url для авторизации.");
-			var builder = new StringBuilder("https://oauth.vk.com/authorize?");
+			var builder = new StringBuilder("https://oauth.vk.ru/authorize?");
 
 			builder.Append($"client_id={_authParams.ApplicationId}&");
 			builder.Append($"redirect_uri={Constants.DefaultRedirectUri}&");

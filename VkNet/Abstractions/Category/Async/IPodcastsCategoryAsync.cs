@@ -16,7 +16,7 @@ namespace VkNet.Abstractions
 		/// <returns>
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/podcasts.clearRecentSearches
+		/// Страница документации ВКонтакте https://vk.ru/dev/podcasts.clearRecentSearches
 		/// </remarks>
 		Task<bool> ClearRecentSearchesAsync();
 
@@ -26,7 +26,7 @@ namespace VkNet.Abstractions
 		/// <returns>
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/podcasts.getPopular
+		/// Страница документации ВКонтакте https://vk.ru/dev/podcasts.getPopular
 		/// </remarks>
 		Task<ReadOnlyCollection<PodcastsGetPopularResult>> GetPopularAsync();
 
@@ -36,7 +36,7 @@ namespace VkNet.Abstractions
 		/// <returns>
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/podcasts.getRecentSearchRequests
+		/// Страница документации ВКонтакте https://vk.ru/dev/podcasts.getRecentSearchRequests
 		/// </remarks>
 		Task<ReadOnlyCollection<string>> GetRecentSearchRequestsAsync();
 
@@ -47,7 +47,7 @@ namespace VkNet.Abstractions
 		/// <returns>
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/podcasts.search
+		/// Страница документации ВКонтакте https://vk.ru/dev/podcasts.search
 		/// </remarks>
 		Task<PodcastsSearchResult> SearchAsync(PodcastsSearchParams @params);
 	}

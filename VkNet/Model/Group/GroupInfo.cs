@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -10,7 +10,7 @@ namespace VkNet.Model
 {
 	/// <summary>
 	/// Информация о сообществе (группе).
-	/// См. описание http://vk.com/dev/fields_groups
+	/// См. описание http://vk.ru/dev/fields_groups
 	/// </summary>
 	[Serializable]
 	public class GroupInfo
@@ -145,7 +145,7 @@ namespace VkNet.Model
 		/// <summary>
 		/// Адрес rss для импорта новостей
 		/// (доступен только группам, получившим соответствуюшее разрешение,
-		/// обратитесь в http://vk.com/support для получения разрешения).
+		/// обратитесь в http://vk.ru/support для получения разрешения).
 		/// </summary>
 		public string Rss { get; set; }
 

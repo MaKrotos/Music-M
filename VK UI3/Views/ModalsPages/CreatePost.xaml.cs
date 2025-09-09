@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using System;
@@ -80,7 +80,7 @@ namespace VK_UI3.Views.ModalsPages
 
             var id = (UserID != null) ? UserID : Group.Id * -1;
 
-            var url = $"https://vk.com/wall{id}_{postID}";
+            var url = $"https://vk.ru/wall{id}_{postID}";
             Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
         }
 

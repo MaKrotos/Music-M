@@ -1,4 +1,4 @@
-namespace VkNet.Infrastructure
+﻿namespace VkNet.Infrastructure
 {
 	/// <summary>
 	/// Константы проекта
@@ -18,7 +18,7 @@ namespace VkNet.Infrastructure
 		/// <summary>
 		/// redirect_uri по умолчанию.
 		/// </summary>
-		public const string DefaultRedirectUri = "https://oauth.vk.com/blank.html";
+		public const string DefaultRedirectUri = "https://oauth.vk.ru/blank.html";
 
 		/// <summary>
 		/// Параметр запроса. Версия API

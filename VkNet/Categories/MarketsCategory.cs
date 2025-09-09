@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using VkNet.Abstractions;
 using VkNet.Enums;
 using VkNet.Model;
@@ -17,7 +17,7 @@ namespace VkNet.Categories
         private readonly IVkApiInvoke _vk;
 
         /// <summary>
-        /// api vk.com
+        /// api vk.ru
         /// </summary>
         /// <param name="vk"> API. </param>
         public MarketsCategory(IVkApiInvoke vk)

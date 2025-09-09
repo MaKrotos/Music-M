@@ -1,9 +1,9 @@
-namespace VkNet.Enums.Filters
+﻿namespace VkNet.Enums.Filters
 {
 	/// <summary>
 	/// Описание дополнительных полей сообщества, используемых в параметре fields
 	/// (например, в методе GroupsCategory.Get
-	/// См. описание http://vk.com/dev/groups.get
+	/// См. описание http://vk.ru/dev/groups.get
 	/// </summary>
 	public sealed class GroupsFields : MultivaluedFilter<GroupsFields>
 	{

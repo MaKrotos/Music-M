@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using VkNet.Utils;
@@ -7,7 +7,7 @@ namespace VkNet.Model.Attachments
 {
 	/// <summary>
 	/// Альбом с фотографиями пользователя.
-	/// См. описание http://vk.com/dev/attachments_w
+	/// См. описание http://vk.ru/dev/attachments_w
 	/// </summary>
 	[Serializable]
 	public class Album : MediaAttachment

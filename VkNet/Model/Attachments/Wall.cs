@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Newtonsoft.Json;
@@ -14,7 +14,7 @@ namespace VkNet.Model.Attachments
 	/// сообщений
 	/// </summary>
 	/// <remarks>
-	/// См. описание http://vk.com/dev/post
+	/// См. описание http://vk.ru/dev/post
 	/// </remarks>
 	[DebuggerDisplay("[{Id}] {Text}")]
 	[Serializable]

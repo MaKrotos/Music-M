@@ -21,7 +21,7 @@ namespace VkNet.Abstractions
         /// <param name="codes">
         /// Перечисленные через запятую двухбуквенные коды стран в стандарте ISO 3166-1
         /// alpha-2
-        /// http://vk.com/dev/country_codes
+        /// http://vk.ru/dev/country_codes
         /// </param>
         /// <param name="offset">
         /// Отступ, необходимый для выбора определенного подмножества
@@ -38,7 +38,7 @@ namespace VkNet.Abstractions
         /// текущего пользователя. Если задан параметр needAll, то будет возвращен список
         /// всех стран. Если задан параметр code,
         /// то будут возвращены только страны с перечисленными ISO 3166-1 alpha-2 кодами.
-        /// Страница документации ВКонтакте http://vk.com/dev/database.getCountries
+        /// Страница документации ВКонтакте http://vk.ru/dev/database.getCountries
         /// </remarks>
         Task<VkCollection<Country>> GetCountriesAsync(bool? needAll = null, IEnumerable<Iso3166> codes = null, int? count = null,
                                                     int? offset = null);
@@ -55,7 +55,7 @@ namespace VkNet.Abstractions
         /// </param>
         /// <returns> Список регионов. </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/database.getRegions
+        /// Страница документации ВКонтакте http://vk.ru/dev/database.getRegions
         /// </remarks>
         Task<VkCollection<Region>> GetRegionsAsync(int countryId, string query = "", int? count = null, int? offset = null);
 
@@ -65,7 +65,7 @@ namespace VkNet.Abstractions
         /// <param name="streetIds"> Идентификаторы улиц. </param>
         /// <returns> Информация об улицах. </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/database.getStreetsById
+        /// Страница документации ВКонтакте http://vk.ru/dev/database.getStreetsById
         /// </remarks>
         Task<ReadOnlyCollection<Street>> GetStreetsByIdAsync(params int[] streetIds);
 
@@ -75,7 +75,7 @@ namespace VkNet.Abstractions
         /// <param name="countryIds"> Идентификаторы стран. </param>
         /// <returns> Информация о странах. </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/database.getCountriesById
+        /// Страница документации ВКонтакте http://vk.ru/dev/database.getCountriesById
         /// </remarks>
         Task<ReadOnlyCollection<Country>> GetCountriesByIdAsync(params int[] countryIds);
 
@@ -95,7 +95,7 @@ namespace VkNet.Abstractions
         /// Если задан параметр <paramref name="getCitiesParams.query" />, то будет
         /// возвращен список городов, которые
         /// релевантны поисковому запросу.
-        /// Страница документации ВКонтакте http://vk.com/dev/database.getCities
+        /// Страница документации ВКонтакте http://vk.ru/dev/database.getCities
         /// </remarks>
         Task<VkCollection<City>> GetCitiesAsync(GetCitiesParams getCitiesParams);
 
@@ -107,7 +107,7 @@ namespace VkNet.Abstractions
         /// <remarks>
         /// Идентификаторы городов могут быть получены с помощью методов UsersCategory.Get,
         /// places.getById, places.search, places.getCheckins.
-        /// Страница документации ВКонтакте http://vk.com/dev/database.getCitiesById
+        /// Страница документации ВКонтакте http://vk.ru/dev/database.getCitiesById
         /// </remarks>
         Task<ReadOnlyCollection<City>> GetCitiesByIdAsync(params int[] cityIds);
 
@@ -130,7 +130,7 @@ namespace VkNet.Abstractions
         /// <param name="count"> Количество учебных заведений, которое необходимо вернуть. </param>
         /// <returns> Список высших учебных заведений, удовлетворяющих заданным условиям. </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/database.getUniversities
+        /// Страница документации ВКонтакте http://vk.ru/dev/database.getUniversities
         /// </remarks>
         Task<VkCollection<University>> GetUniversitiesAsync(int countryId, int cityId, string query = "", int? count = null,
                                                             int? offset = null);
@@ -147,7 +147,7 @@ namespace VkNet.Abstractions
         /// <param name="count"> Количество школ, которое необходимо вернуть. </param>
         /// <returns> Cписок школ. </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/database.getSchools
+        /// Страница документации ВКонтакте http://vk.ru/dev/database.getSchools
         /// </remarks>
         Task<VkCollection<School>> GetSchoolsAsync(int cityId, string query = "", int? offset = null, int? count = null);
 
@@ -165,7 +165,7 @@ namespace VkNet.Abstractions
         /// <param name="offset"> Количество факультетов которое необходимо получить. </param>
         /// <returns> Cписок факультетов. </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/database.getFaculties
+        /// Страница документации ВКонтакте http://vk.ru/dev/database.getFaculties
         /// </remarks>
         Task<VkCollection<Faculty>> GetFacultiesAsync(long universityId, int? count = null, int? offset = null);
 
@@ -182,7 +182,7 @@ namespace VkNet.Abstractions
         /// класса.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/database.getSchoolClasses
+        /// Страница документации ВКонтакте http://vk.ru/dev/database.getSchoolClasses
         /// </remarks>
         Task<ReadOnlyCollection<SchoolClass>> GetSchoolClassesAsync(long countryId);
 
@@ -203,7 +203,7 @@ namespace VkNet.Abstractions
         /// идентификатор и строковое обозначение класса.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/database.getChairs
+        /// Страница документации ВКонтакте http://vk.ru/dev/database.getChairs
         /// </remarks>
         Task<VkCollection<Chair>> GetChairsAsync(long facultyId, int? count = null, int? offset = null);
 
@@ -221,7 +221,7 @@ namespace VkNet.Abstractions
         /// color (string) — цвет линии.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/database.getMetroStationsById
+        /// Страница документации ВКонтакте http://vk.ru/dev/database.getMetroStationsById
         /// </remarks>
         Task<ReadOnlyCollection<MetroStation>> GetMetroStationsByIdAsync(IEnumerable<ulong> stationIds);
 
@@ -248,7 +248,7 @@ namespace VkNet.Abstractions
         /// color (string) — цвет линии.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/database.getMetroStations
+        /// Страница документации ВКонтакте http://vk.ru/dev/database.getMetroStations
         /// </remarks>
         Task<VkCollection<MetroStation>> GetMetroStationsAsync(ulong cityId, int? offset = null, int? count = null, bool extended = false);
     }

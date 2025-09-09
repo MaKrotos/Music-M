@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using VkNet.Enums.SafetyEnums;
 using VkNet.Model;
@@ -27,7 +27,7 @@ namespace VkNet.Abstractions
         /// Для загрузки изображения сгенерируйте POST-запрос с файлом в поле image на полученный адрес, а затем вызовите метод appWidgets.saveAppImage.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/appWidgets.getAppImageUploadServer
+        /// Страница документации ВКонтакте http://vk.ru/dev/appWidgets.getAppImageUploadServer
         /// </remarks>
         Task<UploadServerInfo> GetAppImageUploadServerAsync(AppWidgetImageType imageType);
 
@@ -53,7 +53,7 @@ namespace VkNet.Abstractions
         /// height (integer) — высота в px.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/appWidgets.getAppImages
+        /// Страница документации ВКонтакте http://vk.ru/dev/appWidgets.getAppImages
         /// </remarks>
         Task<AppImageResult> GetAppImagesAsync(int offset, int count, AppWidgetImageType imageType);
 
@@ -66,7 +66,7 @@ namespace VkNet.Abstractions
         /// Для загрузки изображения сгенерируйте POST-запрос с файлом в поле image на полученный адрес, а затем вызовите метод appWidgets.saveGroupImage.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/appWidgets.getGroupImageUploadServer
+        /// Страница документации ВКонтакте http://vk.ru/dev/appWidgets.getGroupImageUploadServer
         /// </remarks>
         Task<UploadServerInfo> GetGroupImageUploadServerAsync(AppWidgetImageType imageType);
 
@@ -92,7 +92,7 @@ namespace VkNet.Abstractions
         /// height (integer) — высота в px.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/appWidgets.getGroupImages
+        /// Страница документации ВКонтакте http://vk.ru/dev/appWidgets.getGroupImages
         /// </remarks>
         Task<AppImageResult> GetGroupImagesAsync(int offset, int count, AppWidgetImageType imageType);
 
@@ -115,7 +115,7 @@ namespace VkNet.Abstractions
         /// height (integer) — высота в px.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/appWidgets.getImagesById
+        /// Страница документации ВКонтакте http://vk.ru/dev/appWidgets.getImagesById
         /// </remarks>
         Task<ReadOnlyCollection<AppImage>> GetImagesByIdAsync(string images);
 
@@ -143,7 +143,7 @@ namespace VkNet.Abstractions
         /// height (integer) — высота в px.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/appWidgets.saveAppImage
+        /// Страница документации ВКонтакте http://vk.ru/dev/appWidgets.saveAppImage
         /// </remarks>
         Task<AppImage> SaveAppImageAsync(string hash, string image);
 
@@ -165,7 +165,7 @@ namespace VkNet.Abstractions
         /// height (integer) — высота в px.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/appWidgets.saveGroupImage
+        /// Страница документации ВКонтакте http://vk.ru/dev/appWidgets.saveGroupImage
         /// </remarks>
         Task<AppImage> SaveGroupImageAsync(string hash, string image);
 
@@ -173,16 +173,16 @@ namespace VkNet.Abstractions
         /// Позволяет обновить виджет приложения сообщества.
         /// </summary>
         /// <param name = "code">
-        /// Код виджета. Подробное описание см. на https://vk.com/dev/apps_widgets
+        /// Код виджета. Подробное описание см. на https://vk.ru/dev/apps_widgets
         /// </param>
         /// <param name = "type">
-        /// Тип виджета. Список всех доступных типов см. на https://vk.com/dev/objects/appWidget.
+        /// Тип виджета. Список всех доступных типов см. на https://vk.ru/dev/objects/appWidget.
         /// </param>
         /// <returns>
         /// После успешного выполнения возвращает 1.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/appWidgets.update
+        /// Страница документации ВКонтакте http://vk.ru/dev/appWidgets.update
         /// </remarks>
         Task<bool> UpdateAsync(string code, AppWidgetType type);
     }

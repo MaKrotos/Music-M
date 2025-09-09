@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using VkNet.Utils;
 
@@ -6,7 +6,7 @@ namespace VkNet.Model
 {
 	/// <summary>
 	/// Хранит информацию о текущем аккаунте. Подробнее:
-	/// https://vk.com/dev/account.getInfo
+	/// https://vk.ru/dev/account.getInfo
 	/// </summary>
 	[Serializable]
 	public class AccountInfo

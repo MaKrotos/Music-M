@@ -21,7 +21,7 @@ namespace VkNet.Abstractions
 		/// после получения нового ключа.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/streaming.getServerUrl
+		/// Страница документации ВКонтакте http://vk.ru/dev/streaming.getServerUrl
 		/// </remarks>
 		Task<StreamingServerUrl> GetServerUrlAsync();
 
@@ -34,7 +34,7 @@ namespace VkNet.Abstractions
 		/// unlimited и соответствует установленному порогу для приложения.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/streaming.getSettings
+		/// Страница документации ВКонтакте http://vk.ru/dev/streaming.getSettings
 		/// </remarks>
 		Task<StreamingSettings> GetSettingsAsync();
 
@@ -75,7 +75,7 @@ namespace VkNet.Abstractions
 		/// value (integer) — значение.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/streaming.getStats
+		/// Страница документации ВКонтакте http://vk.ru/dev/streaming.getStats
 		/// </remarks>
 		Task<ReadOnlyCollection<StreamingStats>> GetStatsAsync(string type
 																, string interval
@@ -92,7 +92,7 @@ namespace VkNet.Abstractions
 		/// После успешного выполнения возвращает 1.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/streaming.setSettings
+		/// Страница документации ВКонтакте http://vk.ru/dev/streaming.setSettings
 		/// </remarks>
 		Task<bool> SetSettingsAsync(MonthlyLimit monthlyTier);
 

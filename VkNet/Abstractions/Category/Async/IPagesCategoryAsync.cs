@@ -25,7 +25,7 @@ namespace VkNet.Abstractions
         /// html..
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/pages.get
+        /// Страница документации ВКонтакте http://vk.ru/dev/pages.get
         /// </remarks>
         Task<Page> GetAsync(PagesGetParams @params);
 
@@ -44,7 +44,7 @@ namespace VkNet.Abstractions
         /// В случае успеха возвращает id созданной страницы.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте https://vk.com/dev/pages.save
+        /// Страница документации ВКонтакте https://vk.ru/dev/pages.save
         /// </remarks>
         Task<long> SaveAsync(string text, long groupId, long userId, string title, long? pageId);
 
@@ -63,7 +63,7 @@ namespace VkNet.Abstractions
         /// В случае успеха возвращает id страницы, доступ к которой был отредактирован.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте https://vk.com/dev/pages.saveAccess
+        /// Страница документации ВКонтакте https://vk.ru/dev/pages.saveAccess
         /// </remarks>
         Task<long> SaveAccessAsync(long pageId
                                     , long groupId
@@ -89,7 +89,7 @@ namespace VkNet.Abstractions
         /// editor_name — имя редактора.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте https://vk.com/dev/pages.getHistory
+        /// Страница документации ВКонтакте https://vk.ru/dev/pages.getHistory
         /// </remarks>
         Task<ReadOnlyCollection<PageVersion>> GetHistoryAsync(long pageId, long groupId, long? userId = null);
 
@@ -104,7 +104,7 @@ namespace VkNet.Abstractions
         /// Возвращает массив объектов вики-страниц.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте https://vk.com/dev/pages.getTitles
+        /// Страница документации ВКонтакте https://vk.ru/dev/pages.getTitles
         /// </remarks>
         Task<ReadOnlyCollection<Page>> GetTitlesAsync(long groupId);
 
@@ -125,7 +125,7 @@ namespace VkNet.Abstractions
         /// Возвращает объект вики-страницы.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте https://vk.com/dev/pages.getVersion
+        /// Страница документации ВКонтакте https://vk.ru/dev/pages.getVersion
         /// </remarks>
         Task<Page> GetVersionAsync(long versionId, long groupId, bool needHtml = false, long? userId = null);
 
@@ -141,7 +141,7 @@ namespace VkNet.Abstractions
         /// В случае успеха возвращает экранированный html, соответствующий вики-разметке.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте https://vk.com/dev/pages.parseWiki
+        /// Страница документации ВКонтакте https://vk.ru/dev/pages.parseWiki
         /// </remarks>
         Task<string> ParseWikiAsync(string text, ulong groupId);
 
@@ -158,7 +158,7 @@ namespace VkNet.Abstractions
         /// При удачной очистке кеша – метод возвращает <c> true </c>.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте https://vk.com/dev/pages.clearCache
+        /// Страница документации ВКонтакте https://vk.ru/dev/pages.clearCache
         /// </remarks>
         Task<bool> ClearCacheAsync(Uri url);
     }

@@ -25,7 +25,7 @@ namespace VkNet.Abstractions
 		/// <returns>
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/prettyCards.create
+		/// Страница документации ВКонтакте https://vk.ru/dev/prettyCards.create
 		/// </remarks>
 		Task<PrettyCardsCreateResult> CreateAsync(PrettyCardsCreateParams @params);
 
@@ -36,7 +36,7 @@ namespace VkNet.Abstractions
 		/// <returns>
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/prettyCards.delete
+		/// Страница документации ВКонтакте https://vk.ru/dev/prettyCards.delete
 		/// </remarks>
 		Task<PrettyCardsDeleteResult> DeleteAsync(PrettyCardsDeleteParams @params);
 
@@ -47,7 +47,7 @@ namespace VkNet.Abstractions
 		/// <returns>
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/prettyCards.edit
+		/// Страница документации ВКонтакте https://vk.ru/dev/prettyCards.edit
 		/// </remarks>
 		Task<PrettyCardsEditResult> EditAsync(PrettyCardsEditParams @params);
 
@@ -58,7 +58,7 @@ namespace VkNet.Abstractions
 		/// <returns>
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/prettyCards.get
+		/// Страница документации ВКонтакте https://vk.ru/dev/prettyCards.get
 		/// </remarks>
 		Task<VkCollection<PrettyCardsGetByIdResult>> GetAsync(PrettyCardsGetParams @params);
 
@@ -69,7 +69,7 @@ namespace VkNet.Abstractions
 		/// <returns>
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/prettyCards.getById
+		/// Страница документации ВКонтакте https://vk.ru/dev/prettyCards.getById
 		/// </remarks>
 		Task<ReadOnlyCollection<PrettyCardsGetByIdResult>> GetByIdAsync(PrettyCardsGetByIdParams @params);
 
@@ -86,7 +86,7 @@ namespace VkNet.Abstractions
 		/// Результат загрузки изображения возвращается приложению в формате JSON.
 		/// </summary>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/prettyCards.getUploadURL
+		/// Страница документации ВКонтакте https://vk.ru/dev/prettyCards.getUploadURL
 		/// </remarks>
 		Task<Uri> GetUploadUrlAsync();
 	}

@@ -31,7 +31,7 @@ public class LoginCategory : ILoginCategory
             { "app_id", 7913379 }
         };
         
-        var response = await _restClient.PostAsync(new("https://login.vk.com/?act=connect_internal"), parameters, Encoding.UTF8);
+        var response = await _restClient.PostAsync(new("https://login.vk.ru/?act=connect_internal"), parameters, Encoding.UTF8);
 
         if (!response.IsSuccess)
             throw new HttpRequestException("Error connecting as desktop", null, response.StatusCode);
@@ -52,7 +52,7 @@ public class LoginCategory : ILoginCategory
             { "token", token }
         };
         
-        var response = await _restClient.PostAsync(new("https://login.vk.com/?act=connect_code_auth"), parameters, Encoding.UTF8);
+        var response = await _restClient.PostAsync(new("https://login.vk.ru/?act=connect_code_auth"), parameters, Encoding.UTF8);
 
         if (!response.IsSuccess)
             throw new HttpRequestException("Error connecting auth code", null, response.StatusCode);

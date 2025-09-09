@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using JetBrains.Annotations;
 using VkNet.Abstractions.Authorization;
 using VkNet.Abstractions.Core;
@@ -30,12 +30,12 @@ namespace VkNet.Abstractions
 		IAuthorizationFlow AuthorizationFlow { get; set; }
 
 		/// <summary>
-		/// Выполняет обход ошибки валидации: https://vk.com/dev/need_validation
+		/// Выполняет обход ошибки валидации: https://vk.ru/dev/need_validation
 		/// </summary>
 		INeedValidationHandler NeedValidationHandler { get; set; }
 
 		/// <summary>
-		/// Версия API vk.com.
+		/// Версия API vk.ru.
 		/// </summary>
 		IVkApiVersionManager VkApiVersion { get; set; }
 
@@ -81,7 +81,7 @@ namespace VkNet.Abstractions
 		Language? GetLanguage();
 
 		/// <summary>
-		/// Обход ошибки валидации: https://vk.com/dev/need_validation
+		/// Обход ошибки валидации: https://vk.ru/dev/need_validation
 		/// </summary>
 		/// <param name="validateUrl"> Адрес, на который нужно перейти для валидации </param>
 		void Validate(string validateUrl);

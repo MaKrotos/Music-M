@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using VkNet.Enums;
@@ -8,7 +8,7 @@ namespace VkNet.Model.Attachments
 {
 	/// <summary>
 	/// Информация о документе.
-	/// См. описание http://vk.com/dev/doc
+	/// См. описание http://vk.ru/dev/doc
 	/// </summary>
 	[Serializable]
 	public class Document : MediaAttachment

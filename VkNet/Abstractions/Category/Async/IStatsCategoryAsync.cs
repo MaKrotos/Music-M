@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using VkNet.Model;
 
@@ -19,7 +19,7 @@ namespace VkNet.Abstractions
 		/// После успешного выполнения возвращает объект с данными статистики.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/stats.get
+		/// Страница документации ВКонтакте http://vk.ru/dev/stats.get
 		/// </remarks>
 		Task<ReadOnlyCollection<StatsPeriod>> GetAsync(StatsGetParams getParams);
 
@@ -30,7 +30,7 @@ namespace VkNet.Abstractions
 		/// В случае успешной обработки данных метод вернет <c> true </c>.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/stats.trackVisitor
+		/// Страница документации ВКонтакте http://vk.ru/dev/stats.trackVisitor
 		/// </remarks>
 		Task<bool> TrackVisitorAsync();
 
@@ -51,7 +51,7 @@ namespace VkNet.Abstractions
 		/// </returns>
 		/// <remarks>
 		/// Необходимо входить в число руководителей этого сообщества.
-		/// Страница документации ВКонтакте https://vk.com/dev/stats.getPostReach
+		/// Страница документации ВКонтакте https://vk.ru/dev/stats.getPostReach
 		/// </remarks>
 		Task<PostReach> GetPostReachAsync(long ownerId, long postId);
 	}

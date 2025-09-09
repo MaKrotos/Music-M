@@ -41,7 +41,7 @@ public class CustomSectionsService : ICustomSectionsService
         {
             Title = "Каталоги",
             Id = "profiles",
-            Url = "https://vk.com/profiles"
+            Url = "https://vk.ru/profiles"
         };*/
         yield return new()
         {
@@ -381,7 +381,7 @@ public class CustomSectionsService : ICustomSectionsService
                 return new Link
                 {
                     Id = id,
-                    Url = $"https://vk.com/history{id}_audio",
+                    Url = $"https://vk.ru/history{id}_audio",
                     Title = name,
                     Meta = new()
                     {

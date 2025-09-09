@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using VkNet.Utils;
 
 namespace VkNet.Model
 {
 	/// <summary>
 	/// Информация о участнике сообщества (группы).
-	/// См. описание http://vk.com/dev/fields_groups
+	/// См. описание http://vk.ru/dev/fields_groups
 	/// </summary>
 	[Serializable]
 	public class GroupMember

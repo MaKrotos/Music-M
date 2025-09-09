@@ -28,7 +28,7 @@ namespace VkNet.Infrastructure
 			{
 				throw new VkApiException("С 27 мая 2019 года версии API ниже 5.0 больше не поддерживаются.")
 				{
-					HelpLink = "https://vk.com/dev/version_update_2.0"
+					HelpLink = "https://vk.ru/dev/version_update_2.0"
 				};
 			}
 
@@ -36,7 +36,7 @@ namespace VkNet.Infrastructure
 			{
 				throw new VkApiException("С 14 октября 2020 года прекратится поддержка версий ниже 5.81.")
 				{
-					HelpLink = "https://vk.com/dev/constant_version_updates"
+					HelpLink = "https://vk.ru/dev/constant_version_updates"
 				};
 			}
 

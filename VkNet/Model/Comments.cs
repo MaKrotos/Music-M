@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using Newtonsoft.Json;
 using VkNet.Utils;
@@ -7,7 +7,7 @@ namespace VkNet.Model
 {
 	/// <summary>
 	/// Информация о количестве комментариев к записи.
-	/// См. описание http://vk.com/dev/post
+	/// См. описание http://vk.ru/dev/post
 	/// </summary>
 	[Serializable]
 	public class Comments

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -64,17 +64,17 @@ namespace VkNet.Infrastructure.Authorization.ImplicitFlow
 
 			var original = url.OriginalString;
 
-			if (original.StartsWith("https://oauth.vk.com/blank.html#access_token"))
+			if (original.StartsWith("https://oauth.vk.ru/blank.html#access_token"))
 			{
 				return ImplicitFlowPageType.Result;
 			}
 
-			if (original.StartsWith("https://oauth.vk.com/authorize"))
+			if (original.StartsWith("https://oauth.vk.ru/authorize"))
 			{
 				return ImplicitFlowPageType.LoginPassword;
 			}
 
-			if (original.StartsWith("https://oauth.vk.com/blank.html#error"))
+			if (original.StartsWith("https://oauth.vk.ru/blank.html#error"))
 			{
 				return ImplicitFlowPageType.Error;
 			}

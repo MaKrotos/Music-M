@@ -23,7 +23,7 @@ namespace VkNet.Abstractions
         /// Возвращает массив значений - ответов на каждый запрос в массиве data. Соответствующее значение в выходном массиве равно true, если администратор успешно добавлен, и false в другом случае.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.addOfficeUsers
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.addOfficeUsers
         /// </remarks>
         Task<ReadOnlyCollection<bool>> AddOfficeUsersAsync(AdsDataSpecificationParams<UserSpecification> adsDataSpecification);
 
@@ -41,7 +41,7 @@ namespace VkNet.Abstractions
         /// redirect_url (если конечная ссылка отличается от исходной и если status равен allowed) — конечная ссылка.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.checkLink
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.checkLink
         /// </remarks>
         Task<LinkStatus> CheckLinkAsync(CheckLinkParams checkLinkParams);
 
@@ -53,7 +53,7 @@ namespace VkNet.Abstractions
         /// Возвращает массив объектов - ответов на каждый запрос в массиве data. Соответствующий объект в выходном массиве имеет свойство id, соответствующее id созданного объявления (или 0 в случае неудачи), а также, возможно, поля error_code и error_desc, описывающие ошибку, при ее возникновении. Наличие одновременно ненулевого id и error_code говорит о том, что объявление было создано, однако, возможно, не все параметры установлены (например, объявление не запущено).
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.createAds
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.createAds
         /// </remarks>
         Task<ReadOnlyCollection<CreateAdsResult>> CreateAdsAsync(AdsDataSpecificationParams<AdSpecification> adsDataSpecification);
 
@@ -65,7 +65,7 @@ namespace VkNet.Abstractions
         /// Возвращает массив ответов на запросы в массиве data. Соответствующий объект в выходном массиве содержит id созданной кампании (ноль в случае неудачи), и поля error_code и error_desc в случае возникновения ошибки. Ненулевой id и наличие error_code 602 говорит о том, что кампания создана, но, возможно, некоторые поля не были ей присвоены по причине их некорректности.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.createCampaigns
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.createCampaigns
         /// </remarks>
         Task<ReadOnlyCollection<CreateCampaignResult>> CreateCampaignsAsync(AdsDataSpecificationParams<CampaignSpecification> campaignsDataSpecification);
 
@@ -77,7 +77,7 @@ namespace VkNet.Abstractions
         /// Возвращает массив ответов на запросы в массиве data. Соответствующий объект в выходном массиве содержит id созданного клиента (ноль в случае неудачи), и поля error_code и error_desc в случае возникновения ошибки. Ненулевой id и наличие error_code 602 говорит о том, что клиент создан, но, возможно, некоторые поля не были ему присвоены по причине их некорректности.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.createClients
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.createClients
         /// </remarks>
         Task<ReadOnlyCollection<CreateClientResult>> CreateClientsAsync(AdsDataSpecificationParams<ClientSpecification> clientDataSpecification);
 
@@ -89,7 +89,7 @@ namespace VkNet.Abstractions
         /// Поле request_id, в котором указан идентификатор созданного запроса на поиск похожей аудитории.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.createLookalikeRequest
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.createLookalikeRequest
         /// </remarks>
         Task<CreateLookALikeRequestResult> CreateLookalikeRequestAsync(CreateLookALikeRequestParams createLookALikeRequestParams);
 
@@ -104,7 +104,7 @@ namespace VkNet.Abstractions
         /// id — идентификатор аудитории.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.createTargetGroup
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.createTargetGroup
         /// </remarks>
         Task<CreateTargetGroupResult> CreateTargetGroupAsync(CreateTargetGroupParams createTargetGroupParams);
 
@@ -118,7 +118,7 @@ namespace VkNet.Abstractions
         /// pixel — код для размещения на сайте рекламодателя
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.createTargetPixel
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.createTargetPixel
         /// </remarks>
         Task<CreateTargetPixelResult> CreateTargetPixelAsync(CreateTargetPixelParams createTargetPixelParams);
 
@@ -130,7 +130,7 @@ namespace VkNet.Abstractions
         /// Возвращает массив ответов на каждый запрос. Каждый ответ является либо 0, что означает успешное удаление, либо код ошибки.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.deleteAds
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.deleteAds
         /// </remarks>
         Task<ReadOnlyCollection<bool>> DeleteAdsAsync(DeleteAdsParams deleteAdsParams);
 
@@ -142,7 +142,7 @@ namespace VkNet.Abstractions
         /// Возвращает массив ответов на каждый запрос. Каждый ответ является либо 0, что означает успешное удаление, либо код ошибки.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.deleteCampaigns
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.deleteCampaigns
         /// </remarks>
         Task<ReadOnlyCollection<bool>> DeleteCampaignsAsync(DeleteCampaignsParams deleteCampaignsParams);
 
@@ -154,7 +154,7 @@ namespace VkNet.Abstractions
         /// Возвращает массив ответов на каждый запрос. Каждый ответ является либо 0, что означает успешное удаление, либо код ошибки.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.deleteClients
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.deleteClients
         /// </remarks>
         Task<ReadOnlyCollection<bool>> DeleteClientsAsync(DeleteClientsParams deleteClientsParams);
 
@@ -166,7 +166,7 @@ namespace VkNet.Abstractions
         /// В случае успеха метод возвратит 1.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.deleteTargetGroup
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.deleteTargetGroup
         /// </remarks>
         Task<bool> DeleteTargetGroupAsync(DeleteTargetGroupParams deleteTargetGroupParams);
 
@@ -178,7 +178,7 @@ namespace VkNet.Abstractions
         /// В случае успеха метод возвратит 1.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.deleteTargetPixel
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.deleteTargetPixel
         /// </remarks>
         Task<bool> DeleteTargetPixelAsync(DeleteTargetPixelParams deleteTargetPixelParams);
 
@@ -201,7 +201,7 @@ namespace VkNet.Abstractions
         /// reports — наблюдатель.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.getAccounts
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.getAccounts
         /// </remarks>
         Task<ReadOnlyCollection<AdsAccount>> GetAccountsAsync();
 
@@ -276,7 +276,7 @@ namespace VkNet.Abstractions
         /// 21 — репост продвигаемой записи.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.getAds
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.getAds
         /// </remarks>
         Task<ReadOnlyCollection<Ad>> GetAdsAsync(GetAdsParams getAdsParams);
 
@@ -315,7 +315,7 @@ namespace VkNet.Abstractions
         /// stringurl изображения двойного разрешения.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.getAdsLayout
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.getAdsLayout
         /// </remarks>
         Task<ReadOnlyCollection<Layout>> GetAdsLayoutAsync(GetAdsLayoutParams getAdsLayoutParams);
 
@@ -331,7 +331,7 @@ namespace VkNet.Abstractions
         /// Поле count содержит размер целевой аудитории на момент сохранения объявления.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.getAdsTargeting
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.getAdsTargeting
         /// </remarks>
         Task<ReadOnlyCollection<AdsTargetingResult>> GetAdsTargetingAsync(GetAdsTargetingParams getAdsTargetingParams);
 
@@ -345,7 +345,7 @@ namespace VkNet.Abstractions
         /// Возвращает единственное число — оставшийся бюджет в указанном рекламном кабинете.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.getBudget
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.getBudget
         /// </remarks>
         Task<double> GetBudgetAsync(long accountId);
 
@@ -376,7 +376,7 @@ namespace VkNet.Abstractions
         /// 0 — время не задано
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.getCampaigns
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.getCampaigns
         /// </remarks>
         Task<ReadOnlyCollection<AdsCampaign>> GetCampaignsAsync(AdsGetCampaignsParams adsGetCampaignsParams);
 
@@ -396,7 +396,7 @@ namespace VkNet.Abstractions
         /// Массив v1 включает устаревшие тематики. Актуальный список содержится в массиве v2.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.getCategories
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.getCategories
         /// </remarks>
         Task<GetCategoriesResult> GetCategoriesAsync(Language lang);
 
@@ -414,7 +414,7 @@ namespace VkNet.Abstractions
         /// all_limit — общий лимит клиента в рублях.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.getClients
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.getClients
         /// </remarks>
         Task<ReadOnlyCollection<GetClientsResult>> GetClientsAsync(long accountId);
 
@@ -448,7 +448,7 @@ namespace VkNet.Abstractions
         /// name — наглядное название значения указанного в value (только для городов)
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.getDemographics
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.getDemographics
         /// </remarks>
         Task<ReadOnlyCollection<GetDemographicsResult>> GetDemographicsAsync(GetDemographicsParams getDemographicsParams);
 
@@ -464,7 +464,7 @@ namespace VkNet.Abstractions
         /// refresh — время до следующего обновления в секундах.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.getFloodStats
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.getFloodStats
         /// </remarks>
         Task<GetFloodStatsResult> GetFloodStatsAsync(long accountId);
 
@@ -495,7 +495,7 @@ namespace VkNet.Abstractions
         /// audience_count — размер похожей аудитории в данной опции.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.getLookalikeRequests
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.getLookalikeRequests
         /// </remarks>
         Task<GetLookalikeRequestsResult> GetLookalikeRequestsAsync(GetLookalikeRequestsParams getLookalikeRequestsParams);
 
@@ -509,7 +509,7 @@ namespace VkNet.Abstractions
         /// Возвращает массив объектов - описаний пользователей рекламного кабинета. Каждый объект содержит массив описаний прав доступа к конкретным клиентам. Описание содержит два поля: client_id — id клиента и role — строка admin, manager или reports. Для admin client_id не указывается.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.getOfficeUsers
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.getOfficeUsers
         /// </remarks>
         Task<ReadOnlyCollection<GetOfficeUsersResult>> GetOfficeUsersAsync(long accountId);
 
@@ -549,7 +549,7 @@ namespace VkNet.Abstractions
         /// * — поля с данными по статистике видео возвращаются только для объявлений или кампаний с видео, созданных после 26 января 2017 года.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.getPostsReach
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.getPostsReach
         /// </remarks>
         Task<ReadOnlyCollection<GetPostsReachResult>> GetPostsReachAsync(long accountId, IdsType idsType, string ids);
 
@@ -566,7 +566,7 @@ namespace VkNet.Abstractions
         /// Возвращает объект, который может содержать поле comment, содержащее текстовый комментарий модератора, и/или массив rules, содержащий описание нарушенных объявлением правил. Ответ обязательно содержит хотя бы одно из полей comment или rules. Каждый элемент массива rules состоит из поля title (текстового пояснения) и массива paragraphs, каждый элемент которого содержит отдельный пункт правил. Элементы массива paragraphs могут содержать простую html-разметку.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.getRejectionReason
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.getRejectionReason
         /// </remarks>
         Task<GetRejectionReasonResult> GetRejectionReasonAsync(long accountId, long adId);
 
@@ -596,7 +596,7 @@ namespace VkNet.Abstractions
         /// join_rate (если ids_type равен ad или campaign) — вступления в группу, событие, подписки на публичную страницу или установки приложения (только если в объявлении указана прямая ссылка на соответствующую страницу ВКонтакте)
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.getStatistics
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.getStatistics
         /// </remarks>
         Task<ReadOnlyCollection<GetStatisticsResult>> GetStatisticsAsync(GetStatisticsParams getStatisticsParams);
 
@@ -632,7 +632,7 @@ namespace VkNet.Abstractions
         /// Для раздела interests ответ возвращается в виде массива строк.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.getSuggestions
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.getSuggestions
         /// </remarks>
         Task<ReadOnlyCollection<GetSuggestionsResult>> GetSuggestionsAsync(GetSuggestionsParams getSuggestionsParams);
 
@@ -666,7 +666,7 @@ namespace VkNet.Abstractions
         /// domain (string) — домен сайта, где размещен код учета пользователей (только для старых групп).
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.getTargetGroups
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.getTargetGroups
         /// </remarks>
         Task<ReadOnlyCollection<GetTargetGroupsResult>> GetTargetGroupsAsync(long accountId, long? clientId = null, bool? extended = null);
 
@@ -690,7 +690,7 @@ namespace VkNet.Abstractions
         /// pixel (string) — код для размещения на сайте рекламодателя.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.getTargetPixels
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.getTargetPixels
         /// </remarks>
         Task<ReadOnlyCollection<GetTargetPixelsResult>> GetTargetPixelsAsync(long accountId, long? clientId = null);
 
@@ -708,7 +708,7 @@ namespace VkNet.Abstractions
         /// Обратите внимание, минимальный размер целевой аудитории — 100 человек. Если заданным критериям соответствует меньшее количество пользователей, размер аудитории будет считаться равным нулю.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.getTargetingStats
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.getTargetingStats
         /// </remarks>
         Task<GetTargetingStatsResult> GetTargetingStatsAsync(GetTargetingStatsParams getTargetingStatsParams);
 
@@ -720,7 +720,7 @@ namespace VkNet.Abstractions
         /// Возвращает url-адрес для загрузки изображения.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.getUploadURl
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.getUploadURl
         /// </remarks>
         Task<Uri> GetUploadUrlAsync(GetUploadUrlParams getUploadUrlParams);
 
@@ -731,7 +731,7 @@ namespace VkNet.Abstractions
         /// Возвращает url-адрес для загрузки видеоролика.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.getVideoUploadURl
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.getVideoUploadURl
         /// </remarks>
         Task<Uri> GetVideoUploadUrlAsync();
 
@@ -743,7 +743,7 @@ namespace VkNet.Abstractions
         /// Возвращает количество обработанных контактов.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.importTargetContacts
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.importTargetContacts
         /// </remarks>
         Task<long> ImportTargetContactsAsync(ImportTargetContactsParams importTargetContactsParams);
 
@@ -755,7 +755,7 @@ namespace VkNet.Abstractions
         /// Возвращает массив значений - ответов на каждый запрос в массиве data. Соответствующее значение в выходном массиве равно true, если администратор успешно удален, и false в другом случае.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.removeOfficeUsers
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.removeOfficeUsers
         /// </remarks>
         Task<ReadOnlyCollection<bool>> RemoveOfficeUsersAsync(RemoveOfficeUsersParams removeOfficeUsersParams);
 
@@ -767,7 +767,7 @@ namespace VkNet.Abstractions
         /// Возвращает 1 в случае успешного принятия заявки на исключение аудитории.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.removeTargetContacts
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.removeTargetContacts
         /// </remarks>
         Task<RemoveTargetContactsResult> RemoveTargetContactsAsync(RemoveTargetContactsParams removeTargetContactsParams);
 
@@ -782,7 +782,7 @@ namespace VkNet.Abstractions
         /// audience_count – размер запрошенной похожей аудитории.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.saveLookalikeRequestResult
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.saveLookalikeRequestResult
         /// </remarks>
         Task<SaveLookALikeRequestResultResult> SaveLookalikeRequestResultAsync(SaveLookalikeRequestResultParams saveLookalikeRequestResultParams);
 
@@ -795,7 +795,7 @@ namespace VkNet.Abstractions
         /// id — идентификатор аудитории.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.shareTargetGroup
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.shareTargetGroup
         /// </remarks>
         Task<ShareTargetGroupResult> ShareTargetGroupAsync(ShareTargetGroupParams shareTargetGroupParams);
 
@@ -807,7 +807,7 @@ namespace VkNet.Abstractions
         /// Возвращает массив ответов на каждый запрос в массиве data. Соответствующий объект в выходном массиве содержит идентификатор изменяемого объявления и, в случае возникновения ошибки, поля error_code и error_desc.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.updateAds
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.updateAds
         /// </remarks>
         Task<ReadOnlyCollection<UpdateAdsResult>> UpdateAdsAsync(AdsDataSpecificationParams<AdEditSpecification> adEditDataSpecification);
 
@@ -819,7 +819,7 @@ namespace VkNet.Abstractions
         /// Возвращает массив ответов на каждый запрос в массиве data. Соответствующий объект в выходном массиве содержит идентификатор изменяемого клиента и, в случае возникновения ошибки, поля error_code и error_desc.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.updateCampaigns
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.updateCampaigns
         /// </remarks>
         Task<ReadOnlyCollection<UpdateCampaignsResult>> UpdateCampaignsAsync(AdsDataSpecificationParams<CampaignModSpecification> campaignModDataSpecification);
 
@@ -831,7 +831,7 @@ namespace VkNet.Abstractions
         /// Возвращает массив ответов на каждый запрос в массиве data. Соответствующий объект в выходном массиве содержит id изменяемого клиента и, в случае возникновения ошибки, поля error_code и error_desc.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.updateClients
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.updateClients
         /// </remarks>
         Task<ReadOnlyCollection<UpdateClientsResult>> UpdateClientsAsync(AdsDataSpecificationParams<ClientModSpecification> clientModDataSpecification);
 
@@ -845,7 +845,7 @@ namespace VkNet.Abstractions
         /// В случае успеха метод возвратит 1.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.updateTargetGroup
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.updateTargetGroup
         /// </remarks>
         Task<bool> UpdateTargetGroupAsync(UpdateTargetGroupParams updateTargetGroupParams);
 
@@ -859,7 +859,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает 1.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.updateTargetPixel
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.updateTargetPixel
         /// </remarks>
         Task<bool> UpdateTargetPixelAsync(UpdateTargetPixelParams updateTargetPixelParams);
 
@@ -869,7 +869,7 @@ namespace VkNet.Abstractions
         /// <param name="artistName"></param>
         /// <returns>Возвращает массив всех подходящих под запрос artistName музыкантов.</returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.getMusicians
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.getMusicians
         /// </remarks>
         Task<ReadOnlyCollection<GetMusiciansResult>> GetMusiciansAsync(string artistName);
 
@@ -879,7 +879,7 @@ namespace VkNet.Abstractions
         /// <param name="ids"></param>
         /// <returns>Возвращает массив музыкантов с соответствующими идентификаторами из запроса.</returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.getMusiciansByIds
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.getMusiciansByIds
         /// </remarks>
         Task<ReadOnlyCollection<GetMusiciansByIdsResult>> GetMusiciansByIdsAsync(string ids);
 
@@ -891,7 +891,7 @@ namespace VkNet.Abstractions
         /// Возвращает массив значений - ответов на каждый запрос в массиве response
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/ads.updateOfficeUsers
+        /// Страница документации ВКонтакте http://vk.ru/dev/ads.updateOfficeUsers
         /// </remarks>
         Task<ReadOnlyCollection<UpdateOfficeUsersResult>> UpdateOfficeUsersAsync(AdsDataSpecificationParams<OfficeUsersSpecification> officeUsersSpecification);
     }

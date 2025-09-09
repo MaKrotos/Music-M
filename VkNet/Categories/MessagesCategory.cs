@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 /* Необъединенное слияние из проекта "VkNet (netstandard2.0)"
@@ -956,7 +956,7 @@ namespace VkNet.Categories
         /// <remarks>
         /// Для вызова этого метода Ваше приложение должно иметь права с битовой маской,
         /// содержащей Settings.Messages
-        /// Страница документации ВКонтакте http://vk.com/dev/messages.getById
+        /// Страница документации ВКонтакте http://vk.ru/dev/messages.getById
         /// </remarks>
         [Pure]
         [Obsolete(ObsoleteText.MessageGetById, true)]

@@ -27,7 +27,7 @@ namespace VkNet.Abstractions
         /// </returns>
         /// <exception cref="ArgumentException"> Query can not be <c> null </c> or empty. </exception>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/users.search
+        /// Страница документации ВКонтакте http://vk.ru/dev/users.search
         /// </remarks>
         Task<VkCollection<User>> SearchAsync(UserSearchParams @params);
 
@@ -44,7 +44,7 @@ namespace VkNet.Abstractions
         /// себя данное приложение, иначе 0.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/users.isAppUser
+        /// Страница документации ВКонтакте http://vk.ru/dev/users.isAppUser
         /// </remarks>
         Task<bool> IsAppUserAsync(long? userId);
 
@@ -59,7 +59,7 @@ namespace VkNet.Abstractions
         /// <param name="nameCase"> Падеж для склонения имени и фамилии пользователя </param>
         /// <returns> Список объектов с запрошенной информацией о пользователях. </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/users.get
+        /// Страница документации ВКонтакте http://vk.ru/dev/users.get
         /// </remarks>
         Task<ReadOnlyCollection<User>> GetAsync([NotNull]
                                                 IEnumerable<long> userIds
@@ -77,7 +77,7 @@ namespace VkNet.Abstractions
         /// <param name="nameCase"> Падеж для склонения имени и фамилии пользователя </param>
         /// <returns> Список объектов с запрошенной информацией о пользователях. </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/users.get
+        /// Страница документации ВКонтакте http://vk.ru/dev/users.get
         /// </remarks>
         Task<ReadOnlyCollection<User>> GetAsync([NotNull]
                                                 IEnumerable<string> screenNames
@@ -105,7 +105,7 @@ namespace VkNet.Abstractions
         /// Пока возвращается только список групп.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/users.getSubscriptions
+        /// Страница документации ВКонтакте http://vk.ru/dev/users.getSubscriptions
         /// </remarks>
         Task<VkCollection<Group>> GetSubscriptionsAsync(long? userId = null
                                                         , int? count = null
@@ -129,7 +129,7 @@ namespace VkNet.Abstractions
         /// <param name="nameCase"> Падеж для склонения имени и фамилии пользователя </param>
         /// <returns> Список подписчиков </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/users.getFollowers
+        /// Страница документации ВКонтакте http://vk.ru/dev/users.getFollowers
         /// </remarks>
         Task<VkCollection<User>> GetFollowersAsync(long? userId = null
                                                     , int? count = null
@@ -148,7 +148,7 @@ namespace VkNet.Abstractions
         /// <param name="comment"> Комментарий к жалобе на пользователя </param>
         /// <returns> В случае успешной жалобы метод вернет true. </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/users.report
+        /// Страница документации ВКонтакте http://vk.ru/dev/users.report
         /// </remarks>
         Task<bool> ReportAsync(long userId, ReportType type, string comment = "");
 
@@ -161,7 +161,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает список объектов user.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/users.getNearby
+        /// Страница документации ВКонтакте http://vk.ru/dev/users.getNearby
         /// </remarks>
         Task<VkCollection<User>> GetNearbyAsync(UsersGetNearbyParams @params);
     }

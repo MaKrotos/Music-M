@@ -15,10 +15,10 @@ namespace VkNet.Categories
 		private readonly IVkApiInvoke _vk;
 
 		/// <summary>
-		/// Api vk.com
+		/// Api vk.ru
 		/// </summary>
 		/// <param name="vk">
-		/// Api vk.com
+		/// Api vk.ru
 		/// </param>
 		internal WidgetsCategory(VkApi vk = null)
 		{

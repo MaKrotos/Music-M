@@ -61,7 +61,7 @@ public class VkBridgeService(IVkApiInvoke vkApi, Logger log, VkService vkService
     #endregion
 
     private string _currentAppId = "app0";
-    private string _currentUrl = "https://vk.com/";
+    private string _currentUrl = "https://vk.ru/";
     private string _storagePath = "";
 
     internal void Load(string appId, string url)

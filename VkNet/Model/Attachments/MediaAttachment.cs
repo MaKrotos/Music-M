@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Newtonsoft.Json;
 
 namespace VkNet.Model.Attachments
@@ -10,7 +10,7 @@ namespace VkNet.Model.Attachments
 	public abstract class MediaAttachment
 	{
 		/// <summary>
-		/// Наименование типа которое приходит от vk.com
+		/// Наименование типа которое приходит от vk.ru
 		/// </summary>
 		protected abstract string Alias { get; }
 

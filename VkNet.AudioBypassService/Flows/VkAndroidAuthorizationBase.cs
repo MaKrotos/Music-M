@@ -111,7 +111,7 @@ internal abstract class VkAndroidAuthorizationBase : IAuthorizationFlow
 
             await _rateLimiter.WaitNextAsync();
 
-            var response = await _restClient.PostAsync(new Uri("https://api.vk.com/oauth/token"), parameters, Encoding.UTF8);
+            var response = await _restClient.PostAsync(new Uri("https://api.vk.ru/oauth/token"), parameters, Encoding.UTF8);
 
             var obj = JObject.Parse(response.Value ?? response.Message);
 
@@ -158,7 +158,7 @@ internal abstract class VkAndroidAuthorizationBase : IAuthorizationFlow
                 
                 await _rateLimiter.WaitNextAsync();
 
-                response = await _restClient.PostAsync(new Uri("https://api.vk.com/oauth/token"), parameters, Encoding.UTF8);
+                response = await _restClient.PostAsync(new Uri("https://api.vk.ru/oauth/token"), parameters, Encoding.UTF8);
 
                 obj = JObject.Parse(response.Value ?? response.Message);
             }
@@ -204,7 +204,7 @@ internal abstract class VkAndroidAuthorizationBase : IAuthorizationFlow
             { "v", _versionManager.Version }
         };
 
-        var response = await _restClient.PostAsync(new Uri("https://api.vk.com/oauth/get_anonym_token"), parameters, Encoding.UTF8);
+        var response = await _restClient.PostAsync(new Uri("https://api.vk.ru/oauth/get_anonym_token"), parameters, Encoding.UTF8);
         
         var obj = VkErrors.IfErrorThrowException(response.Value ?? response.Message);
         VkAuthErrors.IfErrorThrowException(obj);

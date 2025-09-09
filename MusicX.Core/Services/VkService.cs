@@ -1372,7 +1372,7 @@ namespace MusicX.Core.Services
                 {"display", "android"},
                 {"scope", scope},
                 {"response_type", "token"},
-                {"redirect_uri", "https://oauth.vk.com/blank.html"},
+                {"redirect_uri", "https://oauth.vk.ru/blank.html"},
                 {"client_id", 52384530},
                 {"source_url", sourceUrl},
                 {"https", true},
@@ -1382,7 +1382,7 @@ namespace MusicX.Core.Services
 
             try
             {
-                var response = await _restClient.PostAsync(new("https://api.vk.com/oauth/authorize"), parameters, Encoding.UTF8);
+                var response = await _restClient.PostAsync(new("https://api.vk.ru/oauth/authorize"), parameters, Encoding.UTF8);
 
                 if (!response.ResponseUri.Fragment.StartsWith("#access_token="))
                     throw new VkApiException("Access token not found");

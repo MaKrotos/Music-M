@@ -20,7 +20,7 @@ namespace VkNet.Categories
         private readonly IVkApiInvoke _vk;
 
         /// <summary>
-        /// Api vk.com
+        /// Api vk.ru
         /// </summary>
         /// <param name="vk"> </param>
         public UsersCategory(IVkApiInvoke vk)

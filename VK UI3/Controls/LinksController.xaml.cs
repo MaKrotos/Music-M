@@ -252,7 +252,7 @@ namespace VK_UI3.Controls
 
                
 
-                if (link.Url.Equals("https://vk.com/audio?catalog=my_audios"))
+                if (link.Url.Equals("https://vk.ru/audio?catalog=my_audios"))
                 {
                     MainView.OpenMyPage(SectionType.MyListAudio);
                     return;
@@ -302,7 +302,7 @@ namespace VK_UI3.Controls
 
         static bool IsPlaylistUrl(string url)
         {
-            return Regex.IsMatch(url, @"https://vk.com/music/playlist/\d+_\d+_[a-z0-9]+$");
+            return Regex.IsMatch(url, @"https://vk.ru/music/playlist/\d+_\d+_[a-z0-9]+$");
         }
         static bool IsConfugureRecomsUrl(string url)
         {
@@ -315,7 +315,7 @@ namespace VK_UI3.Controls
             if (link.Meta.ContentType is "group" or "user" or "chat")
             {
                 if (!Regex.IsMatch(link.Id, CustomSectionsService.CustomLinkRegex) &&
-                    !Regex.IsMatch(link.Url, "https://vk.com/audios[0-9]+$"))
+                    !Regex.IsMatch(link.Url, "https://vk.ru/audios[0-9]+$"))
                 {
                     HideLinkAnimation.Pause();
                     showLinkAnimation.Begin();

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -112,7 +112,7 @@ namespace VkNet.Utils
 			_logger?.LogDebug("Шаг 2. Заполнение формы логина. Капча");
 
 			var captchaKey =
-				_captchaSolver.Solve($"https://api.vk.com/captcha.php?sid={loginForm.GetFieldValue(AuthorizationFormFields.CaptchaSid)}&s=1");
+				_captchaSolver.Solve($"https://api.vk.ru/captcha.php?sid={loginForm.GetFieldValue(AuthorizationFormFields.CaptchaSid)}&s=1");
 
 			loginForm.WithField("captcha_key")
 					 .FilledWith(captchaKey);
@@ -121,7 +121,7 @@ namespace VkNet.Utils
 		}
 
 		/// <summary>
-		/// Выполняет обход ошибки валидации асинхронно: https://vk.com/dev/need_validation
+		/// Выполняет обход ошибки валидации асинхронно: https://vk.ru/dev/need_validation
 		/// </summary>
 		/// <param name="validateUrl"> Адрес страницы валидации </param>
 		/// <param name="phoneNumber">

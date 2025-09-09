@@ -32,7 +32,7 @@ namespace VkNet.Abstractions
 		/// но не более 5000.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/friends.get
+		/// Страница документации ВКонтакте http://vk.ru/dev/friends.get
 		/// </remarks>
 		Task<VkCollection<User>> GetAsync(FriendsGetParams @params, bool skipAuthorization = false);
 
@@ -46,7 +46,7 @@ namespace VkNet.Abstractions
 		/// приложение.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/friends.getAppUsers
+		/// Страница документации ВКонтакте http://vk.ru/dev/friends.getAppUsers
 		/// </remarks>
 		Task<ReadOnlyCollection<long>> GetAppUsersAsync();
 
@@ -63,7 +63,7 @@ namespace VkNet.Abstractions
 		/// друзей, находящихся на сайте с мобильного устройства.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/friends.getOnline
+		/// Страница документации ВКонтакте http://vk.ru/dev/friends.getOnline
 		/// </remarks>
 		Task<FriendOnline> GetOnlineAsync(FriendsGetOnlineParams @params);
 
@@ -77,7 +77,7 @@ namespace VkNet.Abstractions
 		/// идентификаторами source_uid и target_uid.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/friends.getMutual
+		/// Страница документации ВКонтакте http://vk.ru/dev/friends.getMutual
 		/// </remarks>
 		Task<ReadOnlyCollection<MutualFriend>> GetMutualAsync(FriendsGetMutualParams @params);
 
@@ -116,7 +116,7 @@ namespace VkNet.Abstractions
 		/// только если friend_status = 2;.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/friends.areFriends
+		/// Страница документации ВКонтакте http://vk.ru/dev/friends.areFriends
 		/// </remarks>
 		Task<ReadOnlyCollection<AreFriendsResult>> AreFriendsAsync([NotNull] IEnumerable<long> userIds
 																	, bool? needSign = null);
@@ -139,7 +139,7 @@ namespace VkNet.Abstractions
 		/// друзей.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/friends.addList
+		/// Страница документации ВКонтакте http://vk.ru/dev/friends.addList
 		/// </remarks>
 		Task<long> AddListAsync(string name, IEnumerable<long> userIds);
 
@@ -155,7 +155,7 @@ namespace VkNet.Abstractions
 		/// После успешного выполнения возвращает 1.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/friends.deleteList
+		/// Страница документации ВКонтакте http://vk.ru/dev/friends.deleteList
 		/// </remarks>
 		Task<bool> DeleteListAsync(long listId);
 
@@ -179,7 +179,7 @@ namespace VkNet.Abstractions
 		/// id — идентификатор списка друзей.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/friends.getLists
+		/// Страница документации ВКонтакте http://vk.ru/dev/friends.getLists
 		/// </remarks>
 		Task<VkCollection<FriendList>> GetListsAsync(long? userId = null, bool? returnSystem = null);
 
@@ -214,7 +214,7 @@ namespace VkNet.Abstractions
 		/// После успешного выполнения возвращает 1.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/friends.editList
+		/// Страница документации ВКонтакте http://vk.ru/dev/friends.editList
 		/// </remarks>
 		Task<bool> EditListAsync(long listId, string name = null, IEnumerable<long> userIds = null, IEnumerable<long> addUserIds = null,
 								IEnumerable<long> deleteUserIds = null);
@@ -226,7 +226,7 @@ namespace VkNet.Abstractions
 		/// После успешного выполнения возвращает 1.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/friends.deleteAllRequests
+		/// Страница документации ВКонтакте http://vk.ru/dev/friends.deleteAllRequests
 		/// </remarks>
 		Task<bool> DeleteAllRequestsAsync();
 
@@ -255,7 +255,7 @@ namespace VkNet.Abstractions
 		/// 4 — повторная отправка заявки.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/friends.add
+		/// Страница документации ВКонтакте http://vk.ru/dev/friends.add
 		/// </remarks>
 		Task<AddFriendStatus> AddAsync(long userId, string text = "", bool? follow = null);
 
@@ -287,7 +287,7 @@ namespace VkNet.Abstractions
 		/// 3 — рекомендация добавить в друзья данного пользователя удалена.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/friends.delete
+		/// Страница документации ВКонтакте http://vk.ru/dev/friends.delete
 		/// </remarks>
 		Task<FriendsDeleteResult> DeleteAsync(long userId);
 
@@ -309,7 +309,7 @@ namespace VkNet.Abstractions
 		/// После успешного выполнения возвращает 1.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/friends.edit
+		/// Страница документации ВКонтакте http://vk.ru/dev/friends.edit
 		/// </remarks>
 		Task<bool> EditAsync(long userId, IEnumerable<long> listIds);
 
@@ -330,7 +330,7 @@ namespace VkNet.Abstractions
 		/// недавно добавленных друзей текущего пользователя.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/friends.getRecent
+		/// Страница документации ВКонтакте http://vk.ru/dev/friends.getRecent
 		/// </remarks>
 		Task<ReadOnlyCollection<long>> GetRecentAsync(long? count = null);
 
@@ -354,7 +354,7 @@ namespace VkNet.Abstractions
 		/// идентификаторов общих друзей.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/friends.getRequests
+		/// Страница документации ВКонтакте http://vk.ru/dev/friends.getRequests
 		/// </remarks>
 		Task<GetRequestsResult> GetRequestsAsync(FriendsGetRequestsParams @params);
 
@@ -378,7 +378,7 @@ namespace VkNet.Abstractions
 		/// идентификаторов общих друзей.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/friends.getRequests
+		/// Страница документации ВКонтакте http://vk.ru/dev/friends.getRequests
 		/// </remarks>
 		Task<VkCollection<FriendsGetRequestsResult>> GetRequestsExtendedAsync(FriendsGetRequestsParams @params);
 
@@ -426,7 +426,7 @@ namespace VkNet.Abstractions
 		/// found_with может отсутствовать.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/friends.getSuggestions
+		/// Страница документации ВКонтакте http://vk.ru/dev/friends.getSuggestions
 		/// </remarks>
 		Task<VkCollection<User>> GetSuggestionsAsync(FriendsFilter filter = null, long? count = null, long? offset = null,
 													UsersFields fields = null, NameCase nameCase = null);
@@ -459,7 +459,7 @@ namespace VkNet.Abstractions
 		/// содержится номер из списка заданных для поиска номеров.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/friends.getByPhones
+		/// Страница документации ВКонтакте http://vk.ru/dev/friends.getByPhones
 		/// </remarks>
 		Task<ReadOnlyCollection<User>> GetByPhonesAsync(IEnumerable<string> phones, ProfileFields fields);
 
@@ -471,7 +471,7 @@ namespace VkNet.Abstractions
 		/// После успешного выполнения метод  возвращает список объектов пользователей.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/friends.search
+		/// Страница документации ВКонтакте http://vk.ru/dev/friends.search
 		/// </remarks>
 		Task<VkCollection<User>> SearchAsync(FriendsSearchParams @params);
 	}

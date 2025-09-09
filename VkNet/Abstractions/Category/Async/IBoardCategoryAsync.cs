@@ -19,7 +19,7 @@ namespace VkNet.Abstractions
 		/// </returns>
 		/// <remarks>
 		/// Страница документации ВКонтакте
-		/// <see href="https://new.vk.com/dev/board.getTopics" />.
+		/// <see href="https://new.vk.ru/dev/board.getTopics" />.
 		/// </remarks>
 		Task<VkCollection<Topic>> GetTopicsAsync(BoardGetTopicsParams @params, bool skipAuthorization = false);
 
@@ -32,7 +32,7 @@ namespace VkNet.Abstractions
 		/// </returns>
 		/// <remarks>
 		/// Страница документации ВКонтакте
-		/// <see href="https://new.vk.com/dev/board.getComments" />.
+		/// <see href="https://new.vk.ru/dev/board.getComments" />.
 		/// </remarks>
 		Task<TopicsFeed> GetCommentsAsync(BoardGetCommentsParams @params, bool skipAuthorization = false);
 
@@ -43,7 +43,7 @@ namespace VkNet.Abstractions
 		/// <returns>
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/board.addTopic
+		/// Страница документации ВКонтакте https://vk.ru/dev/board.addTopic
 		/// </remarks>
 		Task<long> AddTopicAsync(BoardAddTopicParams @params);
 
@@ -54,7 +54,7 @@ namespace VkNet.Abstractions
 		/// <returns>
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/board.deleteTopic
+		/// Страница документации ВКонтакте https://vk.ru/dev/board.deleteTopic
 		/// </remarks>
 		Task<bool> DeleteTopicAsync(BoardTopicParams @params);
 
@@ -66,7 +66,7 @@ namespace VkNet.Abstractions
 		/// <returns>
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/board.closeTopic
+		/// Страница документации ВКонтакте https://vk.ru/dev/board.closeTopic
 		/// </remarks>
 		Task<bool> CloseTopicAsync(BoardTopicParams @params);
 
@@ -78,7 +78,7 @@ namespace VkNet.Abstractions
 		/// <returns>
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/board.openTopic
+		/// Страница документации ВКонтакте https://vk.ru/dev/board.openTopic
 		/// </remarks>
 		Task<bool> OpenTopicAsync(BoardTopicParams @params);
 
@@ -90,7 +90,7 @@ namespace VkNet.Abstractions
 		/// <returns>
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/board.fixTopic
+		/// Страница документации ВКонтакте https://vk.ru/dev/board.fixTopic
 		/// </remarks>
 		Task<bool> FixTopicAsync(BoardTopicParams @params);
 
@@ -102,7 +102,7 @@ namespace VkNet.Abstractions
 		/// <returns>
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/board.unfixTopic
+		/// Страница документации ВКонтакте https://vk.ru/dev/board.unfixTopic
 		/// </remarks>
 		Task<bool> UnFixTopicAsync(BoardTopicParams @params);
 
@@ -113,7 +113,7 @@ namespace VkNet.Abstractions
 		/// <returns>
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/board.editTopic
+		/// Страница документации ВКонтакте https://vk.ru/dev/board.editTopic
 		/// </remarks>
 		Task<bool> EditTopicAsync(BoardEditTopicParams @params);
 
@@ -125,7 +125,7 @@ namespace VkNet.Abstractions
 		/// </returns>
 		/// <remarks>
 		/// Страница документации ВКонтакте
-		/// <see href="https://new.vk.com/dev/board.createComment" />.
+		/// <see href="https://new.vk.ru/dev/board.createComment" />.
 		/// </remarks>
 		Task<long> CreateCommentAsync(BoardCreateCommentParams @params);
 
@@ -137,7 +137,7 @@ namespace VkNet.Abstractions
 		/// </returns>
 		/// <remarks>
 		/// Страница документации ВКонтакте
-		/// <see href="https://new.vk.com/dev/board.deleteComment" />.
+		/// <see href="https://new.vk.ru/dev/board.deleteComment" />.
 		/// </remarks>
 		Task<bool> DeleteCommentAsync(BoardCommentParams @params);
 
@@ -148,7 +148,7 @@ namespace VkNet.Abstractions
 		/// <returns>
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/board.editComment
+		/// Страница документации ВКонтакте https://vk.ru/dev/board.editComment
 		/// </remarks>
 		Task<bool> EditCommentAsync(BoardEditCommentParams @params);
 
@@ -159,7 +159,7 @@ namespace VkNet.Abstractions
 		/// <returns>
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/board.restoreComment
+		/// Страница документации ВКонтакте https://vk.ru/dev/board.restoreComment
 		/// </remarks>
 		Task<bool> RestoreCommentAsync(BoardCommentParams @params);
 	}

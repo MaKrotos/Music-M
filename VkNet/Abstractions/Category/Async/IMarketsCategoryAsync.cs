@@ -52,7 +52,7 @@ namespace VkNet.Abstractions
         /// комментариев у товара.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/market.get
+        /// Страница документации ВКонтакте http://vk.ru/dev/market.get
         /// </remarks>
         Task<VkCollection<Market>> GetAsync(long ownerId, long? albumId = null, int? count = null, int? offset = null,
                                             bool extended = false);
@@ -84,7 +84,7 @@ namespace VkNet.Abstractions
         /// комментариев у товара.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/market.getById
+        /// Страница документации ВКонтакте http://vk.ru/dev/market.getById
         /// </remarks>
         Task<VkCollection<Market>> GetByIdAsync(IEnumerable<string> itemIds, bool extended = false);
 
@@ -96,7 +96,7 @@ namespace VkNet.Abstractions
         /// Возвращает список объектов item.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/market.search
+        /// Страница документации ВКонтакте http://vk.ru/dev/market.search
         /// </remarks>
         Task<VkCollection<Market>> SearchAsync(MarketSearchParams @params);
 
@@ -125,7 +125,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает список объектов album.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/market.getAlbums
+        /// Страница документации ВКонтакте http://vk.ru/dev/market.getAlbums
         /// </remarks>
         Task<VkCollection<MarketAlbum>> GetAlbumsAsync(long ownerId, int? offset = null, int? count = null);
 
@@ -151,7 +151,7 @@ namespace VkNet.Abstractions
         /// Возвращает список объектов album.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/market.getAlbumById
+        /// Страница документации ВКонтакте http://vk.ru/dev/market.getAlbumById
         /// </remarks>
         Task<VkCollection<MarketAlbum>> GetAlbumByIdAsync(long ownerId, IEnumerable<long> albumIds);
 
@@ -163,7 +163,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает идентификатор созданного комментария.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/market.createComment
+        /// Страница документации ВКонтакте http://vk.ru/dev/market.createComment
         /// </remarks>
         Task<long> CreateCommentAsync(MarketCreateCommentParams @params);
 
@@ -175,7 +175,7 @@ namespace VkNet.Abstractions
         /// Возвращает список объектов комментариев.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/market.getComments
+        /// Страница документации ВКонтакте http://vk.ru/dev/market.getComments
         /// </remarks>
         Task<VkCollection<MarketComment>> GetCommentsAsync(MarketGetCommentsParams @params);
 
@@ -199,7 +199,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает 1 (0, если комментарий не найден).
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/market.deleteComment
+        /// Страница документации ВКонтакте http://vk.ru/dev/market.deleteComment
         /// </remarks>
         Task<bool> DeleteCommentAsync(long ownerId, long commentId);
 
@@ -224,7 +224,7 @@ namespace VkNet.Abstractions
         /// идентификатором не является удаленным).
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/market.restoreComment
+        /// Страница документации ВКонтакте http://vk.ru/dev/market.restoreComment
         /// </remarks>
         Task<bool> RestoreCommentAsync(long ownerId, long commentId);
 
@@ -258,7 +258,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает 1.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/market.editComment
+        /// Страница документации ВКонтакте http://vk.ru/dev/market.editComment
         /// </remarks>
         Task<bool> EditCommentAsync(long ownerId, long commentId, string message, IEnumerable<MediaAttachment> attachments = null);
 
@@ -286,7 +286,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает 1.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/market.reportComment
+        /// Страница документации ВКонтакте http://vk.ru/dev/market.reportComment
         /// </remarks>
         Task<bool> ReportCommentAsync(long ownerId, long commentId, ReportReason reason);
 
@@ -314,7 +314,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает 1.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/market.report
+        /// Страница документации ВКонтакте http://vk.ru/dev/market.report
         /// </remarks>
         Task<bool> ReportAsync(long ownerId, long itemId, ReportReason reason);
 
@@ -326,7 +326,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает идентификатор добавленного товара.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/market.add
+        /// Страница документации ВКонтакте http://vk.ru/dev/market.add
         /// </remarks>
         Task<long> AddAsync(MarketProductParams @params);
 
@@ -338,7 +338,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает 1.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/market.edit
+        /// Страница документации ВКонтакте http://vk.ru/dev/market.edit
         /// </remarks>
         Task<bool> EditAsync(MarketProductParams @params);
 
@@ -362,7 +362,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает 1.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/market.delete
+        /// Страница документации ВКонтакте http://vk.ru/dev/market.delete
         /// </remarks>
         Task<bool> DeleteAsync(long ownerId, long itemId);
 
@@ -387,7 +387,7 @@ namespace VkNet.Abstractions
         /// удаленных).
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/market.restore
+        /// Страница документации ВКонтакте http://vk.ru/dev/market.restore
         /// </remarks>
         Task<bool> RestoreAsync(long ownerId, long itemId);
 
@@ -426,7 +426,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает 1.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/market.reorderItems
+        /// Страница документации ВКонтакте http://vk.ru/dev/market.reorderItems
         /// </remarks>
         Task<bool> ReorderItemsAsync(long ownerId, long albumId, long itemId, long? before, long? after);
 
@@ -459,7 +459,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает 1.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/market.reorderAlbums
+        /// Страница документации ВКонтакте http://vk.ru/dev/market.reorderAlbums
         /// </remarks>
         Task<bool> ReorderAlbumsAsync(long ownerId, long albumId, long? before = null, long? after = null);
 
@@ -492,7 +492,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает идентификатор созданной подборки.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/market.addAlbum
+        /// Страница документации ВКонтакте http://vk.ru/dev/market.addAlbum
         /// </remarks>
         Task<long> AddAlbumAsync(long ownerId, string title, long? photoId = null, bool mainAlbum = false);
 
@@ -526,7 +526,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает 1.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/market.editAlbum
+        /// Страница документации ВКонтакте http://vk.ru/dev/market.editAlbum
         /// </remarks>
         Task<bool> EditAlbumAsync(long ownerId, long albumId, string title, long? photoId = null, bool mainAlbum = false);
 
@@ -550,7 +550,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает 1.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/market.deleteAlbum
+        /// Страница документации ВКонтакте http://vk.ru/dev/market.deleteAlbum
         /// </remarks>
         Task<bool> DeleteAlbumAsync(long ownerId, long albumId);
 
@@ -580,7 +580,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает 1.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/market.removeFromAlbum
+        /// Страница документации ВКонтакте http://vk.ru/dev/market.removeFromAlbum
         /// </remarks>
         Task<bool> RemoveFromAlbumAsync(long ownerId, long itemId, IEnumerable<long> albumIds);
 
@@ -610,7 +610,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает 1.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/market.addToAlbum
+        /// Страница документации ВКонтакте http://vk.ru/dev/market.addToAlbum
         /// </remarks>
         Task<bool> AddToAlbumAsync(long ownerId, long itemId, IEnumerable<long> albumIds);
 
@@ -632,7 +632,7 @@ namespace VkNet.Abstractions
         /// После успешного выполнения возвращает список объектов category.
         /// </returns>
         /// <remarks>
-        /// Страница документации ВКонтакте http://vk.com/dev/market.getCategories
+        /// Страница документации ВКонтакте http://vk.ru/dev/market.getCategories
         /// </remarks>
         Task<VkCollection<MarketCategory>> GetCategoriesAsync(long? count, long? offset);
     }

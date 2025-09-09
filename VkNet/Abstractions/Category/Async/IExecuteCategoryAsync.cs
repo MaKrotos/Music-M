@@ -29,7 +29,7 @@ namespace VkNet.Abstractions
 		/// представления других методов.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/execute
+		/// Страница документации ВКонтакте http://vk.ru/dev/execute
 		/// </remarks>
 		Task<VkResponse> ExecuteAsync(string code, VkParameters vkParameters = default);
 
@@ -53,7 +53,7 @@ namespace VkNet.Abstractions
 		/// представления других методов.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/execute
+		/// Страница документации ВКонтакте http://vk.ru/dev/execute
 		/// </remarks>
 		Task<T> ExecuteAsync<T>(string code, VkParameters vkParameters = default);
 
@@ -69,7 +69,7 @@ namespace VkNet.Abstractions
 		/// представления других методов.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте http://vk.com/dev/execute
+		/// Страница документации ВКонтакте http://vk.ru/dev/execute
 		/// </remarks>
 		Task<T> StoredProcedureAsync<T>(string procedureName, VkParameters vkParameters);
 	}

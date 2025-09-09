@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using VkNet.Enums.SafetyEnums;
@@ -47,7 +47,7 @@ namespace VkNet.Model.RequestParams.Stories
 		public StoryLinkText LinkText { get; set; }
 
 		/// <summary>
-		/// Адрес ссылки для перехода из истории. Допустимы только внутренние ссылки https://vk.com. строка, максимальная длина 2048
+		/// Адрес ссылки для перехода из истории. Допустимы только внутренние ссылки https://vk.ru. строка, максимальная длина 2048
 		/// </summary>
 		[JsonProperty("link_url")]
 		public string LinkUrl { get; set; }

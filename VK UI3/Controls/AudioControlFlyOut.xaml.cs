@@ -306,7 +306,7 @@ namespace VK_UI3.Controls
         public void CopyLink(object sender, RoutedEventArgs e)
         {
             var dataPackage = new DataPackage();
-            string audioLink = $"https://vk.com/audio{dataTrack.audio.OwnerId}_{dataTrack.audio.Id}";
+            string audioLink = $"https://vk.ru/audio{dataTrack.audio.OwnerId}_{dataTrack.audio.Id}";
             dataPackage.SetText(audioLink);
             Clipboard.SetContent(dataPackage);
         }

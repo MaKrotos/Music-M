@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -8,7 +8,7 @@ using VkNet.Model;
 namespace VkNet.Utils
 {
 	/// <summary>
-	/// Методы расширения для взаимодействия с https://vk.com/foaf.php
+	/// Методы расширения для взаимодействия с https://vk.ru/foaf.php
 	/// </summary>
 	public static class VkFoafExtensions
 	{
@@ -21,7 +21,7 @@ namespace VkNet.Utils
 		{
 			using (var httpClient = new HttpClient())
 			{
-				var str = await httpClient.GetStringAsync($"https://vk.com/foaf.php?id={user.Id}").ConfigureAwait(false);
+				var str = await httpClient.GetStringAsync($"https://vk.ru/foaf.php?id={user.Id}").ConfigureAwait(false);
 				var doc = new HtmlDocument();
 				doc.LoadHtml(str);
 				var created = doc.DocumentNode.Descendants("ya:created").FirstOrDefault();

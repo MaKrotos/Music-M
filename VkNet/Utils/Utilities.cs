@@ -52,7 +52,7 @@ namespace VkNet.Utils
 		/// Получение идентификатора.
 		/// Применять когда id может быть задано как строкой так и числом в json'e.
 		/// </summary>
-		/// <param name="response"> Ответ от сервера vk.com </param>
+		/// <param name="response"> Ответ от сервера vk.ru </param>
 		/// <returns> Число типа long или null </returns>
 		public static long? GetNullableLongId(VkResponse response)
 		{
@@ -81,10 +81,10 @@ namespace VkNet.Utils
 		}
 
 		/// <summary>
-		/// Преобразовать массив объектов ответа сервера vk.com.
+		/// Преобразовать массив объектов ответа сервера vk.ru.
 		/// </summary>
 		/// <typeparam name="T"> Тип коллекции. </typeparam>
-		/// <param name="response"> Ответ от сервера vk.com. </param>
+		/// <param name="response"> Ответ от сервера vk.ru. </param>
 		/// <param name="selector"> Функция фильтрации. </param>
 		/// <returns> Коллекция данных указанного типа. </returns>
 		public static IEnumerable<T> Convert<T>(this VkResponseArray response, Func<VkResponse, T> selector)

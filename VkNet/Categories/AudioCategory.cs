@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using VkNet.Abstractions;
@@ -18,9 +18,9 @@ namespace VkNet.Categories
         private readonly IVkApiInvoke _vk;
 
         /// <summary>
-        /// api vk.com
+        /// api vk.ru
         /// </summary>
-        /// <param name="vk"> Api vk.com </param>
+        /// <param name="vk"> Api vk.ru </param>
         public AudioCategory(IVkApiInvoke vk)
         {
             _vk = vk;

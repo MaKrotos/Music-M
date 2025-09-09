@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -10,7 +10,7 @@ namespace VkNet.Model.Attachments
 {
 	/// <summary>
 	/// Аудиозапись пользователя или группы.
-	/// См. описание http://vk.com/dev/audio_object
+	/// См. описание http://vk.ru/dev/audio_object
 	/// </summary>
 	[Serializable]
 	public class Audio : MediaAttachment, IGroupUpdate

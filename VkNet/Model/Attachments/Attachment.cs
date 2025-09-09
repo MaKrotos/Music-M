@@ -6,7 +6,7 @@ namespace VkNet.Model.Attachments
 {
 	/// <summary>
 	/// Информация о медиавложении в записи.
-	/// См. описание http://vk.com/dev/attachments_w
+	/// См. описание http://vk.ru/dev/attachments_w
 	/// </summary>
 	[Serializable]
 	public class Attachment

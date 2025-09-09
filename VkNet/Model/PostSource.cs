@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Newtonsoft.Json;
 using VkNet.Enums.SafetyEnums;
 using VkNet.Utils;
@@ -13,7 +13,7 @@ namespace VkNet.Model
 	/// о том, как была создана запись на
 	/// стене
 	/// в своем приложении.
-	/// См. описание http://vk.com/dev/post_source
+	/// См. описание http://vk.ru/dev/post_source
 	/// </summary>
 	[Serializable]
 	public class PostSource

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using VkNet.Utils;
 
@@ -6,7 +6,7 @@ namespace VkNet.Model.Attachments
 {
 	/// <summary>
 	/// Ссылка на Web-страницу.
-	/// См. описание http://vk.com/dev/attachments_w
+	/// См. описание http://vk.ru/dev/attachments_w
 	/// </summary>
 	[DebuggerDisplay("[{Title}] {Uri}")]
 	[Serializable]

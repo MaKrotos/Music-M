@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using VkNet.Enums.Filters;
 using VkNet.Model;
@@ -22,7 +22,7 @@ namespace VkNet.Abstractions
 		/// Если пользователь является доном, возвращается 1. Если нет, возвращается 0.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/donut.isDon
+		/// Страница документации ВКонтакте https://vk.ru/dev/donut.isDon
 		/// </remarks>
 		public Task<bool> IsDonAsync(long ownerId);
 
@@ -41,13 +41,13 @@ namespace VkNet.Abstractions
 		/// </param>
 		/// <param name="fields">
 		/// Список дополнительных полей профилей, которые необходимо вернуть (через запятую).
-		/// См. https://vk.com/dev/objects/user.
+		/// См. https://vk.ru/dev/objects/user.
 		/// </param>
 		/// <returns>
 		/// После успешного выполнения возвращает объект, содержащий число друзей в поле count и массив объектов пользователей в поле items.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/donut.getFriends
+		/// Страница документации ВКонтакте https://vk.ru/dev/donut.getFriends
 		/// </remarks>
 		public Task<VkCollection<User>> GetFriendsAsync(long ownerId, ulong offset, byte count, UsersFields fields);
 
@@ -62,7 +62,7 @@ namespace VkNet.Abstractions
 		/// Возвращает результат выполнения метода.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/donut.getSubscription
+		/// Страница документации ВКонтакте https://vk.ru/dev/donut.getSubscription
 		/// </remarks>
 		public Task<Subscription> GetSubscriptionAsync(long ownerId);
 
@@ -71,7 +71,7 @@ namespace VkNet.Abstractions
 		/// </summary>
 		/// <param name="fields">
 		/// Список дополнительных полей профилей, которые необходимо вернуть (через запятую).
-		/// См. https://vk.com/dev/objects/user.
+		/// См. https://vk.ru/dev/objects/user.
 		/// </param>
 		/// <param name="offset">
 		/// Смещение, необходимое для выборки определенного подмножества подписок.
@@ -83,7 +83,7 @@ namespace VkNet.Abstractions
 		/// Возвращает результат выполнения метода.
 		/// </returns>
 		/// <remarks>
-		/// Страница документации ВКонтакте https://vk.com/dev/donut.getSubscriptions
+		/// Страница документации ВКонтакте https://vk.ru/dev/donut.getSubscriptions
 		/// </remarks>
 		public Task<SubscriptionsInfo> GetSubscriptionsAsync(UsersFields fields, ulong offset, byte count);
 	}

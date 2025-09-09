@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -16,7 +16,7 @@ namespace VkNet.Model
 {
     /// <summary>
     /// Информация о пользователя.
-    /// См. описание https://vk.com/dev/objects/user
+    /// См. описание https://vk.ru/dev/objects/user
     /// </summary>
     [DebuggerDisplay("[{Id}] {FirstName} {LastName}")]
     [Serializable]
@@ -598,7 +598,7 @@ namespace VkNet.Model
         /// <summary>
         /// url квадратной фотографии пользователя, имеющей ширину 50 пикселей. В случае
         /// отсутствия у пользователя фотографии
-        /// возвращается http://vk.com/images/camera_c.gif
+        /// возвращается http://vk.ru/images/camera_c.gif
         /// </summary>
         [JsonProperty("photo_50")]
         public Uri Photo50 { get; set; }
@@ -606,7 +606,7 @@ namespace VkNet.Model
         /// <summary>
         /// url квадратной фотографии пользователя, имеющей ширину 100 пикселей. В случае
         /// отсутствия у пользователя фотографии
-        /// возвращается http://vk.com/images/camera_b.gif.
+        /// возвращается http://vk.ru/images/camera_b.gif.
         /// </summary>
         [JsonProperty("photo_100")]
         public Uri Photo100 { get; set; }
@@ -614,7 +614,7 @@ namespace VkNet.Model
         /// <summary>
         /// url фотографии пользователя, имеющей ширину 200 пикселей. В случае отсутствия у
         /// пользователя фотографии
-        /// возвращается http://vk.com/images/camera_a.gif.
+        /// возвращается http://vk.ru/images/camera_a.gif.
         /// </summary>
         [JsonProperty("photo_200_orig")]
         public Uri Photo200Orig { get; set; }
@@ -649,7 +649,7 @@ namespace VkNet.Model
         /// url квадратной фотографии пользователя с максимальной шириной.
         /// Может быть возвращена фотография, имеющая ширину как 200, так и 100 пикселей.
         /// В случае отсутствия у пользователя фотографии возвращается
-        /// http://vk.com/images/camera_b.gif.
+        /// http://vk.ru/images/camera_b.gif.
         /// </summary>
         [JsonProperty("photo_max")]
         public Uri PhotoMax { get; set; }
@@ -658,7 +658,7 @@ namespace VkNet.Model
         /// url фотографии пользователя максимального размера.
         /// Может быть возвращена фотография, имеющая ширину как 400, так и 200 пикселей.
         /// В случае отсутствия у пользователя фотографии возвращается
-        /// http://vk.com/images/camera_a.gif.
+        /// http://vk.ru/images/camera_a.gif.
         /// </summary>
         [JsonProperty("photo_max_orig")]
         public Uri PhotoMaxOrig { get; set; }
