@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
 
-        <AppxPackageVersion>0.3.4.9</AppxPackageVersion>
+        <AppxPackageVersion>0.3.5.0</AppxPackageVersion>
         <Version>$(AppxPackageVersion)</Version>
         <OutputType>WinExe</OutputType>
         <TargetFramework>net8.0-windows10.0.22000.0</TargetFramework>
