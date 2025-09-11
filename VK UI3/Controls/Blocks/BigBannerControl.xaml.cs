@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
 using MusicX.Core.Models;
@@ -127,7 +127,7 @@ namespace VK_UI3.Controls.Blocks
             this.Description.Text = block.Banners[0].SubText;
             changeImage.ChangeImageWithAnimation(block.Banners[0].Images.Last().Url);
 
-            if ((banners[lastIndex].catalogBanner.ClickAction?.Action ?? banners[lastIndex].catalogBanner.Buttons?.FirstOrDefault()?.Action) is not { } action)
+            if (banners.Count == 0 || (banners[lastIndex].catalogBanner.ClickAction?.Action ?? banners[lastIndex].catalogBanner.Buttons?.FirstOrDefault()?.Action) is not { } action)
             {
                 ActionCuratorButton.Visibility = Visibility.Collapsed;
             }

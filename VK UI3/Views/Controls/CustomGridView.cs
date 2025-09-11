@@ -26,7 +26,8 @@ namespace VK_UI3.Views.Controls
         private void CustomGridView_Loaded(object sender, RoutedEventArgs e)
         {
             scrollViewer = FindScrollViewer(this);
-            scrollViewer.ViewChanged += ScrollViewer_ViewChanged;
+            if (scrollViewer != null)
+                scrollViewer.ViewChanged += ScrollViewer_ViewChanged;
         }
 
 
