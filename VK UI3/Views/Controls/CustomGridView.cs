@@ -20,7 +20,18 @@ namespace VK_UI3.Views.Controls
         public CustomGridView()
         {
             this.Loaded += CustomGridView_Loaded;
+            this.Unloaded += CustomGridView_Unloaded;
         }
+
+        private void CustomGridView_Unloaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                scrollViewer.ViewChanged += ScrollViewer_ViewChanged;
+            }
+            catch { }
+        }
+
         public EventHandler RightChange;
         public EventHandler LeftChange;
         private void CustomGridView_Loaded(object sender, RoutedEventArgs e)
