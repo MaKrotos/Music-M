@@ -67,7 +67,7 @@ namespace VK_UI3.Views
 
 
             // Start the download and open the file
-            await appUpdater.DownloadAndOpenFile(true, false, PathInstallZIP: "");
+            await appUpdater.DownloadAndOpenFile(true, false, PathInstallZIP: AppContext.BaseDirectory);
         }
 
 
