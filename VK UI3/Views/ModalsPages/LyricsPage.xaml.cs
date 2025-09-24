@@ -474,10 +474,23 @@ namespace VK_UI3.Views.ModalsPages
             var closeBracketIndex = line.IndexOf(']');
             var timePart = line.Substring(1, closeBracketIndex - 1);
 
-            if (!TimeSpan.TryParseExact(timePart, @"m\:ss\.ff", null, out timestamp))
+            // Поддержка форматов: mm:ss.ff, mm:ss.fff, m:ss.ff, m:ss.fff
+            string[] formats = { @"m\:ss\.ff", @"m\:ss\.fff", @"mm\:ss\.ff", @"mm\:ss\.fff" };
+
+            bool parsed = false;
+            foreach (var format in formats)
+            {
+                if (TimeSpan.TryParseExact(timePart, format, null, out timestamp))
+                {
+                    parsed = true;
+                    break;
+                }
+            }
+
+            if (!parsed)
                 return false;
 
-            // Get text after timestamp (if any)
+            // Получить текст после временной метки (если есть)
             if (closeBracketIndex + 1 < line.Length)
             {
                 text = line.Substring(closeBracketIndex + 1).Trim();
@@ -487,7 +500,6 @@ namespace VK_UI3.Views.ModalsPages
                 text = string.Empty;
             }
 
-            // Return true even if text is empty (only timestamp case)
             return true;
         }
 
