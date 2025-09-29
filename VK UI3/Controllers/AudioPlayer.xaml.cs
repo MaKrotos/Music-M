@@ -36,8 +36,9 @@ using Windows.Storage.Streams;
 using WinRT;
 using VK_UI3.Views.ModalsPages;
 using Windows.Foundation;
+using System.Diagnostics.CodeAnalysis;
 
-
+    
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
@@ -188,6 +189,18 @@ namespace VK_UI3.Controllers
                 RootGrid.SizeChanged += RootGrid_SizeChanged;
             AnimateRedRectangle();
 
+            // --- регистрация Win32-хука для мультимедийных клавиш ---
+            try
+            {
+                var window = Microsoft.UI.Xaml.Window.Current;
+                if (window != null)
+                {
+                    var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
+                    _wndProcDelegate = new WndProcDelegate(CustomWndProc);
+                    _oldWndProc = SetWindowLongPtr(hwnd, GWL_WNDPROC, _wndProcDelegate);
+                }
+            }
+            catch { /* ignore errors */ }
 
             changeIconPlayBTN = new AnimationsChangeFontIcon(this.PlayBTN, this.DispatcherQueue);
             animateFontIcon = new AnimationsChangeFontIcon(this.repeatBTNIcon, this.DispatcherQueue);
@@ -500,8 +513,6 @@ namespace VK_UI3.Controllers
         {
             isManualChange = false;
         }
-
-
 
 
 
@@ -1184,6 +1195,59 @@ namespace VK_UI3.Controllers
         private void ReverseArtistMarquee()
         {
             _ = AnimateTranslate(ArtistTranslate, 0, 1);
+        }
+
+        // --- обработка мультимедийных клавиш через Win32-хук ---
+        private nint _oldWndProc = 0;
+        private delegate nint WndProcDelegate(nint hWnd, int msg, nint wParam, nint lParam);
+        private WndProcDelegate _wndProcDelegate;
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern nint SetWindowLongPtr(nint hWnd, int nIndex, WndProcDelegate newProc);
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern nint SetWindowLongPtr(nint hWnd, int nIndex, nint newProc);
+        [DllImport("user32.dll")]
+        private static extern nint CallWindowProc(nint lpPrevWndFunc, nint hWnd, int msg, nint wParam, nint lParam);
+        private const int GWL_WNDPROC = -4;
+        private const int WM_APPCOMMAND = 0x0319;
+        // --- конец исправления ---
+        private nint CustomWndProc(nint hwnd, int msg, nint wParam, nint lParam)
+        {
+            if (msg == WM_APPCOMMAND)
+            {
+                int cmd = ((int)((long)lParam >> 16)) & 0xFFFF;
+                switch (cmd)
+                {
+                    case 8: // Volume Mute
+                        mediaPlayer.IsMuted = !mediaPlayer.IsMuted;
+                        return IntPtr.Zero;
+                    case 9: // Volume Down
+                        mediaPlayer.Volume = Math.Max(0, mediaPlayer.Volume - 0.05);
+                        return IntPtr.Zero;
+                    case 10: // Volume Up
+                        mediaPlayer.Volume = Math.Min(1, mediaPlayer.Volume + 0.05);
+                        return IntPtr.Zero;
+                    case 46: // Media Play/Pause
+                        if (mediaPlayer.CurrentState == MediaPlayerState.Playing)
+                            mediaPlayer.Pause();
+                        else
+                            mediaPlayer.Play();
+                        return IntPtr.Zero;
+                    case 11: // Media Next
+                        PlayNextTrack();
+                        return IntPtr.Zero;
+                    case 12: // Media Previous
+                        PlayPreviousTrack();
+                        return IntPtr.Zero;
+                    case 13: // Media Stop
+                        mediaPlayer.Pause();
+                        mediaPlayer.Position = TimeSpan.Zero;
+                        return IntPtr.Zero;
+                }
+            }
+            // Передаем управление старой оконной процедуре
+            if (_oldWndProc != 0)
+                return CallWindowProc(_oldWndProc, hwnd, msg, wParam, lParam);
+            return IntPtr.Zero;
         }
     }
 }

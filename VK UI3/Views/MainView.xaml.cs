@@ -573,6 +573,8 @@ namespace VK_UI3.Views
                 case "радио":
                     return null;
                     break;
+                case "детям":
+                    return null;
                 default:
                     icon = icons[0];
                     icons.RemoveAt(0);

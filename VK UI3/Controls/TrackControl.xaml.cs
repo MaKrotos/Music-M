@@ -14,6 +14,8 @@ using VK_UI3.Helpers.Animations;
 using VK_UI3.Views;
 using VkNet.Model.Attachments;
 using Windows.UI.Core;
+using System.Runtime.InteropServices;
+using Microsoft.UI.Dispatching;
 using static VK_UI3.Helpers.ExtendedAudio;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -338,23 +340,31 @@ namespace VK_UI3.Controls
       
         AnimationsChangeIcon changeIconPlayBTN = null;
         bool entered = false;
+        bool isPointerOver = false; // Новый флаг для отслеживания наведения
+        DispatcherTimer modifierCheckTimer;
+        bool lastModifierState = false;
+
+        [DllImport("user32.dll")]
+        private static extern short GetAsyncKeyState(int vKey);
+        private const int VK_CONTROL = 0x11;
+        private const int VK_SHIFT = 0x10;
+
         private void UCcontrol_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
-            //FadeInAnimation.Begin();
             if (dataTrack == null) return;
             if (dataTrack.audio.Url == null) return;
             entered = true;
+            isPointerOver = true;
 
-            var pointerModifiers = e.KeyModifiers;
-
-            if (
-                pointerModifiers.HasFlag(Windows.System.VirtualKeyModifiers.Control)
-             || pointerModifiers.HasFlag(Windows.System.VirtualKeyModifiers.Shift)
-                )
+            // Запуск таймера для проверки клавиш
+            if (modifierCheckTimer == null)
             {
-                FadeOutStoryboardBorderSelectedGrid.Pause();
-                FadeInStoryboardBorderSelectedGrid.Begin();
+                modifierCheckTimer = new DispatcherTimer();
+                modifierCheckTimer.Interval = TimeSpan.FromMilliseconds(50);
+                modifierCheckTimer.Tick += ModifierCheckTimer_Tick;
             }
+            lastModifierState = false;
+            modifierCheckTimer.Start();
 
             Symbol symbol = dataTrack.PlayThis ? Symbol.Pause : Symbol.Play;
             if (GridPlayIcon.Opacity != 0)
@@ -372,25 +382,46 @@ namespace VK_UI3.Controls
       
         }
 
-
-
         private void UCcontrol_PointerExited(object sender, PointerRoutedEventArgs e)
         {
             entered = false;
+            isPointerOver = false;
+            // Остановка таймера
+            modifierCheckTimer?.Stop();
+            // Снять подсветку
+            FadeInStoryboardBorderSelectedGrid.Pause();
+            FadeOutStoryboardBorderSelectedGrid.Begin();
+
             var a = DataContext as ExtendedAudio;
             if (a == null) return;
             if (a.PlayThis) return;
             FadeInAnimationGridPlayIcon.Pause();
             FadeOutAnimationGridPlayIcon.Begin();
-
-            FadeInStoryboardBorderSelectedGrid.Pause();
-            FadeOutStoryboardBorderSelectedGrid.Begin();
         }
 
-        private DateTime _pressStartTime;
+        private void ModifierCheckTimer_Tick(object sender, object e)
+        {
+            if (!isPointerOver)
+                return;
+            bool ctrl = (GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0;
+            bool shift = (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0;
+            bool modifierPressed = ctrl || shift;
+            if (modifierPressed && !lastModifierState)
+            {
+                FadeOutStoryboardBorderSelectedGrid.Pause();
+                FadeInStoryboardBorderSelectedGrid.Begin();
+            }
+            else if (!modifierPressed && lastModifierState)
+            {
+                FadeInStoryboardBorderSelectedGrid.Pause();
+                FadeOutStoryboardBorderSelectedGrid.Begin();
+            }
+            lastModifierState = modifierPressed;
+        }
 
-
-
+        // Удаляем старые обработчики клавиатуры
+        // private void CoreWindow_KeyDown ...
+        // private void CoreWindow_KeyUp ...
         private void UCcontrol_Tapped(object sender, TappedRoutedEventArgs e)
         {
 
