@@ -94,7 +94,8 @@ namespace MusicX.Core.Helpers
                     block.Banners.RemoveAll(banner => banner.ClickAction?.Action.Url.Contains("subscription") is true ||
                                                            banner.ClickAction?.Action.Url.Contains("combo") is true ||
                                                            banner.ClickAction?.Action.Url.Contains("https://vk.ru/app") is true ||
-                                                           banner.ClickAction?.Action.Url.Contains("https://vk.ru/vk_music") is true) > 0 &&
+                                                           banner.Text == "с подпиской" ||
+                                                           banner.ClickAction?.Action.Url.Contains("https://vk.ru/vk_music") is true) > 0 &
                     block.Banners.Count == 0
                 ) ||
                 (

@@ -166,11 +166,10 @@ public abstract class MediaSourceBase : ITrackMediaSource
         return CreateFFMediaStreamSource(MediaFile.Open(url));
     }
 
-    public static MediaStreamSource CreateFFMediaStreamSource(MediaFile file)
+    public static MediaStreamSource CreateFFMediaStreamSource(MediaFile file, MediaPlayer? player = null)
     {
         if (file == null)
         {
-            // Можно заменить на ваш логгер, если он есть в статическом контексте
             System.Diagnostics.Debug.WriteLine("[FFMedia] MediaFile.Open вернул null. Возможно, ошибка в фильтре эквалайзера или FFmpeg.");
             throw new ArgumentNullException(nameof(file), "MediaFile.Open вернул null. Возможно, ошибка в фильтре эквалайзера или FFmpeg.");
         }
@@ -233,7 +232,16 @@ public abstract class MediaSourceBase : ITrackMediaSource
                 
                 var array = ProcessSample();
                 if (array != null)
+                {
                     args.Request.Sample = MediaStreamSample.CreateFromBuffer(array.AsBuffer(), position);
+                    // Если был на паузе из-за буферизации — продолжаем воспроизведение
+                    player?.Play();
+                }
+                else
+                {
+                    // Нет данных — ставим на паузу
+                    player?.Pause();
+                }
             }
             finally
             {
@@ -264,14 +272,10 @@ public abstract class MediaSourceBase : ITrackMediaSource
                 catch (Exception ex)
                 {
                     retryCount++;
-                    // Можно подключить логгер, если есть, например:
-                    // _logger?.Error(ex, $"Ошибка чтения аудиофрейма, попытка {retryCount}");
                     if (retryCount >= maxRetries)
                     {
-                        // После нескольких неудачных попыток — возвращаем null, чтобы не было бесконечного цикла
                         return null;
                     }
-                    // Краткая задержка перед повтором (можно убрать или уменьшить)
                     Thread.Sleep(50);
                 }
             }

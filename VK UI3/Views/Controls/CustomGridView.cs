@@ -27,6 +27,7 @@ namespace VK_UI3.Views.Controls
         {
             try
             {
+                if (scrollViewer != null)
                 scrollViewer.ViewChanged += ScrollViewer_ViewChanged;
             }
             catch { }
