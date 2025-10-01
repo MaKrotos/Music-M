@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml;
+п»їusing Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -107,7 +107,7 @@ namespace VK_UI3.Views
 
         private bool CheckIfAllContentIsVisible(ScrollViewer scrollViewer)
         {
-            if (scrollViewer.ViewportHeight >= scrollViewer.ExtentHeight)
+            if (scrollViewer.ViewportHeight >= scrollViewer.ExtentHeight - 50)
             {
                 return true;
             }
@@ -188,26 +188,38 @@ namespace VK_UI3.Views
 
 
 
-
+        bool nowLoaded = false;
 
         internal EventHandler selectedPlayList;
         private async Task loadMoreAsync()
         {
-            if (parameters.UserId == null)
-                parameters.UserId = AccountsDB.activeAccount.id;
-            if (parameters.LoadedAll) return;
-            LoadingIndicator.IsActive = true;
-
-            var a = await VK.api.Audio.GetPlaylistsAsync((long)parameters.UserId, 100, parameters.offset);
-
-            addToList(a);
-            LoadingIndicator.IsActive = false;
-            if (a.Count != 100)
+            try
             {
-                parameters.LoadedAll = true;
-                LoadingIndicator.Visibility = Visibility.Collapsed;
-            }
+                if (nowLoaded)
+                    return;
+                if (parameters.UserId == null)
+                    parameters.UserId = AccountsDB.activeAccount.id;
+                if (parameters.LoadedAll)
+                    return;
+                LoadingIndicator.IsActive = true;
 
+
+                nowLoaded = true;
+
+                var a = await VK.api.Audio.GetPlaylistsAsync((long)parameters.UserId, 100, parameters.offset);
+                parameters.offset += (uint)a.Count();
+
+                addToList(a);
+                LoadingIndicator.IsActive = false;
+                if (a.Count != 100)
+                {
+                    parameters.LoadedAll = true;
+                    LoadingIndicator.Visibility = Visibility.Collapsed;
+                }
+            }
+            catch { }
+
+            nowLoaded = false;
 
             if (CheckIfAllContentIsVisible(scrollViewer))
             {
@@ -261,22 +273,22 @@ namespace VK_UI3.Views
 
         private void gridV_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Проверка на наличие выбранных элементов
+            // РџСЂРѕРІРµСЂРєР° РЅР° РЅР°Р»РёС‡РёРµ РІС‹Р±СЂР°РЅРЅС‹С… СЌР»РµРјРµРЅС‚РѕРІ
             if (e.AddedItems.Count == 0)
             {
                 return;
             }
 
-            // Получение индекса выбранного элемента
+            // РџРѕР»СѓС‡РµРЅРёРµ РёРЅРґРµРєСЃР° РІС‹Р±СЂР°РЅРЅРѕРіРѕ СЌР»РµРјРµРЅС‚Р°
             int selectedIndex = gridV.Items.IndexOf(e.AddedItems[0]);
 
-            // Проверка на корректность индекса
+            // РџСЂРѕРІРµСЂРєР° РЅР° РєРѕСЂСЂРµРєС‚РЅРѕСЃС‚СЊ РёРЅРґРµРєСЃР°
             if (selectedIndex < 0 || selectedIndex >= audioPlaylists.Count)
             {
                 return;
             }
 
-            // Получение ID плейлиста
+            // РџРѕР»СѓС‡РµРЅРёРµ ID РїР»РµР№Р»РёСЃС‚Р°
             var playlistId = audioPlaylists[selectedIndex].Id;
 
             List<string> lists = new List<string>();
@@ -285,10 +297,10 @@ namespace VK_UI3.Views
                 lists.Add($"{item.OwnerId}_{item.Id}");
             }
 
-            // Добавление аудио в плейлист
+            // Р”РѕР±Р°РІР»РµРЅРёРµ Р°СѓРґРёРѕ РІ РїР»РµР№Р»РёСЃС‚
             VK.api.Audio.AddToPlaylistAsync((long)audioPlaylists[selectedIndex].OwnerId, playlistId, lists);
 
-            // Вызов события
+            // Р’С‹Р·РѕРІ СЃРѕР±С‹С‚РёСЏ
             selectedPlayList?.Invoke(playlistId, EventArgs.Empty);
         }
 

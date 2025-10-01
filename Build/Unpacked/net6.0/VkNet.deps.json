@@ -8,16 +8,21 @@
     ".NETCoreApp,Version=v6.0": {
       "VkNet/1.68.0": {
         "dependencies": {
+          "AsyncFixer": "1.6.0",
           "HtmlAgilityPack": "1.11.42",
           "JetBrains.Annotations": "2022.1.0",
+          "Microsoft.DotNet.Analyzers.Compatibility": "0.2.12-alpha",
           "Microsoft.Extensions.DependencyInjection": "6.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
-          "Newtonsoft.Json": "13.0.1"
+          "Newtonsoft.Json": "13.0.1",
+          "SonarAnalyzer.CSharp": "8.39.0.47922",
+          "System.Text.Encoding.CodePages": "6.0.0"
         },
         "runtime": {
           "VkNet.dll": {}
         }
       },
+      "AsyncFixer/1.6.0": {},
       "HtmlAgilityPack/1.11.42": {
         "runtime": {
           "lib/netstandard2.0/HtmlAgilityPack.dll": {
@@ -34,9 +39,11 @@
           }
         }
       },
+      "Microsoft.DotNet.Analyzers.Compatibility/0.2.12-alpha": {},
       "Microsoft.Extensions.DependencyInjection/6.0.0": {
         "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0"
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
+          "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         },
         "runtime": {
           "lib/net6.0/Microsoft.Extensions.DependencyInjection.dll": {
@@ -68,6 +75,13 @@
             "fileVersion": "13.0.1.25517"
           }
         }
+      },
+      "SonarAnalyzer.CSharp/8.39.0.47922": {},
+      "System.Runtime.CompilerServices.Unsafe/6.0.0": {},
+      "System.Text.Encoding.CodePages/6.0.0": {
+        "dependencies": {
+          "System.Runtime.CompilerServices.Unsafe": "6.0.0"
+        }
       }
     }
   },
@@ -76,6 +90,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "AsyncFixer/1.6.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/Xfs9H3UMfEv64cwT+C/JrTRp4w08BmPuFbj0ageadCHpx6rxYJxAU2C6sEqRFG22xmGk5cX9ewzoiiehWVHOw==",
+      "path": "asyncfixer/1.6.0",
+      "hashPath": "asyncfixer.1.6.0.nupkg.sha512"
     },
     "HtmlAgilityPack/1.11.42": {
       "type": "package",
@@ -90,6 +111,13 @@
       "sha512": "sha512-ASfpoFJxiRsC9Xc4TWuPM41Zb/gl64xwfMOhnOZ3RnVWGYIZchjpWQV5zshJgoc/ZxVtgjaF7b577lURj7E6ig==",
       "path": "jetbrains.annotations/2022.1.0",
       "hashPath": "jetbrains.annotations.2022.1.0.nupkg.sha512"
+    },
+    "Microsoft.DotNet.Analyzers.Compatibility/0.2.12-alpha": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-uu3yAa6hQZJoJZfBwXSvh+bN03KO06sWNZXwodxz7J1wva1g1+O4TnWJxX4dmsP6tLDTZtKy8IHiPLOOZIwt9w==",
+      "path": "microsoft.dotnet.analyzers.compatibility/0.2.12-alpha",
+      "hashPath": "microsoft.dotnet.analyzers.compatibility.0.2.12-alpha.nupkg.sha512"
     },
     "Microsoft.Extensions.DependencyInjection/6.0.0": {
       "type": "package",
@@ -118,6 +146,27 @@
       "sha512": "sha512-ppPFpBcvxdsfUonNcvITKqLl3bqxWbDCZIzDWHzjpdAHRFfZe0Dw9HmA0+za13IdyrgJwpkDTDA9fHaxOrt20A==",
       "path": "newtonsoft.json/13.0.1",
       "hashPath": "newtonsoft.json.13.0.1.nupkg.sha512"
+    },
+    "SonarAnalyzer.CSharp/8.39.0.47922": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-h1n8Je/hh69dWDT9plGomHhvFh0FWPdVt99OUtiQGC3Q4CWh0/ztenfY3QsBVwM193ozH+luE+WWcrAZRaNMyg==",
+      "path": "sonaranalyzer.csharp/8.39.0.47922",
+      "hashPath": "sonaranalyzer.csharp.8.39.0.47922.nupkg.sha512"
+    },
+    "System.Runtime.CompilerServices.Unsafe/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/iUeP3tq1S0XdNNoMz5C9twLSrM/TH+qElHkXWaPvuNOt+99G75NrV0OS2EqHx5wMN7popYjpc8oTjC1y16DLg==",
+      "path": "system.runtime.compilerservices.unsafe/6.0.0",
+      "hashPath": "system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512"
+    },
+    "System.Text.Encoding.CodePages/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ZFCILZuOvtKPauZ/j/swhvw68ZRi9ATCfvGbk1QfydmcXBkIWecWKn/250UH7rahZ5OoDBaiAudJtPvLwzw85A==",
+      "path": "system.text.encoding.codepages/6.0.0",
+      "hashPath": "system.text.encoding.codepages.6.0.0.nupkg.sha512"
     }
   }
 }
