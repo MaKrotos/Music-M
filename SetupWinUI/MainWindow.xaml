@@ -76,7 +76,7 @@
             </StackPanel>
             <ProgressBar x:Name="progressBar1" Height="20"/>
             <TextBlock x:Name="label6" Text="0 Мб" FontSize="12"/>
-            <Button x:Name="button1" Content="Установить" Height="50" Click="button1_Click" IsEnabled="False"/>
+            <Button x:Name="button1" Content="Установить" Width="500" Height="100" Click="button1_Click" IsEnabled="False"/>
             <CheckBox x:Name="checkBox1" Content="Принудительно установить пакеты"/>
             <TextBlock x:Name="label11" Text="(Активируйте, если у Вас отключены некоторые компоненты и службы Windows, или просто не устанавливается по причине невозможности установить пакеты зависимостей.)" TextWrapping="Wrap" FontSize="12"/>
             <Button x:Name="button2" Content="Тех поддержка" Height="30" Click="button2_Click"/>
