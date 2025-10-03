@@ -21,6 +21,7 @@
 		<DesktopAcrylicBackdrop />
 	</Window.SystemBackdrop>
 	<Grid>
+        
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
