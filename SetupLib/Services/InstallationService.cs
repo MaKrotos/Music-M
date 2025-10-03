@@ -188,7 +188,7 @@ namespace SetupLib.Services
             // Для обычной установки проверяем AppInstaller
             if (!forceInstall && _systemService.IsAppInstalled("AppInstaller"))
             {
-                return $"Start-Process \"{path}\" -Wait";
+                return $"Start-Process \"{path}\"";
             }
 
             return installCommand +

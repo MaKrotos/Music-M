@@ -62,7 +62,6 @@ namespace Setup
                 return;
             }
             installLog += e.Status + "\r\n";
-            whatsNews.Text = e.Status;
             logTextBox.Text = installLog;
             logTextBox.SelectionStart = logTextBox.Text.Length;
             logTextBox.ScrollToCaret();

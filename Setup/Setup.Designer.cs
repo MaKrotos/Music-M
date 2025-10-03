@@ -212,10 +212,10 @@
             MSIXRadio.Enabled = false;
             MSIXRadio.Location = new Point(18, 296);
             MSIXRadio.Name = "MSIXRadio";
-            MSIXRadio.Size = new Size(85, 19);
+            MSIXRadio.Size = new Size(179, 19);
             MSIXRadio.TabIndex = 20;
             MSIXRadio.TabStop = true;
-            MSIXRadio.Text = "MSIX пакет";
+            MSIXRadio.Text = "MSIX пакет (рекомендуется)";
             MSIXRadio.UseVisualStyleBackColor = true;
             MSIXRadio.CheckedChanged += Radio_CheckedChanged;
             // 
@@ -225,10 +225,10 @@
             EXERadio.Enabled = false;
             EXERadio.Location = new Point(18, 321);
             EXERadio.Name = "EXERadio";
-            EXERadio.Size = new Size(44, 19);
+            EXERadio.Size = new Size(339, 19);
             EXERadio.TabIndex = 20;
             EXERadio.TabStop = true;
-            EXERadio.Text = "EXE";
+            EXERadio.Text = "EXE (Если не установулен MS Store или не ставится MSIX)";
             EXERadio.UseVisualStyleBackColor = true;
             EXERadio.CheckedChanged += Radio_CheckedChanged;
             // 
