@@ -715,7 +715,7 @@ namespace VK_UI3.Views
                 frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
         }
 
-        public static void OpenPlayList(long AlbumID, long AlbumOwnerID, string AlbumAccessKey)
+        public static void OpenPlayList(long AlbumID, long AlbumOwnerID, string? AlbumAccessKey = null)
         {
             if (!mainView.PlayNowPanelListCLosed)
             {
@@ -728,7 +728,8 @@ namespace VK_UI3.Views
             MusicX.Core.Models.Playlist playlist = new MusicX.Core.Models.Playlist();
             playlist.Id = AlbumID;
             playlist.OwnerId = AlbumOwnerID;
-            playlist.AccessKey = AlbumAccessKey;
+            if (!(AlbumAccessKey is null))
+                playlist.AccessKey = AlbumAccessKey;
             PlayListVK playListVK = new PlayListVK(playlist, dispatcherQueue);
             sectionView.iVKGetAudio = playListVK;
             frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
@@ -928,6 +929,10 @@ namespace VK_UI3.Views
 
                     case "мои плейлисты":
                         OpenPlayListLists(openedPlayList: OpenedPlayList.UserPlayList);
+                        break;
+
+                    case "для вас":
+                        OpenPlayList(-21, AccountsDB.activeAccount.id);
                         break;
 
                     case "плейлисты":

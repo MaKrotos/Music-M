@@ -1,168 +1,174 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Page
-	x:Class="VK_UI3.Views.MainView"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:animations="using:VK_UI3.Helpers.Animations"
-	xmlns:controlLyryc="using:VK_UI3.Views.ModalsPages"
-	xmlns:custom="using:VK_UI3.Controllers"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:krotos="using:KrotosNavigationFrame"
-	xmlns:local="using:VK_UI3.Views"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	NavigationCacheMode="Enabled"
-	mc:Ignorable="d">
-	<Page.Resources>
-		<ThemeShadow x:Name="SharedShadow" />
+    x:Class="VK_UI3.Views.MainView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:animations="using:VK_UI3.Helpers.Animations"
+    xmlns:controlLyryc="using:VK_UI3.Views.ModalsPages"
+    xmlns:custom="using:VK_UI3.Controllers"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:krotos="using:KrotosNavigationFrame"
+    xmlns:local="using:VK_UI3.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    NavigationCacheMode="Enabled"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <ThemeShadow x:Name="SharedShadow" />
 
-		<Storyboard x:Name="ExpandAnimation">
-			<DoubleAnimation
-				EnableDependentAnimation="True"
-				Storyboard.TargetName="LyricPage"
-				Storyboard.TargetProperty="Opacity"
-				To="1"
-				Duration="0:0:0.3" />
-		</Storyboard>
+        <Storyboard x:Name="ExpandAnimation">
+            <DoubleAnimation
+                EnableDependentAnimation="True"
+                Storyboard.TargetName="LyricPage"
+                Storyboard.TargetProperty="Opacity"
+                To="1"
+                Duration="0:0:0.3" />
+        </Storyboard>
 
-		<Storyboard x:Name="CollapseAnimation">
-			<DoubleAnimation
-				EnableDependentAnimation="True"
-				Storyboard.TargetName="LyricPage"
-				Storyboard.TargetProperty="Opacity"
-				To="0"
-				Duration="0:0:0.3" />
-		</Storyboard>
-
-
-		<Storyboard x:Name="ExpandAnimationPlayingList">
-			<DoubleAnimation
-				EnableDependentAnimation="True"
-				Storyboard.TargetName="SectionViewPageNowPlayingList"
-				Storyboard.TargetProperty="Opacity"
-				To="1"
-				Duration="0:0:0.3" />
-		</Storyboard>
-
-		<Storyboard x:Name="CollapseAnimationPlayingList">
-			<DoubleAnimation
-				EnableDependentAnimation="True"
-				Storyboard.TargetName="SectionViewPageNowPlayingList"
-				Storyboard.TargetProperty="Opacity"
-				To="0"
-				Duration="0:0:0.3" />
-		</Storyboard>
-
-	</Page.Resources>
+        <Storyboard x:Name="CollapseAnimation">
+            <DoubleAnimation
+                EnableDependentAnimation="True"
+                Storyboard.TargetName="LyricPage"
+                Storyboard.TargetProperty="Opacity"
+                To="0"
+                Duration="0:0:0.3" />
+        </Storyboard>
 
 
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="*" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-		<Grid
-			Grid.Row="0"
-			HorizontalAlignment="Stretch"
-			VerticalAlignment="Stretch">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="*" />
+        <Storyboard x:Name="ExpandAnimationPlayingList">
+            <DoubleAnimation
+                EnableDependentAnimation="True"
+                Storyboard.TargetName="SectionViewPageNowPlayingList"
+                Storyboard.TargetProperty="Opacity"
+                To="1"
+                Duration="0:0:0.3" />
+        </Storyboard>
 
-			</Grid.RowDefinitions>
+        <Storyboard x:Name="CollapseAnimationPlayingList">
+            <DoubleAnimation
+                EnableDependentAnimation="True"
+                Storyboard.TargetName="SectionViewPageNowPlayingList"
+                Storyboard.TargetProperty="Opacity"
+                To="0"
+                Duration="0:0:0.3" />
+        </Storyboard>
 
-			<NavigationView
-				Name="NavWiv"
-				Grid.RowSpan="2"
-				Margin="0,0,0,0"
-				HorizontalAlignment="Stretch"
-				IsBackButtonVisible="Collapsed"
-				IsBackEnabled="False"
-				IsPaneOpen="False"
-				IsSettingsVisible="True"
-				ItemInvoked="NavWiv_ItemInvoked"
-				PaneDisplayMode="Auto">
-
-				<NavigationView.MenuItems>
-					<NavigationViewItem Content="Моя музыка">
-						<NavigationViewItem.Icon>
-							<FontIcon Glyph="&#xEC4F;" />
-						</NavigationViewItem.Icon>
-					</NavigationViewItem>
-
-					<NavigationViewItem Content="Мои плейлисты">
-						<NavigationViewItem.Icon>
-							<FontIcon Glyph="&#xE93C;" />
-						</NavigationViewItem.Icon>
-					</NavigationViewItem>
-
-					<NavigationViewItem Content="Плейлисты">
-						<NavigationViewItem.Icon>
-							<FontIcon Glyph="&#xEB51;" />
-						</NavigationViewItem.Icon>
-					</NavigationViewItem>
-
-					<NavigationViewItem Content="Музыка друзей">
-						<NavigationViewItem.Icon>
-							<FontIcon Glyph="&#xE716;" />
-						</NavigationViewItem.Icon>
-					</NavigationViewItem>
-
-					<NavigationViewItem Content="Вложения">
-						<NavigationViewItem.Icon>
-							<FontIcon Glyph="&#xE8F2;" />
-						</NavigationViewItem.Icon>
-					</NavigationViewItem>
+    </Page.Resources>
 
 
-					<NavigationViewItemSeparator />
-					<NavigationViewItemHeader />
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid
+            Grid.Row="0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+
+            </Grid.RowDefinitions>
+
+            <NavigationView
+                Name="NavWiv"
+                Grid.RowSpan="2"
+                Margin="0,0,0,0"
+                HorizontalAlignment="Stretch"
+                IsBackButtonVisible="Collapsed"
+                IsBackEnabled="False"
+                IsPaneOpen="False"
+                IsSettingsVisible="True"
+                ItemInvoked="NavWiv_ItemInvoked"
+                PaneDisplayMode="Auto">
+
+                <NavigationView.MenuItems>
+                    <NavigationViewItem Content="Моя музыка">
+                        <NavigationViewItem.Icon>
+                            <FontIcon Glyph="&#xEC4F;" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+
+                    <NavigationViewItem Content="Для Вас">
+                        <NavigationViewItem.Icon>
+                            <FontIcon Glyph="&#xEC32;" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+
+                    <NavigationViewItem Content="Мои плейлисты">
+                        <NavigationViewItem.Icon>
+                            <FontIcon Glyph="&#xE93C;" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+
+                    <NavigationViewItem Content="Плейлисты">
+                        <NavigationViewItem.Icon>
+                            <FontIcon Glyph="&#xEB51;" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+
+                    <NavigationViewItem Content="Музыка друзей">
+                        <NavigationViewItem.Icon>
+                            <FontIcon Glyph="&#xE716;" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+
+                    <NavigationViewItem Content="Вложения">
+                        <NavigationViewItem.Icon>
+                            <FontIcon Glyph="&#xE8F2;" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
 
 
-				</NavigationView.MenuItems>
-				<Grid
-					x:Name="MainGridLir"
-					Margin="0"
-					PointerEntered="ListViewItem_PointerEntered">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="*" />
-					</Grid.RowDefinitions>
-					<animations:AnimatedSearch
-						x:Name="Search"
-						Grid.Row="0"
-						Height="0"
-						Margin="0"
-						OriginalHeight="50" />
-					<krotos:NavigateFrame x:Name="ContentFrame" Grid.Row="1" />
-				</Grid>
-			</NavigationView>
-			<controlLyryc:LyricsPage
-				x:Name="LyricPage"
-				Grid.Row="3"
-				VerticalAlignment="Stretch"
-				Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}"
-				Opacity="0"
-				Visibility="Collapsed" />
+                    <NavigationViewItemSeparator />
+                    <NavigationViewItemHeader />
 
-			<controlLyryc:EqualizerControl
-				x:Name="EqualizerControlPage"
-				Grid.Row="3"
-				VerticalAlignment="Stretch"
-				Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}"
-				Opacity="0"
-				Visibility="Collapsed" />
-			<Frame
-				x:Name="SectionViewPageNowPlayingList"
-				Grid.Row="3"
-				VerticalAlignment="Stretch"
-				Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}"
-				Opacity="0"
-				Visibility="Collapsed" />
-		</Grid>
-		<Frame
-			Grid.Row="1"
-			VerticalAlignment="Bottom"
-			BorderThickness="0,1,0,0">
-			<custom:AudioPlayer Margin="0,0,0,0" />
-		</Frame>
-	</Grid>
+
+                </NavigationView.MenuItems>
+                <Grid
+                    x:Name="MainGridLir"
+                    Margin="0"
+                    PointerEntered="ListViewItem_PointerEntered">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <animations:AnimatedSearch
+                        x:Name="Search"
+                        Grid.Row="0"
+                        Height="0"
+                        Margin="0"
+                        OriginalHeight="50" />
+                    <krotos:NavigateFrame x:Name="ContentFrame" Grid.Row="1" />
+                </Grid>
+            </NavigationView>
+            <controlLyryc:LyricsPage
+                x:Name="LyricPage"
+                Grid.Row="3"
+                VerticalAlignment="Stretch"
+                Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}"
+                Opacity="0"
+                Visibility="Collapsed" />
+
+            <controlLyryc:EqualizerControl
+                x:Name="EqualizerControlPage"
+                Grid.Row="3"
+                VerticalAlignment="Stretch"
+                Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}"
+                Opacity="0"
+                Visibility="Collapsed" />
+            <Frame
+                x:Name="SectionViewPageNowPlayingList"
+                Grid.Row="3"
+                VerticalAlignment="Stretch"
+                Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}"
+                Opacity="0"
+                Visibility="Collapsed" />
+        </Grid>
+        <Frame
+            Grid.Row="1"
+            VerticalAlignment="Bottom"
+            BorderThickness="0,1,0,0">
+            <custom:AudioPlayer Margin="0,0,0,0" />
+        </Frame>
+    </Grid>
 </Page>
