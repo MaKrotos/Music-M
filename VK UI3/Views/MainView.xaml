@@ -88,11 +88,6 @@
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
 
-                    <NavigationViewItem Content="Для Вас">
-                        <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xEC32;" />
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
 
                     <NavigationViewItem Content="Мои плейлисты">
                         <NavigationViewItem.Icon>
@@ -118,6 +113,11 @@
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
 
+                    <NavigationViewItem Content="Для Вас">
+                        <NavigationViewItem.Icon>
+                            <FontIcon Glyph="&#xEC32;" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
 
                     <NavigationViewItemSeparator />
                     <NavigationViewItemHeader />
