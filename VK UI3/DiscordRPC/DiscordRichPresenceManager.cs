@@ -98,7 +98,7 @@ namespace VK_UI3.DiscordRPC
                         Timestamps = new Timestamps()
                         {
                             Start = DateTime.UtcNow.AddSeconds(-media.Position.TotalSeconds),
-                            End = DateTime.UtcNow + TimeSpan.FromSeconds(media.NaturalDuration.TotalSeconds),
+                            End = DateTime.UtcNow.AddSeconds(media.NaturalDuration.TotalSeconds - media.Position.TotalSeconds)
                         },
                         Assets = new Assets()
                         {
