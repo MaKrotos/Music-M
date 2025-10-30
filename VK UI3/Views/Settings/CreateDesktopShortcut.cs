@@ -21,22 +21,32 @@ namespace VK_UI3.Views.Settings
 
         private async void LoadShortcutState()
         {
-            var exists = await ShortcutManager.IsDesktopShortcutExistsAsync();
-            UpdateButtonState(exists);
+            try
+            {
+                var exists = await ShortcutManager.IsDesktopShortcutExistsAsync();
+                UpdateButtonState(exists);
+            }
+            catch
+            {
+               
+            }
         }
 
         private void UpdateButtonState(bool shortcutExists)
         {
-            if (shortcutExists)
+            this.DispatcherQueue.TryEnqueue(async () =>
             {
-                this.Content = "Ярлык уже создан";
-                this.IsEnabled = false;
-            }
-            else
-            {
-                this.Content = "Создать ярлык на рабочем столе";
-                this.IsEnabled = true;
-            }
+                if (shortcutExists)
+                {
+                    this.Content = "Ярлык уже создан";
+                    this.IsEnabled = false;
+                }
+                else
+                {
+                    this.Content = "Создать ярлык на рабочем столе";
+                    this.IsEnabled = true;
+                }
+            });
         }
 
         private async void CreateDesktopShortcut_Click(object sender, RoutedEventArgs e)
