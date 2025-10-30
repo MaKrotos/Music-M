@@ -99,8 +99,6 @@ namespace VK_UI3.VKs.IVK
 
                 task = Task.Run(async () =>
                 {
-                  
-
                     try
                     {
                         var tracks = await VK.vkService.GetStreamMixAudios(data.Id, data.Append+1, options: data.Options);

@@ -428,9 +428,7 @@ namespace VK_UI3.VKs.IVK
         {
             get
             {
-                if (_itsAll)
-                    return true;
-                return false;
+                return _itsAll;
             }
             set { _itsAll = value; }
         }

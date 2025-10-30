@@ -216,7 +216,7 @@ namespace VK_UI3.VKs
             }
             catch (Exception ex)
             {
-                (login.Frame as ExtendFrame).GoBack(new ArgSender() { ErrorText = ex.Message });
+                (login.Frame as ExtendFrame).GoBack(new ArgSender() { ErrorText = ex.Message.ToString() });
                 throw (ex);
 
             }
@@ -299,7 +299,7 @@ namespace VK_UI3.VKs
                 await LoggedInAsync();
             }
             catch (Exception ex){
-                (login.Frame as ExtendFrame).GoBack(new ArgSender() { ErrorText = ex.Message });
+                (login.Frame as ExtendFrame).GoBack(new ArgSender() { ErrorText = ex.Message.ToString() });
             }
         }
 
@@ -431,7 +431,7 @@ namespace VK_UI3.VKs
             }
             catch (Exception e)
             {
-                (login.Frame as ExtendFrame).GoBack(new ArgSender() { ErrorText = e.Message });
+                (login.Frame as ExtendFrame).GoBack(new ArgSender() { ErrorText = e.Message.ToString() });
             }
         }
 
@@ -483,7 +483,7 @@ namespace VK_UI3.VKs
             }
             catch (Exception e)
             {
-                (login.Frame as ExtendFrame).GoBack(new ArgSender() { ErrorText = e.Message });
+                (login.Frame as ExtendFrame).GoBack(new ArgSender() { ErrorText = e.Message.ToString() });
             }
         }
 
@@ -502,7 +502,7 @@ namespace VK_UI3.VKs
                 }
                 catch (Exception e)
                 {
-                    (login.Frame as ExtendFrame).GoBack(new ArgSender() { ErrorText = e.Message });
+                    (login.Frame as ExtendFrame).GoBack(new ArgSender() { ErrorText = e.Message.ToString() });
                     return;
                 }
 
