@@ -15,7 +15,7 @@ namespace VkNet.AudioBypassService.Utils
     [UsedImplicitly]
     internal class FakeSafetyNetClient : IDisposable
     {
-        private const string GcmUserAgent = "Android-GCM/1.5 (generic_x86 KK)";
+        private const string GcmUserAgent = "Android-GCM/1.5 (Linux; U; Android 12; Pixel 6 Build/SP2A.220505.006)";
         private const int MaxRetryAttempts = 3;
         private const int RetryDelayMs = 1000;
 
@@ -40,7 +40,7 @@ namespace VkNet.AudioBypassService.Utils
             };
 
             // 3. Устанавливаем User-Agent (обходным путём)
-            _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "Android-GCM/1.5");
+            _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "Android-GCM/1.5 (Linux; U; Android 12; Pixel 6 Build/SP2A.220505.006)");
 
             // 4. Принудительно включаем TLS 1.2/1.3
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
@@ -59,7 +59,7 @@ namespace VkNet.AudioBypassService.Utils
                         Checkin = new AndroidCheckinProto
                         {
                             CellOperator = "310260",
-                            Roaming = "mobile:LTE:",
+                            Roaming = "mobile:5G:",
                             SimOperator = "310260",
                             Type = DeviceType.DeviceAndroidOs
                         },
@@ -68,7 +68,7 @@ namespace VkNet.AudioBypassService.Utils
                         LoggingId = -8212629671123625360,
                         Meid = "358240051111110",
                         OtaCerts = { "71Q6Rn2DDZl1zPDVaaeEHItd+Yg=" },
-                        TimeZone = "Russia/Moscow",
+                        TimeZone = "Europe/Moscow",
                         Version = 3
                     };
 
@@ -137,7 +137,7 @@ namespace VkNet.AudioBypassService.Utils
                 { "X-subtype", "841415684880" },
                 { "sender", "841415684880" },
                 { "X-appid", appId },
-                { "app", "com.vkontakte.android" },
+                { "app", "com.google.android.gms" },
                 { "device", device },
             };
         }

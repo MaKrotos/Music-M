@@ -14,18 +14,17 @@ namespace VkNet.AudioBypassService.Utils
 	{
 		private static readonly IDictionary<string, string> VkHeaders = new Dictionary<string, string>
 		{
-			{ "User-Agent", "VKAndroidApp/8.79-99999 (Android 12; SDK 32; arm64-v8a; VK M; ru; 2960x1440)" },
+			{ "User-Agent", "VKAndroidApp/8.154-99999 (Android 12; SDK 32; arm64-v8a; Pixel 6; ru; 2960x1440)" },
 			{ "X-VK-Android-Client", "new" },
-			// { "User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36" },
-			// { "Referer", "https://id.vk.ru/" },
-			// { "Origin", "https://id.vk.ru" },
-			// { "Sec-Fetch-Mode", "cors" },
-			// { "Sec-Fetch-Dest", "empty" },
-			// { "Sec-Fetch-Site", "same-site" },
-			// { "Sec-Ch-Ua-Platform", "\"Windows\"" },
-			// { "Sec-Ch-Ua-Mobile", "?0" },
-			// { "Sec-Ch-Ua", "\"Google Chrome\";v=\"117\", \"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"117\"" },
-			// { "X-Quic", "1" }
+			{ "Referer", "https://id.vk.ru/" },
+			{ "Origin", "https://id.vk.ru" },
+			{ "Sec-Fetch-Mode", "cors" },
+			{ "Sec-Fetch-Dest", "empty" },
+			{ "Sec-Fetch-Site", "same-site" },
+			{ "Sec-Ch-Ua-Platform", "\"Android\"" },
+			{ "Sec-Ch-Ua-Mobile", "?1" },
+			{ "Sec-Ch-Ua", "\"Google Chrome\";v=\"117\", \"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"117\"" },
+			{ "X-Quic", "1" }
 		};
 
 		public RestClientWithUserAgent(HttpClient httpClient, ILogger<RestClient> logger) : base(httpClient, logger)
