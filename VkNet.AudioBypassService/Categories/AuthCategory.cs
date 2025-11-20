@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Net.Http;
 using System.Security.Authentication;
@@ -13,6 +14,7 @@ using VkNet.Abstractions;
 using VkNet.Abstractions.Core;
 using VkNet.Abstractions.Utils;
 using VkNet.AudioBypassService.Models.Auth;
+using VkNet.AudioBypassService.Utils;
 using VkNet.Enums.Filters;
 using VkNet.Extensions.DependencyInjection;
 using VkNet.Utils;
@@ -226,6 +228,30 @@ public partial class AuthCategory : IAuthCategory
         }, true);
         
         return response.Success.Count > 0 ? response.Success[0].AccessToken : null;
+    }
+    
+    /// <summary>
+    /// Обновление токенов через OAuth endpoint, используемый в мобильном приложении VK
+    /// </summary>
+    /// <param name="refreshToken">Токен для обновления</param>
+    /// <param name="deviceId">Идентификатор устройства</param>
+    /// <returns>Новые токены доступа</returns>
+    public async Task<VkConnectResponse> RefreshTokenAsync(string refreshToken, string deviceId)
+    {
+        var parameters = new VkParameters
+        {
+            { "device_id", deviceId },
+            { "device_os", "android" },
+            { "grant_type", "refresh_token" },
+            { "refresh_token", refreshToken }
+        };
+
+        var response = await _restClient.PostAsync(new Uri("https://api.vk.ru/oauth/token"), parameters, Encoding.UTF8);
+        
+        var obj = VkErrors.IfErrorThrowException(response.Value ?? response.Message);
+        VkAuthErrors.IfErrorThrowException(obj);
+
+        return obj.ToObject<VkConnectResponse>();
     }
 
     public Task<ExchangeTokenResponse> GetExchangeToken(UsersFields fields = null)

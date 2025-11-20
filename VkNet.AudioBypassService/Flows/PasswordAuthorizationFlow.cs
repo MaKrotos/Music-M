@@ -41,4 +41,15 @@ internal class PasswordAuthorizationFlow : VkAndroidAuthorizationBase
         versionManager, languageService, rateLimiter, restClient, captchaHandler, libVerifyClient)
     {
     }
+    
+    /// <summary>
+    /// Обновление токенов через OAuth endpoint, используемый в мобильном приложении VK
+    /// </summary>
+    /// <param name="refreshToken">Токен для обновления</param>
+    /// <param name="deviceId">Идентификатор устройства</param>
+    /// <returns>Новые токены доступа</returns>
+    public async Task<VkConnectResponse> RefreshTokenAsync(string refreshToken, string deviceId)
+    {
+        return await base.RefreshTokenAsync(refreshToken, deviceId);
+    }
 }

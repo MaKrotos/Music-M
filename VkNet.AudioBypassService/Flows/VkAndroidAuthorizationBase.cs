@@ -175,7 +175,7 @@ internal abstract class VkAndroidAuthorizationBase : IAuthorizationFlow
 
     protected virtual async ValueTask<VkParameters> BuildParameters(AndroidApiAuthParams authParams)
     {
-        return new()
+        var parameters = new VkParameters
         {
             { "grant_type", authParams.AndroidGrantType },
             { "libverify_support", false }, // TODO: test lib verify cringe
@@ -183,12 +183,23 @@ internal abstract class VkAndroidAuthorizationBase : IAuthorizationFlow
             { "scope", "all" },
             { "supported_ways", authParams.SupportedWays },
             { "device_id", await GetDeviceIdAsync() },
+            { "device_os", "android" },
             { "api_id", authParams.ApplicationId },
             { "https", true },
             { "lang", _languageService.GetLanguage()?.ToString() ?? "ru" },
             { "v", _versionManager.Version },
             { "anonymous_token", _tokenStore.Token },
         };
+        
+        // Добавляем параметры для VK Connect авторизации
+        if (authParams.AndroidGrantType == AndroidGrantType.WithoutPassword)
+        {
+            parameters.Add("flow_type", "auth_without_password");
+            parameters.Add("2fa_supported", true);
+            parameters.Add("vk_connect_auth", true);
+        }
+        
+        return parameters;
     }
 
     private async Task<AnonymousTokenResponse> AuthAnonymousAsync(AndroidApiAuthParams authParams)
@@ -227,5 +238,29 @@ internal abstract class VkAndroidAuthorizationBase : IAuthorizationFlow
         await _deviceIdStore.SetDeviceIdAsync(deviceId);
 
         return deviceId;
+    }
+    
+    /// <summary>
+    /// Обновление токенов через OAuth endpoint, используемый в мобильном приложении VK
+    /// </summary>
+    /// <param name="refreshToken">Токен для обновления</param>
+    /// <param name="deviceId">Идентификатор устройства</param>
+    /// <returns>Новые токены доступа</returns>
+    protected async Task<VkConnectResponse> RefreshTokenAsync(string refreshToken, string deviceId)
+    {
+        var parameters = new VkParameters
+        {
+            { "device_id", deviceId },
+            { "device_os", "android" },
+            { "grant_type", "refresh_token" },
+            { "refresh_token", refreshToken }
+        };
+
+        var response = await _restClient.PostAsync(new Uri("https://api.vk.ru/oauth/token"), parameters, Encoding.UTF8);
+        
+        var obj = VkErrors.IfErrorThrowException(response.Value ?? response.Message);
+        VkAuthErrors.IfErrorThrowException(obj);
+
+        return obj.ToObject<VkConnectResponse>(_jsonSerializer);
     }
 }

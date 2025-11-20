@@ -22,4 +22,12 @@ public interface IAuthCategory
     Task<ExchangeTokenResponse> GetExchangeToken([CanBeNull] UsersFields fields = null);
     
     Task<PasskeyBeginResponse> BeginPasskeyAsync(string sid);
+    
+    /// <summary>
+    /// Обновление токенов через OAuth endpoint, используемый в мобильном приложении VK
+    /// </summary>
+    /// <param name="refreshToken">Токен для обновления</param>
+    /// <param name="deviceId">Идентификатор устройства</param>
+    /// <returns>Новые токены доступа</returns>
+    Task<VkConnectResponse> RefreshTokenAsync(string refreshToken, string deviceId);
 }

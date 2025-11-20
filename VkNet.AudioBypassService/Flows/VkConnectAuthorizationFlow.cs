@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using VkNet.Abstractions.Core;
 using VkNet.Abstractions.Utils;
@@ -11,9 +11,12 @@ using VkNet.Utils;
 
 namespace VkNet.AudioBypassService.Flows;
 
-internal class PasskeyAuthorizationFlow : VkAndroidAuthorizationBase
+/// <summary>
+/// Поток авторизации через VK Connect, используемый в мобильном приложении VK
+/// </summary>
+internal class VkConnectAuthorizationFlow : VkAndroidAuthorizationBase
 {
-    public PasskeyAuthorizationFlow(IVkTokenStore tokenStore, FakeSafetyNetClient safetyNetClient,
+    public VkConnectAuthorizationFlow(IVkTokenStore tokenStore, FakeSafetyNetClient safetyNetClient,
         IDeviceIdStore deviceIdStore, IVkApiVersionManager versionManager, ILanguageService languageService,
         IAsyncRateLimiter rateLimiter, IRestClient restClient, ICaptchaHandler captchaHandler,
         LibVerifyClient libVerifyClient) : base(tokenStore, safetyNetClient, deviceIdStore, versionManager,
@@ -23,9 +26,6 @@ internal class PasskeyAuthorizationFlow : VkAndroidAuthorizationBase
 
     protected override Task<AuthorizationResult> AuthorizeAsync(AndroidApiAuthParams authParams)
     {
-        if (string.IsNullOrEmpty(authParams.PasskeyData))
-            throw new ArgumentException("Passkey data is empty", nameof(authParams));
-        
         return AuthAsync(authParams);
     }
 
@@ -33,8 +33,11 @@ internal class PasskeyAuthorizationFlow : VkAndroidAuthorizationBase
     {
         var parameters = await base.BuildParameters(authParams);
         
-        parameters.Add("passkey_data", authParams.PasskeyData);
-        parameters.Add("flow_type", "tg_flow");
+        // Добавляем специфичные параметры для VK Connect авторизации
+        parameters.Add("username", authParams.Login);
+        parameters.Add("flow_type", "auth_without_password");
+        parameters.Add("2fa_supported", true);
+        parameters.Add("vk_connect_auth", true);
         
         return parameters;
     }
