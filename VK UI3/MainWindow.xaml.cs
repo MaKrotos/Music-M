@@ -13,6 +13,7 @@ using SetupLib;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -430,9 +431,61 @@ namespace VK_UI3
 #if !DEBUG
             checkUpdate();
 #endif
-
+            checkNotifications();
             InitializeSnow();
         }
+
+        private async void checkNotifications()
+        {
+            var not = new   Helpers.NotificationsGetter();
+            var notifs = await not.GetNotificationsAsync();
+
+
+            foreach (var item in notifs)
+            {
+                ButtonNotification button1 = null;
+                ButtonNotification button2 = null;
+
+                // Создаем первую кнопку, если есть ссылки
+                if (item.Links != null && item.Links.Count > 0)
+                {
+                    button1 = CreateButtonNotification(item.Links[0]);
+                }
+
+                // Создаем вторую кнопку, если есть минимум 2 ссылки
+                if (item.Links != null && item.Links.Count > 1)
+                {
+                    button2 = CreateButtonNotification(item.Links[1]);
+                }
+
+                new Notification(
+                    item.Header,
+                    item.Message,
+                    button1,
+                    button2
+                );
+            }
+
+
+        }
+
+        private ButtonNotification CreateButtonNotification(NotificationLink link)
+        {
+            return new ButtonNotification(
+                link.Name,
+                new Action(() =>
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        UseShellExecute = true,
+                        FileName = link.Url
+                    });
+                }),
+                true
+            );
+        }
+
+
         #region Snow
         private void InitializeSnow()
         {

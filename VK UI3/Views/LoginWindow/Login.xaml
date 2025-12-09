@@ -49,7 +49,7 @@
 								<TextBlock
 									Width="250"
 									TextWrapping="Wrap"
-									Text="Логином может являться Ваш номер телефона или электронная почта, на которую зарегестрирован Ваш VK" />
+									Text="Логином может являться ваш номер телефона или электронная почта, на которую зарегистрирован ваш аккаунт ВКонтакте (VK)." />
 							</Flyout>
 						</Button.Flyout>
 						<TextBlock FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" Text="?" />

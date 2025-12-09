@@ -59,8 +59,8 @@ namespace VK_UI3.SnowFlake
             base.OnApplyTemplate();
             _canvas = GetTemplateChild(PART_Canvas) as Canvas;
 
-            PointerMoved -= OnPointerMove;
-            PointerMoved += OnPointerMove;
+        //    PointerMoved -= OnPointerMove;
+        //    PointerMoved += OnPointerMove;
 
             SizeChanged -= OnSizeChanged;
             SizeChanged += OnSizeChanged;
@@ -84,7 +84,7 @@ namespace VK_UI3.SnowFlake
         private void OnUnLoaded(object sender, RoutedEventArgs e)
         {
             Stop();
-            PointerMoved -= OnPointerMove;
+        //    PointerMoved -= OnPointerMove;
             SizeChanged -= OnSizeChanged;
             Unloaded -= OnUnLoaded;
         }
@@ -248,13 +248,14 @@ namespace VK_UI3.SnowFlake
             _snowFlakes.Clear();
         }
 
+        /*
         private void OnPointerMove(object sender, PointerRoutedEventArgs e)
         {
             var pos = e.GetCurrentPoint(_canvas);
             mX = pos.Position.X;
             mY = pos.Position.Y;
         }
-
+        */
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
             _canvas.SetValue(FrameworkElement.WidthProperty, e.NewSize.Width);
