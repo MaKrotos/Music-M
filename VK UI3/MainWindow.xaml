@@ -1,304 +1,311 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Window
-	x:Class="VK_UI3.MainWindow"
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
-	xmlns:custom="using:VK_UI3.Views.Download"
-	xmlns:customBTN="using:VK_UI3.Helpers.Animations"
-	xmlns:customLogin="using:VK_UI3.Views.LoginWindow"
-	xmlns:customNotif="using:VK_UI3.Views.Notification"
-	xmlns:customTasks="using:VK_UI3.Views.Tasks"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:local="using:VK_UI3"
-	xmlns:login="using:VK_UI3.Views.LoginWindow"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:upload="using:VK_UI3.Views.Upload"
-	x:Name="mainWindoww"
-	Title="VK M"
-	mc:Ignorable="d">
-	<Window.SystemBackdrop>
-		<DesktopAcrylicBackdrop />
-	</Window.SystemBackdrop>
-	<Grid>
-        
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
+    x:Class="VK_UI3.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
+    xmlns:custom="using:VK_UI3.Views.Download"
+    xmlns:customBTN="using:VK_UI3.Helpers.Animations"
+    xmlns:customLogin="using:VK_UI3.Views.LoginWindow"
+    xmlns:customNotif="using:VK_UI3.Views.Notification"
+    xmlns:customTasks="using:VK_UI3.Views.Tasks"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:VK_UI3"
+    xmlns:login="using:VK_UI3.Views.LoginWindow"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:snow="using:VK_UI3.SnowFlake"
+    xmlns:upload="using:VK_UI3.Views.Upload"
+    x:Name="mainWindoww"
+    Title="VK M"
+    mc:Ignorable="d">
+    <Window.SystemBackdrop>
+        <DesktopAcrylicBackdrop />
+    </Window.SystemBackdrop>
+    <Grid>
+        <snow:SnowFlakeEffect
+            x:Name="snow"
+            AutoStart="False"
+            FlakeCount="100" />
+        <Grid>
 
-		<Grid Height="30" Padding="6.5,2.5,2.5,2.5">
-			<Grid
-				x:Name="AppTitleBar"
-				Grid.Row="0"
-				Height="30"
-				Margin="0,0,140,0"
-				Padding="0,0,0,0"
-				HorizontalAlignment="Stretch"
-				VerticalAlignment="Top">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="*" />
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-				</Grid.ColumnDefinitions>
-				<customBTN:AnimatedButton
-					x:Name="BackBTN"
-					Grid.Column="0"
-					Width="0"
-					Height="0"
-					Margin="0,0,0,0"
-					Padding="0"
-					Background="Transparent"
-					BorderThickness="0"
-					Click="BackClick"
-					CornerRadius="5"
-					OriginalHeight="25"
-					OriginalMargin="0,0,0,5"
-					OriginalWidth="35">
-					<Button.RenderTransform>
-						<TransformGroup>
-							<ScaleTransform x:Name="BackBTNScale" ScaleX="1" ScaleY="1" />
-							<TranslateTransform x:Name="BackBTNTransformBackBTN" X="0" Y="0" />
-						</TransformGroup>
-					</Button.RenderTransform>
-					<Button.RenderTransformOrigin>
-						0.5,0.5
-					</Button.RenderTransformOrigin>
-					<FontIcon FontSize="16" Glyph="&#xE72B;">
-						<FontIcon.RenderTransform>
-							<ScaleTransform x:Name="IconScaleTransformBackBTN" ScaleX="1" ScaleY="1" />
-						</FontIcon.RenderTransform>
-						<FontIcon.RenderTransformOrigin>
-							0.5,0.5
-						</FontIcon.RenderTransformOrigin>
-						<FontIcon.Resources>
-							<Storyboard x:Name="ScaleStoryboardBackBTN">
-								<DoubleAnimation
-									AutoReverse="True"
-									Storyboard.TargetName="IconScaleTransformBackBTN"
-									Storyboard.TargetProperty="ScaleX"
-									From="1"
-									To="0.8"
-									Duration="0:0:0.1" />
-								<DoubleAnimation
-									AutoReverse="True"
-									Storyboard.TargetName="IconScaleTransformBackBTN"
-									Storyboard.TargetProperty="ScaleY"
-									From="1"
-									To="0.8"
-									Duration="0:0:0.1" />
-								<DoubleAnimation
-									AutoReverse="True"
-									BeginTime="0:0:0.1"
-									Storyboard.TargetName="BackBTNTransformBackBTN"
-									Storyboard.TargetProperty="X"
-									From="0"
-									To="-3"
-									Duration="0:0:0.1" />
-							</Storyboard>
-						</FontIcon.Resources>
-					</FontIcon>
-				</customBTN:AnimatedButton>
-				<customBTN:AnimatedButton
-					x:Name="AnimatedButton"
-					Grid.Column="1"
-					Width="0"
-					Height="0"
-					Margin="0,0,0,5"
-					Padding="0"
-					Background="Transparent"
-					BorderThickness="0"
-					Click="RefreshClick_Click"
-					CornerRadius="5"
-					OriginalHeight="25"
-					OriginalMargin="0,0,0,5"
-					OriginalWidth="35">
-					<Button.RenderTransform>
-						<ScaleTransform x:Name="AnimatedButtonScaleTransform" ScaleX="1" ScaleY="1" />
-					</Button.RenderTransform>
-					<Button.RenderTransformOrigin>
-						0.5,0.5
-					</Button.RenderTransformOrigin>
-					<FontIcon
-						x:Name="AnimatedIcon"
-						FontSize="16"
-						Glyph="&#xE72C;">
-						<FontIcon.RenderTransform>
-							<RotateTransform x:Name="IconRotateTransform" Angle="0" />
-						</FontIcon.RenderTransform>
-						<FontIcon.RenderTransformOrigin>
-							0.5,0.5
-						</FontIcon.RenderTransformOrigin>
-						<FontIcon.Resources>
-							<Storyboard x:Name="RotationStoryboard">
-								<DoubleAnimation
-									Storyboard.TargetName="IconRotateTransform"
-									Storyboard.TargetProperty="Angle"
-									From="0"
-									To="360"
-									Duration="0:0:1">
-									<DoubleAnimation.EasingFunction>
-										<BounceEase
-											Bounces="1"
-											Bounciness="5"
-											EasingMode="EaseOut" />
-									</DoubleAnimation.EasingFunction>
-								</DoubleAnimation>
-							</Storyboard>
-						</FontIcon.Resources>
-					</FontIcon>
-				</customBTN:AnimatedButton>
+            <Grid Height="30" Padding="6.5,2.5,2.5,2.5">
+                <Grid
+                    x:Name="AppTitleBar"
+                    Grid.Row="0"
+                    Height="30"
+                    Margin="0,0,140,0"
+                    Padding="0,0,0,0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
 
-				<Grid
-					Grid.Column="2"
-					Background="Transparent"
-					Tapped="TitIcon_Tapped">
-					<Grid.ContextFlyout>
-						<Flyout
-							x:Name="NotifList"
-							ScrollViewer.HorizontalScrollMode="Disabled"
-							ScrollViewer.VerticalScrollMode="Disabled">
-							<customNotif:NotificationList MaxWidth="400" CornerRadius="10" />
-						</Flyout>
-					</Grid.ContextFlyout>
+                    </Grid.ColumnDefinitions>
+                    <customBTN:AnimatedButton
+                        x:Name="BackBTN"
+                        Grid.Column="0"
+                        Width="0"
+                        Height="0"
+                        Margin="0,0,0,0"
+                        Padding="0"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Click="BackClick"
+                        CornerRadius="5"
+                        OriginalHeight="25"
+                        OriginalMargin="0,0,0,5"
+                        OriginalWidth="35">
+                        <Button.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform x:Name="BackBTNScale" ScaleX="1" ScaleY="1" />
+                                <TranslateTransform x:Name="BackBTNTransformBackBTN" X="0" Y="0" />
+                            </TransformGroup>
+                        </Button.RenderTransform>
+                        <Button.RenderTransformOrigin>
+                            0.5,0.5
+                        </Button.RenderTransformOrigin>
+                        <FontIcon FontSize="16" Glyph="&#xE72B;">
+                            <FontIcon.RenderTransform>
+                                <ScaleTransform x:Name="IconScaleTransformBackBTN" ScaleX="1" ScaleY="1" />
+                            </FontIcon.RenderTransform>
+                            <FontIcon.RenderTransformOrigin>
+                                0.5,0.5
+                            </FontIcon.RenderTransformOrigin>
+                            <FontIcon.Resources>
+                                <Storyboard x:Name="ScaleStoryboardBackBTN">
+                                    <DoubleAnimation
+                                        AutoReverse="True"
+                                        Storyboard.TargetName="IconScaleTransformBackBTN"
+                                        Storyboard.TargetProperty="ScaleX"
+                                        From="1"
+                                        To="0.8"
+                                        Duration="0:0:0.1" />
+                                    <DoubleAnimation
+                                        AutoReverse="True"
+                                        Storyboard.TargetName="IconScaleTransformBackBTN"
+                                        Storyboard.TargetProperty="ScaleY"
+                                        From="1"
+                                        To="0.8"
+                                        Duration="0:0:0.1" />
+                                    <DoubleAnimation
+                                        AutoReverse="True"
+                                        BeginTime="0:0:0.1"
+                                        Storyboard.TargetName="BackBTNTransformBackBTN"
+                                        Storyboard.TargetProperty="X"
+                                        From="0"
+                                        To="-3"
+                                        Duration="0:0:0.1" />
+                                </Storyboard>
+                            </FontIcon.Resources>
+                        </FontIcon>
+                    </customBTN:AnimatedButton>
+                    <customBTN:AnimatedButton
+                        x:Name="AnimatedButton"
+                        Grid.Column="1"
+                        Width="0"
+                        Height="0"
+                        Margin="0,0,0,5"
+                        Padding="0"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Click="RefreshClick_Click"
+                        CornerRadius="5"
+                        OriginalHeight="25"
+                        OriginalMargin="0,0,0,5"
+                        OriginalWidth="35">
+                        <Button.RenderTransform>
+                            <ScaleTransform x:Name="AnimatedButtonScaleTransform" ScaleX="1" ScaleY="1" />
+                        </Button.RenderTransform>
+                        <Button.RenderTransformOrigin>
+                            0.5,0.5
+                        </Button.RenderTransformOrigin>
+                        <FontIcon
+                            x:Name="AnimatedIcon"
+                            FontSize="16"
+                            Glyph="&#xE72C;">
+                            <FontIcon.RenderTransform>
+                                <RotateTransform x:Name="IconRotateTransform" Angle="0" />
+                            </FontIcon.RenderTransform>
+                            <FontIcon.RenderTransformOrigin>
+                                0.5,0.5
+                            </FontIcon.RenderTransformOrigin>
+                            <FontIcon.Resources>
+                                <Storyboard x:Name="RotationStoryboard">
+                                    <DoubleAnimation
+                                        Storyboard.TargetName="IconRotateTransform"
+                                        Storyboard.TargetProperty="Angle"
+                                        From="0"
+                                        To="360"
+                                        Duration="0:0:1">
+                                        <DoubleAnimation.EasingFunction>
+                                            <BounceEase
+                                                Bounces="1"
+                                                Bounciness="5"
+                                                EasingMode="EaseOut" />
+                                        </DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </FontIcon.Resources>
+                        </FontIcon>
+                    </customBTN:AnimatedButton>
 
-					<Grid Grid.Column="2" Margin="5,0,5,5">
-						<ImageIcon
-							x:Name="TitIcon"
-							Width="20"
-							Height="20"
-							Source="ms-appx:///Assets/StoreLogo.scale-400.png" />
+                    <Grid
+                        Grid.Column="2"
+                        Background="Transparent"
+                        Tapped="TitIcon_Tapped">
+                        <Grid.ContextFlyout>
+                            <Flyout
+                                x:Name="NotifList"
+                                ScrollViewer.HorizontalScrollMode="Disabled"
+                                ScrollViewer.VerticalScrollMode="Disabled">
+                                <customNotif:NotificationList MaxWidth="400" CornerRadius="10" />
+                            </Flyout>
+                        </Grid.ContextFlyout>
 
-						<Ellipse
-							x:Name="NotifIndicator"
-							Width="8"
-							Height="8"
-							Margin="0,0,-2,0"
-							HorizontalAlignment="Right"
-							VerticalAlignment="Top"
-							Fill="Red"
-							Visibility="Collapsed" />
-					</Grid>
-				</Grid>
+                        <Grid Grid.Column="2" Margin="5,0,5,5">
+                            <ImageIcon
+                                x:Name="TitIcon"
+                                Width="20"
+                                Height="20"
+                                Source="ms-appx:///Assets/StoreLogo.scale-400.png" />
 
-
-				<TextBlock
-					x:Name="AppTitle"
-					Grid.Column="3"
-					Margin="5,0,5,5"
-					HorizontalAlignment="Left"
-					VerticalAlignment="Center"
-					Text="VK M" />
-
-				<customBTN:AnimatedButton
-					x:Name="DownLoadBTN"
-					Grid.Column="4"
-					Width="0"
-					Height="0"
-					Margin="0,0,0,5"
-					Padding="0"
-					HorizontalAlignment="Right"
-					VerticalAlignment="Center"
-					Background="Transparent"
-					CornerRadius="5"
-					OriginalHeight="25"
-					OriginalMargin="5,0,0,5"
-					OriginalWidth="35">
-					<Button.Flyout>
-						<Flyout>
-							<custom:DownloadsList />
-						</Flyout>
-					</Button.Flyout>
-					<FontIcon FontSize="16" Glyph="&#xE896;" />
-				</customBTN:AnimatedButton>
-
-				<customBTN:AnimatedButton
-					x:Name="TasksBTN"
-					Grid.Column="5"
-					Width="0"
-					Height="0"
-					Margin="0,0,0,5"
-					Padding="0"
-					HorizontalAlignment="Left"
-					VerticalAlignment="Center"
-					Background="Transparent"
-					CornerRadius="5"
-					OriginalHeight="25"
-					OriginalMargin="5,0,0,5"
-					OriginalWidth="35">
-					<Button.Flyout>
-						<Flyout>
-							<customTasks:TaskList />
-						</Flyout>
-					</Button.Flyout>
-					<FontIcon FontSize="16" Glyph="&#xF133;" />
-				</customBTN:AnimatedButton>
+                            <Ellipse
+                                x:Name="NotifIndicator"
+                                Width="8"
+                                Height="8"
+                                Margin="0,0,-2,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Fill="Red"
+                                Visibility="Collapsed" />
+                        </Grid>
+                    </Grid>
 
 
+                    <TextBlock
+                        x:Name="AppTitle"
+                        Grid.Column="3"
+                        Margin="5,0,5,5"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Text="VK M" />
 
-				<StackPanel
-					Grid.Column="5"
-					HorizontalAlignment="Right"
-					Orientation="Horizontal">
-					<customBTN:AnimatedButton
-						x:Name="UploadBTN"
-						Grid.Column="4"
-						Width="0"
-						Height="0"
-						Margin="0,0,0,5"
-						Padding="0"
-						HorizontalAlignment="Right"
-						VerticalAlignment="Center"
-						Background="Transparent"
-						CornerRadius="5"
-						OriginalHeight="25"
-						OriginalMargin="5,0,5,5"
-						OriginalWidth="35">
-						<Button.Flyout>
-							<Flyout>
-								<upload:UploadList />
-							</Flyout>
-						</Button.Flyout>
-						<FontIcon FontSize="16" Glyph="&#xE898;" />
-					</customBTN:AnimatedButton>
+                    <customBTN:AnimatedButton
+                        x:Name="DownLoadBTN"
+                        Grid.Column="4"
+                        Width="0"
+                        Height="0"
+                        Margin="0,0,0,5"
+                        Padding="0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        CornerRadius="5"
+                        OriginalHeight="25"
+                        OriginalMargin="5,0,0,5"
+                        OriginalWidth="35">
+                        <Button.Flyout>
+                            <Flyout>
+                                <custom:DownloadsList />
+                            </Flyout>
+                        </Button.Flyout>
+                        <FontIcon FontSize="16" Glyph="&#xE896;" />
+                    </customBTN:AnimatedButton>
 
-					<customBTN:AnimatedButton
-						x:Name="ProfilesBTN"
-						Grid.Column="5"
-						Width="30"
-						Height="25"
-						Margin="0,0,0,5"
-						Padding="0"
-						HorizontalAlignment="Right"
-						Background="Transparent"
-						CornerRadius="5">
-						<Button.Flyout>
-							<Flyout>
-								<customLogin:AccountList Margin="-15,-13,-15,-15" Padding="0" />
-							</Flyout>
-						</Button.Flyout>
-						<FontIcon FontSize="16" Glyph="&#xE77B;" />
-					</customBTN:AnimatedButton>
-				</StackPanel>
-			</Grid>
-
-		</Grid>
+                    <customBTN:AnimatedButton
+                        x:Name="TasksBTN"
+                        Grid.Column="5"
+                        Width="0"
+                        Height="0"
+                        Margin="0,0,0,5"
+                        Padding="0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        CornerRadius="5"
+                        OriginalHeight="25"
+                        OriginalMargin="5,0,0,5"
+                        OriginalWidth="35">
+                        <Button.Flyout>
+                            <Flyout>
+                                <customTasks:TaskList />
+                            </Flyout>
+                        </Button.Flyout>
+                        <FontIcon FontSize="16" Glyph="&#xF133;" />
+                    </customBTN:AnimatedButton>
 
 
-		<login:ExtendFrame
-			x:Name="ContentFrame"
-			Grid.Row="1"
-			Navigated="ContentFrame_Navigated">
-			<Frame.ContentTransitions>
-				<TransitionCollection>
-					<NavigationThemeTransition />
-				</TransitionCollection>
-			</Frame.ContentTransitions>
-		</login:ExtendFrame>
 
-	</Grid>
+                    <StackPanel
+                        Grid.Column="5"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                        <customBTN:AnimatedButton
+                            x:Name="UploadBTN"
+                            Grid.Column="4"
+                            Width="0"
+                            Height="0"
+                            Margin="0,0,0,5"
+                            Padding="0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Background="Transparent"
+                            CornerRadius="5"
+                            OriginalHeight="25"
+                            OriginalMargin="5,0,5,5"
+                            OriginalWidth="35">
+                            <Button.Flyout>
+                                <Flyout>
+                                    <upload:UploadList />
+                                </Flyout>
+                            </Button.Flyout>
+                            <FontIcon FontSize="16" Glyph="&#xE898;" />
+                        </customBTN:AnimatedButton>
+
+                        <customBTN:AnimatedButton
+                            x:Name="ProfilesBTN"
+                            Grid.Column="5"
+                            Width="30"
+                            Height="25"
+                            Margin="0,0,0,5"
+                            Padding="0"
+                            HorizontalAlignment="Right"
+                            Background="Transparent"
+                            CornerRadius="5">
+                            <Button.Flyout>
+                                <Flyout>
+                                    <customLogin:AccountList Margin="-15,-13,-15,-15" Padding="0" />
+                                </Flyout>
+                            </Button.Flyout>
+                            <FontIcon FontSize="16" Glyph="&#xE77B;" />
+                        </customBTN:AnimatedButton>
+                    </StackPanel>
+                </Grid>
+
+            </Grid>
+
+
+            <login:ExtendFrame
+                x:Name="ContentFrame"
+                Grid.Row="1"
+                Navigated="ContentFrame_Navigated">
+                <Frame.ContentTransitions>
+                    <TransitionCollection>
+                        <NavigationThemeTransition />
+                    </TransitionCollection>
+                </Frame.ContentTransitions>
+            </login:ExtendFrame>
+
+        </Grid>
+    </Grid>
 </Window>

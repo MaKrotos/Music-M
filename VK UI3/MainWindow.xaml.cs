@@ -430,7 +430,67 @@ namespace VK_UI3
 #if !DEBUG
             checkUpdate();
 #endif
+
+            InitializeSnow();
         }
+        #region Snow
+        private void InitializeSnow()
+        {
+            var enabledSnowSetting = SettingsTable.GetSetting("snowflakesEnabled");
+
+            if (enabledSnowSetting == null)
+            {
+                InitializeSnowBySeason();
+                return;
+            }
+
+            if (enabledSnowSetting.settingValue == "1")
+            {
+                snow.Start();
+                SetFlakeCount();
+            }
+            else
+            {
+                snow.Stop();
+            }
+
+            
+        }
+
+        private void InitializeSnowBySeason()
+        {
+            int currentMonth = DateTime.Now.Month;
+            bool isWinter = currentMonth == 12 || currentMonth == 1 || currentMonth == 2;
+
+            if (isWinter)
+            {
+                snow.Start();
+                SetFlakeCount();
+            }
+        }
+
+        private void SetFlakeCount()
+        {
+            var countSetting = SettingsTable.GetSetting("snowflakesCount");
+            snow.FlakeCount = countSetting == null
+                ? 100
+                : ParseSnowflakeCount(countSetting.settingValue);
+        }
+
+        private int ParseSnowflakeCount(string value)
+        {
+            if (int.TryParse(value, out int count) && count > 0)
+            {
+                return count;
+            }
+
+            // Значение по умолчанию при некорректных данных
+            return 100;
+        }
+
+        public VK_UI3.SnowFlake.SnowFlakeEffect Snow { get { return snow; }  }
+
+        #endregion
 
         private void AppTitleBar_SizeChanged(object sender, SizeChangedEventArgs e)
         {

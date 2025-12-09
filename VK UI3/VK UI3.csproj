@@ -123,6 +123,7 @@
         <None Remove="Views\Share\ShareControllers\UserControllers.xaml" />
         <None Remove="Views\Tasks\TaskController.xaml" />
         <None Remove="Views\Tasks\TaskList.xaml" />
+        <None Remove="Views\TestSnow\TestSnow.xaml" />
         <None Remove="Views\Upload\UploadController.xaml" />
         <None Remove="Views\Upload\UploadList.xaml" />
         <None Remove="Views\UserPlayList.xaml" />
@@ -300,6 +301,9 @@
         <None Update="DownloadTrack\ffmpeg.exe">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <Page Update="Views\TestSnow\TestSnow.xaml">
+          <Generator>MSBuild:Compile</Generator>
+        </Page>
         <Page Update="Views\ErrorPage.xaml">
           <Generator>MSBuild:Compile</Generator>
         </Page>

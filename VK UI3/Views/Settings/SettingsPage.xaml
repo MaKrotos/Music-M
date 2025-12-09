@@ -54,6 +54,25 @@
 			<Border>
 				<local:CreateDesktopShortcut />
 			</Border>
+			<Border>
+				<local:SnowflakesSetting />
+			</Border>
+
+			<Border>
+				<StackPanel>
+					<TextBlock Text="Количество снежинок" />
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+						<local:SnowflakesCountSetting x:Name="snowflakesCount" Grid.Column="0" />
+						<TextBlock Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" Text="{x:Bind snowflakesCount.Value, Mode=OneWay}" />
+						<TextBlock Grid.Column="2" VerticalAlignment="Center" Text="шт" />
+					</Grid>
+				</StackPanel>
+			</Border>
 
 			<Border>
 				<StackPanel>

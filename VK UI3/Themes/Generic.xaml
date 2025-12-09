@@ -1,8 +1,19 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"    
-    xmlns:local="using:VK_UI3">
-    
+    xmlns:local="using:VK_UI3.SnowFlake">
 
-    
+    <!-- Стиль для SnowFlakeEffect -->
+    <Style TargetType="local:SnowFlakeEffect">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:SnowFlakeEffect">
+                    <!-- Canvas для снежинок -->
+                    <Canvas x:Name="PART_Canvas" 
+                            Background="Transparent"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>
