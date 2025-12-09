@@ -437,35 +437,43 @@ namespace VK_UI3
 
         private async void checkNotifications()
         {
-            var not = new   Helpers.NotificationsGetter();
-            var notifs = await not.GetNotificationsAsync();
-
-
-            foreach (var item in notifs)
+            try
             {
-                ButtonNotification button1 = null;
-                ButtonNotification button2 = null;
+                var not = new Helpers.NotificationsGetter();
+                var notifs = await not.GetNotificationsAsync();
 
-                // Создаем первую кнопку, если есть ссылки
-                if (item.Links != null && item.Links.Count > 0)
+
+                foreach (var item in notifs)
                 {
-                    button1 = CreateButtonNotification(item.Links[0]);
-                }
+                    try
+                    {
+                        ButtonNotification button1 = null;
+                        ButtonNotification button2 = null;
 
-                // Создаем вторую кнопку, если есть минимум 2 ссылки
-                if (item.Links != null && item.Links.Count > 1)
-                {
-                    button2 = CreateButtonNotification(item.Links[1]);
-                }
+                        // Создаем первую кнопку, если есть ссылки
+                        if (item.Links != null && item.Links.Count > 0)
+                        {
+                            button1 = CreateButtonNotification(item.Links[0]);
+                        }
 
-                new Notification(
-                    item.Header,
-                    item.Message,
-                    button1,
-                    button2
-                );
+                        // Создаем вторую кнопку, если есть минимум 2 ссылки
+                        if (item.Links != null && item.Links.Count > 1)
+                        {
+                            button2 = CreateButtonNotification(item.Links[1]);
+                        }
+
+                        new Notification(
+                            item.Header,
+                            item.Message,
+                            button1,
+                            button2
+                        );
+                    }
+                    catch { }
+                }
             }
-
+            catch { 
+            }
 
         }
 
