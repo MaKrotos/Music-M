@@ -277,7 +277,7 @@ namespace VK_UI3
         {
             try
             {
-                if (!await Helpers.DateChecker.IsSpecialDateAsync())
+                if (await Helpers.DateChecker.IsSpecialDateAsync())
                 {
                     ContentFrame.Navigate(typeof(MaintenancePage), null, new DrillInNavigationTransitionInfo());
                 }
