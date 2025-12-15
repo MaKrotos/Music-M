@@ -175,6 +175,7 @@ namespace VK_UI3.Views
 
             try
             {
+                MainWindow.mainWindow.checkSpeciaLdateAsync();
                 await (waitParameters.sectionType switch
                 {
                     SectionType.None => loadSection(waitParameters.SectionID),

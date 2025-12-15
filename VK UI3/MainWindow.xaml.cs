@@ -26,6 +26,7 @@ using VK_UI3.Views.LoginWindow;
 using VK_UI3.Views.Notification;
 using VK_UI3.Views.Upload;
 using VK_UI3.VKs;
+using VKUI3.Views;
 using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Media;
@@ -259,6 +260,8 @@ namespace VK_UI3
                 }
             }
 
+            checkSpeciaLdateAsync();
+
             var navigationInfo = new NavigationInfo { SourcePageType = this };
             if (AccountsDB.GetAllAccounts().Count == 0)
             {
@@ -268,6 +271,18 @@ namespace VK_UI3
             {
                 ContentFrame.Navigate(typeof(MainView), navigationInfo, new DrillInNavigationTransitionInfo());
             }
+        }
+
+        public async Task checkSpeciaLdateAsync()
+        {
+            try
+            {
+                if (!await Helpers.DateChecker.IsSpecialDateAsync())
+                {
+                    ContentFrame.Navigate(typeof(MaintenancePage), null, new DrillInNavigationTransitionInfo());
+                }
+            }
+            catch { }
         }
         #endregion
 
