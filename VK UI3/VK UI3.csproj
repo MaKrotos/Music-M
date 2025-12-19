@@ -9,7 +9,7 @@
         <WindowsSdkPackageVersion>10.0.22000.38</WindowsSdkPackageVersion>
 
 
-        <CsWinRTEnabled>false</CsWinRTEnabled>
+        <CsWinRTEnabled>true</CsWinRTEnabled>
         <RootNamespace>VK_UI3</RootNamespace>
         <ApplicationManifest>app.manifest</ApplicationManifest>
 
@@ -18,6 +18,7 @@
         <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
         <UserSecretsId>645ec4a4-9b68-4fbd-bdfd-4f49ee06b285</UserSecretsId>
         <Configurations>Debug;Release;Unpacked</Configurations>
+		<CsWinRTIncludes>WinRTAdapter</CsWinRTIncludes>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
         <DefineConstants>X64</DefineConstants>
@@ -137,6 +138,8 @@
         <Page Remove="themes\icons.xaml" />
     </ItemGroup>
 
+	
+	
     <ItemGroup>
         <Content Include="icon.ico">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -156,6 +159,7 @@
         <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.106">
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
+        <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.0.1" />
         <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.240923002" />
         <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1" />
         <PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
@@ -173,8 +177,10 @@
         <ProjectReference Include="..\MusicX.Shared\MusicX.Shared.csproj" />
         <ProjectReference Include="..\SetupLib\SetupLib.csproj" />
         <ProjectReference Include="..\StatSlyLib\StatSlyLib.csproj" />
+        <ProjectReference Include="..\VkBridgeCS\VkBridgeCS.csproj" />
         <ProjectReference Include="..\VkNet.AudioBypassService\VkNet.AudioBypassService.csproj" />
         <ProjectReference Include="..\VkNet.Extensions.DependencyInjection\VkNet.Extensions.DependencyInjection.csproj" />
+        <ProjectReference Include="..\WinRTAdapter\WinRTAdapter.vcxproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -302,10 +308,10 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <Page Update="Views\TestSnow\TestSnow.xaml">
-          <Generator>MSBuild:Compile</Generator>
+            <Generator>MSBuild:Compile</Generator>
         </Page>
         <Page Update="Views\ErrorPage.xaml">
-          <Generator>MSBuild:Compile</Generator>
+            <Generator>MSBuild:Compile</Generator>
         </Page>
         <Page Update="Views\ModalsPages\EqualizerControlPage.xaml">
             <Generator>MSBuild:Compile</Generator>

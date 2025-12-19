@@ -1,13 +1,15 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Navigation;
 using Microsoft.Web.WebView2.Core;
+using MusicX.Services;
+using MvvmHelpers;
+using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.Web.Http;
-using MvvmHelpers;
-using MusicX.Services;
-using Microsoft.Extensions.DependencyInjection;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -28,18 +30,21 @@ namespace VK_UI3.Views
         public string? ErrorMessage { get; set; }
         public string ErrorDetails { get; set; } = string.Empty;
     }
+
+
+
     public sealed partial class MiniAppView : Page
     {
-        private MiniAppViewModel ViewModel { get; }
+        private MiniAppViewModel ViewModel { get; set; }
         private bool _isNavigating;
 
-        public MiniAppView(MiniAppViewModel viewModel)
+        public MiniAppView()
         {
-            DataContext = ViewModel = viewModel;
             InitializeComponent();
             Loaded += MiniAppView_Loaded;
             Unloaded += MiniAppView_Unloaded;
         }
+
 
         private void MiniAppView_Loaded(object sender, RoutedEventArgs e)
         {
@@ -48,7 +53,50 @@ namespace VK_UI3.Views
 
         private async Task LoadAsync()
         {
+          
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+
+            if (e.Parameter is MiniAppViewModel viewModelParam)
+            {
+                ViewModel = viewModelParam;
+                // Здесь можно проверить ViewModel
+                Debug.WriteLine($"Navigating back from MiniAppView with VM ID: {viewModelParam.AppId}");
+            }
+
+        }
+
+        private void WebView_OnNavigationStarting(WebView2 sender, CoreWebView2NavigationStartingEventArgs args)
+        {
+            _isNavigating = true;
+            ViewModel.IsLoading = true;
+        }
+
+        private void WebView_OnNavigationCompleted(WebView2 sender, CoreWebView2NavigationCompletedEventArgs args)
+        {
+            _isNavigating = false;
+            ViewModel.IsLoading = false;
+
+            if (args.IsSuccess || args.WebErrorStatus == CoreWebView2WebErrorStatus.OperationCanceled) return;
+
+            ViewModel.ErrorMessage = "Произошла ошибка при загрузке страницы";
+            ViewModel.ErrorDetails = args.HttpStatusCode == 0
+                ? args.WebErrorStatus.ToString()
+                : $"Код ошибки сервера: {(HttpStatusCode)args.HttpStatusCode}";
+        }
+
+        private void MiniAppView_Unloaded(object sender, RoutedEventArgs e)
+        {
+            WebView.Close();
+        }
+
+        private async void WebView_Loaded(object sender, RoutedEventArgs e)
+        {
             await WebView.EnsureCoreWebView2Async();
+
+
 
             var settings = WebView.CoreWebView2.Settings;
 #if !DEBUG
@@ -62,6 +110,8 @@ namespace VK_UI3.Views
             settings.IsGeneralAutofillEnabled = false;
             settings.IsZoomControlEnabled = false;
             settings.IsBuiltInErrorPageEnabled = false;
+
+
 
             settings.UserAgent = "VKAndroidApp/8.99-23423 (Android 12; SDK 32; arm64-v8a; MusicX; ru; 2960x1440)";
 
@@ -215,28 +265,9 @@ window.chrome.webview.hostObjects.bridge.addEventListener('VKWebAppEvent', (even
             WebView.Source = new Uri(ViewModel.Url);
         }
 
-        private void WebView_OnNavigationStarting(WebView2 sender, CoreWebView2NavigationStartingEventArgs args)
+        private void WebView_CoreWebView2Initialized(WebView2 sender, CoreWebView2InitializedEventArgs args)
         {
-            _isNavigating = true;
-            ViewModel.IsLoading = true;
-        }
 
-        private void WebView_OnNavigationCompleted(WebView2 sender, CoreWebView2NavigationCompletedEventArgs args)
-        {
-            _isNavigating = false;
-            ViewModel.IsLoading = false;
-
-            if (args.IsSuccess || args.WebErrorStatus == CoreWebView2WebErrorStatus.OperationCanceled) return;
-
-            ViewModel.ErrorMessage = "Произошла ошибка при загрузке страницы";
-            ViewModel.ErrorDetails = args.HttpStatusCode == 0
-                ? args.WebErrorStatus.ToString()
-                : $"Код ошибки сервера: {(HttpStatusCode)args.HttpStatusCode}";
-        }
-
-        private void MiniAppView_Unloaded(object sender, RoutedEventArgs e)
-        {
-            WebView.Close();
         }
     }
     public class StringNullOrEmptyToVisibilityConverter : IValueConverter

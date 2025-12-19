@@ -192,6 +192,7 @@ namespace VK_UI3.Views
                     SectionType.ConversDialogs => LoadDialogs(),
                     SectionType.LoadFriends => LoadFriends(),
                     SectionType.CustomIVKGetAudio => LoadCustomiVKGetAudio(handlerContainer),
+                    SectionType.MiniApp => LoadWebAppURL(),
 
 
                     _ => throw new ArgumentOutOfRangeException()
@@ -218,7 +219,15 @@ namespace VK_UI3.Views
             }
         }
 
+        private async Task LoadWebAppURL()
+        {
+            MiniAppViewModel miniAppViewModel = new MiniAppViewModel("52667930", "https://vk.com/app52667930");
 
+                this.DispatcherQueue.TryEnqueue(() =>
+                {
+                    frameSection.Navigate(typeof(MiniAppView), miniAppViewModel, new DrillInNavigationTransitionInfo());
+                });
+        }
 
         private async Task LoadDialogs()
         {

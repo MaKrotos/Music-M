@@ -1,0 +1,8 @@
+namespace NativeCode
+{
+    runtimeclass PlayWithNumbers
+    {
+        PlayWithNumbers();
+        Int32 Add(Int32 number1, Int32 number2);
+    }
+}

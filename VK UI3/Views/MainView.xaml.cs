@@ -657,6 +657,19 @@ namespace VK_UI3.Views
             frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
         }
 
+        public static void OpenWebAppst(string WebAppUrl)
+        {
+            if (!mainView.PlayNowPanelListCLosed)
+            {
+                mainView.TogglePlayNowPanel();
+            }
+
+            var sectionView = new WaitParameters();
+            sectionView.sectionType = SectionType.MiniApp;
+            sectionView.searchText = WebAppUrl;
+            frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
+        }
+
 
         public static void OpenPlayListLists(long? id = null, OpenedPlayList openedPlayList = OpenedPlayList.all)
         {
@@ -951,8 +964,12 @@ namespace VK_UI3.Views
                     case "вложения":
                         OpenMyPage(SectionType.ConversDialogs);
                         break;
+                    case "итоги":
+                        OpenWebAppst("https://vk.com/app52667930");
+                        break;
                     case "запросить повторно":
                         CreateNavigation();
+
                         return;
                         break;
 

@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml;
+п»їusing Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using MusicX.Core.Models;
@@ -130,6 +130,7 @@ namespace VK_UI3.Views
             ConversDialogs,
             LoadFriends,
             CustomIVKGetAudio,
+            MiniApp,
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -344,18 +345,18 @@ namespace VK_UI3.Views
                 var toReplaceBlockIds = replaces.Replacements.ReplacementsModels.SelectMany(b => b.FromBlockIds)
                     .ToHashSet();
 
-                // Найти блоки, которые нужно заменить
+                // РќР°Р№С‚Рё Р±Р»РѕРєРё, РєРѕС‚РѕСЂС‹Рµ РЅСѓР¶РЅРѕ Р·Р°РјРµРЅРёС‚СЊ
                 var blocksToReplace = blocks.Where(block => toReplaceBlockIds.Contains(block.Id)).ToList();
 
                 this.DispatcherQueue.TryEnqueue(() =>
                 {
-                    // Удалить блоки
+                    // РЈРґР°Р»РёС‚СЊ Р±Р»РѕРєРё
                     foreach (var block in blocksToReplace)
                     {
                         blocks.Remove(block);
                     }
 
-                    // Добавить новые блоки
+                    // Р”РѕР±Р°РІРёС‚СЊ РЅРѕРІС‹Рµ Р±Р»РѕРєРё
                     foreach (var block in replaces.Replacements.ReplacementsModels.SelectMany(b => b.ToBlocks))
                     {
                         blocks.Add(block);
@@ -364,7 +365,7 @@ namespace VK_UI3.Views
             }
             catch (Exception ex)
             {
-                // Обработка исключений
+                // РћР±СЂР°Р±РѕС‚РєР° РёСЃРєР»СЋС‡РµРЅРёР№
             }
         }
 
