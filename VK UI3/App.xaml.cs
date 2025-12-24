@@ -61,7 +61,7 @@ namespace VK_UI3
             services.AddSingleton(LogManager.Setup().GetLogger("Common"));
             services.AddSingleton<IAsyncCaptchaSolver, CaptchaSolverService>();
             services.AddSingleton<TokenChecker>();
-
+            services.AddSingleton<IVkApi, VkApi>();
             services.AddSingleton<VkService>();
             services.AddSingleton<ListenTogetherService>();
             services.AddSingleton<UserRadioService>();

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using MusicX.Core.Services;
 using NLog;
 using VK_UI3.Converters;
+using VK_UI3.DB;
 using VkNet;
 using VkNet.Abstractions;
 using VkNet.Exception;
@@ -39,6 +40,7 @@ public class VkBridgeService : IDisposable
     private VkApi? _vkApiInstance;
     private long? _currentUserId;
     private string? _vkAuthToken;
+    private string? _nextRequestId; // Добавлено поле для request_id
 
     public VkBridgeService(IVkApiInvoke vkApi, Logger log, VkService vkService)
     {
@@ -47,37 +49,47 @@ public class VkBridgeService : IDisposable
         _vkService = vkService;
     }
 
-    public void Load(string appId, string url, VkApi? vkApi = null)
+    // Метод для установки request_id (добавлено)
+    public void SetNextRequestId(string requestId)
+    {
+        _nextRequestId = requestId;
+        _log.Debug($"SetNextRequestId called: {requestId}");
+    }
+
+    public void Load(string appId, string url, VkApi vkApi)
     {
         _currentAppId = appId;
         _currentUrl = url;
         _storagePath = Path.Join(StaticService.UserDataFolder.FullName, $"{appId}.json");
         _vkApiInstance = vkApi;
 
-        // Получаем ID текущего пользователя и токен
-        if (_vkApiInstance != null && _vkApiInstance.UserId.HasValue)
-        {
-            _currentUserId = _vkApiInstance.UserId.Value;
-            _vkAuthToken = _vkApiInstance.Token;
 
-            _log.Info($"Bridge loaded for user {_currentUserId}, app: {appId}, url: {url}");
-        }
-        else
-        {
-            _log.Warn("Bridge loaded without user authentication");
-        }
+        _currentUserId = AccountsDB.activeAccount.id;
+        _vkAuthToken = AccountsDB.activeAccount.Token;
+
+        _log.Info($"Bridge loaded for user {_currentUserId}, app: {appId}, url: {url}");
+
+
     }
 
     public async Task<JsonObject> HandleBridgeCallAsync(string method, JsonObject parameters, string? requestId = null)
     {
         try
         {
+            // Используем requestId из параметров или из _nextRequestId
+            var finalRequestId = requestId ?? _nextRequestId;
+            _nextRequestId = null; // Сбрасываем после использования
+
             var result = await ExecuteMethodAsync(method, parameters);
-            return CreateSuccessResponse(method, result, requestId);
+            return CreateSuccessResponse(method, result, finalRequestId);
         }
         catch (Exception ex)
         {
-            return CreateErrorResponse(method, ex, requestId);
+            // Также используем requestId из параметров или из _nextRequestId для ошибок
+            var finalRequestId = requestId ?? _nextRequestId;
+            _nextRequestId = null;
+
+            return CreateErrorResponse(method, ex, finalRequestId);
         }
     }
 
@@ -151,8 +163,7 @@ public class VkBridgeService : IDisposable
 
             return new
             {
-                Response = jsonNode,
-                RequestId = parameters["request_id"]?.ToString()
+                Response = jsonNode
             };
         }
         catch (VkApiException vkEx)
@@ -185,12 +196,10 @@ public class VkBridgeService : IDisposable
             var response = await _vkService.GetMiniAppCredentialToken(_currentUrl, scope);
             _accessToken = response.AccessToken;
 
-            // Используем доступные свойства
             return new
             {
                 response.AccessToken,
                 Scope = scope
-                // ExpiresIn может не быть в CredentialResponse
             };
         }
         catch (Exception ex)
@@ -280,6 +289,7 @@ public class VkBridgeService : IDisposable
             return launchParams;
         }
     }
+
     private async Task<object> VKWebAppStorageGetAsync(JsonObject parameters)
     {
         var keys = parameters["keys"]?.AsArray()
@@ -352,11 +362,10 @@ public class VkBridgeService : IDisposable
             if (user == null)
                 throw new Exception("User not found");
 
-            // Преобразуем Sex в строку - исправленная часть
             string sexStr = "unknown";
             if (user.Sex != null)
             {
-                sexStr = user.Sex.ToString(); // Просто вызываем ToString()
+                sexStr = user.Sex.ToString();
             }
 
             return new
@@ -490,6 +499,7 @@ public class VkBridgeService : IDisposable
             data
         }, _options)!.AsObject();
 
+        // Добавляем request_id в корень JSON (как в оригинальном VK API)
         if (!string.IsNullOrEmpty(requestId))
         {
             json["request_id"] = requestId;
@@ -537,6 +547,7 @@ public class VkBridgeService : IDisposable
             data = errorData
         }, _options)!.AsObject();
 
+        // Добавляем request_id для ошибок
         if (!string.IsNullOrEmpty(requestId))
         {
             response["request_id"] = requestId;

@@ -5,12 +5,16 @@ using Microsoft.UI.Xaml.Navigation;
 using Microsoft.Web.WebView2.Core;
 using MusicX.Services;
 using MvvmHelpers;
+using NLog.Fluent;
+using Octokit;
 using System;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
+using VK_UI3.DB;
 using VK_UI3.VKs;
 using VkNet;
+using VkNet.Abstractions;
 using VkNet.Model;
 
 namespace VK_UI3.Views
@@ -50,7 +54,7 @@ namespace VK_UI3.Views
         }
     }
 
-    public sealed partial class MiniAppView : Page
+    public sealed partial class MiniAppView : Microsoft.UI.Xaml.Controls.Page
     {
         private MiniAppViewModel? _viewModel;
         private VkBridgeService? _bridgeService;
@@ -103,7 +107,7 @@ namespace VK_UI3.Views
 
                 // Получаем сервис и загружаем bridge
                 _bridgeService = StaticService.Container.GetRequiredService<VkBridgeService>();
-                _bridgeService.Load(_viewModel.AppId, _viewModel.Url, new VK().getVKAPI() as VkApi);
+                _bridgeService.Load(_viewModel.AppId, _viewModel.Url, App._host.Services.GetRequiredService<IVkApi>() as VkApi);
 
                 // Настраиваем обработку сообщений
                 WebView.CoreWebView2.WebMessageReceived += OnWebMessageReceived;
@@ -125,11 +129,11 @@ namespace VK_UI3.Views
             var settings = WebView.CoreWebView2.Settings;
 
 #if !DEBUG
-            settings.AreDevToolsEnabled = false;
-            settings.IsStatusBarEnabled = false;
-            settings.AreDefaultContextMenusEnabled = false;
-            settings.AreBrowserAcceleratorKeysEnabled = false;
-            settings.AreDefaultScriptDialogsEnabled = false;
+    settings.AreDevToolsEnabled = false;
+    settings.IsStatusBarEnabled = false;
+    settings.AreDefaultContextMenusEnabled = false;
+    settings.AreBrowserAcceleratorKeysEnabled = false;
+    settings.AreDefaultScriptDialogsEnabled = false;
 #endif
 
             settings.IsPasswordAutosaveEnabled = false;
@@ -137,37 +141,64 @@ namespace VK_UI3.Views
             settings.IsZoomControlEnabled = false;
             settings.IsBuiltInErrorPageEnabled = false;
 
-            // Устанавливаем User-Agent как у мобильного приложения VK
             settings.UserAgent = "VKAndroidApp/8.154-99999 (Android 12; SDK 32; arm64-v8a; Pixel 6; ru; 2960x1440)";
 
-            // Настраиваем куки для авторизации
-            if (_viewModel?.VkApi?.Token != null)
+            // ВАЖНО: Устанавливаем куки для авторизации в VK
+            if (AccountsDB.activeAccount.Token != null)
             {
                 try
                 {
                     var cookieManager = WebView.CoreWebView2.CookieManager;
 
-                    // Очищаем старые куки
-                     cookieManager.DeleteAllCookies();
-
-                    // Добавляем куки авторизации (примерные)
-                    var authCookie = cookieManager.CreateCookie(
+                    // Основной токен сессии
+                    var remixsidCookie = cookieManager.CreateCookie(
                         "remixsid",
-                        "dummy_auth_cookie", // Здесь должен быть реальный токен из vkApi
+                        AccountsDB.activeAccount.Token, // Используем реальный токен
                         ".vk.com",
                         "/"
                     );
-                    authCookie.IsHttpOnly = true;
-                    authCookie.IsSecure = true;
+                    remixsidCookie.IsHttpOnly = true;
+                    remixsidCookie.IsSecure = true;
 
-                    cookieManager.AddOrUpdateCookie(authCookie);
+                    // Токен для мини-приложений
+                    var remixappsCookie = cookieManager.CreateCookie(
+                        "remixappsid",
+                        AccountsDB.activeAccount.Token,
+                        ".vk.com",
+                        "/"
+                    );
+                    remixappsCookie.IsSecure = true;
+
+                    // Язык
+                    var langCookie = cookieManager.CreateCookie(
+                        "remixlang",
+                        "0", // 0 - русский, 3 - английский
+                        ".vk.com",
+                        "/"
+                    );
+
+                    // ID пользователя
+                    var userCookie = cookieManager.CreateCookie(
+                        "remixuid",
+                        AccountsDB.activeAccount.id.ToString() ?? "0",
+                        ".vk.com",
+                        "/"
+                    );
+
+                    cookieManager.AddOrUpdateCookie(remixsidCookie);
+                    cookieManager.AddOrUpdateCookie(remixappsCookie);
+                    cookieManager.AddOrUpdateCookie(langCookie);
+                    cookieManager.AddOrUpdateCookie(userCookie);
+
+                    //_log.Debug($"Cookies set for user {_viewModel.VkApi.UserId}");
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine($"Failed to set cookies: {ex.Message}");
+                   // _log.Error($"Failed to set cookies: {ex.Message}");
                 }
             }
         }
+
 
         private async Task InjectBridgeJavaScript()
         {
@@ -383,6 +414,54 @@ setTimeout(() => {
 ";
 
             await WebView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(launchParamsScript);
+
+            // Добавляем скрипт для поддержки старого формата запросов (ReactNativeWebView)
+            var legacySupportScript = @"
+// Поддержка старого формата запросов (для React Native WebView)
+const oldBridge = window.chrome.webview.hostObjects.bridge;
+
+// Копируем все методы из bridge для совместимости
+if (oldBridge) {
+    // Получаем список всех методов
+    const methodNames = [
+        'VKWebAppInit', 'VKWebAppGetConfig', 'VKWebAppCallAPIMethod',
+        'VKWebAppAddToCommunity', 'VKWebAppGetAuthToken', 'VKWebAppGetLaunchParams',
+        'VKWebAppStorageGet', 'VKWebAppStorageGetKeys', 'VKWebAppStorageSet',
+        'VKWebAppGetUserInfo', 'VKWebAppGetEmail', 'VKWebAppGetPhoneNumber',
+        'VKWebAppGetFriends', 'VKWebAppGetClientVersion', 'SetSupportedHandlers'
+    ];
+    
+    // Добавляем метод SetNextRequestId
+    if (!oldBridge.SetNextRequestId) {
+        oldBridge.SetNextRequestId = function(requestId) {
+            // Этот метод вызывается из старого JS кода
+            console.log('[Legacy Bridge] SetNextRequestId called:', requestId);
+            
+            // Мы можем сохранить requestId в глобальной переменной
+            window.__legacyRequestId = requestId;
+            
+            // Или сразу вызвать метод через VK API
+            window.VK && window.VK.call('SetNextRequestId', { request_id: requestId })
+                .catch(err => console.warn('[Legacy Bridge] Failed to set request id:', err));
+        };
+    }
+}
+
+// Для максимальной совместимости
+if (!window.chrome.webview.hostObjects.sync.bridge) {
+    window.chrome.webview.hostObjects.sync.bridge = {
+        SetNextRequestId: function(requestId) {
+            console.log('[Sync Bridge] SetNextRequestId called:', requestId);
+            window.__legacyRequestId = requestId;
+        }
+    };
+}
+
+console.log('[VK Bridge] Legacy compatibility layer loaded');
+";
+
+            await WebView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(legacySupportScript);
+
         }
 
         private async void OnWebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)

@@ -221,7 +221,7 @@ namespace VK_UI3.Views
 
         private async Task LoadWebAppURL()
         {
-            MiniAppViewModel miniAppViewModel = new MiniAppViewModel("52667930", "https://vk.com/app52667930");
+            MiniAppViewModel miniAppViewModel = new MiniAppViewModel("52667930", "https://vk.com/app52384530?ref=music_main");
 
             this.DispatcherQueue.TryEnqueue(() =>
             {
