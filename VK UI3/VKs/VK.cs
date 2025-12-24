@@ -18,15 +18,13 @@ namespace VK_UI3.VKs
     {
         public static readonly IVkApi api = App._host.Services.GetRequiredService<IVkApi>();
 
-        public readonly IVkApiAuthAsync _vkApi = App._host.Services.GetRequiredService<IVkApiAuthAsync>();
+        public  readonly IVkApiAuthAsync _vkApi = App._host.Services.GetRequiredService<IVkApiAuthAsync>();
         public static readonly VkService vkService = App._host.Services.GetRequiredService<VkService>();
 
 
         public WeakEventManager LoggedIn = new WeakEventManager();
 
 
-
-        IVkApiAuthAsync vkApi = App._host.Services.GetRequiredService<IVkApiAuthAsync>();
 
         public TokenChecker checker = App._host.Services.GetRequiredService<TokenChecker>();
 

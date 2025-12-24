@@ -166,7 +166,7 @@ namespace VK_UI3.Views
             public EventHandler Handler { get; set; }
 
             public EventHandler HandlerException { get; set; }
-           
+
         }
         HandlerContainer handlerContainer = new HandlerContainer();
         public async Task LoadAsync()
@@ -192,6 +192,7 @@ namespace VK_UI3.Views
                     SectionType.ConversDialogs => LoadDialogs(),
                     SectionType.LoadFriends => LoadFriends(),
                     SectionType.CustomIVKGetAudio => LoadCustomiVKGetAudio(handlerContainer),
+                    SectionType.MiniApp => LoadWebAppURL(),
 
 
                     _ => throw new ArgumentOutOfRangeException()
@@ -218,7 +219,15 @@ namespace VK_UI3.Views
             }
         }
 
+        private async Task LoadWebAppURL()
+        {
+            MiniAppViewModel miniAppViewModel = new MiniAppViewModel("52667930", "https://vk.com/app52667930");
 
+            this.DispatcherQueue.TryEnqueue(() =>
+            {
+                frameSection.Navigate(typeof(MiniAppView), miniAppViewModel, new DrillInNavigationTransitionInfo());
+            });
+        }
 
         private async Task LoadDialogs()
         {
@@ -328,15 +337,15 @@ namespace VK_UI3.Views
                 {
 
                     handlerContainer.Handler = (sender, e) =>
+                    {
+                        //    iVKGetAudio.onListUpdate.RemoveHandler(handlerContainer.Handler);
+                        this.DispatcherQueue.TryEnqueue(async () =>
                         {
-                            //    iVKGetAudio.onListUpdate.RemoveHandler(handlerContainer.Handler);
-                            this.DispatcherQueue.TryEnqueue(async () =>
-                            {
-                                handlerContainer.Handler = null; // Освободить ссылку на обработчик
-                                frameSection.Navigate(typeof(PlayListPage), waitParameters.iVKGetAudio, new DrillInNavigationTransitionInfo());
-                            });
-                            waitParameters.iVKGetAudio.onListUpdate -= (handlerContainer.Handler);
-                        };
+                            handlerContainer.Handler = null; // Освободить ссылку на обработчик
+                            frameSection.Navigate(typeof(PlayListPage), waitParameters.iVKGetAudio, new DrillInNavigationTransitionInfo());
+                        });
+                        waitParameters.iVKGetAudio.onListUpdate -= (handlerContainer.Handler);
+                    };
                     waitParameters.iVKGetAudio.onListUpdate += (handlerContainer.Handler);
                     if (!waitParameters.iVKGetAudio.getLoadedTracks)
                         waitParameters.iVKGetAudio.GetTracks();

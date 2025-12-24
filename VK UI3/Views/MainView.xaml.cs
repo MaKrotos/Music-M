@@ -93,7 +93,7 @@ namespace VK_UI3.Views
             NavWiv.BackRequested -= NavWiv_BackRequested;
             AccountsDB.ChanhgeActiveAccount -= ChangeAccount;
             this.KeyDown -= MainView_KeyDown;
-    
+
             this.Unloaded -= MainView_Unloaded;
 
 
@@ -122,7 +122,7 @@ namespace VK_UI3.Views
         }
 
 
-        public void openGenerator(IVKGetAudio iVKGetAudio , string unicID, string genBy = "genBy")
+        public void openGenerator(IVKGetAudio iVKGetAudio, string unicID, string genBy = "genBy")
         {
             var a = new CreatePlayList(iVKGetAudio, genBy, unicID);
             OpenGenerator(a);
@@ -144,7 +144,7 @@ namespace VK_UI3.Views
                 new PopupThemeTransition()
                 };
 
-        
+
 
             dialog.Content = createPlayList;
             dialog.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
@@ -233,14 +233,14 @@ namespace VK_UI3.Views
             {
                 if (DateTime.TryParse(setting.settingValue, out var lastCheckDate))
                 {
-                    
+
                     if (!((DateTime.Now.Date - lastCheckDate.Date).TotalDays >= 30))
                     {
                         return;
                     }
                 }
             }
-           
+
             DB.SettingsTable.SetSetting("dateMemberCheck", DateTime.Now.Date.ToString());
 
 
@@ -436,7 +436,7 @@ namespace VK_UI3.Views
                 }
                 catch (OperationCanceledException)
                 {
-                    
+
                 }
                 catch (Exception e)
                 {
@@ -463,7 +463,7 @@ namespace VK_UI3.Views
             }
 
             // Создаем новую кнопку "Запросить повторно"
-            var navSet =  new NavSettings() { Icon = "\uE149", MyMusicItem = "Запросить повторно", section = null };
+            var navSet = new NavSettings() { Icon = "\uE149", MyMusicItem = "Запросить повторно", section = null };
 
             int index = 0;
             this.DispatcherQueue.TryEnqueue(async () =>
@@ -473,15 +473,15 @@ namespace VK_UI3.Views
 
             this.DispatcherQueue.TryEnqueue(async () =>
             {
-                    var navViewItem = new AnimatedNavMenuController
-                    {
-                        navSettings = navSet,
-                        Content = navSet.MyMusicItem,
-                        Icon = new FontIcon { Glyph = navSet.Icon }
-                    };
-                    NavWiv.MenuItems.Insert(index, navViewItem);
-                    navMenuControllers.Add(navViewItem);
-                    index++;
+                var navViewItem = new AnimatedNavMenuController
+                {
+                    navSettings = navSet,
+                    Content = navSet.MyMusicItem,
+                    Icon = new FontIcon { Glyph = navSet.Icon }
+                };
+                NavWiv.MenuItems.Insert(index, navViewItem);
+                navMenuControllers.Add(navViewItem);
+                index++;
             });
 
         }
@@ -627,7 +627,7 @@ namespace VK_UI3.Views
 
         private void ListViewItem_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
-          //  NavWiv.IsPaneOpen = false;
+            //  NavWiv.IsPaneOpen = false;
 
         }
 
@@ -643,7 +643,7 @@ namespace VK_UI3.Views
 
 
         bool navToAnotherPage = false;
-  
+
 
         public static void OpenMyPage(SectionType sectionType)
         {
@@ -654,6 +654,19 @@ namespace VK_UI3.Views
 
             var sectionView = new WaitParameters();
             sectionView.sectionType = sectionType;
+            frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
+        }
+
+        public static void OpenWebAppst(string WebAppUrl)
+        {
+            if (!mainView.PlayNowPanelListCLosed)
+            {
+                mainView.TogglePlayNowPanel();
+            }
+
+            var sectionView = new WaitParameters();
+            sectionView.sectionType = SectionType.MiniApp;
+            sectionView.searchText = WebAppUrl;
             frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
         }
 
@@ -710,9 +723,9 @@ namespace VK_UI3.Views
 
 
             var sectionView = new WaitParameters();
-                sectionView.sectionType = SectionType.PlayList;
-                sectionView.iVKGetAudio = iVKGetAudio;
-                frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
+            sectionView.sectionType = SectionType.PlayList;
+            sectionView.iVKGetAudio = iVKGetAudio;
+            frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
         }
 
         public static void OpenPlayList(long AlbumID, long AlbumOwnerID, string? AlbumAccessKey = null)
@@ -767,9 +780,9 @@ namespace VK_UI3.Views
             var sectionView = new WaitParameters();
             sectionView.searchText = searchString;
             sectionView.SectionID = "search";
-        
+
             sectionView.sectionType = SectionType.Search;
- 
+
             frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
         }
 
@@ -779,7 +792,7 @@ namespace VK_UI3.Views
             Search.searchtext = Text;
         }
 
-        public void showSearch() 
+        public void showSearch()
         {
             Search.Show();
         }
@@ -803,7 +816,7 @@ namespace VK_UI3.Views
 
             if (!PlayNowPanelListCLosed)
             {
-                TogglePlayNowPanel(); 
+                TogglePlayNowPanel();
             }
 
             if (lyrClosed)
@@ -818,7 +831,7 @@ namespace VK_UI3.Views
 
 
         }
-       
+
 
 
         public async void CollapseLyricsPanel()
@@ -951,8 +964,12 @@ namespace VK_UI3.Views
                     case "вложения":
                         OpenMyPage(SectionType.ConversDialogs);
                         break;
+                    case "итоги":
+                        OpenWebAppst("https://vk.com/app52667930");
+                        break;
                     case "запросить повторно":
                         CreateNavigation();
+
                         return;
                         break;
 
@@ -984,7 +1001,7 @@ namespace VK_UI3.Views
             }
         }
 
-     
+
     }
 
 
