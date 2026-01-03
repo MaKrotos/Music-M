@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <NavigationViewItem Content="{x:Bind navSettings.MyMusicItem, Mode=OneWay}" />
+    <NavigationViewItem Content="{x:Bind navSettings.MyMusicItem, Mode=OneWay}" AutomationProperties.Name="{x:Bind navSettings.MyMusicItem, Mode=OneWay}" />
     <NavigationViewItem.Icon>
         <FontIcon Glyph="{x:Bind navSettings.Icon, Mode=OneWay}" />
 

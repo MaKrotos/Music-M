@@ -25,7 +25,8 @@
                 Grid.Row="1"
                 Grid.Column="1"
                 Width="50"
-                ProfilePicture="{x:Bind accounts.UserPhoto}" />
+                ProfilePicture="{x:Bind accounts.UserPhoto}"
+                AutomationProperties.Name="{x:Bind accounts.Name, Mode=OneWay}" />
             <SymbolIcon
                 x:Name="iconPic"
                 Width="50"
@@ -36,6 +37,7 @@
             Margin="15,0,10,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Center"
-            Text="{x:Bind accounts.Name}" />
+            Text="{x:Bind accounts.Name}"
+            AutomationProperties.Name="{x:Bind accounts.Name, Mode=OneWay}" />
     </StackPanel>
 </UserControl>

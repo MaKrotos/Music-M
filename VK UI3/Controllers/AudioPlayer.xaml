@@ -90,7 +90,8 @@
 						Grid.Column="0"
 						Margin="16,4,0,4"
 						VerticalAlignment="Center"
-						Text="{x:Bind TrackPositionMs, Mode=OneWay, Converter={StaticResource SecondsToTimeConverter}}" />
+						Text="{x:Bind TrackPositionMs, Mode=OneWay, Converter={StaticResource SecondsToTimeConverter}}"
+						AutomationProperties.Name="Текущее время воспроизведения" />
 
 					<Slider
 						x:Name="VolumeSlider"
@@ -162,7 +163,8 @@
 						Margin="0,0,8,0"
 						Padding="0"
 						Background="Transparent"
-						Tapped="repeatBTN_Tapped">
+						Tapped="repeatBTN_Tapped"
+						AutomationProperties.Name="Повтор">
 						<FontIcon
 							x:Name="repeatBTNIcon"
 							FontSize="14"
@@ -180,7 +182,8 @@
 						Background="Transparent"
 						FocusVisualPrimaryBrush="Transparent"
 						FocusVisualSecondaryThickness="0"
-						Tapped="PreviousBTN_Tapped">
+						Tapped="PreviousBTN_Tapped"
+						AutomationProperties.Name="Предыдущий трек">
 						<FontIcon FontSize="12" Glyph="" />
 					</Button>
 
@@ -190,7 +193,8 @@
 						Margin="8,0,8,0"
 						Padding="0"
 						Background="Transparent"
-						Tapped="Button_Play_Tapped">
+						Tapped="Button_Play_Tapped"
+						AutomationProperties.Name="Воспроизвести">
 						<FontIcon
 							x:Name="PlayBTN"
 							FontSize="14"
@@ -204,10 +208,10 @@
 						Margin="0,0,8,0"
 						Padding="0"
 						Background="Transparent"
-						Tapped="NextBTN_Tapped">
+						Tapped="NextBTN_Tapped"
+						AutomationProperties.Name="Следующий трек">
 						<FontIcon FontSize="12" Glyph="" />
 					</Button>
-
 
 
 
@@ -217,7 +221,8 @@
 						Width="35"
 						Height="35"
 						Padding="0"
-						Background="Transparent">
+						Background="Transparent"
+						AutomationProperties.Name="Громкость">
 						<FontIcon FontSize="14" Glyph="&#xE995;" />
 						<Button.Flyout>
 							<Flyout>
@@ -255,7 +260,8 @@
 				Background="{ThemeResource CardBackgroundFillColorDefault}"
 				CornerRadius="8"
 				Tapped="Grid_Tapped"
-				Translation="0,0,8">
+				Translation="0,0,8"
+				AutomationProperties.Name="Обложка трека">
 				<FontIcon Glyph="&#xEC4F;" />
 				<Image x:Name="ImageThumb" />
 			</Grid>
@@ -274,7 +280,10 @@
 					Grid.Row="0"
 					VerticalAlignment="Bottom"
 					Orientation="Horizontal"
-					SizeChanged="TitleClipGrid_SizeChanged">
+					SizeChanged="TitleClipGrid_SizeChanged"
+					AutomationProperties.Name="{x:Bind TrackDataThis.audio.Title, Mode=OneWay}"
+					AutomationProperties.IsRequiredForForm="True"
+					AutomationProperties.ItemType="Трек">
 					<TextBlock
 						x:Name="TitleTextBlock"
 						MinWidth="0"
@@ -282,7 +291,8 @@
 						Loaded="TitleTextBlock_Loaded"
 						Opacity="1"
 						TextTrimming="None"
-						TextWrapping="NoWrap">
+						TextWrapping="NoWrap"
+						AutomationProperties.Name="{x:Bind TrackDataThis.audio.Title, Mode=OneWay}">
 						<TextBlock.RenderTransform>
 							<TranslateTransform x:Name="TitleTranslate" />
 						</TextBlock.RenderTransform>
@@ -293,14 +303,18 @@
 					Grid.Row="1"
 					VerticalAlignment="Top"
 					Orientation="Horizontal"
-					SizeChanged="ArtistClipGrid_SizeChanged">
+					SizeChanged="ArtistClipGrid_SizeChanged"
+					AutomationProperties.Name="{x:Bind TrackDataThis.audio.Artist, Mode=OneWay}"
+					AutomationProperties.IsRequiredForForm="True"
+					AutomationProperties.ItemType="Исполнитель">
 					<TextBlock
 						x:Name="ArtistTextBlock"
 						MinWidth="0"
 						Loaded="ArtistTextBlock_Loaded"
 						Opacity="0.6"
 						TextTrimming="None"
-						TextWrapping="NoWrap">
+						TextWrapping="NoWrap"
+						AutomationProperties.Name="{x:Bind TrackDataThis.audio.Artist, Mode=OneWay}">
 						<TextBlock.RenderTransform>
 							<TranslateTransform x:Name="ArtistTranslate" />
 						</TextBlock.RenderTransform>
@@ -317,7 +331,8 @@
 					Margin="8,0,0,0"
 					Padding="0"
 					Background="Transparent"
-					Tapped="openLirycBTN_Tapped">
+					Tapped="openLirycBTN_Tapped"
+					AutomationProperties.Name="Открыть текст песни">
 					<TextBlock>T</TextBlock>
 					<ToolTipService.ToolTip>
 						<ToolTip Content="Открыть текст песни" />
@@ -333,7 +348,8 @@
 					Margin="8,0,0,0"
 					Padding="0"
 					Background="Transparent"
-					Tapped="OpenEqalizer_Tapped">
+					Tapped="OpenEqalizer_Tapped"
+					AutomationProperties.Name="Эквалайзер">
 					<FontIcon Glyph="&#xE9E9;" />
 					<ToolTipService.ToolTip>
 						<ToolTip Content="Эквалайзер" />
@@ -363,7 +379,8 @@
 					Margin="8,0,8,0"
 					Padding="0"
 					Background="Transparent"
-					Tapped="goToPlayList_BTN">
+					Tapped="goToPlayList_BTN"
+					AutomationProperties.Name="Посмотреть текущий список воспроизведения">
 					<SymbolIcon Symbol="List" />
 					<ToolTipService.ToolTip>
 						<ToolTip Content="Посмотреть текущий список воспроизведения" />
@@ -377,7 +394,8 @@
 					Margin="0,0,8,0"
 					Padding="-2,-2,0,0"
 					Background="Transparent"
-					Tapped="TranslatetoStatus_Tapped">
+					Tapped="TranslatetoStatus_Tapped"
+					AutomationProperties.Name="Транслировать в статус ВК">
 					<FontIcon
 						x:Name="StatusBTNIcon"
 						FontSize="12"
@@ -394,7 +412,8 @@
 					Margin="0,0,0,0"
 					Padding="0"
 					Background="Transparent"
-					Tapped="trackDoingBTN_Tapped">
+					Tapped="trackDoingBTN_Tapped"
+					AutomationProperties.Name="Действия с треком">
 					<FontIcon Glyph="&#xE712;" />
 				</Button>
 			</StackPanel>
@@ -404,9 +423,7 @@
 
 
 
-
 	</Grid>
-
 
 
 

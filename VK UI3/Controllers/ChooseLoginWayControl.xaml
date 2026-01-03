@@ -14,7 +14,6 @@
     <Grid>
 
 
-
         <StackPanel Orientation="Horizontal">
             <FontIcon
                 x:Name="fontIcon"
@@ -25,7 +24,8 @@
                     x:Name="MainTxT"
                     Margin="0"
                     VerticalAlignment="Center"
-                    FontSize="24" />
+                    FontSize="24"
+                    AutomationProperties.Name="{x:Bind loginWay.Name, Mode=OneWay}" />
                 <TextBlock
                     x:Name="secondTXT"
                     Margin="0"
