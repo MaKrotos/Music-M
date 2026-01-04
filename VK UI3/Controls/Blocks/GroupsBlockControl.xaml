@@ -8,12 +8,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <StackPanel Margin="5" Orientation="Horizontal">
+    <StackPanel Margin="5" Orientation="Horizontal" AutomationProperties.Name="Группа">
         <Grid Margin="10" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" CornerRadius="50">
             <Image
             x:Name="GroupImage"
             Width="100"
-            Height="100" />
+            Height="100"
+            AutomationProperties.Name="Изображение группы" />
         </Grid>
 
         <StackPanel>
@@ -23,6 +24,7 @@
                      FontSize="23"
                      FontWeight="SemiBold"
                            VerticalAlignment="Bottom"
+                           AutomationProperties.Name="Название группы"
                     />
                 <TextBlock
                     VerticalAlignment="Bottom"
@@ -30,18 +32,19 @@
                        Margin="15,5,0,3"
                          FontSize="14"
                         Opacity="0.5"
+                        AutomationProperties.Name="Количество подписчиков"
                     />
                 <TextBlock
                     VerticalAlignment="Bottom"
                     Margin="5,5,0,3"
                       FontSize="14"
                      Opacity="0.5"
-     
+                     AutomationProperties.Name="Подписчики"
+      
                 >Подписчиков</TextBlock>
                
-
             </StackPanel>
-            <Button Click="Button_Click" Margin="0,5,0,0" VerticalAlignment="Bottom" >
+            <Button Click="Button_Click" Margin="0,5,0,0" VerticalAlignment="Bottom" AutomationProperties.Name="Открыть сообщество">
                 Открыть сообщество
             </Button>
         </StackPanel>

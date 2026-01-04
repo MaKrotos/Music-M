@@ -18,7 +18,7 @@ namespace VK_UI3.Controls.Blocks
 
         ObservableCollection<Suggestion> Suggestions = new();
 
-    
+     
 
         public SuggestionsList()
         {
@@ -29,7 +29,6 @@ namespace VK_UI3.Controls.Blocks
             this.Loaded += SuggestionsList_Loaded;
             this.Unloaded += SuggestionsList_Unloaded;
             
-
         }
      
 
@@ -124,7 +123,7 @@ namespace VK_UI3.Controls.Blocks
                 }
 
 
-                // Применяем DataTemplate к свойству ItemTemplate UniversalControl
+                // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ DataTemplate пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ ItemTemplate UniversalControl
 
 
 
@@ -135,7 +134,7 @@ namespace VK_UI3.Controls.Blocks
                 {
                     Suggestions.Add(item);
                 }
-              
+               
             }
             catch (Exception ex)
             {
@@ -153,7 +152,7 @@ namespace VK_UI3.Controls.Blocks
                 {
                     Suggestions.Add(item);
                 }
-              
+               
             });
         }
     }

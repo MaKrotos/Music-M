@@ -15,7 +15,8 @@
     <Grid
         Height="510"
         Margin="0,0,10,0"
-        CornerRadius="4">
+        CornerRadius="4"
+        AutomationProperties.Name="Большой баннер">
 
         <Grid
             Height="450"
@@ -50,7 +51,8 @@
                             Height="{Binding ElementName=ArtistBannerImage, Path=Width}"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Stretch="UniformToFill" />
+                            Stretch="UniformToFill"
+                            AutomationProperties.Name="Изображение баннера" />
 
                     </Grid>
                 </winui:OpacityMaskView>
@@ -65,7 +67,8 @@
                         FontWeight="SemiBold"
                         Opacity="0.7"
                         Text="Название альбома"
-                        TextWrapping="Wrap" />
+                        TextWrapping="Wrap"
+                        AutomationProperties.Name="Заголовок баннера" />
 
                     <StackPanel Margin="0" HorizontalAlignment="Left">
                         <TextBlock
@@ -74,14 +77,16 @@
                             FontWeight="SemiBold"
                             Opacity="0.7"
                             Text="Исполнитель"
-                            TextWrapping="Wrap" />
+                            TextWrapping="Wrap"
+                            AutomationProperties.Name="Подзаголовок баннера" />
                         <TextBlock
                             x:Name="Description"
                             FontFamily="{StaticResource VKSansRegular}"
                             FontSize="20"
                             Opacity="0.7"
                             Text=""
-                            TextWrapping="Wrap" />
+                            TextWrapping="Wrap"
+                            AutomationProperties.Name="Описание баннера" />
 
 
                         <Button
@@ -90,11 +95,11 @@
                             Margin="0,20,0,0"
                             HorizontalAlignment="Left"
                             Background="{StaticResource AcrylicBackgroundFillColorDefaultBrush}"
-                            Click="ActionCuratorButton_Click">
+                            Click="ActionCuratorButton_Click"
+                            AutomationProperties.Name="Кнопка действия">
                             Открыть
                         </Button>
                         <Grid x:Name="ActionsGrid" HorizontalAlignment="Left" />
-
                     </StackPanel>
                 </StackPanel>
             </Grid>
@@ -107,7 +112,8 @@
             CornerRadius="10"
             ItemsSource="{x:Bind banners}"
             incrementalLoadingThreshold="100"
-            itsAll="true">
+            itsAll="true"
+            AutomationProperties.Name="Элементы управления">
 
             <customV:UniversalControl.ItemsPanelTemplate>
                 <ItemsPanelTemplate>

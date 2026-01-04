@@ -25,17 +25,16 @@
 
 
 
-
     <Grid
         x:Name="gridCh"
         Height="Auto"
         CornerRadius="8">
 
-
         <customV:UniversalControl
             x:Name="myControl"
             ItemsSource="{x:Bind video}"
-            itsAll="{x:Bind itsAll}">
+            itsAll="{x:Bind itsAll}"
+            AutomationProperties.Name="Список видео">
 
             <customV:UniversalControl.ItemTemplate>
                 <DataTemplate>

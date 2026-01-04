@@ -18,8 +18,7 @@ namespace VK_UI3.Controls.Blocks
 
         ObservableCollection<Video> video = new();
 
-     
-
+      
 
         public ListVideo()
         {
@@ -110,7 +109,7 @@ namespace VK_UI3.Controls.Blocks
                 {
                     case "list":
                         myControl.disableLoadMode = true;
-     
+       
                         break;
                     default:
                         myControl.loadMore = load;
@@ -121,7 +120,7 @@ namespace VK_UI3.Controls.Blocks
                 }
 
 
-                // Применяем DataTemplate к свойству ItemTemplate UniversalControl
+                // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ DataTemplate пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ ItemTemplate UniversalControl
 
 
 
@@ -138,6 +137,8 @@ namespace VK_UI3.Controls.Blocks
                 }
 
                
+
+
 
 
             }

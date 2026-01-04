@@ -99,7 +99,6 @@ namespace VK_UI3.Controls.Blocks
 
 
 
-
                 if (DataContext is not Block block)
                     return;
                 playlists.Clear();
@@ -138,7 +137,6 @@ namespace VK_UI3.Controls.Blocks
             }
             catch (Exception ex)
             {
-
 
 
             }

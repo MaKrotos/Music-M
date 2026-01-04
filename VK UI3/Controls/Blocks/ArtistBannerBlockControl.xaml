@@ -13,7 +13,8 @@
     <Grid
         x:Name="ArtistBanner"
         Margin="10"
-        CornerRadius="4">
+        CornerRadius="4"
+        AutomationProperties.Name="Баннер исполнителя">
 
         <winui:OpacityMaskView>
             <winui:OpacityMaskView.OpacityMask>
@@ -42,7 +43,8 @@
                         Height="{Binding ElementName=ArtistBannerImage, Path=Width}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Stretch="UniformToFill" />
+                        Stretch="UniformToFill"
+                        AutomationProperties.Name="Изображение исполнителя" />
                 </Grid>
             </winui:OpacityMaskView>
         </winui:OpacityMaskView>
@@ -66,7 +68,8 @@
                 FontFamily="{StaticResource VKSansBold}"
                 FontSize="50"
                 FontWeight="Bold"
-                Text="Artist text" />
+                Text="Artist text"
+                AutomationProperties.Name="Имя исполнителя" />
             <Grid x:Name="ActionsGrid" HorizontalAlignment="Left" />
         </StackPanel>
     </Grid>

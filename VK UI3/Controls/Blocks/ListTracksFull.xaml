@@ -18,7 +18,8 @@
         CanReorderItems="false"
         IsItemClickEnabled="False"
         ItemsSource="{x:Bind sectionAudio.listAudio, Mode=OneWay}"
-        SelectionMode="None">
+        SelectionMode="None"
+        AutomationProperties.Name="Полный список треков">
         <ListView.ItemTemplate>
             <DataTemplate>
                 <custom:TrackControl

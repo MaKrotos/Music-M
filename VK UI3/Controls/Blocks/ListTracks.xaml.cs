@@ -44,7 +44,7 @@ namespace VK_UI3.Controls.Blocks
 
         }
 
-    
+     
 
         private void ListTracks_Loaded(object sender, RoutedEventArgs e)
         {
@@ -152,4 +152,4 @@ namespace VK_UI3.Controls.Blocks
         private SectionAudio sectionAudio;
     }
 }
-
+ 

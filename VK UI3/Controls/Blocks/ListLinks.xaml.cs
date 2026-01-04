@@ -94,7 +94,7 @@ namespace VK_UI3.Controls.Blocks
                         {
                             links.Add(item);
                         }
-                    
+                     
                     if (myControl.CheckIfAllContentIsVisible())
                         load();
                     }
@@ -150,7 +150,6 @@ namespace VK_UI3.Controls.Blocks
             }
             catch (Exception ex)
             {
-
 
 
             }

@@ -17,11 +17,11 @@
 
 
 
-
     <Grid
         x:Name="gridCh"
         Height="Auto"
-        CornerRadius="8">
+        CornerRadius="8"
+        AutomationProperties.Name="Список ссылок">
 
 
         <customV:UniversalControl

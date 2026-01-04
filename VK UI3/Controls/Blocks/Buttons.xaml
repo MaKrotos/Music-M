@@ -9,5 +9,5 @@
     Margin="16,0,16,-15"
     mc:Ignorable="d">
 
-    <GridView x:Name="gridV" SelectionMode="None" />
+    <GridView x:Name="gridV" SelectionMode="None" AutomationProperties.Name="Кнопки действий" />
 </UserControl>

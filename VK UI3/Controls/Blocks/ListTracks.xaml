@@ -13,7 +13,8 @@
     <customV:UniversalControl
         x:Name="myControl"
         ItemsSource="{x:Bind sectionAudio.listAudio}"
-        itsAll="{x:Bind sectionAudio.itsAll}">
+        itsAll="{x:Bind sectionAudio.itsAll}"
+        AutomationProperties.Name="Список треков">
         <customV:UniversalControl.ItemsPanelTemplate>
             <ItemsPanelTemplate>
                 <ItemsWrapGrid MaximumRowsOrColumns="3" Orientation="Vertical" />

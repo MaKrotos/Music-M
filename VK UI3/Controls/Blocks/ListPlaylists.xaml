@@ -26,7 +26,8 @@
     <Grid
         x:Name="gridCh"
         Height="Auto"
-        CornerRadius="8">
+        CornerRadius="8"
+        AutomationProperties.Name="Список плейлистов">
         <customV:UniversalControl
             x:Name="myControl"
             ItemsSource="{x:Bind playlists}"

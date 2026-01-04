@@ -9,10 +9,7 @@
     xmlns:winui="using:WinUICommunity"
     mc:Ignorable="d">
 
-    <Grid Margin="10,0,10,0" CornerRadius="4">
-
-
-
+    <Grid Margin="10,0,10,0" CornerRadius="4" AutomationProperties.Name="Баннер куратора">
 
 
         <Grid Height="450" MaxHeight="450">
@@ -43,7 +40,8 @@
                             Height="{Binding ElementName=ArtistBannerImage, Path=Width}"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Stretch="UniformToFill" />
+                            Stretch="UniformToFill"
+                            AutomationProperties.Name="Изображение куратора" />
                     </Grid>
 
                 </winui:OpacityMaskView>
@@ -61,7 +59,8 @@
                     FontWeight="SemiBold"
                     Opacity="0.7"
                     Text="Сообщество-куратор"
-                    TextWrapping="Wrap" />
+                    TextWrapping="Wrap"
+                    AutomationProperties.Name="Тип куратора" />
 
                 <TextBlock
                     x:Name="CuratorText"
@@ -69,14 +68,16 @@
                     FontSize="40"
                     FontWeight="Black"
                     Text="Curator name"
-                    TextWrapping="Wrap" />
+                    TextWrapping="Wrap"
+                    AutomationProperties.Name="Имя куратора" />
                 <Button
                     x:Name="ActionCuratorButton"
                     Width="200"
                     Margin="0,20,0,0"
                     HorizontalAlignment="Left"
                     Background="{StaticResource CustomAcrylicInAppBrush}"
-                    Click="ActionCuratorButton_Click">
+                    Click="ActionCuratorButton_Click"
+                    AutomationProperties.Name="Кнопка действия с куратором">
                     <StackPanel Orientation="Horizontal">
                         <FontIcon x:Name="BTNIcon" />
                         <TextBlock x:Name="BTNText" Margin="10,0,0,0" />

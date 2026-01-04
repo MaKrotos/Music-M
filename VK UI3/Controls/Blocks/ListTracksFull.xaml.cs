@@ -60,7 +60,6 @@ namespace VK_UI3.Controls.Blocks
             SectionView sectionPage = (FindParentByName<Page>(this, "SectionPage") as SectionView) ;
            
 
-
             var audio = sender as ExtendedAudio;
             var ins = sectionAudio.listAudio.IndexOf(audio);
 
@@ -171,4 +170,4 @@ namespace VK_UI3.Controls.Blocks
 
     }
 }
-
+ 

@@ -148,7 +148,7 @@ namespace VK_UI3.Controls.Blocks
             timer.Start();
             if (!(sender is ExpBanner expBanner))
                 return;
-         
+       
             var index = banners.IndexOf(expBanner);
             if (lastIndex == index) return;
             lastIndex = index;
@@ -156,7 +156,7 @@ namespace VK_UI3.Controls.Blocks
             titleText.ChangeTextWithAnimation(banners[index].catalogBanner.Title);
             SubTitleText.ChangeTextWithAnimation(banners[index].catalogBanner.SubText);
             DescriptionText.ChangeTextWithAnimation(banners[index].catalogBanner.Text);
-        
+       
             changeImage.ChangeImageWithAnimation(banners[index].catalogBanner.Images.Last().Url);
 
             foreach (var item in banners)
