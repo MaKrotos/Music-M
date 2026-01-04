@@ -13,12 +13,19 @@ using VkNet.Utils;
 
 namespace VK_UI3.VKs.IVK
 {
+    /// <summary>
+    /// Опции для микса
+    /// </summary>
     public record MixOptions(string Id, int Append = 0, ImmutableDictionary<string, ImmutableArray<string>>? Options = null)
     {
+        /// <summary>
+        /// Получает хэш-код
+        /// </summary>
+        /// <returns>Хэш-код</returns>
         public override int GetHashCode()
         {
             var hashCode = new HashCode();
-
+            
             hashCode.Add(Id);
             hashCode.Add(Append);
             if (Options is not null)
@@ -30,18 +37,41 @@ namespace VK_UI3.VKs.IVK
                         hashCode.Add(item);
                     }
                 }
-
+            
             return hashCode.ToHashCode();
         }
     }
-
+    
+    /// <summary>
+    /// Класс для работы с миксами аудиозаписей
+    /// </summary>
     public class MixAudio : IVKGetAudio
     {
+        #region Поля и свойства
+        
+        /// <summary>
+        /// Данные микса
+        /// </summary>
         public MixOptions data;
+        
+        /// <summary>
+        /// Семафор для ограничения количества одновременных запросов
+        /// </summary>
+        private static SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+        
+        #endregion
+        
+        #region Конструкторы
+        
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="data">Данные микса</param>
+        /// <param name="dispatcher">Диспетчер</param>
         public MixAudio(MixOptions data, DispatcherQueue dispatcher) : base(dispatcher)
         {
             this.data = data;
-
+            
             this.countTracks = -1;
        
             Task.Run(async () =>
@@ -57,42 +87,72 @@ namespace VK_UI3.VKs.IVK
                 }
                 catch (Exception e)
                 {
+                    // Логируем ошибку
+                    Console.WriteLine($"Ошибка при получении микса аудиозаписей: {e.Message}");
+                    // Можно также вызвать событие ошибки, если это предусмотрено
+                    // onErrorLoad?.Invoke(this, new ErrorLoad(e));
                 }
                 this.currentTrack = 0;
                 AudioPlayer.PlayList(this);
             });
         }
-
+        
+        #endregion
+        
+        #region Методы для получения данных
+        
+        /// <summary>
+        /// Получает количество треков
+        /// </summary>
+        /// <returns>Количество треков</returns>
         public override long? getCount()
         {
             return listAudio.Count();
         }
-
+        
+        /// <summary>
+        /// Получает название
+        /// </summary>
+        /// <returns>Название</returns>
         public override string getName()
         {
             return null;
         }
+        
+        /// <summary>
+        /// Получает список URI фотографий
+        /// </summary>
+        /// <returns>Список URI фотографий</returns>
         public override List<string> getPhotosList()
         {
             return null;
         }
-
+        
+        /// <summary>
+        /// Получает URI фотографии
+        /// </summary>
+        /// <returns>URI фотографии</returns>
         public override Uri getPhoto()
         {
             return null;
         }
-
-        private static SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
-
+        
+        #endregion
+        
+        #region Методы для получения треков
+        
+        /// <summary>
+        /// Получает треки
+        /// </summary>
         public override void GetTracks()
         {
             semaphore.Wait(); // Ожидает освобождения семафора
-
+            
             try
             {
                 if (getLoadedTracks) return;
                 getLoadedTracks = true;
-
+                
                 task = Task.Run(async () =>
                 {
                     try
@@ -105,6 +165,10 @@ namespace VK_UI3.VKs.IVK
                     }
                     catch (Exception e)
                     {
+                        // Логируем ошибку
+                        Console.WriteLine($"Ошибка при получении треков микса: {e.Message}");
+                        // Можно также вызвать событие ошибки, если это предусмотрено
+                        // onErrorLoad?.Invoke(this, new ErrorLoad(e));
                     }
                     getLoadedTracks = false;
                     NotifyOnListUpdate();
@@ -115,5 +179,7 @@ namespace VK_UI3.VKs.IVK
                 semaphore.Release(); 
             }
         }
+        
+        #endregion
     }
 }
