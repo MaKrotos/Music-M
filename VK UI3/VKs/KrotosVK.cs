@@ -112,9 +112,8 @@ namespace VK_UI3.VKs
             }
         }
 
-        public static async Task sendVKAudioPlayStat(Helpers.ExtendedAudio trackdata, Helpers.ExtendedAudio Pretrackdata = null, int? secDurPre = null) {
-
-
+        public static async Task sendVKAudioPlayStat(Helpers.ExtendedAudio trackdata, Helpers.ExtendedAudio Pretrackdata = null, int? secDurPre = null)
+        {
 
             var startPlay = new PlayTrackEvent
             {
@@ -128,7 +127,6 @@ namespace VK_UI3.VKs
                 TrackCode = trackdata.audio.TrackCode,
                 Repeat = "all",
                 State = "app",
-            
                 PlaylistId = trackdata.audio.Album?.ToOwnerIdString()!
             };
 
@@ -136,7 +134,7 @@ namespace VK_UI3.VKs
 
             if (Pretrackdata != null)
             {
-                startPlay.PrevAudioId = Pretrackdata.audio.Album?.ToOwnerIdString();
+                startPlay.PrevAudioId = Pretrackdata.audio.FullId; // ← Исправлено
 
                 queue.Add(new StopTrackEvent
                 {
@@ -144,23 +142,21 @@ namespace VK_UI3.VKs
                     Uuid = Guid.NewGuid().GetHashCode(),
                     Shuffle = "false",
                     Reason = "new",
-                    AudioId = trackdata.audio.FullId,
+                    AudioId = Pretrackdata.audio.FullId, // ← ИСПРАВЛЕНО: должен быть ID предыдущего трека
                     StartTime = "0",
                     PlaybackStartedAt = "0",
-                    TrackCode = trackdata.audio.TrackCode,
+                    TrackCode = Pretrackdata.audio.TrackCode, // ← ИСПРАВЛЕНО: трек-код предыдущего трека
                     StreamingType = "online",
                     Duration = (secDurPre ?? Pretrackdata.audio.Duration).ToString(),
                     Repeat = "all",
                     State = "app",
-                   // Source = Pretrackdata.ParentBlockId!,
+                    // Source = Pretrackdata.ParentBlockId!,
                     PlaylistId = Pretrackdata.audio.Album?.ToOwnerIdString()!
                 });
             }
 
             await VK.vkService.StatsTrackEvents(queue);
-
         }
-      
-    
+
     }
 }

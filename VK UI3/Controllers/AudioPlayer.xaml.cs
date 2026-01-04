@@ -624,20 +624,33 @@ namespace VK_UI3.Controllers
 
                 iVKGetAudio.GetTracks();
                 await tcs.Task;
-                
             }
 
             if (iVKGetAudio.listAudio.Count == 0) return;
 
-            if (v != null && iVKGetAudio.currentTrack == null) 
+            if (v != null && iVKGetAudio.currentTrack == null)
                 iVKGetAudio.currentTrack = (long)v;
 
-           
-
             var trackdata = await _TrackDataThisGet(true);
-            if (trackdata == null) 
+            if (trackdata == null)
                 return;
-     
+
+            ExtendedAudio previousTrack = PlayingTrack;
+            int? previousTrackPlayedSeconds = null;
+
+            if (previousTrack != null)
+            {
+                // Получаем сколько секунд был воспроизведен предыдущий трек
+                previousTrackPlayedSeconds = (int)mediaPlayer.Position.TotalSeconds;
+            }
+
+            // Отправляем статистику для нового трека
+            _ = KrotosVK.sendVKAudioPlayStat(
+                trackdata,           // текущий трек
+                previousTrack,       // предыдущий трек (если есть)
+                previousTrackPlayedSeconds // сколько секунд проиграл предыдущий трек
+            );
+
             if (iVKGetAudio is PlayListVK)
             {
                 VK.sendStartEvent((long)trackdata.audio.Id, (long)trackdata.audio.OwnerId, (iVKGetAudio as PlayListVK).playlist.Id);
