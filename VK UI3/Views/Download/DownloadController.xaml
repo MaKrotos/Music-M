@@ -8,7 +8,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     PointerPressed="UCcontrol_PointerPressed"
     Translation="0,0,8"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    AutomationProperties.Name="{x:Bind DownloadTitle.Text, Mode=OneWay}"
+    AutomationProperties.HelpText="Компонент загрузки трека. Прогресс: {x:Bind dx.Text, Mode=OneWay}.">
 
     <StackPanel
         Padding="10"
@@ -58,7 +60,9 @@
                 Margin="0,0,5,0"
                 Padding="0"
                 Background="Transparent"
-                Click="PlayPause_clicked">
+                Click="PlayPause_clicked"
+                AutomationProperties.Name="Кнопка паузы"
+                PointerEntered="PlayPauseButton_PointerEntered">
                 <FontIcon
                     x:Name="PlayIcon"
                     FontSize="16"
@@ -70,7 +74,8 @@
                 Height="25"
                 Padding="0"
                 Background="Transparent"
-                Click="Cancel_clicked">
+                Click="Cancel_clicked"
+                AutomationProperties.Name="Кнопка отмены загрузки">
                 <FontIcon FontSize="16" Glyph="&#xE711;" />
             </Button>
 

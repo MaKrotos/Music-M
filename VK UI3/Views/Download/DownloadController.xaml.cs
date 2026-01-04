@@ -1,11 +1,14 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
 using System;
 using System.Diagnostics;
 using System.IO;
 using VK_UI3.DownloadTrack;
 using VK_UI3.Helpers.Animations;
+using Microsoft.UI.Xaml.Automation;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -93,6 +96,12 @@ namespace VK_UI3.Views.Download
                             animationsChangeFontIcon.ChangeFontIconWithAnimation("\uF5B0");
                             if (!playListDownload.error)
                                 DownloadProgressBar.ShowPaused = true;
+                            // Уведомляем экранного диктора о состоянии паузы
+                            var peer = FrameworkElementAutomationPeer.FromElement(PlayIcon);
+                            if (peer != null)
+                            {
+                                peer.RaiseAutomationEvent(AutomationEvents.LiveRegionChanged);
+                            }
                         }
                     }
                     else
@@ -102,6 +111,12 @@ namespace VK_UI3.Views.Download
 
                         if (!playListDownload.error)
                             DownloadProgressBar.ShowPaused = false;
+                        // Уведомляем экранного диктера о состоянии воспроизведения
+                        var peer = FrameworkElementAutomationPeer.FromElement(PlayIcon);
+                        if (peer != null)
+                        {
+                            peer.RaiseAutomationEvent(AutomationEvents.LiveRegionChanged);
+                        }
                     }
                     dx.Text = $"{playListDownload.downloaded}";
                     if (playListDownload.iVKGetAudio.countTracks != null && playListDownload.iVKGetAudio.countTracks != -1)
@@ -116,6 +131,12 @@ namespace VK_UI3.Views.Download
                     double percentageDownloaded = (downloadedTracks / totalTracks) * 100;
 
                     DownloadProgressBar.Value = Math.Round(percentageDownloaded);
+                    // Объявляем об изменении значения прогресса для экранного диктора
+                    var automationPeer = FrameworkElementAutomationPeer.FromElement(DownloadProgressBar);
+                    if (automationPeer != null)
+                    {
+                        automationPeer.RaisePropertyChangedEvent(RangeValuePatternIdentifiers.ValueProperty, Math.Round(percentageDownloaded) - 1, Math.Round(percentageDownloaded));
+                    }
 
                     if (playListDownload.error)
                     {
@@ -153,6 +174,23 @@ namespace VK_UI3.Views.Download
             else
             {
                 playListDownload.Pause();
+            }
+        }
+
+        private void PlayPauseButton_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            // Уведомляем экранного диктера о текущем состоянии кнопки паузы при наведении
+            var peer = FrameworkElementAutomationPeer.FromElement(PlayIcon);
+            if (peer != null)
+            {
+                if (playListDownload.isPause())
+                {
+                    peer.RaiseAutomationEvent(AutomationEvents.LiveRegionChanged);
+                }
+                else
+                {
+                    peer.RaiseAutomationEvent(AutomationEvents.LiveRegionChanged);
+                }
             }
         }
     }

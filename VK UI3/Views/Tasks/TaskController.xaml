@@ -30,11 +30,13 @@
                     Grid.Column="0"
                     Text=""
                     TextTrimming="CharacterEllipsis"
-                    TextWrapping="NoWrap" />
+                    TextWrapping="NoWrap"
+                    AutomationProperties.Name="Название задачи" />
                 <TextBlock
                     x:Name="pathText"
                     Opacity="0.5"
-                    TextTrimming="CharacterEllipsis" />
+                    TextTrimming="CharacterEllipsis"
+                    AutomationProperties.Name="Путь задачи" />
             </StackPanel>
             <TextBlock
                 x:Name="dx"
@@ -65,7 +67,8 @@
                 Margin="0,0,5,0"
                 Padding="0"
                 Background="Transparent"
-                Click="PlayPause_clicked">
+                Click="PlayPause_clicked"
+                AutomationProperties.Name="Пауза/Продолжить задачу">
                 <FontIcon
                     x:Name="PlayIcon"
                     FontSize="16"
@@ -77,7 +80,8 @@
                 Height="25"
                 Padding="0"
                 Background="Transparent"
-                Click="Cancel_clicked">
+                Click="Cancel_clicked"
+                AutomationProperties.Name="Отменить задачу">
                 <FontIcon
                     x:Name="CancelIcon"
                     FontSize="16"

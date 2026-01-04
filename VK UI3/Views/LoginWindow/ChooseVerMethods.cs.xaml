@@ -28,26 +28,21 @@
             CanReorderItems="false"
             ItemsSource="{x:Bind VerificationMethods, Mode=OneWay}"
             SelectionChanged="LoginsListView_SelectionChanged"
-            SelectionMode="Single">
-
-
+            SelectionMode="Single"
+            AutomationProperties.Name="Список способов входа">
 
             <ListView.ItemTemplate>
-
-
                 <DataTemplate>
-
                     <custom:ChooseLoginWayControl
                         Margin="10"
                         FocusVisualPrimaryBrush="Transparent"
                         FocusVisualSecondaryThickness="0"
-                        loginWay="{Binding}">
+                        loginWay="{Binding}"
+                        AutomationProperties.Name="Способ входа">
 
                         <custom:ChooseLoginWayControl.Shadow>
                             <ThemeShadow x:Name="SharedShadow" />
                         </custom:ChooseLoginWayControl.Shadow>
-
-
                     </custom:ChooseLoginWayControl>
                 </DataTemplate>
             </ListView.ItemTemplate>

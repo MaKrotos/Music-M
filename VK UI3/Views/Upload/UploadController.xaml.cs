@@ -1,5 +1,8 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Automation;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -72,8 +75,13 @@ namespace VK_UI3.Views.Upload
                 {
 
 
-
                     DownloadProgressBar.Value = playListDownload.percent;
+                    // Объявляем об изменении значения прогресса для экранного диктора
+                    var automationPeer = FrameworkElementAutomationPeer.FromElement(DownloadProgressBar);
+                    if (automationPeer != null)
+                    {
+                        automationPeer.RaisePropertyChangedEvent( RangeValuePatternIdentifiers.ValueProperty, playListDownload.percent - 1, playListDownload.percent);
+                    }
 
                 }
                 catch { }

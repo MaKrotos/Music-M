@@ -30,7 +30,8 @@
                 HorizontalAlignment="Center"
                 Style="{StaticResource SubtitleTextBlockStyle}"
                 Text="Введите код двухфакторной авторизации"
-                TextAlignment="Center" />
+                TextAlignment="Center"
+                AutomationProperties.Name="Введите код двухфакторной авторизации" />
 
 
             <TextBox
@@ -39,7 +40,8 @@
                 KeyDown="passpey_KeyDown"
                 MaxLength="{x:Bind CodeLength, Mode=OneWay}"
                 PlaceholderText="2Auth код"
-                TextAlignment="Center" />
+                TextAlignment="Center"
+                AutomationProperties.Name="Поле ввода кода двухфакторной авторизации" />
             <TextBlock
                 x:Name="passpey"
                 MaxWidth="250"
@@ -49,26 +51,30 @@
                 Opacity="0.70"
                 Style="{StaticResource SubtitleTextBlockStyle}"
                 Text=""
-                TextAlignment="Center" />
+                TextAlignment="Center"
+                AutomationProperties.Name="Информация о способе получения кода" />
             <Button
                  Style="{StaticResource AccentButtonStyle}"
                 Margin="0,20,0,0"
                 HorizontalAlignment="Stretch"
                 Click="SubmitButton_Click"
-                Content="Продолжить" />
+                Content="Продолжить"
+                AutomationProperties.Name="Кнопка продолжения" />
             <Button
                 x:Name="goAnotherBTN"
                 Margin="0,10,0,0"
                 HorizontalAlignment="Stretch"
                 Click="ShowAnotherVerificationMethodsButton_Click"
-                Content="Другие варианты входа" />
+                Content="Другие варианты входа"
+                AutomationProperties.Name="Другие варианты входа" />
 
             <Button
                 x:Name="BackBTN"
                 Margin="0,40,0,0"
                 HorizontalAlignment="Stretch"
                 Click="BackButton"
-                Content="Отмена" />
+                Content="Отмена"
+                AutomationProperties.Name="Кнопка отмены" />
         </StackPanel>
     </Grid>
 

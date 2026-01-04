@@ -52,7 +52,6 @@ namespace VK_UI3.Views.Tasks
             
           
 
-
         }
 
         TaskAction _task { get; set; }
@@ -66,6 +65,7 @@ namespace VK_UI3.Views.Tasks
             }
             _task = (DataContext as TaskAction);
             DownloadTitle.Text = _task.nameTask;
+            AutomationProperties.SetName(DownloadTitle, _task.nameTask);
 
             if (DownloadTitle.Text.Length > 20)
             {
@@ -106,8 +106,6 @@ namespace VK_UI3.Views.Tasks
                 try
                 {
                     if (animationsChangeFontIcon == null) { animationsChangeFontIcon = new AnimationsChangeFontIcon(PlayIcon, this.DispatcherQueue); }
-
-
 
                     switch (_task.Status)
                     {

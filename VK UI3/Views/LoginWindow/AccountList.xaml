@@ -18,7 +18,8 @@
         DragItemsStarting="AccountsList_DragItemsStarting"
         ItemsSource="{x:Bind accounts, Mode=TwoWay}"
         SelectionChanged="ListView_SelectionChanged"
-        SelectionMode="Single">
+        SelectionMode="Single"
+        AutomationProperties.Name="Список аккаунтов">
         <ListView.ItemTemplate>
             <DataTemplate>
                 <custom:AccountController Margin="0,0,0,0" accounts="{Binding}" />

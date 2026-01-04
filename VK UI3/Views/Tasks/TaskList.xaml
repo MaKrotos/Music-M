@@ -20,7 +20,8 @@
 		CanReorderItems="false"
 		IsItemClickEnabled="False"
 		ItemsSource="{x:Bind tasks, Mode=OneWay}"
-		SelectionMode="None">
+		SelectionMode="None"
+        AutomationProperties.Name="Список задач">
 		<ListView.Shadow>
 			<ThemeShadow />
 		</ListView.Shadow>

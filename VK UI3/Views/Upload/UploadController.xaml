@@ -7,7 +7,9 @@
     xmlns:local="using:VK_UI3.Views.Download"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Translation="0,0,8"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    AutomationProperties.Name="{x:Bind DownloadTitle.Text, Mode=OneWay}"
+    AutomationProperties.HelpText="Компонент загрузки трека. Прогресс: {x:Bind DownloadProgressBar.Value, Mode=OneWay} процентов.">
 
     <StackPanel
         Padding="10"
@@ -54,7 +56,8 @@
                 Height="25"
                 Padding="0"
                 Background="Transparent"
-                Click="Cancel_clicked">
+                Click="Cancel_clicked"
+                AutomationProperties.Name="Кнопка отмены загрузки">
                 <FontIcon FontSize="16" Glyph="&#xE711;" />
             </Button>
 
