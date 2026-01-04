@@ -267,7 +267,9 @@
 				<Slider
 					x:Name="Slider12kHz"
 					Style="{StaticResource EqualizerSliderStyle}"
-					ValueChanged="Slider_ValueChanged" />
+					ValueChanged="Slider_ValueChanged"
+					AutomationProperties.Name="Слайдер 12 кГц"
+			                 AutomationProperties.HelpText="Настройка уровня яркости на частоте 12 кГц" />
 				<TextBlock
 					Margin="5,0,5,5"
 					HorizontalAlignment="Center"
@@ -283,7 +285,9 @@
 				<Slider
 					x:Name="Slider16kHz"
 					Style="{StaticResource EqualizerSliderStyle}"
-					ValueChanged="Slider_ValueChanged" />
+					ValueChanged="Slider_ValueChanged"
+					AutomationProperties.Name="Слайдер 16 кГц"
+			                 AutomationProperties.HelpText="Настройка уровня воздушности на частоте 16 кГц" />
 				<TextBlock
 					Margin="5,0,5,5"
 					HorizontalAlignment="Center"

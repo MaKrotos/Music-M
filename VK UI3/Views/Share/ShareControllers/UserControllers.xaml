@@ -8,9 +8,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     HorizontalAlignment="Stretch"
     DataContextChanged="UserControl_DataContextChanged"
-    PointerEntered="StackPanel_PointerEntered"
-    PointerExited="StackPanel_PointerExited"
-    PointerPressed="StackPanel_PointerPressed"
+    PointerEntered="UserControl_PointerEntered"
+    PointerExited="UserControl_PointerExited"
+    PointerPressed="UserControl_PointerPressed"
     Translation="0,0,16"
     MaxHeight="70"
     mc:Ignorable="d">
