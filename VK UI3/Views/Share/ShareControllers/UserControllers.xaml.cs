@@ -56,7 +56,7 @@ namespace VK_UI3.Views.Share.ShareControllers
         private void UserControl_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             if (isDisabled) return;
-            MainView.OpenUserPlayList(this.user);
+            MainView.OpenSection(user.Id.ToString(), sectionType: SectionView.SectionType.UserSection);
         }
 
         private void UserControl_PointerEntered(object sender, PointerRoutedEventArgs e)
