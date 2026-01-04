@@ -17,6 +17,7 @@ using WinRT;
 namespace MusicX.Services.Player.Sources;
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -44,7 +45,6 @@ public class AudioEqualizer
         public override string ToString()
         {
             return $"f={Frequency}:t={WidthType}:width={Width}:g={Gain}";
-            // Теперь используется `width` вместо `w`
         }
     }
 
@@ -58,7 +58,6 @@ public class AudioEqualizer
 
     private void InitializeDefaultBands()
     {
-        // Более оптимальные значения ширины полос
         Bands.Add(new EqualizerBand("30Hz", 30f, 25f, 0f));
         Bands.Add(new EqualizerBand("60Hz", 60f, 40f, 0f));
         Bands.Add(new EqualizerBand("80Hz", 80f, 60f, 0f));
@@ -102,14 +101,14 @@ public class AudioEqualizer
 
         foreach (var band in Bands)
         {
-            if (Math.Abs(band.Gain) > 0.01f)  // Если усиление не нулевое
+            if (Math.Abs(band.Gain) > 0.01f)
             {
                 activeFilters.Add($"equalizer={band.ToString()}");
             }
         }
 
         return activeFilters.Count > 0
-        ? string.Join(",", activeFilters)  // Объединяем фильтры через запятую
+            ? string.Join(",", activeFilters)
             : string.Empty;
     }
 
@@ -122,7 +121,7 @@ public class AudioEqualizer
 public abstract class MediaSourceBase : ITrackMediaSource
 {
     private static readonly Semaphore FFmpegSemaphore = new(1, 1, "MusicX_FFmpegSemaphore");
-    
+
     protected static readonly MediaOptions MediaOptions = new()
     {
         StreamsToLoad = MediaMode.Audio,
@@ -138,28 +137,29 @@ public abstract class MediaSourceBase : ITrackMediaSource
                 ["reconnect"] = "1",
                 ["reconnect_streamed"] = "1",
                 ["reconnect_on_network_error"] = "1",
-                ["reconnect_delay_max"] = "30",
+                ["reconnect_delay_max"] = "5",
                 ["reconnect_on_http_error"] = "4xx,5xx",
-                ["stimeout"] = "30000000",
-                ["timeout"] = "30000000",
-                ["rw_timeout"] = "30000000",
-                ["avioflags"] = "direct"
+                ["stimeout"] = "10000000",
+                ["timeout"] = "10000000",
+                ["rw_timeout"] = "10000000",
+                ["avioflags"] = "direct",
+                ["multiple_requests"] = "1",
+                ["buffer_size"] = "1024000",
+                ["max_delay"] = "500000",
+                ["fflags"] = "+nobuffer+fastseek",
+                ["http_proxy"] = "",
+                ["user_agent"] = "MusicX Player"
             }
         }
     };
-
-
 
     public abstract Task<bool> OpenWithMediaPlayerAsync(MediaPlayer player, Audio track, CancellationToken cancellationToken = default, AudioEqualizer equalizer = null);
 
     protected static MediaPlaybackItem CreateMediaPlaybackItem(MediaFile file)
     {
         var streamingSource = CreateFFMediaStreamSource(file);
-
-        return new (MediaSource.CreateFromMediaStreamSource(streamingSource));
+        return new MediaPlaybackItem(MediaSource.CreateFromMediaStreamSource(streamingSource));
     }
-
-
 
     public static MediaStreamSource CreateFFMediaStreamSource(string url)
     {
@@ -170,8 +170,8 @@ public abstract class MediaSourceBase : ITrackMediaSource
     {
         if (file == null)
         {
-            System.Diagnostics.Debug.WriteLine("[FFMedia] MediaFile.Open вернул null. Возможно, ошибка в фильтре эквалайзера или FFmpeg.");
-            throw new ArgumentNullException(nameof(file), "MediaFile.Open вернул null. Возможно, ошибка в фильтре эквалайзера или FFmpeg.");
+            Debug.WriteLine("[FFMedia] MediaFile.Open вернул null.");
+            throw new ArgumentNullException(nameof(file), "MediaFile.Open вернул null.");
         }
 
         var properties =
@@ -180,40 +180,65 @@ public abstract class MediaSourceBase : ITrackMediaSource
         var streamingSource = new MediaStreamSource(new AudioStreamDescriptor(properties))
         {
             CanSeek = true,
-            IsLive = true,
+            IsLive = false,
             Duration = file.Audio.Info.Duration
+            // BufferTime свойство не поддерживается в этой версии MediaStreamSource
         };
-        
+
         var position = TimeSpan.Zero;
+        var isBuffering = false;
+        var lastSampleTime = DateTime.Now;
+        var bufferThreshold = TimeSpan.FromSeconds(1.5);
+        var consecutiveErrors = 0;
+        var maxConsecutiveErrors = 3;
 
         streamingSource.Starting += (_, args) =>
         {
-            position = args.Request.StartPosition == TimeSpan.Zero
-                ? file.Info.StartTime
-                : args.Request.StartPosition.GetValueOrDefault();
-            
-            args.Request.SetActualStartPosition(position);
-
             try
             {
+                position = args.Request.StartPosition == TimeSpan.Zero
+                    ? file.Info.StartTime
+                    : args.Request.StartPosition.GetValueOrDefault();
+
+                Debug.WriteLine($"[FFMedia] Starting playback at position: {position}");
+
+                args.Request.SetActualStartPosition(position);
+                consecutiveErrors = 0;
+
                 FFmpegSemaphore.WaitOne(TimeSpan.FromSeconds(10));
-                file.Audio.GetFrame(position);
+                try
+                {
+                    file.Audio.GetFrame(position);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[FFMedia] Error in Starting event: {ex.Message}");
+                }
+                finally
+                {
+                    FFmpegSemaphore.Release();
+                }
             }
-            catch (FFmpegException)
+            catch (Exception ex)
             {
-            }
-            finally
-            {
-                FFmpegSemaphore.Release();
+                Debug.WriteLine($"[FFMedia] Starting event error: {ex.Message}");
             }
         };
 
         streamingSource.Closed += (_, _) =>
         {
+            Debug.WriteLine("[FFMedia] MediaStreamSource closed, disposing file");
             FFmpegSemaphore.WaitOne(TimeSpan.FromSeconds(10));
             try
             {
-                file.Dispose();
+                if (!file.IsDisposed)
+                {
+                    file.Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[FFMedia] Error disposing file: {ex.Message}");
             }
             finally
             {
@@ -223,74 +248,246 @@ public abstract class MediaSourceBase : ITrackMediaSource
 
         streamingSource.SampleRequested += (_, args) =>
         {
-            FFmpegSemaphore.WaitOne(TimeSpan.FromSeconds(10));
-            
+            if (!FFmpegSemaphore.WaitOne(TimeSpan.FromSeconds(5)))
+            {
+                Debug.WriteLine("[FFMedia] Timeout waiting for FFmpeg semaphore");
+                args.Request.Sample = null;
+                return;
+            }
+
             try
             {
                 if (file.IsDisposed)
-                    return;
-                
-                var array = ProcessSample();
-                if (array != null)
                 {
-                    args.Request.Sample = MediaStreamSample.CreateFromBuffer(array.AsBuffer(), position);
+                    Debug.WriteLine("[FFMedia] File is disposed, cannot get sample");
+                    args.Request.Sample = null;
+                    return;
+                }
+
+                var array = ProcessSample();
+                if (array != null && array.Length > 0)
+                {
+                    var sample = MediaStreamSample.CreateFromBuffer(array.AsBuffer(), position);
+                    var sampleDuration = CalculateSampleDuration(array.Length, properties);
+                    sample.Duration = sampleDuration;
+
+                    args.Request.Sample = sample;
+
+                    lastSampleTime = DateTime.Now;
+                    isBuffering = false;
+                    consecutiveErrors = 0;
+
                     // Если был на паузе из-за буферизации — продолжаем воспроизведение
-                    player?.Play();
+                    if (player?.PlaybackSession?.PlaybackState == MediaPlaybackState.Paused)
+                    {
+                        Debug.WriteLine("[FFMedia] Resuming playback after buffering");
+                        player.Play();
+                    }
                 }
                 else
                 {
-                    // Нет данных — ставим на паузу
-                    player?.Pause();
+                    // Нет данных
+                    args.Request.Sample = null;
+                    consecutiveErrors++;
+
+                    // Проверяем, не зависли ли мы в буферизации
+                    if (DateTime.Now - lastSampleTime > bufferThreshold && !isBuffering)
+                    {
+                        isBuffering = true;
+                        Debug.WriteLine($"[FFMedia] Buffering detected at position: {position}, consecutive errors: {consecutiveErrors}");
+
+                        // Если слишком много ошибок подряд, пытаемся восстановиться
+                        if (consecutiveErrors >= maxConsecutiveErrors)
+                        {
+                            Debug.WriteLine($"[FFMedia] Attempting recovery after {consecutiveErrors} consecutive errors");
+                            TryRecoverFromBuffering(player, file, ref position);
+                            consecutiveErrors = 0;
+                        }
+                    }
+
+                    // Ставим на паузу, если проигрыватель все еще играет
+                    if (player?.PlaybackSession?.PlaybackState == MediaPlaybackState.Playing)
+                    {
+                        Debug.WriteLine("[FFMedia] Pausing playback due to buffering");
+                        player.Pause();
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[FFMedia] Error in SampleRequested: {ex.Message}");
+                args.Request.Sample = null;
+                consecutiveErrors++;
             }
             finally
             {
                 FFmpegSemaphore.Release();
             }
         };
-        
+
         byte[]? ProcessSample()
         {
             AudioData frame;
             int retryCount = 0;
-            const int maxRetries = 10;
-            while (true)
+            const int maxRetries = 8;
+
+            while (retryCount < maxRetries)
             {
                 try
                 {
                     if (!file.Audio.TryGetNextFrame(out frame))
-                        return null; // настоящий конец потока
+                    {
+                        // Проверяем, не достигли ли мы конца потока
+                        if (file.Audio.Position >= file.Audio.Info.Duration - TimeSpan.FromMilliseconds(500))
+                        {
+                            Debug.WriteLine("[FFMedia] End of stream reached");
+                            return null;
+                        }
+
+                        // Пробуем снова с небольшой задержкой
+                        retryCount++;
+                        if (retryCount < maxRetries)
+                        {
+                            Debug.WriteLine($"[FFMedia] No frame available, retry {retryCount}/{maxRetries}");
+                            Thread.Sleep(50 * retryCount);
+                            continue;
+                        }
+
+                        Debug.WriteLine("[FFMedia] Could not get frame after retries");
+                        return null;
+                    }
 
                     position = file.Audio.Position;
-                    break;
+
+                    // Успешно получили кадр
+                    var blockSize = frame.NumSamples * Unsafe.SizeOf<short>();
+                    var array = new byte[frame.NumChannels * blockSize];
+
+                    frame.GetChannelData<short>(0).CopyTo(MemoryMarshal.Cast<byte, short>(array));
+
+                    frame.Dispose();
+
+                    return array;
                 }
                 catch (EndOfStreamException)
                 {
-                    // Конец потока
+                    Debug.WriteLine("[FFMedia] End of stream exception");
                     return null;
+                }
+                catch (FFmpegException ex) when (ex.ErrorCode == -541478725) // AVERROR_EOF
+                {
+                    Debug.WriteLine("[FFMedia] FFmpeg EOF error");
+                    return null;
+                }
+                catch (FFmpegException ex) when (ex.ErrorCode == -1094995529) // AVERROR(EAGAIN)
+                {
+                    retryCount++;
+                    Debug.WriteLine($"[FFMedia] Resource temporarily unavailable, retry {retryCount}/{maxRetries}");
+                    if (retryCount >= maxRetries)
+                    {
+                        Debug.WriteLine("[FFMedia] Max retries reached for EAGAIN");
+                        return null;
+                    }
+                    Thread.Sleep(100 * retryCount);
+                    continue;
                 }
                 catch (Exception ex)
                 {
                     retryCount++;
+                    Debug.WriteLine($"[FFMedia] Error getting frame (retry {retryCount}/{maxRetries}): {ex.Message}");
                     if (retryCount >= maxRetries)
                     {
+                        Debug.WriteLine("[FFMedia] Max retries reached");
                         return null;
                     }
-                    Thread.Sleep(50);
+
+                    Thread.Sleep(Math.Min(1000, 150 * retryCount));
                 }
             }
 
-            var blockSize = frame.NumSamples * Unsafe.SizeOf<short>();
-            var array = new byte[frame.NumChannels * blockSize];
-
-            frame.GetChannelData<short>(0).CopyTo(MemoryMarshal.Cast<byte, short>(array));
-            
-            frame.Dispose();
-
-            return array;
+            return null;
         }
 
         return streamingSource;
+    }
+
+    private static TimeSpan CalculateSampleDuration(int bufferSize, AudioEncodingProperties properties)
+    {
+        try
+        {
+            var bytesPerSecond = properties.Bitrate / 8;
+            if (bytesPerSecond > 0)
+            {
+                var durationSeconds = bufferSize / (double)bytesPerSecond;
+                return TimeSpan.FromSeconds(durationSeconds);
+            }
+        }
+        catch
+        {
+        }
+
+        return TimeSpan.FromSeconds(0.1);
+    }
+
+    private static void TryRecoverFromBuffering(MediaPlayer? player, MediaFile file, ref TimeSpan position)
+    {
+        if (player == null || file == null || file.IsDisposed)
+            return;
+
+        Debug.WriteLine($"[FFMedia] Attempting recovery at position: {position}");
+
+        try
+        {
+            // Пытаемся сделать seek для сброса состояния декодера
+            FFmpegSemaphore.WaitOne(TimeSpan.FromSeconds(5));
+
+            try
+            {
+                // Сохраняем текущую позицию
+                var currentPosition = position;
+
+                // Пытаемся получить кадр с текущей позиции
+                var testFrame = file.Audio.GetFrame(currentPosition);
+                testFrame.Dispose();
+
+                Debug.WriteLine($"[FFMedia] Recovery successful with direct frame get");
+
+                Thread.Sleep(100);
+            }
+            catch (Exception seekEx)
+            {
+                Debug.WriteLine($"[FFMedia] Direct frame get failed: {seekEx.Message}");
+
+                // Если прямой seek не сработал, попробуем получить следующий кадр
+                if (file.Audio.TryGetNextFrame(out var nextFrame))
+                {
+                    nextFrame.Dispose();
+                    Debug.WriteLine("[FFMedia] Recovery with TryGetNextFrame successful");
+                }
+                else
+                {
+                    Debug.WriteLine("[FFMedia] Could not get next frame for recovery");
+                }
+            }
+            finally
+            {
+                FFmpegSemaphore.Release();
+            }
+
+            // Даем время на восстановление сети
+            Thread.Sleep(200);
+
+            // Возобновляем воспроизведение если возможно
+            if (player.PlaybackSession.PlaybackState != MediaPlaybackState.Playing)
+            {
+                player.Play();
+                Debug.WriteLine("[FFMedia] Playback resumed after recovery attempt");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[FFMedia] Recovery error: {ex.Message}");
+        }
     }
 
     public static Task<FFmpegInteropX.FFmpegMediaSource> CreateWinRtMediaSource(Audio data, IReadOnlyDictionary<string, string>? customOptions = null, CancellationToken cancellationToken = default)
@@ -303,16 +500,20 @@ public abstract class MediaSourceBase : ITrackMediaSource
                 options.Add(option.Key, option.Value);
         }
 
-        if(!MediaOptions.DemuxerOptions.FlagDiscardCorrupt)
+        if (!MediaOptions.DemuxerOptions.FlagDiscardCorrupt)
             options.Add("err_detect", "ignore_err");
-        
+
 
         if (customOptions != null)
             foreach (var (key, value) in customOptions)
                 if (key != null && value != null)
                     options[key] = value;
 
-
+        // Добавляем дополнительные опции для лучшего восстановления
+        options["reconnect"] = "1";
+        options["reconnect_delay_max"] = "5";
+        options["reconnect_streamed"] = "1";
+        options["stimeout"] = "10000000";
 
         return FFmpegInteropX.FFmpegMediaSource.CreateFromUriAsync(data.Url.ToString(), new()
         {
@@ -322,22 +523,21 @@ public abstract class MediaSourceBase : ITrackMediaSource
                 ReadAheadBufferEnabled = true,
                 SkipErrors = uint.MaxValue,
                 KeepMetadataOnMediaSourceClosed = false
+                // BufferTime не поддерживается в GeneralConfig
             }
         }).AsTask(cancellationToken);
-
-
     }
 
     protected static void RegisterSourceObjectReference(MediaPlayer player, IWinRTObject rtObject)
     {
         GC.SuppressFinalize(rtObject.NativeObject);
-        
+
         player.SourceChanged += PlayerOnSourceChanged;
 
         void PlayerOnSourceChanged(MediaPlayer sender, object args)
         {
             player.SourceChanged -= PlayerOnSourceChanged;
-            
+
             if (rtObject is IDisposable disposable)
                 disposable.Dispose();
             else
