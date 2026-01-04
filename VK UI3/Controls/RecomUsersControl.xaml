@@ -87,7 +87,7 @@
                 FontFamily="{StaticResource VKSansDemiBold}"
                 FontSize="14"
                 FontWeight="Bold"
-                Foreground="White">
+                Foreground="White" AutomationProperties.Name="Процент совпадения вкусов">
                 97%
             </TextBlock>
             <TextBlock
@@ -97,7 +97,7 @@
                 FontSize="12"
                 Foreground="White"
                 Opacity="0.6"
-                TextWrapping="Wrap">
+                TextWrapping="Wrap" AutomationProperties.Name="Описание совпадения вкусов">
                 Совпадение с Вашим вкусом
             </TextBlock>
             <TextBlock
@@ -111,7 +111,7 @@
                 FontWeight="Bold"
                 Foreground="White"
                 Opacity="1"
-               >
+               AutomationProperties.Name="Название плейлиста" >
                 Название
             </TextBlock>
             <StackPanel Orientation="Horizontal">
@@ -120,7 +120,7 @@
                     Height="20"
                     Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
                     CornerRadius="100">
-                    <Image x:Name="AvatarImage" />
+                    <Image x:Name="AvatarImage" AutomationProperties.Name="Аватар пользователя" />
                 </Grid>
                 <TextBlock
                     MaxHeight="15"
@@ -131,7 +131,7 @@
                     FontFamily="{StaticResource VKSansRegular}"
                     FontSize="12"
                     Opacity="0.7"
-                    TextWrapping="Wrap">
+                    TextWrapping="Wrap" AutomationProperties.Name="Имя пользователя">
                     Дмитрий Куков
                 </TextBlock>
             </StackPanel>

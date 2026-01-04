@@ -290,7 +290,7 @@ namespace VK_UI3.Controllers
 
                 // Настроить отображение
                 systemControls.DisplayUpdater.Type = MediaPlaybackType.Music;
-                systemControls.DisplayUpdater.AppMediaId = "MusicX";
+                systemControls.DisplayUpdater.AppMediaId = "MusicM";
 
                 UpdateSystemMediaDisplay();
             }

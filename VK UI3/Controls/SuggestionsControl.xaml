@@ -49,22 +49,22 @@
 
           
 
-            <FontIcon Margin="14,0,4,0" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center" Glyph="&#xE721;" />
+            <FontIcon Margin="14,0,4,0" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center" Glyph="&#xE721;" AutomationProperties.Name="Иконка поиска" />
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock
                     MaxWidth="150"
                     TextTrimming="CharacterEllipsis"
                     TextWrapping="Wrap"
                     
-                    Margin="4,0,0,6" VerticalAlignment="Top"  x:Name="MainText" >Холод павлика</TextBlock>
+                    Margin="4,0,0,6" VerticalAlignment="Top"  x:Name="MainText" AutomationProperties.Name="Основной текст">Холод павлика</TextBlock>
 
-                <TextBlock 
+                <TextBlock
                     
                     MaxWidth="150"
                     MaxHeight="20"
                      TextTrimming="CharacterEllipsis"
                      TextWrapping="Wrap"
-                    Margin="4,0,0,0" Opacity="0.55" VerticalAlignment="Center" x:Name="Desc" >Магнитогорск</TextBlock>
+                    Margin="4,0,0,0" Opacity="0.55" VerticalAlignment="Center" x:Name="Desc" AutomationProperties.Name="Дополнительный текст">Магнитогорск</TextBlock>
             </StackPanel>
          
 

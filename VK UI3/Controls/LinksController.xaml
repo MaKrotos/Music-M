@@ -44,7 +44,7 @@
             Height="40"
             Margin="10"
             CornerRadius="50">
-            <Image x:Name="imageLink" />
+            <Image x:Name="imageLink" AutomationProperties.Name="{x:Bind MainText.Text, Mode=OneWay}" />
             <Grid x:Name="gridIconLinnk" Background="{ThemeResource CustomAcrylicInAppBrush}" Opacity="0">
                 <FontIcon Glyph="&#xE71B;" />
             </Grid>
@@ -61,7 +61,8 @@
                 VerticalAlignment="Stretch"
                 MaxLines="2"
                 TextTrimming="CharacterEllipsis"
-                TextWrapping="WrapWholeWords" />
+                TextWrapping="WrapWholeWords"
+                AutomationProperties.Name="{x:Bind MainText.Text, Mode=OneWay}" />
             <TextBlock
                 x:Name="SecondText"
                 Grid.Column="0"
@@ -72,7 +73,8 @@
                 MaxLines="2"
                 Opacity="0.7"
                 TextTrimming="CharacterEllipsis"
-                TextWrapping="Wrap">
+                TextWrapping="Wrap"
+                AutomationProperties.Name="{x:Bind SecondText.Text, Mode=OneWay}">
             </TextBlock>
         </StackPanel>
 

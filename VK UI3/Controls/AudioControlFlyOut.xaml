@@ -10,6 +10,7 @@
 
 
 	<MenuFlyoutItem
+		AutomationProperties.Name="Добавить выбранное в профиль"
 		Click="AddRemoveMass_Click"
 		x:Name="AddRemoveMass"
 		Icon="Add"
@@ -17,6 +18,7 @@
 		Visibility="Visible" />
 
 	<MenuFlyoutItem
+		AutomationProperties.Name="Удалить выбранное из профиля"
 		Click="DelRemoveMass_Click"
 		x:Name="DelRemoveMass"
 		Icon="Delete"
@@ -24,6 +26,7 @@
 		Visibility="Collapsed" />
 
 	<MenuFlyoutItem
+		AutomationProperties.Name="Удалить выбранное из плейлиста"
 		x:Name="RemovePlayListMass"
 		Icon="Delete"
 		Click="RemovePlayListMass_Click"
@@ -31,10 +34,12 @@
 		Visibility="Visible" />
 
 	<MenuFlyoutSubItem
+		AutomationProperties.Name="Добавить выбранное в плейлист"
 		x:Name="AddPlayListMass"
 		Icon="Add"
 		Text="Добавить выбранное в плейлист">
 		<MenuFlyoutItem
+			AutomationProperties.Name="Показать больше"
 			x:Name="addToPlayListMoreMass"
 			Click="addToPlayListMoreMass_Click"
 			Text="Показать больше">
@@ -43,6 +48,7 @@
 			</MenuFlyoutItem.Icon>
 		</MenuFlyoutItem>
 		<MenuFlyoutItem
+			AutomationProperties.Name="Создать"
 			x:Name="CreatePlayListBTNMass"
 			Click="CreatePlayListBTNMass_Click"
 			Text="Создать">
@@ -53,10 +59,12 @@
 	</MenuFlyoutSubItem>
 
 	<MenuFlyoutSubItem
+		AutomationProperties.Name="Скачать выбранное"
 		x:Name="DownloadFlyOutMass"
 		Icon="Download"
 		Text="Скачать выбранное">
 		<MenuFlyoutItem
+			AutomationProperties.Name="Выбрать папку"
 			x:Name="PickFolderDownloadMass"
 			Click="PickFolderDownloadMass_Click"
 			Text="Выбрать папку">
@@ -69,6 +77,7 @@
 	<MenuFlyoutSeparator x:Name="FirstSeparator" Visibility="Visible" />
 
 	<MenuFlyoutItem
+		AutomationProperties.Name="Снять выделение"
 		x:Name="DeselectAllBtn"
 		Click="DeselectAllBtn_Click"
 		Text="Снять выделение"
@@ -82,23 +91,27 @@
 
 
 	<MenuFlyoutItem
+		AutomationProperties.Name="Редактировать"
 		x:Name="EditTrack"
 		Click="EditTrack_Click"
 		Icon="Edit"
 		Text="Редактировать"
 		Visibility="Collapsed" />
 	<MenuFlyoutItem
+		AutomationProperties.Name="Добавить к себе"
 		x:Name="AddRemove"
 		Click="AddRemove_Click"
 		Icon="Add"
 		Text="Добавить к себе" />
 	<MenuFlyoutItem
+		AutomationProperties.Name="Удалить из плейлиста"
 		x:Name="RemovePlayList"
 		Click="RemovePlayList_Click"
 		Icon="Delete"
 		Text="Удалить из плейлиста"
 		Visibility="Collapsed" />
 	<MenuFlyoutItem
+		AutomationProperties.Name="Показать похожие"
 		x:Name="ShowAsse"
 		Click="ShowAsse_Click"
 		Text="Показать похожие"
@@ -108,10 +121,12 @@
 		</MenuFlyoutItem.Icon>
 	</MenuFlyoutItem>
 	<MenuFlyoutSubItem
+		AutomationProperties.Name="Перейти к исполнителю"
 		x:Name="GoArtist"
 		Icon="ContactInfo"
 		Text="Перейти к исполнителю" />
 	<MenuFlyoutItem
+		AutomationProperties.Name="Перейти в альбом"
 		x:Name="FlyGoAlbum"
 		Click="GoToAlbum"
 		Text="Перейти в альбом">
@@ -120,10 +135,12 @@
 		</MenuFlyoutItem.Icon>
 	</MenuFlyoutItem>
 	<MenuFlyoutSubItem
+		AutomationProperties.Name="Добавить в плейлист"
 		x:Name="AddPlayList"
 		Icon="Add"
 		Text="Добавить в плейлист">
 		<MenuFlyoutItem
+			AutomationProperties.Name="Показать больше"
 			x:Name="addToPlayListMore"
 			Click="addToPlayListMore_Click"
 			Text="Показать больше">
@@ -132,6 +149,7 @@
 			</MenuFlyoutItem.Icon>
 		</MenuFlyoutItem>
 		<MenuFlyoutItem
+			AutomationProperties.Name="Создать"
 			x:Name="CreatePlayListBTN"
 			Click="CreatePlayListBTN_Click"
 			Text="Создать">
@@ -141,6 +159,7 @@
 		</MenuFlyoutItem>
 	</MenuFlyoutSubItem>
 	<MenuFlyoutItem
+		AutomationProperties.Name="Не нравится"
 		x:Name="disText"
 		Click="DislikeClick"
 		Text="Не нравится">
@@ -149,16 +168,19 @@
 		</MenuFlyoutItem.Icon>
 	</MenuFlyoutItem>
 	<MenuFlyoutItem
+		AutomationProperties.Name="Пропускать треки исполнителя"
 		x:Name="AddArtistIgnore"
 		Click="AddArtistIgnore_Click"
 		Icon="BlockContact"
 		Text="Пропускать треки исполнителя" />
 	<MenuFlyoutSubItem
+		AutomationProperties.Name="Скачать"
 		x:Name="DownloadFlyOut"
 		Icon="Download"
 		Text="Скачать">
 
 		<MenuFlyoutItem
+			AutomationProperties.Name="Выбрать папку"
 			x:Name="PickFolderDownload"
 			Click="PickFolderDownload_Click"
 			Text="Выбрать папку">
@@ -169,12 +191,14 @@
 	</MenuFlyoutSubItem>
 
 	<MenuFlyoutItem
+		AutomationProperties.Name="Скопировать ссылку"
 		Click="CopyLink"
 		Icon="Link"
 		Text="Скопировать ссылку" />
 
 	<MenuFlyoutSubItem Icon="Share" Text="Отправить">
 		<MenuFlyoutItem
+			AutomationProperties.Name="Список друзей"
 			x:Name="ShareFriendsList"
 			Click="ShareFriendsList_Click"
 			Text="Список друзей">
@@ -183,6 +207,7 @@
 			</MenuFlyoutItem.Icon>
 		</MenuFlyoutItem>
 		<MenuFlyoutItem
+			AutomationProperties.Name="Список диалогов"
 			x:Name="ShareDialogsList"
 			Click="ShareDialogsList_Click"
 			Text="Список диалогов">
@@ -193,6 +218,7 @@
 	</MenuFlyoutSubItem>
 
 	<MenuFlyoutSubItem
+		AutomationProperties.Name="Создать пост"
 		x:Name="CreatePostItem"
 		Icon="Attach"
 		Text="Создать пост" />

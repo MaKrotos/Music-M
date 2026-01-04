@@ -30,7 +30,7 @@
 				VerticalAlignment="Stretch"
 				Translation="0,0,8">
 
-				<Image x:Name="BannerCover" Stretch="UniformToFill" />
+				<Image x:Name="BannerCover" AutomationProperties.Name="Обложка баннера" Stretch="UniformToFill" />
 
 			</Grid>
 
@@ -60,6 +60,7 @@
 					<TextBlock
 						x:Name="BannerTitle"
 						Grid.Row="0"
+						AutomationProperties.Name="Заголовок баннера"
 						FontFamily="{StaticResource VKSansDemiBold}"
 						FontWeight="SemiBold"
 						Foreground="{ThemeResource TextOnAccentFillColorSelectedText}"
@@ -68,6 +69,7 @@
 					<TextBlock
 						x:Name="BannerText"
 						Grid.Row="1"
+						AutomationProperties.Name="Текст баннера"
 						HorizontalAlignment="Left"
 						FontSize="14"
 						Foreground="{ThemeResource TextOnAccentFillColorSelectedText}"
@@ -79,8 +81,6 @@
 
 
 			</Grid>
-
-
 
 
 

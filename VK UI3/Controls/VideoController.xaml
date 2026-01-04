@@ -45,21 +45,18 @@
 
            
 
-
             <Grid x:Name="ShowVidGid">
                 <FontIcon
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Glyph="&#xE714;" />
-
+                    Glyph="&#xE714;" AutomationProperties.Name="Иконка видео" />
                 <Image
                     x:Name="imageVideo"
                     Width="300"
                     Height="300"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Top"
-                    Stretch="Uniform" />
-
+                    Stretch="Uniform" AutomationProperties.Name="Обложка видео" />
                 <Grid
                     x:Name="btnGrid"
                     Width="55"
@@ -73,7 +70,7 @@
                         x:Name="PlayPause"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Glyph="&#xF5B0;" />
+                        Glyph="&#xF5B0;" AutomationProperties.Name="Воспроизвести видео" />
                 </Grid>
 
             </Grid>
@@ -92,7 +89,7 @@
                 MaxLines="1"
                 Text="Название"
                 TextTrimming="CharacterEllipsis"
-                TextWrapping="WrapWholeWords" />
+                TextWrapping="WrapWholeWords" AutomationProperties.Name="Название видео" />
             <TextBlock
                 x:Name="SecondText"
                 Grid.Column="0"
@@ -106,7 +103,7 @@
                 Text="Автор"
                 TextTrimming="CharacterEllipsis"
                 TextWrapping="Wrap"
-                Visibility="Visible" />
+                Visibility="Visible" AutomationProperties.Name="Автор видео" />
             <TextBlock
                 x:Name="GenreText"
                 Grid.Column="0"
@@ -119,7 +116,7 @@
                 Opacity="0.7"
                 Text="Жанр, 2023"
                 TextTrimming="CharacterEllipsis"
-                TextWrapping="Wrap" />
+                TextWrapping="Wrap" AutomationProperties.Name="Жанр и год видео" />
         </StackPanel>
 
 

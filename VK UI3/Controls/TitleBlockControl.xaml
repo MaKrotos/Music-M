@@ -46,12 +46,12 @@
 								Margin="0,0,8,0"
 								HorizontalAlignment="Left"
 								FlowDirection="RightToLeft"
-								Visibility="Collapsed" />
+								Visibility="Collapsed" AutomationProperties.Name="Изображение заголовка" />
 							<TextBlock
 								x:Name="Title"
 								Margin="0,0,8,0"
 								VerticalAlignment="Stretch"
-								FontSize="30" />
+								FontSize="30" AutomationProperties.Name="Заголовок" />
 						</StackPanel>
 
 						<TextBlock
@@ -62,7 +62,7 @@
 							FontSize="20"
 							Opacity="0.3"
 							Text="123"
-							Visibility="Collapsed" />
+							Visibility="Collapsed" AutomationProperties.Name="Значок заголовка" />
 
 						<FontIcon
 							x:Name="MoreFontIcon"
@@ -70,7 +70,7 @@
 							VerticalAlignment="Center"
 							Foreground="{ThemeResource AccentAAFillColorDefaultBrush}"
 							Glyph="&#xE76C;"
-							Visibility="Collapsed" />
+							Visibility="Collapsed" AutomationProperties.Name="Иконка дополнительных действий" />
 
 
 					</StackPanel>
@@ -109,7 +109,7 @@
 					VerticalAlignment="Bottom"
 					Opacity="0.4"
 					Text="Subtitle"
-					Visibility="Collapsed" />
+					Visibility="Collapsed" AutomationProperties.Name="Подзаголовок" />
 
 			</StackPanel>
 
@@ -129,7 +129,7 @@
 				x:Name="TitleButtons"
 				Margin="10,5,0,0"
 				HorizontalAlignment="Right"
-				Text="" />
+				Text="" AutomationProperties.Name="Заголовок кнопок" />
 
 
 
@@ -144,7 +144,7 @@
 				VerticalContentAlignment="Center"
 				Background="Transparent"
 				BorderBrush="#424242"
-				Text="dddd" />
+				Text="dddd" AutomationProperties.Name="Кнопки действий" />
 
 
 		</Grid>

@@ -82,12 +82,12 @@
 
 
         <Grid>
-            <FontIcon Glyph="&#xE90B;" />
+            <FontIcon Glyph="&#xE90B;" AutomationProperties.Name="Обложка плейлиста" />
             <Grid
                 x:Name="fadeOp"
                 Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
                 Opacity="0">
-                <custom:GridImagesCustom x:Name="GridThumbs">
+                <custom:GridImagesCustom x:Name="GridThumbs" AutomationProperties.Name="Изображения плейлиста">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
@@ -105,17 +105,10 @@
             <StackPanel HorizontalAlignment="Left" Orientation="Vertical">
                 <TextBlock
                     x:Name="Title"
-                    Margin="0,0,0,8"
-                    FontFamily="{StaticResource VKSansMedium}"
-                    FontSize="32"
-                    Foreground="White"
-                    TextWrapping="Wrap" />
+                    TextWrapping="Wrap" AutomationProperties.Name="Название плейлиста" />
                 <TextBlock
                     x:Name="Subtitle"
-                    FontFamily="{StaticResource VKSansRegular}"
-                    FontSize="15"
-                    Foreground="White"
-                    TextWrapping="Wrap" />
+                    TextWrapping="Wrap" AutomationProperties.Name="Описание плейлиста" />
             </StackPanel>
 
             <SymbolIcon
@@ -123,7 +116,7 @@
                 Height="24"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Bottom"
-                Symbol="List" />
+                Symbol="List" AutomationProperties.Name="Иконка списка" />
             <Grid
                 x:Name="btnGrid"
                 Width="50"
@@ -146,7 +139,7 @@
                         x:Name="PlayPause"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Glyph="&#xF5B0;" />
+                        Glyph="&#xF5B0;" AutomationProperties.Name="Кнопка воспроизведения" />
                 </Button>
             </Grid>
         </Grid>

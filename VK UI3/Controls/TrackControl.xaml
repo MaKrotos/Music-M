@@ -118,10 +118,10 @@
 						Height="45"
 						Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}"
 						CornerRadius="5">
-						<FontIcon Foreground="{ThemeResource TextOnAccentFillColorSelectedText}" Glyph="&#xEC4F;" />
+						<FontIcon Foreground="{ThemeResource TextOnAccentFillColorSelectedText}" Glyph="&#xEC4F;" AutomationProperties.Name="Обложка трека" />
 
 						<Grid x:Name="ImageThumbGrid">
-							<Image x:Name="ImageThumb" Opacity="0" />
+							<Image x:Name="ImageThumb" Opacity="0" AutomationProperties.Name="Обложка трека" />
 						</Grid>
 
 						<TextBlock
@@ -136,7 +136,7 @@
 							<SymbolIcon
 								x:Name="PlayBTN"
 								Foreground="{ThemeResource TextOnAccentFillColorSelectedText}"
-								Symbol="Play" />
+								Symbol="Play" AutomationProperties.Name="Воспроизвести" />
 							<Grid.Resources>
 								<!--  Анимация прозрачности от 0 до 1  -->
 								<Storyboard x:Name="FadeInAnimationGridPlayIcon">
@@ -203,7 +203,7 @@
 							FontSize="16"
 							FontWeight="SemiBold"
 							Text="Музыка качауу"
-							TextTrimming="CharacterEllipsis" />
+							TextTrimming="CharacterEllipsis" AutomationProperties.Name="Название трека" />
 
 
 
@@ -214,7 +214,7 @@
 							Margin="5,3,2,0"
 							Opacity="0.3"
 							Text="Subtitle"
-							TextTrimming="CharacterEllipsis" />
+							TextTrimming="CharacterEllipsis" AutomationProperties.Name="Подзаголовок трека" />
 					</Grid>
 					<TextBlock
 						x:Name="Artists"
@@ -226,7 +226,7 @@
 						Opacity="0.6"
 						Text="Artist"
 						TextTrimming="CharacterEllipsis"
-						TextWrapping="NoWrap" />
+						TextWrapping="NoWrap" AutomationProperties.Name="Исполнитель" />
 
 				</StackPanel>
 
@@ -238,7 +238,7 @@
 					HorizontalAlignment="Right"
 					VerticalAlignment="Center"
 					Opacity="0.5"
-					Text="02:20" />
+					Text="02:20" AutomationProperties.Name="Длительность трека" />
 			</Grid>
 
 

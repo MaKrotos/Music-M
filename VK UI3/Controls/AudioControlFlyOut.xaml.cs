@@ -242,7 +242,6 @@ namespace VK_UI3.Controls
                     }
                     
 
-
                     _ = Task.Run(
                                    async () =>
                                    {
@@ -251,7 +250,6 @@ namespace VK_UI3.Controls
                 }
                 else
                 {
-
                 }
             }
             catch (Exception ex)
@@ -312,7 +310,7 @@ namespace VK_UI3.Controls
         }
 
 
-     
+      
         private void CreatePlayListBTN_Click(object sender, RoutedEventArgs e)
         {
             ContentDialog dialog = new CustomDialog();
@@ -462,6 +460,7 @@ namespace VK_UI3.Controls
 
 
 
+
             dialog.XamlRoot = this.XamlRoot;
             var a = new UserPlayList(new List<Audio>() { dataTrack.audio });
 
@@ -595,6 +594,7 @@ namespace VK_UI3.Controls
 
 
 
+
             if (dataTrack.iVKGetAudio is PlayListVK aplaylist && aplaylist.playlist.Permissions.Edit)
             {
                 RemovePlayList.Visibility  = Visibility.Visible;
@@ -631,7 +631,7 @@ namespace VK_UI3.Controls
                 {
                     AddArtistIgnore.Icon = new SymbolIcon(Symbol.BlockContact);
                     AddArtistIgnore.Text = "Пропускать треки исполнителя";
-                  
+                   
                 }
             }
             if ((dataTrack.audio.MainArtists == null) || (!dataTrack.audio.MainArtists.Any()))
@@ -1147,7 +1147,6 @@ namespace VK_UI3.Controls
         }
 
        
-
         private void PickFolderDownloadMass_Click(object sender, RoutedEventArgs e)
         {
             pickFolderMass();
@@ -1184,7 +1183,6 @@ namespace VK_UI3.Controls
                     taskFunc
                     );
                
-
             }
 
             new TaskListActions(tasks, tasks.Count, "Удаляю треки из плейлиста...", null, null, 1000);

@@ -20,11 +20,10 @@ namespace VK_UI3.Controls
             this.changeImage = new Helpers.Animations.AnimationsChangeImage(BannerCover, DispatcherQueue);
             this.DataContextChanged += BannerControl_DataContextChanged;
 
-          
+           
         }
 
        
-
         bool connected = false;
 
         private void BannerControl_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
@@ -68,7 +67,7 @@ namespace VK_UI3.Controls
                         FadeOutStoryboard.Pause();
                         FadeInStoryboard.Begin();
                     });
-              
+               
             }
             else
             {
@@ -136,6 +135,6 @@ namespace VK_UI3.Controls
             FadeOutStoryboard.Begin();
         }
        
-  
+   
     }
 }

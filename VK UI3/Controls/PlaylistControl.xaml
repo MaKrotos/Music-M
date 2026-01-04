@@ -190,7 +190,8 @@
                     FontFamily="{StaticResource VKSansMedium}"
                     FontSize="14"
                     TextTrimming="CharacterEllipsis"
-                    TextWrapping="Wrap" />
+                    TextWrapping="Wrap"
+                    AutomationProperties.Name="{x:Bind Title.Text, Mode=OneWay}" />
                 <TextBlock
                     x:Name="Subtitle"
                     MaxHeight="40"
@@ -198,7 +199,8 @@
                     FontSize="12"
                     Opacity="0.6"
                     TextTrimming="CharacterEllipsis"
-                    TextWrapping="Wrap" />
+                    TextWrapping="Wrap"
+                    AutomationProperties.Name="{x:Bind Subtitle.Text, Mode=OneWay}" />
             </StackPanel>
         </StackPanel>
     </Grid>

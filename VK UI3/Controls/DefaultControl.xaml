@@ -15,6 +15,7 @@
 			HorizontalAlignment="Center"
 			VerticalAlignment="Center"
 			IsTextSelectionEnabled="True"
-			Text="Блок не реализован!" />
+			Text="Блок не реализован!"
+			AutomationProperties.Name="Блок не реализован" />
 	</Grid>
 </UserControl>

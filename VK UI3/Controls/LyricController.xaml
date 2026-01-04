@@ -23,7 +23,7 @@
 				x:Name="BackgrD"
 				Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
 				CornerRadius="8"
-     
+      
 				Opacity="0"
 				Translation="0,0,20">
 				<Grid.Shadow>
@@ -43,7 +43,8 @@
 				IsTextSelectionEnabled="False"
 				Opacity="0.6"
 				RenderTransformOrigin="0.5,0.5"
-				Text="">
+				Text=""
+                AutomationProperties.Name="{x:Bind textLyric.Text, Mode=OneWay}">
 				<TextBlock.Resources>
 					<Storyboard x:Name="scaleUpAnimation">
 						<!--  Анимация увеличения  -->
