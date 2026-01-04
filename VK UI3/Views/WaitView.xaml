@@ -8,11 +8,9 @@
     xmlns:local="using:VK_UI3.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    
- 
-     mc:Ignorable="d">
+    mc:Ignorable="d"
+    AutomationProperties.Name="Страница ожидания"
+    AutomationProperties.HelpText="Страница ожидания загрузки содержимого">
 
-    <Frame  x:Name="frameSection" Margin="0" Padding="0" >
-       
-    </Frame>
+    <Frame  x:Name="frameSection" Margin="0" Padding="0" AutomationProperties.Name="Фрейм содержимого" AutomationProperties.HelpText="Область отображения загружаемого содержимого" />
 </Page>

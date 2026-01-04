@@ -11,7 +11,9 @@
     xmlns:local="using:VK_UI3.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     NavigationCacheMode="Enabled"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    AutomationProperties.Name="Главная страница приложения"
+    AutomationProperties.HelpText="Основная страница приложения с навигацией и плеером">
     <Page.Resources>
         <ThemeShadow x:Name="SharedShadow" />
 
@@ -55,7 +57,7 @@
     </Page.Resources>
 
 
-    <Grid>
+    <Grid AutomationProperties.Name="Основная сетка приложения" AutomationProperties.HelpText="Основная область компоновки приложения">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
@@ -63,7 +65,9 @@
         <Grid
             Grid.Row="0"
             HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch">
+            VerticalAlignment="Stretch"
+            AutomationProperties.Name="Область навигации"
+            AutomationProperties.HelpText="Основная область навигации приложения">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
 
@@ -79,55 +83,58 @@
                 IsPaneOpen="False"
                 IsSettingsVisible="True"
                 ItemInvoked="NavWiv_ItemInvoked"
-                PaneDisplayMode="Auto">
+                PaneDisplayMode="Auto"
+                AutomationProperties.Name="Навигационное меню"
+                AutomationProperties.HelpText="Основное меню навигации приложения">
 
                 <NavigationView.MenuItems>
-                    <NavigationViewItem Content="Моя музыка">
+                    <NavigationViewItem Content="Моя музыка" AutomationProperties.Name="Моя музыка" AutomationProperties.HelpText="Перейти к моей музыке">
                         <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xEC4F;" />
+                            <FontIcon Glyph="&#xEC4F;" AutomationProperties.Name="Иконка музыки" AutomationProperties.HelpText="Иконка раздела музыки" />
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
 
 
-                    <NavigationViewItem Content="Мои плейлисты">
+                    <NavigationViewItem Content="Мои плейлисты" AutomationProperties.Name="Мои плейлисты" AutomationProperties.HelpText="Перейти к моим плейлистам">
                         <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xE93C;" />
+                            <FontIcon Glyph="&#xE93C;" AutomationProperties.Name="Иконка плейлиста" AutomationProperties.HelpText="Иконка раздела плейлистов" />
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
 
-                    <NavigationViewItem Content="Плейлисты">
+                    <NavigationViewItem Content="Плейлисты" AutomationProperties.Name="Плейлисты" AutomationProperties.HelpText="Перейти к плейлистам">
                         <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xEB51;" />
+                            <FontIcon Glyph="&#xEB51;" AutomationProperties.Name="Иконка плейлиста" AutomationProperties.HelpText="Иконка раздела плейлистов" />
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
 
-                    <NavigationViewItem Content="Музыка друзей">
+                    <NavigationViewItem Content="Музыка друзей" AutomationProperties.Name="Музыка друзей" AutomationProperties.HelpText="Перейти к музыке друзей">
                         <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xE716;" />
+                            <FontIcon Glyph="&#xE716;" AutomationProperties.Name="Иконка друзей" AutomationProperties.HelpText="Иконка раздела друзей" />
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
 
-                    <NavigationViewItem Content="Вложения">
+                    <NavigationViewItem Content="Вложения" AutomationProperties.Name="Вложения" AutomationProperties.HelpText="Перейти к вложениям">
                         <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xE8F2;" />
+                            <FontIcon Glyph="&#xE8F2;" AutomationProperties.Name="Иконка вложений" AutomationProperties.HelpText="Иконка раздела вложений" />
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
 
-                    <NavigationViewItem Content="Для Вас">
+                    <NavigationViewItem Content="Для Вас" AutomationProperties.Name="Для Вас" AutomationProperties.HelpText="Перейти к рекомендациям">
                         <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xEC32;" />
+                            <FontIcon Glyph="&#xEC32;" AutomationProperties.Name="Иконка рекомендаций" AutomationProperties.HelpText="Иконка раздела рекомендаций" />
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
 
                     <NavigationViewItemSeparator />
                     <NavigationViewItemHeader />
 
-
                 </NavigationView.MenuItems>
                 <Grid
                     x:Name="MainGridLir"
                     Margin="0"
-                    PointerEntered="ListViewItem_PointerEntered">
+                    PointerEntered="ListViewItem_PointerEntered"
+                    AutomationProperties.Name="Основная область содержимого"
+                    AutomationProperties.HelpText="Основная область отображения содержимого приложения">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
@@ -137,8 +144,10 @@
                         Grid.Row="0"
                         Height="0"
                         Margin="0"
-                        OriginalHeight="50" />
-                    <krotos:NavigateFrame x:Name="ContentFrame" Grid.Row="1" />
+                        OriginalHeight="50"
+                        AutomationProperties.Name="Панель поиска"
+                        AutomationProperties.HelpText="Панель для поиска музыки и контента" />
+                    <krotos:NavigateFrame x:Name="ContentFrame" Grid.Row="1" AutomationProperties.Name="Фрейм содержимого" AutomationProperties.HelpText="Область отображения основного содержимого" />
                 </Grid>
             </NavigationView>
             <controlLyryc:LyricsPage
@@ -147,28 +156,35 @@
                 VerticalAlignment="Stretch"
                 Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}"
                 Opacity="0"
-                Visibility="Collapsed" />
-
+                Visibility="Collapsed"
+                AutomationProperties.Name="Страница текстов песен"
+                AutomationProperties.HelpText="Отображает тексты песен для текущего трека" />
             <controlLyryc:EqualizerControl
                 x:Name="EqualizerControlPage"
                 Grid.Row="3"
                 VerticalAlignment="Stretch"
                 Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}"
                 Opacity="0"
-                Visibility="Collapsed" />
+                Visibility="Collapsed"
+                AutomationProperties.Name="Эквалайзер"
+                AutomationProperties.HelpText="Настройка звуковых параметров воспроизведения" />
             <Frame
                 x:Name="SectionViewPageNowPlayingList"
                 Grid.Row="3"
                 VerticalAlignment="Stretch"
                 Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}"
                 Opacity="0"
-                Visibility="Collapsed" />
+                Visibility="Collapsed"
+                AutomationProperties.Name="Список воспроизведения"
+                AutomationProperties.HelpText="Отображает список треков в текущем плейлисте" />
         </Grid>
         <Frame
             Grid.Row="1"
             VerticalAlignment="Bottom"
-            BorderThickness="0,1,0,0">
-            <custom:AudioPlayer Margin="0,0,0,0" />
+            BorderThickness="0,1,0,0"
+            AutomationProperties.Name="Плеер"
+            AutomationProperties.HelpText="Основной музыкальный плеер приложения">
+            <custom:AudioPlayer Margin="0,0,0,0" AutomationProperties.Name="Аудио плеер" AutomationProperties.HelpText="Компонент управления воспроизведением музыки" />
         </Frame>
     </Grid>
 </Page>

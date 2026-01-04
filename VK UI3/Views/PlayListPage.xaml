@@ -8,7 +8,9 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="using:VK_UI3.Views"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d">
+	mc:Ignorable="d"
+	AutomationProperties.Name="Страница плейлиста"
+	AutomationProperties.HelpText="Отображает подробную информацию о плейлисте и список треков">
 	<Page.Shadow>
 		<ThemeShadow />
 	</Page.Shadow>
@@ -22,12 +24,14 @@
 		DragItemsCompleted="TrackListView_DragItemsCompleted"
 		IsItemClickEnabled="False"
 		ItemsSource="{x:Bind vkGetAudio.listAudio, Mode=OneWay}"
-		SelectionMode="None">
+		SelectionMode="None"
+		AutomationProperties.Name="Список треков"
+		AutomationProperties.HelpText="Список треков в текущем плейлисте">
 		<ListView.Shadow>
 			<ThemeShadow />
 		</ListView.Shadow>
 		<ListView.Header>
-			<Grid Margin="15,15,15,15">
+			<Grid Margin="15,15,15,15" AutomationProperties.Name="Заголовок плейлиста" AutomationProperties.HelpText="Область с информацией о плейлисте">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="*" />
@@ -35,7 +39,7 @@
 
 
 				<!--  Квадратный элемент в первом столбце  -->
-				<Grid x:Name="ThumbGrid">
+				<Grid x:Name="ThumbGrid" AutomationProperties.Name="Обложка плейлиста" AutomationProperties.HelpText="Визуальное представление плейлиста">
 					<StackPanel
 						VerticalAlignment="Top"
 						Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
@@ -48,11 +52,13 @@
 							Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
 							CornerRadius="4"
 							Translation="0,0,10">
-							<FontIcon Glyph="&#xE90B;" />
+							<FontIcon Glyph="&#xE90B;" AutomationProperties.Name="Иконка плейлиста" AutomationProperties.HelpText="Стандартная иконка плейлиста" />
 							<customs:GridImagesCustom
 								x:Name="GridThumbs"
 								Width="200"
-								Height="200">
+								Height="200"
+								AutomationProperties.Name="Сетка изображений"
+								AutomationProperties.HelpText="Сетка с обложками треков плейлиста">
 								<customs:GridImagesCustom.RowDefinitions>
 									<RowDefinition Height="*" />
 									<RowDefinition Height="*" />
@@ -73,8 +79,10 @@
 								VerticalAlignment="Bottom"
 								Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"
 								CornerRadius="4"
-								Opacity="0.9">
-								<FontIcon x:Name="FontIconTypeVk" Glyph="&#xE93C;" />
+								Opacity="0.9"
+								AutomationProperties.Name="Тип плейлиста"
+								AutomationProperties.HelpText="Иконка, обозначающая тип плейлиста">
+								<FontIcon x:Name="FontIconTypeVk" Glyph="&#xE93C;" AutomationProperties.Name="Иконка типа" AutomationProperties.HelpText="Иконка, обозначающая тип плейлиста" />
 							</Grid>
 						</Grid>
 						<StackPanel
@@ -88,7 +96,9 @@
 							PointerEntered="ownerGrid_PointerEntered"
 							PointerExited="ownerGrid_PointerExited"
 							PointerPressed="ownerGrid_PointerPressed"
-							Visibility="Collapsed">
+							Visibility="Collapsed"
+							AutomationProperties.Name="Информация о владельце"
+							AutomationProperties.HelpText="Информация о владельце плейлиста">
 							<StackPanel.RenderTransform>
 								<ScaleTransform x:Name="scaleTransform" ScaleX="1" ScaleY="1" />
 							</StackPanel.RenderTransform>
@@ -143,12 +153,16 @@
 								Height="30"
 								Margin="0,0,5,0"
 								Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-								CornerRadius="100">
+								CornerRadius="100"
+								AutomationProperties.Name="Аватар владельца"
+								AutomationProperties.HelpText="Аватар владельца плейлиста">
 								<Image
 									x:Name="ownerPictire"
 									Width="30"
 									Height="30"
-									VerticalAlignment="Center" />
+									VerticalAlignment="Center"
+									AutomationProperties.Name="Изображение владельца"
+									AutomationProperties.HelpText="Фотография владельца плейлиста" />
 							</Grid>
 							<TextBlock
 								x:Name="ownerName"
@@ -157,27 +171,34 @@
 								VerticalAlignment="Center"
 								FontFamily="{StaticResource VKSansMedium}"
 								TextTrimming="CharacterEllipsis"
-								TextWrapping="Wrap" />
+								TextWrapping="Wrap"
+								AutomationProperties.Name="Имя владельца"
+								AutomationProperties.HelpText="Имя владельца плейлиста" />
 						</StackPanel>
 					</StackPanel>
 				</Grid>
 
 
-				<StackPanel Grid.Column="1" Margin="10,0,0,0">
+				<StackPanel Grid.Column="1" Margin="10,0,0,0" AutomationProperties.Name="Информация о плейлисте" AutomationProperties.HelpText="Подробная информация о плейлисте">
 
 					<StackPanel
 						x:Name="TextsT"
 						Padding="10"
 						Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
 						CornerRadius="4"
-						Translation="0,0,16">
+						Translation="0,0,16"
+						AutomationProperties.Name="Текстовая информация"
+						AutomationProperties.HelpText="Текстовая информация о плейлисте">
 						<TextBlock
 							x:Name="textBlock1"
 							Margin="10,0,0,0"
 							FontFamily="{StaticResource VKSansRegular}"
 							FontSize="33"
 							Opacity="1"
-							TextTrimming="CharacterEllipsis" />
+							TextTrimming="CharacterEllipsis"
+							AutomationProperties.Name="Название плейлиста"
+							AutomationProperties.HeadingLevel="Level1"
+							AutomationProperties.HelpText="Название текущего плейлиста" />
 
 						<TextBlock
 							x:Name="DescriptionText"
@@ -187,7 +208,9 @@
 							FontSize="22"
 							Opacity="0.6"
 							TextTrimming="CharacterEllipsis"
-							TextWrapping="Wrap" />
+							TextWrapping="Wrap"
+							AutomationProperties.Name="Описание плейлиста"
+							AutomationProperties.HelpText="Описание содержания плейлиста" />
 
 
 
@@ -202,49 +225,67 @@
 						Opacity="0.5"
 						Orientation="Vertical"
 						Translation="0,0,16"
-						Visibility="{Binding Path=VisibileAddInfo}">
+						Visibility="{Binding Path=VisibileAddInfo}"
+						AutomationProperties.Name="Дополнительная информация"
+						AutomationProperties.HelpText="Дополнительная информация о плейлисте">
 						<TextBlock
 							x:Name="FollowersText"
 							FontFamily="{StaticResource VKSansRegular}"
-							Visibility="Collapsed" />
+							Visibility="Collapsed"
+							AutomationProperties.Name="Подписчики"
+							AutomationProperties.HelpText="Количество подписчиков на плейлист" />
 						<TextBlock
 							x:Name="Genres"
 							FontFamily="{StaticResource VKSansRegular}"
 							Text="{Binding Genres}"
-							Visibility="Collapsed" />
+							Visibility="Collapsed"
+							AutomationProperties.Name="Жанры"
+							AutomationProperties.HelpText="Музыкальные жанры плейлиста" />
 						<TextBlock
 							x:Name="YearRelease"
 							FontFamily="{StaticResource VKSansRegular}"
-							Visibility="Collapsed" />
+							Visibility="Collapsed"
+							AutomationProperties.Name="Год выпуска"
+							AutomationProperties.HelpText="Год выпуска плейлиста" />
 						<TextBlock
 							x:Name="Dot2"
 							Margin="0,0,0,0"
 							Text=""
-							Visibility="Collapsed" />
+							Visibility="Collapsed"
+							AutomationProperties.Name="Разделитель"
+							AutomationProperties.HelpText="Разделитель элементов информации" />
 						<TextBlock
 							x:Name="Year"
 							Margin="0,0,0,0"
 							FontFamily="{StaticResource VKSansRegular}"
 							Text="{Binding Year}"
-							Visibility="Collapsed" />
+							Visibility="Collapsed"
+							AutomationProperties.Name="Год создания"
+							AutomationProperties.HelpText="Год создания плейлиста" />
 
 						<TextBlock
 							x:Name="Plays"
 							Margin="0,0,0,0"
 							FontFamily="{StaticResource VKSansRegular}"
 							Text="{Binding Plays}"
-							Visibility="Collapsed" />
+							Visibility="Collapsed"
+							AutomationProperties.Name="Прослушивания"
+							AutomationProperties.HelpText="Количество прослушиваний плейлиста" />
 						<TextBlock
 							x:Name="PlaysText"
 							Margin="3,0,0,0"
 							Text=""
-							Visibility="Collapsed" />
+							Visibility="Collapsed"
+							AutomationProperties.Name="Текст прослушиваний"
+							AutomationProperties.HelpText="Текстовое обозначение прослушиваний" />
 
 						<TextBlock
 							x:Name="CountTrText"
 							FontFamily="{StaticResource VKSansRegular}"
 							Text="{Binding Genres}"
-							Visibility="Collapsed" />
+							Visibility="Collapsed"
+							AutomationProperties.Name="Количество треков"
+							AutomationProperties.HelpText="Общее количество треков в плейлисте" />
 					</StackPanel>
 
 					<GridView
@@ -254,7 +295,9 @@
 						Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
 						CornerRadius="4"
 						RenderTransformOrigin="0.5,0.5"
-						SelectionMode="None">
+						SelectionMode="None"
+						AutomationProperties.Name="Панель управления"
+						AutomationProperties.HelpText="Панель с кнопками управления плейлистом">
 						<GridView.ItemContainerStyle>
 							<Style TargetType="GridViewItem">
 								<Setter Property="HorizontalContentAlignment" Value="Left" />
@@ -264,14 +307,18 @@
 							x:Name="AddPlaylist"
 							Width="170"
 							Margin="0,0,0,0"
-							Click="AddPlaylist_Click">
+							Click="AddPlaylist_Click"
+							AutomationProperties.Name="Добавить плейлист"
+							AutomationProperties.HelpText="Добавить плейлист к себе">
 							<Button.Content>
 								<StackPanel Orientation="Horizontal">
-									<SymbolIcon x:Name="iconAdd" Symbol="Add" />
+									<SymbolIcon x:Name="iconAdd" Symbol="Add" AutomationProperties.Name="Иконка добавления" AutomationProperties.HelpText="Иконка добавления плейлиста" />
 									<TextBlock
 										x:Name="textAdd"
 										Margin="10,0,0,0"
-										Text="Добавить к себе" />
+										Text="Добавить к себе"
+										AutomationProperties.Name="Текст добавления"
+										AutomationProperties.HelpText="Текст кнопки добавления плейлиста" />
 								</StackPanel>
 							</Button.Content>
 						</Button>
@@ -279,11 +326,13 @@
 							x:Name="PlayPlaylist"
 							Width="170"
 							Margin="0,0,0,0"
-							Click="PlayPlaylist_Click">
+							Click="PlayPlaylist_Click"
+							AutomationProperties.Name="Воспроизвести плейлист"
+							AutomationProperties.HelpText="Начать воспроизведение плейлиста">
 							<Button.Content>
 								<StackPanel Orientation="Horizontal">
-									<SymbolIcon Symbol="Play" />
-									<TextBlock Margin="10,0,0,0" Text="Воспроизвести" />
+									<SymbolIcon Symbol="Play" AutomationProperties.Name="Иконка воспроизведения" AutomationProperties.HelpText="Иконка воспроизведения плейлиста" />
+									<TextBlock Margin="10,0,0,0" Text="Воспроизвести" AutomationProperties.Name="Текст воспроизведения" AutomationProperties.HelpText="Текст кнопки воспроизведения плейлиста" />
 								</StackPanel>
 							</Button.Content>
 						</Button>
@@ -292,11 +341,13 @@
 							x:Name="EditPlaylist"
 							Width="170"
 							Margin="0,0,0,0"
-							Click="EditPlaylist_Click">
+							Click="EditPlaylist_Click"
+							AutomationProperties.Name="Редактировать плейлист"
+							AutomationProperties.HelpText="Редактировать информацию о плейлисте">
 							<Button.Content>
 								<StackPanel Orientation="Horizontal">
-									<SymbolIcon Symbol="Edit" />
-									<TextBlock Margin="10,0,0,0" Text="Редактировать" />
+									<SymbolIcon Symbol="Edit" AutomationProperties.Name="Иконка редактирования" AutomationProperties.HelpText="Иконка редактирования плейлиста" />
+									<TextBlock Margin="10,0,0,0" Text="Редактировать" AutomationProperties.Name="Текст редактирования" AutomationProperties.HelpText="Текст кнопки редактирования плейлиста" />
 								</StackPanel>
 							</Button.Content>
 						</Button>
@@ -306,12 +357,14 @@
 							Width="170"
 							Margin="0,0,0,0"
 							HorizontalAlignment="Left"
-							Click="DownloadPlaylist_Click">
+							Click="DownloadPlaylist_Click"
+							AutomationProperties.Name="Скачать плейлист"
+							AutomationProperties.HelpText="Скачать все треки из плейлиста">
 							<Button.Flyout>
-								<MenuFlyout x:Name="folderFlyOut">
-									<MenuFlyoutItem Click="choosePath" Text="Выбрать путь">
+								<MenuFlyout x:Name="folderFlyOut" AutomationProperties.Name="Меню выбора папки" AutomationProperties.HelpText="Меню для выбора папки загрузки">
+									<MenuFlyoutItem Click="choosePath" Text="Выбрать путь" AutomationProperties.Name="Выбрать путь" AutomationProperties.HelpText="Выбрать папку для загрузки">
 										<MenuFlyoutItem.Icon>
-											<FontIcon Glyph="&#xECC8;" />
+											<FontIcon Glyph="&#xECC8;" AutomationProperties.Name="Иконка выбора папки" AutomationProperties.HelpText="Иконка выбора папки загрузки" />
 										</MenuFlyoutItem.Icon>
 									</MenuFlyoutItem>
 								</MenuFlyout>
@@ -319,8 +372,8 @@
 							<Button.Content>
 								<StackPanel Orientation="Horizontal">
 
-									<SymbolIcon Symbol="Download" />
-									<TextBlock Margin="10,0,0,0" Text="Скачать" />
+									<SymbolIcon Symbol="Download" AutomationProperties.Name="Иконка загрузки" AutomationProperties.HelpText="Иконка загрузки плейлиста" />
+									<TextBlock Margin="10,0,0,0" Text="Скачать" AutomationProperties.Name="Текст загрузки" AutomationProperties.HelpText="Текст кнопки загрузки плейлиста" />
 								</StackPanel>
 							</Button.Content>
 
@@ -333,12 +386,14 @@
 							Margin="0,0,0,0"
 							HorizontalAlignment="Left"
 							Click="UploadTrackClick"
-							Visibility="Collapsed">
+							Visibility="Collapsed"
+							AutomationProperties.Name="Загрузить трек"
+							AutomationProperties.HelpText="Загрузить собственный трек">
 
 							<Button.Content>
 								<StackPanel Orientation="Horizontal">
-									<SymbolIcon Symbol="Upload" />
-									<TextBlock Margin="10,0,0,0" Text="Загрузить свою" />
+									<SymbolIcon Symbol="Upload" AutomationProperties.Name="Иконка загрузки" AutomationProperties.HelpText="Иконка загрузки трека" />
+									<TextBlock Margin="10,0,0,0" Text="Загрузить свою" AutomationProperties.Name="Текст загрузки" AutomationProperties.HelpText="Текст кнопки загрузки трека" />
 								</StackPanel>
 							</Button.Content>
 
@@ -350,17 +405,21 @@
 							Width="170"
 							Margin="0,0,0,0"
 							HorizontalAlignment="Left"
-							Click="GeneratePlayList_Click">
+							Click="GeneratePlayList_Click"
+							AutomationProperties.Name="Сгенерировать плейлист"
+							AutomationProperties.HelpText="Сгенерировать новый плейлист на основе текущего">
 
 							<Button.Content>
 								<StackPanel Orientation="Horizontal">
-									<FontIcon FontSize="16" Glyph="&#xF133;" />
+									<FontIcon FontSize="16" Glyph="&#xF133;" AutomationProperties.Name="Иконка генерации" AutomationProperties.HelpText="Иконка генерации плейлиста" />
 									<TextBlock
 										Margin="10,2.5,0,0"
 										HorizontalAlignment="Center"
 										FontSize="10"
 										Text="Сгенерировать плейлист"
-										TextWrapping="Wrap" />
+										TextWrapping="Wrap"
+										AutomationProperties.Name="Текст генерации"
+										AutomationProperties.HelpText="Текст кнопки генерации плейлиста" />
 								</StackPanel>
 							</Button.Content>
 
@@ -378,11 +437,13 @@
 				<custom:TrackControl
 					Margin="0,0,0,8"
 					FocusVisualPrimaryBrush="Transparent"
-					FocusVisualSecondaryThickness="0" />
+					FocusVisualSecondaryThickness="0"
+					AutomationProperties.Name="Элемент трека"
+					AutomationProperties.HelpText="Отдельный музыкальный трек в плейлисте" />
 			</DataTemplate>
 		</ListView.ItemTemplate>
 		<ListView.Footer>
-			<ProgressRing x:Name="LoadingIndicator" IsActive="False" />
+			<ProgressRing x:Name="LoadingIndicator" IsActive="False" AutomationProperties.Name="Индикатор загрузки" AutomationProperties.HelpText="Показывает процесс загрузки треков" />
 		</ListView.Footer>
 	</ListView>
 

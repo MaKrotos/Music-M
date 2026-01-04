@@ -16,17 +16,26 @@
         CanReorderItems="false"
         IsItemClickEnabled="False"
         ItemsSource="{x:Bind userAudio.listAudio, Mode=OneWay}"
-        SelectionMode="None">
+        SelectionMode="None"
+        AutomationProperties.Name="Список треков"
+        AutomationProperties.HelpText="Основной список музыкальных треков пользователя"
+        AutomationProperties.HeadingLevel="Level2">
         <ListView.ItemTemplate>
             <DataTemplate>
                 <custom:TrackControl
                     Margin="0,0,0,8"
                     FocusVisualPrimaryBrush="Transparent"
-                    FocusVisualSecondaryThickness="0" />
+                    FocusVisualSecondaryThickness="0"
+                    AutomationProperties.Name="Элемент трека"
+                    AutomationProperties.HelpText="Отдельный музыкальный трек в списке" />
             </DataTemplate>
         </ListView.ItemTemplate>
         <ListView.Footer>
-            <ProgressRing x:Name="LoadingIndicator" IsActive="False" />
+            <ProgressRing 
+                x:Name="LoadingIndicator" 
+                IsActive="False" 
+                AutomationProperties.Name="Индикатор загрузки"
+                AutomationProperties.HelpText="Показывает процесс загрузки дополнительных треков" />
         </ListView.Footer>
     </ListView>
 

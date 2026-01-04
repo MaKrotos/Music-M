@@ -7,13 +7,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    AutomationProperties.Name="Мини-приложение"
+    AutomationProperties.HelpText="Страница отображения мини-приложений внутри основного приложения">
 
-    <Grid>
+    <Grid AutomationProperties.Name="Сетка мини-приложения" AutomationProperties.HelpText="Основная область компоновки мини-приложения">
         <WebView2
             x:Name="WebView"
             NavigationStarting="WebView_OnNavigationStarting"
-            NavigationCompleted="WebView_OnNavigationCompleted"/>
-
+            NavigationCompleted="WebView_OnNavigationCompleted"
+            AutomationProperties.Name="Веб-просмотр приложения"
+            AutomationProperties.HelpText="Компонент для отображения веб-контента внутри приложения" />
     </Grid>
 </Page>

@@ -6,94 +6,108 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="using:VK_UI3.Views"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d">
-	<Grid>
+	mc:Ignorable="d"
+	AutomationProperties.Name="Страница обновления"
+	AutomationProperties.HelpText="Отображает информацию о доступном обновлении приложения">
 
+	<Grid AutomationProperties.Name="Основная сетка" AutomationProperties.HelpText="Основная область компоновки страницы обновления">
 		<Grid
 			Padding="8"
 			HorizontalAlignment="Center"
 			VerticalAlignment="Center"
 			Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}"
-			CornerRadius="8">
+			CornerRadius="8"
+			AutomationProperties.Name="Карточка обновления"
+			AutomationProperties.HelpText="Карточка с информацией об обновлении">
 			<Grid.Resources>
 				<ThemeShadow x:Name="SharedShadow" />
 			</Grid.Resources>
 
 
-			<Grid>
+			<Grid AutomationProperties.Name="Сетка содержимого" AutomationProperties.HelpText="Область с информацией об обновлении">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="*" />
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
-				<StackPanel Margin="10" Orientation="Horizontal">
+				<StackPanel Margin="10" Orientation="Horizontal" AutomationProperties.Name="Заголовок" AutomationProperties.HelpText="Заголовок страницы обновления">
 					<ImageIcon
 						Width="50"
 						Height="50"
-						Source="ms-appx:///Assets/StoreLogo.scale-400.png" />
+						Source="ms-appx:///Assets/StoreLogo.scale-400.png"
+						AutomationProperties.Name="Логотип приложения"
+						AutomationProperties.HelpText="Логотип приложения VK M" />
 					<TextBlock
 						Margin="10,0,0,0"
 						VerticalAlignment="Center"
 						FontSize="16"
 						FontWeight="Bold"
-						Text="VK M" />
+						Text="VK M"
+						AutomationProperties.Name="Название приложения"
+						AutomationProperties.HelpText="Название приложения VK M" />
 				</StackPanel>
-				<StackPanel Grid.Row="1" Margin="10">
-					<StackPanel Orientation="Vertical">
+				<StackPanel Grid.Row="1" Margin="10" AutomationProperties.Name="Информация об обновлении" AutomationProperties.HelpText="Подробная информация о доступном обновлении">
+					<StackPanel Orientation="Vertical" AutomationProperties.Name="Заголовок обновления" AutomationProperties.HelpText="Заголовок раздела обновления">
 						<TextBlock
 							FontSize="14"
 							FontWeight="Bold"
-							Text="Новая версия доступна!" />
+							Text="Новая версия доступна!"
+							AutomationProperties.Name="Уведомление о новой версии"
+							AutomationProperties.HelpText="Уведомление о доступности новой версии приложения" />
 					</StackPanel>
 
-					<StackPanel Margin="0,4,0,0" Orientation="Horizontal">
-						<TextBlock FontWeight="Bold" Text="Версия:" />
-						<TextBlock Margin="5,0,0,0" Text="{Binding Version}" />
+					<StackPanel Margin="0,4,0,0" Orientation="Horizontal" AutomationProperties.Name="Версия" AutomationProperties.HelpText="Информация о версии обновления">
+						<TextBlock FontWeight="Bold" Text="Версия:" AutomationProperties.Name="Метка версии" AutomationProperties.HelpText="Метка поля версии" />
+						<TextBlock Margin="5,0,0,0" Text="{Binding Version}" AutomationProperties.Name="Номер версии" AutomationProperties.HelpText="Номер новой версии приложения" />
 
 					</StackPanel>
 
-					<StackPanel Margin="0,10,0,0" Orientation="Horizontal">
-						<TextBlock FontWeight="Bold" Text="Название выпуска: " />
-						<TextBlock Margin="5,0,0,0" Text="{Binding ReleaseName}" />
+					<StackPanel Margin="0,10,0,0" Orientation="Horizontal" AutomationProperties.Name="Название выпуска" AutomationProperties.HelpText="Название выпуска обновления">
+						<TextBlock FontWeight="Bold" Text="Название выпуска: " AutomationProperties.Name="Метка названия выпуска" AutomationProperties.HelpText="Метка поля названия выпуска" />
+						<TextBlock Margin="5,0,0,0" Text="{Binding ReleaseName}" AutomationProperties.Name="Название выпуска" AutomationProperties.HelpText="Название выпуска обновления" />
 					</StackPanel>
-					<StackPanel Margin="0,10,0,0" Orientation="Vertical">
-						<TextBlock FontWeight="Bold" Text="Что нового: " />
+					<StackPanel Margin="0,10,0,0" Orientation="Vertical" AutomationProperties.Name="Описание обновления" AutomationProperties.HelpText="Описание изменений в новой версии">
+						<TextBlock FontWeight="Bold" Text="Что нового: " AutomationProperties.Name="Метка описания" AutomationProperties.HelpText="Метка поля описания изменений" />
 						<TextBlock
 							Margin="5,0,0,0"
 							Text="{Binding UpdateDescription}"
-							TextWrapping="Wrap" />
+							TextWrapping="Wrap"
+							AutomationProperties.Name="Описание изменений"
+							AutomationProperties.HelpText="Описание новых функций и изменений в обновлении" />
 					</StackPanel>
 
 
-					<StackPanel Margin="0,10,0,0" Orientation="Horizontal">
-						<TextBlock FontWeight="Bold" Text="Размер: " />
-						<TextBlock Margin="5,0,0,0" Text="{Binding UpdateSize}" />
+					<StackPanel Margin="0,10,0,0" Orientation="Horizontal" AutomationProperties.Name="Размер обновления" AutomationProperties.HelpText="Информация о размере обновления">
+						<TextBlock FontWeight="Bold" Text="Размер: " AutomationProperties.Name="Метка размера" AutomationProperties.HelpText="Метка поля размера обновления" />
+						<TextBlock Margin="5,0,0,0" Text="{Binding UpdateSize}" AutomationProperties.Name="Размер обновления" AutomationProperties.HelpText="Размер файла обновления" />
 					</StackPanel>
-					<StackPanel Margin="0,10,0,0">
-
+					<StackPanel Margin="0,10,0,0" AutomationProperties.Name="Прогресс загрузки" AutomationProperties.HelpText="Индикатор прогресса загрузки обновления">
 						<ProgressBar
 							Grid.Column="0"
 							Height="10"
 							Maximum="100"
-							Value="{Binding DownloadProgress, Mode=OneWay}" />
-						<TextBlock Grid.Column="1" Text="{Binding DownloadProgressText, Mode=OneWay}" />
+							Value="{Binding DownloadProgress, Mode=OneWay}"
+							AutomationProperties.Name="Индикатор прогресса"
+							AutomationProperties.HelpText="Показывает прогресс загрузки обновления" />
+						<TextBlock Grid.Column="1" Text="{Binding DownloadProgressText, Mode=OneWay}" AutomationProperties.Name="Текст прогресса" AutomationProperties.HelpText="Текстовое представление прогресса загрузки" />
 					</StackPanel>
 				</StackPanel>
 				<StackPanel
 					Grid.Row="2"
 					Margin="10"
 					HorizontalAlignment="Right"
-					Orientation="Horizontal">
+					Orientation="Horizontal"
+					AutomationProperties.Name="Панель управления"
+					AutomationProperties.HelpText="Панель с кнопками управления обновлением">
 					<Button
 						x:Name="UpdateBTN"
 						Margin="0,0,0,0"
 						Click="UpdateButton_Click"
-						Content="Обновить" />
-
+						Content="Обновить"
+						AutomationProperties.Name="Кнопка обновления"
+						AutomationProperties.HelpText="Начать процесс обновления приложения" />
 				</StackPanel>
 			</Grid>
-
 		</Grid>
-
 	</Grid>
 </Page>

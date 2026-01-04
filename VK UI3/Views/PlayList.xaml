@@ -7,9 +7,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:VK_UI3"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
-    <Grid>
+    mc:Ignorable="d"
+    AutomationProperties.Name="Страница плейлиста"
+    AutomationProperties.HelpText="Отображает список треков в выбранном плейлисте">
 
+    <Grid AutomationProperties.Name="Сетка плейлиста" AutomationProperties.HelpText="Основная область компоновки страницы плейлиста">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
@@ -22,18 +24,20 @@
             CanReorderItems="False"
             IsItemClickEnabled="False"
             ItemsSource="{x:Bind Tracks.listAudio, Mode=OneWay}"
-            SelectionMode="None">
+            SelectionMode="None"
+            AutomationProperties.Name="Список треков плейлиста"
+            AutomationProperties.HelpText="Список треков в текущем плейлисте"
+            AutomationProperties.HeadingLevel="Level2">
             <ListView.ItemTemplate>
-
                 <DataTemplate>
                     <custom:TrackControl
                         Margin="0,4,0,4"
                         FocusVisualPrimaryBrush="Transparent"
-                        FocusVisualSecondaryThickness="0" />
+                        FocusVisualSecondaryThickness="0"
+                        AutomationProperties.Name="Элемент трека в плейлисте"
+                        AutomationProperties.HelpText="Отдельный музыкальный трек в плейлисте" />
                 </DataTemplate>
             </ListView.ItemTemplate>
-
         </ListView>
-
     </Grid>
 </Page>

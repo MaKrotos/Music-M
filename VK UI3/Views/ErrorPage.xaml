@@ -8,7 +8,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d">
 
-	<Grid>
+	<Grid AutomationProperties.Name="Страница ошибки" AutomationProperties.HelpText="Отображает информацию об ошибке в приложении">
 		<StackPanel
 			MaxWidth="600"
 			Margin="20"
@@ -21,7 +21,9 @@
 				HorizontalAlignment="Center"
 				FontSize="64"
 				Foreground="{StaticResource SystemErrorTextColor}"
-				Glyph="&#xE783;" />
+				Glyph="&#xE783;"
+				AutomationProperties.Name="Иконка ошибки"
+				AutomationProperties.HelpText="Визуальное представление ошибки" />
 
 			<!--  Заголовок ошибки  -->
 			<TextBlock
@@ -30,7 +32,10 @@
 				FontWeight="Bold"
 				Foreground="{ThemeResource TextFillColorPrimaryBrush}"
 				Text="Произошла ошибка"
-				TextAlignment="Center" />
+				TextAlignment="Center"
+				AutomationProperties.HeadingLevel="Level1"
+				AutomationProperties.Name="Заголовок ошибки"
+				AutomationProperties.HelpText="Уведомление о возникновении ошибки в приложении" />
 
 			<!--  Детальное описание ошибки  -->
 			<Border
@@ -38,20 +43,24 @@
 				Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
 				BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
 				BorderThickness="1"
-				CornerRadius="8">
+				CornerRadius="8"
+				AutomationProperties.Name="Область деталей ошибки"
+				AutomationProperties.HelpText="Подробное описание возникшей ошибки">
 
 				<ScrollViewer
 					MaxHeight="400"
 					HorizontalScrollMode="Auto"
-					VerticalScrollMode="Auto">
+					VerticalScrollMode="Auto"
+					AutomationProperties.Name="Прокручиваемая область деталей ошибки">
 					<TextBlock
 						x:Name="ErrorDetailsText"
 						FontFamily="Cascadia Code, Consolas, Courier New"
 						FontSize="14"
 						Foreground="{ThemeResource TextFillColorPrimaryBrush}"
 						Text="hello"
-						TextWrapping="Wrap" />
-
+						TextWrapping="Wrap"
+						AutomationProperties.Name="Текст деталей ошибки"
+						AutomationProperties.HelpText="Подробное описание ошибки для диагностики" />
 				</ScrollViewer>
 			</Border>
 
@@ -59,18 +68,24 @@
 			<StackPanel
 				HorizontalAlignment="Center"
 				Orientation="Horizontal"
-				Spacing="10">
+				Spacing="10"
+				AutomationProperties.Name="Панель управления ошибкой"
+				AutomationProperties.HelpText="Кнопки для управления ошибкой">
 				<Button
 					x:Name="RetryButton"
 					Click="RetryButton_Click"
 					Content="Повторить"
-					Style="{StaticResource AccentButtonStyle}" />
+					Style="{StaticResource AccentButtonStyle}"
+					AutomationProperties.Name="Повторить попытку"
+					AutomationProperties.HelpText="Попытаться выполнить операцию заново" />
 
 				<Button
 					x:Name="CopyErrorButton"
 					Click="CopyErrorButton_Click"
 					Content="Копировать ошибку"
-					Style="{StaticResource DefaultButtonStyle}" />
+					Style="{StaticResource DefaultButtonStyle}"
+					AutomationProperties.Name="Копировать текст ошибки"
+					AutomationProperties.HelpText="Скопировать текст ошибки в буфер обмена" />
 			</StackPanel>
 		</StackPanel>
 	</Grid>
