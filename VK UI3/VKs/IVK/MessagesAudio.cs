@@ -22,8 +22,7 @@ namespace VK_UI3.VKs.IVK
             base.id = messConv.conversation.Peer.LocalId.ToString();
             this.messConv = messConv;
         }
-       
-        
+
         public override long? getCount()
         {
             return -1;
@@ -38,22 +37,16 @@ namespace VK_UI3.VKs.IVK
                 {
                     case "chat":
                         return messConv.conversation.ChatSettings.Title;
-                        
 
-                        break;
                     case "user":
-                        return messConv.user.FirstName +" "+messConv.user.LastName;
-                        break;
+                        return messConv.user.FirstName + " " + messConv.user.LastName;
                     case "group":
                         return messConv.group.Name;
-                        break;
                     case "email":
-
                         break;
                     default:
                         break;
                 }
-
             }
             catch (Exception ex)
             {
@@ -75,15 +68,11 @@ namespace VK_UI3.VKs.IVK
                 case "chat":
                     return messConv.conversation.ChatSettings.Photo.JustGetPhoto;
 
-                    break;
                 case "user":
                     return messConv.user.JustGetPhoto;
-                    break;
                 case "group":
                     return messConv.group.JustGetPhoto;
-                    break;
                 case "email":
-
                     break;
                 default:
                     break;
@@ -131,8 +120,6 @@ namespace VK_UI3.VKs.IVK
                         resetEvent.Reset(); 
                     }
 
-                    
-
                     if (nextFrom == null) itsAll = true;
 
                     getLoadedTracks = false;
@@ -145,7 +132,5 @@ namespace VK_UI3.VKs.IVK
                 semaphore.Release(); 
             }
         }
-
-
     }
 }

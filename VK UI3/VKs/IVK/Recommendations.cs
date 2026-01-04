@@ -33,7 +33,6 @@ namespace VK_UI3.VKs.IVK
         public User user;
         public override string getName()
         {
-            
             return null;
         }
         public override List<string> getPhotosList()
@@ -102,7 +101,5 @@ namespace VK_UI3.VKs.IVK
                 task = null;
             });
         }
-
-
     }
 }

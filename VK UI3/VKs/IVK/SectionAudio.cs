@@ -11,8 +11,6 @@ namespace VK_UI3.VKs.IVK
 {
     public class SectionAudio : IVKGetAudio
     {
-
-
         string SectionID;
 
         public SectionAudio(Block block, DispatcherQueue dispatcher) : base(block, dispatcher)
@@ -21,7 +19,6 @@ namespace VK_UI3.VKs.IVK
 
         public SectionAudio(string sectionID, DispatcherQueue dispatcher, Uri photoLink = null, string name = null, List<Audio> audios = null, string next = null) : base(sectionID, dispatcher, photoLink, name, audios, next)
         {
-
         }
 
         public override long? getCount()
@@ -44,7 +41,6 @@ namespace VK_UI3.VKs.IVK
             return new List<string>();
         }
         private static SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
-
 
         public override void GetTracks()
         {
@@ -137,6 +133,5 @@ namespace VK_UI3.VKs.IVK
                 semaphore.Release(); // Освобождает семафор
             }
         }
-
     }
 }

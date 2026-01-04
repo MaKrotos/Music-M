@@ -10,7 +10,6 @@ namespace VK_UI3.VKs.IVK
     {
         public SimpleAudio(DispatcherQueue dispatcher) : base(dispatcher)
         {
-
         }
 
         public override long? getCount()
@@ -38,6 +37,5 @@ namespace VK_UI3.VKs.IVK
             itsAll = true;
             return;
         }
-
     }
 }

@@ -42,7 +42,6 @@ namespace VK_UI3.VKs.IVK
                 var response = api.Call("users.get", request);
                 user = User.FromJson(response[0]);
 
-
                 return user.FirstName + " " + user.LastName;
             }
             catch (Exception ex)
@@ -183,7 +182,6 @@ namespace VK_UI3.VKs.IVK
             {
                 semaphore.Release(); // Освобождает семафор
             }
-           
         }
     }
 }

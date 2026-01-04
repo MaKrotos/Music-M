@@ -23,16 +23,13 @@ namespace VK_UI3.VKs.IVK
 
         public PlayListVK(AudioPlaylist _playlist, DispatcherQueue dispatcher) : base(dispatcher)
         {
-        
             this.playlist = _playlist;
             getLoadedTracks = true;
             DispatcherQueue = dispatcher;
             Task.Run(async () =>
             {
-               
                 try
                 {
-
                     var p = await VK.vkService.GetPlaylistAsync(100, _playlist.Id, _playlist.AccessKey, _playlist.OwnerId);
 
                     if ((p.Playlist.MainArtists == null || p.Playlist.MainArtists.Count == 0) && p.Playlist.OwnerId < 0 && p.Groups != null)
@@ -40,19 +37,15 @@ namespace VK_UI3.VKs.IVK
                         p.Playlist.OwnerName = p.Groups[0].Name;
                     }
 
-
-
                     playlist = p.Playlist;
                     playlist.groupOwner = _playlist.groupOwner;
                     playlist.userOwner = _playlist.userOwner;
                     playlist.OwnerName = _playlist.OwnerName;
                     playlist.Audios = new ReadOnlyCollection<VkNet.Model.Attachments.Audio>(p.Audios.Cast<VkNet.Model.Attachments.Audio>().ToList());
 
-                  
                     name = playlist.Title;
                     _Year = playlist.Year.ToString();
                     _Description = playlist.Description;
-
 
                     genres = string.Empty;
 
@@ -68,13 +61,11 @@ namespace VK_UI3.VKs.IVK
                     countTracks = playlist.Count;
                     countUpdated();
 
-
                     if (playlist.Cover != null)
                     {
                         photoUri = new Uri(playlist.Cover);
                         PhotoUpdated();
                     }
-
 
                     if (playlist.Year == 0)
                     {
@@ -101,23 +92,13 @@ namespace VK_UI3.VKs.IVK
                     }
                     countTracks += listAudio.Count;
 
-
-
-
-
-
                     listAudio.AddRange(playlist.Audios.Select(item => new ExtendedAudio(item, this)));
-
-
 
                     if (playlist.Audios.Count == 0)
                     {
                         var res = await VK.vkService.AudioGetAsync(playlist.Id, playlist.OwnerId, playlist.AccessKey).ConfigureAwait(false);
                         listAudio.AddRange(res.Items.Select(item => new ExtendedAudio(item, this)));
                     }
-
-
-
 
                     if (playlist.Plays > 1000000)
                     {
@@ -131,31 +112,20 @@ namespace VK_UI3.VKs.IVK
                     {
                         Plays = playlist.Plays.ToString();
                     }
-
-
-
                 }
-                catch
-                (Exception e)
+                catch (Exception e)
                 {
-
-
-
                 }
                 finally
                 {
-                  
                 }
                 getLoadedTracks = false;
                 NotifyOnListUpdate();
-
-
             });
         }
 
         public PlayListVK(RecommendedPlaylist _playlist, DispatcherQueue dispatcher) : base(dispatcher)
         {
-     
             playlist = _playlist.Playlist;
             foreach (var audio in _playlist.Audios)
             {
@@ -164,25 +134,17 @@ namespace VK_UI3.VKs.IVK
             countTracks = playlist.Count;
 
             _Description = playlist.Description;
-
         }
-
-
-
-
 
         public override long? getCount()
         {
             return null;
         }
 
-
         public override string getName()
         {
-
             return null;
         }
-
 
         public override Uri getPhoto()
         {
@@ -238,14 +200,12 @@ namespace VK_UI3.VKs.IVK
                     NotifyOnListUpdate();
                     task = null;
                 });
-             
             }
             finally
             {
                 semaphore.Release(); // Освобождает семафор
             }
         }
-
 
         public override List<string> getPhotosList()
         {
@@ -318,7 +278,6 @@ namespace VK_UI3.VKs.IVK
                     NotifyOnListUpdate();
                     task = null;
                 });
-
             }
             finally
             {

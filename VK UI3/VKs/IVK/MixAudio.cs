@@ -35,7 +35,6 @@ namespace VK_UI3.VKs.IVK
         }
     }
 
-
     public class MixAudio : IVKGetAudio
     {
         public MixOptions data;
@@ -44,11 +43,9 @@ namespace VK_UI3.VKs.IVK
             this.data = data;
 
             this.countTracks = -1;
-      
+       
             Task.Run(async () =>
             {
-              
-
                 try
                 {
                     var audios = await VK.vkService.GetStreamMixAudios(data.Id, data.Append, options: data.Options);
@@ -70,7 +67,6 @@ namespace VK_UI3.VKs.IVK
         {
             return listAudio.Count();
         }
-
 
         public override string getName()
         {
@@ -119,7 +115,5 @@ namespace VK_UI3.VKs.IVK
                 semaphore.Release(); 
             }
         }
-
-
     }
 }
