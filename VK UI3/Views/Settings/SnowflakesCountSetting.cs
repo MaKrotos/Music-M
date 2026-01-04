@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using System.Threading.Tasks;
 using VK_UI3.DB;
+using Microsoft.UI.Xaml.Automation;
 
 namespace VK_UI3.Views.Settings
 {
@@ -30,6 +31,10 @@ namespace VK_UI3.Views.Settings
             this.Value = val;
 
             this.ValueChanged += OnValueChanged;
+            
+            // Добавляем свойства доступности для экранного диктера
+            AutomationProperties.SetName(this, "Количество снежинок");
+            AutomationProperties.SetHelpText(this, "Регулирует количество снежинок в анимации");
         }
        
         private void OnValueChanged(object sender, RangeBaseValueChangedEventArgs e)

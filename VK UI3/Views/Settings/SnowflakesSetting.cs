@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using VK_UI3.DB;
+using Microsoft.UI.Xaml.Automation;
 
 namespace VK_UI3.Views.Settings
 {
@@ -19,6 +20,10 @@ namespace VK_UI3.Views.Settings
             
             // Установка стиля
             this.Style = style;
+            
+            // Добавляем свойства доступности для экранного диктера
+            AutomationProperties.SetName(this, "Включить снежинки");
+            AutomationProperties.SetHelpText(this, "Включает или выключает анимацию снежинок в приложении");
         }
 
         private void SnowflakesSetting_Loaded(object sender, RoutedEventArgs e)

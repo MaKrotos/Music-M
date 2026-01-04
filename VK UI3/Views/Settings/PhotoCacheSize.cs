@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using System.Threading.Tasks;
 using VK_UI3.DB;
+using Microsoft.UI.Xaml.Automation;
 
 namespace VK_UI3.Views.Settings
 {
@@ -33,6 +34,10 @@ namespace VK_UI3.Views.Settings
             this.Value = val;
 
             this.ValueChanged += OnValueChanged;
+            
+            // Добавляем свойства доступности для экранного диктера
+            AutomationProperties.SetName(this, "Размер кеша фотографий");
+            AutomationProperties.SetHelpText(this, "Устанавливает размер кеша для хранения фотографий в мегабайтах");
         }
        
 

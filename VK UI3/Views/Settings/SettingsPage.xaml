@@ -20,86 +20,84 @@
 				</Style>
 			</StackPanel.Resources>
 			<Border>
-				<local:StartUpSetting />
+				<local:StartUpSetting AutomationProperties.Name="Добавить приложение в автозагрузку" AutomationProperties.HelpText="Включает или выключает автоматический запуск приложения при старте системы" />
 			</Border>
 
 			<Border>
-				<local:BackDropSetting />
+				<local:BackDropSetting AutomationProperties.Name="Выключить прозрачность" AutomationProperties.HelpText="Включает или выключает эффект прозрачности в приложении" />
 			</Border>
 			<Border>
-				<local:DownloadAllSetting />
+				<local:DownloadAllSetting AutomationProperties.Name="Запускать параллельное скачивание автоматически" AutomationProperties.HelpText="Автоматически запускает параллельное скачивание всех плейлистов" />
 			</Border>
 			<Border>
-				<local:StartAllTaskSetting />
+				<local:StartAllTaskSetting AutomationProperties.Name="Запускать все таски автоматически" AutomationProperties.HelpText="Автоматически запускает все задачи скачивания при запуске приложения" />
 			</Border>
 			<Border>
-				<local:DeleteAllAudioProfile />
+				<local:DeleteAllAudioProfile AutomationProperties.Name="Удалить все аудио из профиля" AutomationProperties.HelpText="Удаляет все аудиозаписи из вашего профиля ВКонтакте" />
 			</Border>
 			<Border>
-				<local:ArchivateTracks />
-			</Border>
-
-			<Border>
-				<local:HideToTraySetting />
+				<local:ArchivateTracks AutomationProperties.Name="Заархивировать треки профиля" AutomationProperties.HelpText="Архивирует все аудиозаписи в вашем профиле, перенося их в автоматически созданные плейлисты" />
 			</Border>
 
 			<Border>
-				<local:DisableDiscordIntegration />
+				<local:HideToTraySetting AutomationProperties.Name="Скрывать в трей при закрытии" AutomationProperties.HelpText="Скрывает приложение в системный трей вместо полного закрытия при нажатии на кнопку закрытия" />
 			</Border>
 
 			<Border>
-				<local:HighlightPlayedTracks />
+				<local:DisableDiscordIntegration AutomationProperties.Name="Отключить интеграцию с Discord" AutomationProperties.HelpText="Отключает отображение информации о воспроизводимой музыке в статусе Discord" />
 			</Border>
 
 			<Border>
-				<local:CreateDesktopShortcut />
+				<local:HighlightPlayedTracks AutomationProperties.Name="Выделять полностью прослушанные треки" AutomationProperties.HelpText="Выделяет цветом треки, которые были полностью прослушаны" />
+			</Border>
+
+			<Border>
+				<local:CreateDesktopShortcut AutomationProperties.Name="Создать ярлык на рабочем столе" AutomationProperties.HelpText="Создает ярлык приложения на рабочем столе" />
 			</Border>
 			<Border>
-				<local:SnowflakesSetting />
+				<local:SnowflakesSetting AutomationProperties.Name="Включить снежинки" AutomationProperties.HelpText="Включает или выключает анимацию снежинок в приложении" />
 			</Border>
 
 			<Border>
 				<StackPanel>
-					<TextBlock Text="Количество снежинок" />
+					<TextBlock Text="Количество снежинок" AutomationProperties.Name="Количество снежинок" AutomationProperties.HelpText="Отображает количество снежинок в анимации" />
 					<Grid>
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="*" />
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="Auto" />
 						</Grid.ColumnDefinitions>
-						<local:SnowflakesCountSetting x:Name="snowflakesCount" Grid.Column="0" />
-						<TextBlock Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" Text="{x:Bind snowflakesCount.Value, Mode=OneWay}" />
-						<TextBlock Grid.Column="2" VerticalAlignment="Center" Text="шт" />
+						<local:SnowflakesCountSetting x:Name="snowflakesCount" Grid.Column="0" AutomationProperties.Name="Ползунок количества снежинок" AutomationProperties.HelpText="Регулирует количество снежинок в анимации" />
+						<TextBlock Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" Text="{x:Bind snowflakesCount.Value, Mode=OneWay}" AutomationProperties.Name="Значение количества снежинок" AutomationProperties.HelpText="Текущее значение количества снежинок" />
+						<TextBlock Grid.Column="2" VerticalAlignment="Center" Text="шт" AutomationProperties.Name="Единицы измерения снежинок" AutomationProperties.HelpText="Единицы измерения количества снежинок" />
 					</Grid>
 				</StackPanel>
 			</Border>
 
 			<Border>
 				<StackPanel>
-					<TextBlock Text="Размер кеша фотографий" />
+					<TextBlock Text="Размер кеша фотографий" AutomationProperties.Name="Размер кеша фотографий" AutomationProperties.HelpText="Отображает размер кеша для хранения фотографий" />
 					<Grid>
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="*" />
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="Auto" />
 						</Grid.ColumnDefinitions>
-						<local:PhotoCacheSize x:Name="photocache" Grid.Column="0" />
-						<TextBlock Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" Text="{x:Bind photocache.Value, Mode=OneWay}" />
-						<TextBlock Grid.Column="2" VerticalAlignment="Center" Text="МБ" />
+						<local:PhotoCacheSize x:Name="photocache" Grid.Column="0" AutomationProperties.Name="Ползунок размера кеша фотографий" AutomationProperties.HelpText="Регулирует размер кеша для хранения фотографий в мегабайтах" />
+						<TextBlock Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" Text="{x:Bind photocache.Value, Mode=OneWay}" AutomationProperties.Name="Значение размера кеша фотографий" AutomationProperties.HelpText="Текущее значение размера кеша фотографий в мегабайтах" />
+						<TextBlock Grid.Column="2" VerticalAlignment="Center" Text="МБ" AutomationProperties.Name="Единицы измерения кеша фотографий" AutomationProperties.HelpText="Единицы измерения размера кеша фотографий" />
 					</Grid>
 				</StackPanel>
 			</Border>
 			<Border>
 				<StackPanel Orientation="Horizontal">
-					<local:CheckUpdate />
-					<TextBlock Margin="15,0,0,0" VerticalAlignment="Center">Текущая версия:</TextBlock>
-					<local:AppVersionText Margin="15,0,0,0" VerticalAlignment="Center" />
+					<local:CheckUpdate AutomationProperties.Name="Проверить обновления" AutomationProperties.HelpText="Проверяет наличие новых версий приложения" />
+					<TextBlock Margin="15,0,0,0" VerticalAlignment="Center" AutomationProperties.Name="Текст текущей версии" AutomationProperties.HelpText="Отображает текущую версию приложения">Текущая версия:</TextBlock>
+					<local:AppVersionText Margin="15,0,0,0" VerticalAlignment="Center" AutomationProperties.Name="Версия приложения" AutomationProperties.HelpText="Отображает текущую версию приложения" />
 				</StackPanel>
-
 			</Border>
 
-
-			<TextBlock Margin="0,20,0,0" TextAlignment="Center">
+			<TextBlock Margin="0,20,0,0" TextAlignment="Center" AutomationProperties.Name="Ссылка на Telegram" AutomationProperties.HelpText="Ссылка на Telegram канал разработчика">
 				<Hyperlink NavigateUri="https://t.me/VK_M_creator">Music M в telegram</Hyperlink>
 			</TextBlock>
 

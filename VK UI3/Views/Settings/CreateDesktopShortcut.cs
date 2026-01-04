@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Threading.Tasks;
 using VK_UI3.Helpers;
+using Microsoft.UI.Xaml.Automation;
 
 namespace VK_UI3.Views.Settings
 {
@@ -16,6 +17,10 @@ namespace VK_UI3.Views.Settings
             this.Style = style;
             this.Content = "Создать ярлык на рабочем столе";
             
+            // Добавляем свойства доступности для экранного диктера
+            AutomationProperties.SetName(this, "Создать ярлык на рабочем столе");
+            AutomationProperties.SetHelpText(this, "Создает ярлык приложения на рабочем столе");
+
             LoadShortcutState();
         }
 
@@ -40,11 +45,15 @@ namespace VK_UI3.Views.Settings
                 {
                     this.Content = "Ярлык уже создан";
                     this.IsEnabled = false;
+                    AutomationProperties.SetName(this, "Ярлык уже создан");
+                    AutomationProperties.SetHelpText(this, "Ярлык приложения уже существует на рабочем столе");
                 }
                 else
                 {
                     this.Content = "Создать ярлык на рабочем столе";
                     this.IsEnabled = true;
+                    AutomationProperties.SetName(this, "Создать ярлык на рабочем столе");
+                    AutomationProperties.SetHelpText(this, "Создает ярлык приложения на рабочем столе");
                 }
             });
         }
@@ -55,6 +64,8 @@ namespace VK_UI3.Views.Settings
             {
                 this.IsEnabled = false;
                 this.Content = "Создание ярлыка...";
+                AutomationProperties.SetName(this, "Создание ярлыка");
+                AutomationProperties.SetHelpText(this, "Выполняется создание ярлыка приложения на рабочем столе");
 
                 var success = await ShortcutManager.CreateDesktopShortcutAsync();
 
@@ -72,6 +83,8 @@ namespace VK_UI3.Views.Settings
                     ShowNotification("Не удалось создать ярлык. Попробуйте еще раз.", false);
                     this.IsEnabled = true;
                     this.Content = "Создать ярлык на рабочем столе";
+                    AutomationProperties.SetName(this, "Создать ярлык на рабочем столе");
+                    AutomationProperties.SetHelpText(this, "Создает ярлык приложения на рабочем столе");
                 }
             }
             catch (Exception ex)
@@ -79,6 +92,8 @@ namespace VK_UI3.Views.Settings
                 ShowNotification($"Произошла ошибка: {ex.Message}", false);
                 this.IsEnabled = true;
                 this.Content = "Создать ярлык на рабочем столе";
+                AutomationProperties.SetName(this, "Создать ярлык на рабочем столе");
+                AutomationProperties.SetHelpText(this, "Создает ярлык приложения на рабочем столе");
             }
         }
 
@@ -95,6 +110,10 @@ namespace VK_UI3.Views.Settings
                 MaxWidth = 300
             };
             
+            // Добавляем свойства доступности для текстового блока уведомления
+            AutomationProperties.SetName(textBlock, "Уведомление о создании ярлыка");
+            AutomationProperties.SetHelpText(textBlock, message);
+            
             container.Children.Add(textBlock);
             myFlyout.Content = container;
 
@@ -110,4 +129,4 @@ namespace VK_UI3.Views.Settings
             timer.Start();
         }
     }
-} 
+}

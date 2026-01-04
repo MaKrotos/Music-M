@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VK_UI3.VKs;
 using VkNet;
+using Microsoft.UI.Xaml.Automation;
 
 namespace VK_UI3.Views.Settings
 {
@@ -18,6 +19,10 @@ namespace VK_UI3.Views.Settings
             Click += ArchivateTracks_Click;
             Style style = Application.Current.Resources["DefaultButtonStyle"] as Style;
             this.Content = "Заархивировать треки профиля";
+            
+            // Добавляем свойства доступности для экранного диктера
+            AutomationProperties.SetName(this, "Заархивировать треки профиля");
+            AutomationProperties.SetHelpText(this, "Архивирует все аудиозаписи в вашем профиле, перенося их в автоматически созданные плейлисты");
         }
         Flyout myFlyout = new Flyout();
         private async void ArchivateTracks_Click(object sender, RoutedEventArgs e)
@@ -33,11 +38,21 @@ namespace VK_UI3.Views.Settings
                     textBlock.Text = "Вы уверены, что хотите заархивировать все аудио в своём профиле? Все треки из Вашего профиля перенесутся в автоматически созданные плейлисты.";
                     textBlock.MaxWidth = 300;
                     textBlock.TextWrapping = TextWrapping.Wrap;
+                    
+                    // Добавляем свойства доступности для текстового блока
+                    AutomationProperties.SetName(textBlock, "Подтверждение архивации");
+                    AutomationProperties.SetHelpText(textBlock, "Вы уверены, что хотите заархивировать все аудио в своём профиле? Все треки из Вашего профиля перенесутся в автоматически созданные плейлисты.");
+                    
                     listView.Children.Add(textBlock);
 
                     Button button = new Button();
                     button.Margin = new Thickness(0, 15, 0 ,0);
                     button.Content = "Да, уверен!";
+                    
+                    // Добавляем свойства доступности для кнопки подтверждения
+                    AutomationProperties.SetName(button, "Подтвердить архивацию");
+                    AutomationProperties.SetHelpText(button, "Подтверждает архивацию всех аудиозаписей в вашем профиле");
+                    
                     listView.Children.Add(button);
                     myFlyout.Content = listView;
                   

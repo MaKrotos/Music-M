@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Automation;
 
 namespace VK_UI3.Views.Settings
 {
@@ -16,6 +17,10 @@ namespace VK_UI3.Views.Settings
             Click += CheckUpdate_Click;
             Style style = Application.Current.Resources["DefaultButtonStyle"] as Style;
             this.Content = "Проверить обновления";
+            
+            // Добавляем свойства доступности для экранного диктера
+            AutomationProperties.SetName(this, "Проверить обновления");
+            AutomationProperties.SetHelpText(this, "Проверяет наличие новых версий приложения");
         }
 
         private async void CheckUpdate_Click(object sender, RoutedEventArgs e)
@@ -31,6 +36,10 @@ namespace VK_UI3.Views.Settings
 
                     // Добавьте элементы в меню
                     TextBlock firstItem = new TextBlock { Text = "Обновлений не найдено" };
+                    
+                    // Добавляем свойства доступности для текстового блока
+                    AutomationProperties.SetName(firstItem, "Результат проверки обновлений");
+                    AutomationProperties.SetHelpText(firstItem, "Информирует о том, что обновления не найдены");
 
                     myFlyout.Content = firstItem;
 
@@ -60,6 +69,10 @@ namespace VK_UI3.Views.Settings
 
                 // Добавьте элементы в меню
                 MenuFlyoutItem firstItem = new MenuFlyoutItem { Text = $"Произошла ошибка. Проверьте настройки сети.\n{ex.Message}" };
+                
+                // Добавляем свойства доступности для элемента меню
+                AutomationProperties.SetName(firstItem, "Ошибка проверки обновлений");
+                AutomationProperties.SetHelpText(firstItem, $"Произошла ошибка при проверке обновлений: {ex.Message}");
 
                 myFlyout.Items.Add(firstItem);
 

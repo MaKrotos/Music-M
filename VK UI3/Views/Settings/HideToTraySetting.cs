@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Automation;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -21,6 +22,10 @@ namespace VK_UI3.Views.Settings
             
             // Установка стиля
             this.Style = style;
+            
+            // Добавляем свойства доступности для экранного диктера
+            AutomationProperties.SetName(this, "Скрывать в трей при закрытии");
+            AutomationProperties.SetHelpText(this, "Скрывает приложение в системный трей вместо полного закрытия при нажатии на кнопку закрытия");
         }
 
         private void StartUpSetting_Loaded(object sender, RoutedEventArgs e)

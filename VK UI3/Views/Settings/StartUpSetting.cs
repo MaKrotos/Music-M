@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Automation;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -21,6 +22,10 @@ namespace VK_UI3.Views.Settings
             
             // Установка стиля
             this.Style = style;
+            
+            // Добавляем свойства доступности для экранного диктера
+            AutomationProperties.SetName(this, "Добавить приложение в автозагрузку");
+            AutomationProperties.SetHelpText(this, "Включает или выключает автоматический запуск приложения при старте системы");
         }
 
         private void StartUpSetting_Loaded(object sender, RoutedEventArgs e)

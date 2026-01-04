@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using VK_UI3.DB;
+using Microsoft.UI.Xaml.Automation;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -25,6 +26,10 @@ namespace VK_UI3.Views.Settings
 
             // Установка стиля
             this.Style = style;
+            
+            // Добавляем свойства доступности для экранного диктера
+            AutomationProperties.SetName(this, "Выключить прозрачность");
+            AutomationProperties.SetHelpText(this, "Включает или выключает эффект прозрачности в приложении");
         }
 
         private void StartUpSetting_Loaded(object sender, RoutedEventArgs e)

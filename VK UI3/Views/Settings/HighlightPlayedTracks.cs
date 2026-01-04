@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Automation;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -21,6 +22,10 @@ namespace VK_UI3.Views.Settings
             
             // Установка стиля
             this.Style = style;
+            
+            // Добавляем свойства доступности для экранного диктера
+            AutomationProperties.SetName(this, "Выделять полностью прослушанные треки");
+            AutomationProperties.SetHelpText(this, "Выделяет цветом треки, которые были полностью прослушаны");
         }
 
         private void HighlightPlayedTracks_Loaded(object sender, RoutedEventArgs e)
@@ -45,4 +50,4 @@ namespace VK_UI3.Views.Settings
             DB.SettingsTable.SetSetting("HighlightPlayedTracks", "1");
         }
     }
-} 
+}

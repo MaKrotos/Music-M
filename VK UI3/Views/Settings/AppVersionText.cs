@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using VK_UI3.VKs;
 using VkNet;
 using Windows.ApplicationModel;
+using Microsoft.UI.Xaml.Automation;
 
 namespace VK_UI3.Views.Settings
 {
@@ -35,6 +36,8 @@ namespace VK_UI3.Views.Settings
         {
             TextBlock textBlock = new TextBlock();
             textBlock.Text = GetAppVersion();
+            AutomationProperties.SetName(textBlock, "Версия приложения");
+            AutomationProperties.SetHelpText(textBlock, "Отображает текущую версию приложения");
             return textBlock;
         }
 
