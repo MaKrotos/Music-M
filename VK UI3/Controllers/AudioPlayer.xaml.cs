@@ -227,8 +227,9 @@ namespace VK_UI3.Controllers
             InitializeEvents();
             InitializeAnimations();
             InitializeSettings();
-            InitializeWin32Hook();
             InitializeMediaPlayer();
+            SetupSystemMediaTransportControls();
+            InitializeWin32Hook();
         }
 
         private void InitializeEvents()
@@ -271,6 +272,128 @@ namespace VK_UI3.Controllers
             setStatusIcon();
         }
 
+        private void SetupSystemMediaTransportControls()
+        {
+            try
+            {
+                var systemControls = mediaPlayer.SystemMediaTransportControls;
+
+                // Включить кнопки
+                systemControls.IsPlayEnabled = true;
+                systemControls.IsPauseEnabled = true;
+                systemControls.IsNextEnabled = true;
+                systemControls.IsPreviousEnabled = true;
+                systemControls.IsStopEnabled = true;
+
+                // Подписаться на события
+                systemControls.ButtonPressed += SystemControls_ButtonPressed;
+
+                // Настроить отображение
+                systemControls.DisplayUpdater.Type = MediaPlaybackType.Music;
+                systemControls.DisplayUpdater.AppMediaId = "MusicX";
+
+                UpdateSystemMediaDisplay();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error setting up system media controls: {ex.Message}");
+            }
+        }
+
+        private void SystemControls_ButtonPressed(SystemMediaTransportControls sender,
+            SystemMediaTransportControlsButtonPressedEventArgs args)
+        {
+            this.DispatcherQueue.TryEnqueue(() =>
+            {
+                switch (args.Button)
+                {
+                    case SystemMediaTransportControlsButton.Play:
+                        mediaPlayer.Play();
+                        break;
+                    case SystemMediaTransportControlsButton.Pause:
+                        mediaPlayer.Pause();
+                        break;
+                    case SystemMediaTransportControlsButton.Next:
+                        PlayNextTrack();
+                        break;
+                    case SystemMediaTransportControlsButton.Previous:
+                        if (mediaPlayer.Position.TotalSeconds >= 3)
+                            mediaPlayer.Position = TimeSpan.Zero;
+                        else
+                            PlayPreviousTrack();
+                        break;
+                    case SystemMediaTransportControlsButton.Stop:
+                        mediaPlayer.Pause();
+                        mediaPlayer.Position = TimeSpan.Zero;
+                        break;
+                }
+            });
+        }
+
+        private void UpdateSystemMediaDisplay()
+        {
+            if (TrackDataThis == null || TrackDataThis.audio == null) return;
+
+            try
+            {
+                var systemControls = mediaPlayer.SystemMediaTransportControls;
+                var updater = systemControls.DisplayUpdater;
+
+                updater.ClearAll();
+                updater.Type = MediaPlaybackType.Music;
+
+                var audio = TrackDataThis.audio;
+
+                // Основная информация о треке
+                updater.MusicProperties.Title = audio.Title ?? "Unknown Title";
+                updater.MusicProperties.Artist = audio.Artist ?? "Unknown Artist";
+
+                // Информация об альбоме
+                if (audio.Album != null)
+                {
+                    updater.MusicProperties.AlbumTitle = audio.Album.Title ?? string.Empty;
+                }
+
+        
+                // Обложка трека
+                if (audio.Album?.Thumb != null)
+                {
+                    var thumbnailUrl = audio.Album.Thumb.Photo600 ??
+                                     audio.Album.Thumb.Photo300 ??
+                                     audio.Album.Thumb.Photo270;
+
+                    if (thumbnailUrl != null)
+                    {
+                        try
+                        {
+                            RandomAccessStreamReference imageStreamRef =
+                                RandomAccessStreamReference.CreateFromUri(new Uri(thumbnailUrl));
+                            updater.Thumbnail = imageStreamRef;
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error setting thumbnail: {ex.Message}");
+                        }
+                    }
+                }
+
+                updater.Update();
+
+                // Обновить статус воспроизведения
+                systemControls.PlaybackStatus = mediaPlayer.PlaybackSession.PlaybackState switch
+                {
+                    MediaPlaybackState.Playing => MediaPlaybackStatus.Playing,
+                    MediaPlaybackState.Paused => MediaPlaybackStatus.Paused,
+                    MediaPlaybackState.Buffering => MediaPlaybackStatus.Changing,
+                    _ => MediaPlaybackStatus.Stopped
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating system media display: {ex.Message}");
+            }
+        }
+
         private void InitializeWin32Hook()
         {
             try
@@ -283,7 +406,11 @@ namespace VK_UI3.Controllers
                     _oldWndProc = SetWindowLongPtr(hwnd, GWL_WNDPROC, _wndProcDelegate);
                 }
             }
-            catch { /* ignore errors */ }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error setting up Win32 hook: {ex.Message}");
+                // Если не удалось установить Win32 хук, используем только SystemMediaTransportControls
+            }
         }
 
         private void InitializeMediaPlayer()
@@ -292,8 +419,15 @@ namespace VK_UI3.Controllers
             TrackPosition = 0;
 
             mediaPlayer.AudioCategory = MediaPlayerAudioCategory.Media;
+
+            // Включить и настроить CommandManager
+            mediaPlayer.CommandManager.IsEnabled = true;
+
             mediaPlayer.CommandManager.NextBehavior.EnablingRule = MediaCommandEnablingRule.Always;
             mediaPlayer.CommandManager.PreviousBehavior.EnablingRule = MediaCommandEnablingRule.Always;
+            mediaPlayer.CommandManager.PlayBehavior.EnablingRule = MediaCommandEnablingRule.Always;
+            mediaPlayer.CommandManager.PauseBehavior.EnablingRule = MediaCommandEnablingRule.Always;
+
             mediaPlayer.SystemMediaTransportControls.DisplayUpdater.Type = MediaPlaybackType.Music;
 
             // Media player events
@@ -306,10 +440,13 @@ namespace VK_UI3.Controllers
             // Playback session events
             mediaPlayer.PlaybackSession.PositionChanged += PlaybackSession_PositionChanged;
             mediaPlayer.PlaybackSession.BufferedRangesChanged += PlaybackSession_BufferedRangesChanged;
+            mediaPlayer.PlaybackSession.PlaybackStateChanged += PlaybackSession_PlaybackStateChanged;
 
             // Command manager events
             mediaPlayer.CommandManager.NextReceived += CommandManager_NextReceived;
             mediaPlayer.CommandManager.PreviousReceived += CommandManager_PreviousReceived;
+            mediaPlayer.CommandManager.PauseReceived += CommandManager_PauseReceived;
+            mediaPlayer.CommandManager.PlayReceived += CommandManager_PlayReceived;
         }
 
         #endregion
@@ -336,7 +473,7 @@ namespace VK_UI3.Controllers
         private void MediaPlayer_MediaFailed(Windows.Media.Playback.MediaPlayer sender,
             Windows.Media.Playback.MediaPlayerFailedEventArgs args)
         {
-            // Handle media playback failure
+            Console.WriteLine($"Media failed: {args.Error}, {args.ErrorMessage}");
         }
 
         private void MediaPlayer_CurrentStateChanged(Windows.Media.Playback.MediaPlayer sender, object args)
@@ -347,9 +484,11 @@ namespace VK_UI3.Controllers
                 {
                     case MediaPlayerState.Playing:
                         changeIconPlayBTN.ChangeFontIconWithAnimation("\uE769");
+                        UpdateSystemMediaDisplay();
                         break;
                     case MediaPlayerState.Paused:
                         changeIconPlayBTN.ChangeFontIconWithAnimation("\uE768");
+                        UpdateSystemMediaDisplay();
                         break;
                     case MediaPlayerState.Closed:
                         PlayTrack(iVKGetAudio?.currentTrack);
@@ -363,6 +502,7 @@ namespace VK_UI3.Controllers
             if (TrackDataThis == null) return;
 
             UpdateTrackInfoDisplay();
+            UpdateSystemMediaDisplay();
 
             if (bool.Parse(SettingsTable.GetSetting("shareFriend").settingValue))
                 iVKGetAudio?.shareToVK();
@@ -386,6 +526,14 @@ namespace VK_UI3.Controllers
         private void PlaybackSession_BufferedRangesChanged(MediaPlaybackSession sender, object args)
         {
             // Handle buffering updates if needed
+        }
+
+        private void PlaybackSession_PlaybackStateChanged(MediaPlaybackSession sender, object args)
+        {
+            this.DispatcherQueue.TryEnqueue(() =>
+            {
+                UpdateSystemMediaDisplay();
+            });
         }
 
         #endregion
@@ -433,21 +581,47 @@ namespace VK_UI3.Controllers
         private void CommandManager_NextReceived(MediaPlaybackCommandManager sender,
             MediaPlaybackCommandManagerNextReceivedEventArgs args)
         {
-            PlayNextTrack();
+            this.DispatcherQueue.TryEnqueue(() =>
+            {
+                PlayNextTrack();
+            });
         }
 
         private void CommandManager_PreviousReceived(MediaPlaybackCommandManager sender,
             MediaPlaybackCommandManagerPreviousReceivedEventArgs args)
         {
-            if (mediaPlayer.Position.TotalSeconds >= 3)
+            this.DispatcherQueue.TryEnqueue(() =>
             {
-                mediaPlayer.Position = TimeSpan.Zero;
-            }
-            else
-            {
-                PlayPreviousTrack();
-            }
+                if (mediaPlayer.Position.TotalSeconds >= 3)
+                {
+                    mediaPlayer.Position = TimeSpan.Zero;
+                }
+                else
+                {
+                    PlayPreviousTrack();
+                }
+            });
         }
+
+        private void CommandManager_PauseReceived(MediaPlaybackCommandManager sender,
+            MediaPlaybackCommandManagerPauseReceivedEventArgs args)
+        {
+            this.DispatcherQueue.TryEnqueue(() =>
+            {
+                mediaPlayer.Pause();
+            });
+        }
+
+        private void CommandManager_PlayReceived(MediaPlaybackCommandManager sender,
+            MediaPlaybackCommandManagerPlayReceivedEventArgs args)
+        {
+            this.DispatcherQueue.TryEnqueue(() =>
+            {
+                mediaPlayer.Play();
+            });
+        }
+
+        
 
         #endregion
 
@@ -1124,37 +1298,62 @@ namespace VK_UI3.Controllers
         [DllImport("user32.dll")]
         private static extern nint CallWindowProc(nint lpPrevWndFunc, nint hWnd, int msg, nint wParam, nint lParam);
 
+        private static int HIWORD(nint n) => (int)((n >> 16) & 0xFFFF);
+
         private nint CustomWndProc(nint hwnd, int msg, nint wParam, nint lParam)
         {
+            const int APPCOMMAND_MASK = 0xF000;
+
             if (msg == WM_APPCOMMAND)
             {
-                int cmd = ((int)((long)lParam >> 16)) & 0xFFFF;
+                int cmd = HIWORD(wParam) & ~APPCOMMAND_MASK;
 
-                switch (cmd)
+                this.DispatcherQueue.TryEnqueue(() =>
                 {
-                    case 8: // Volume Mute
-                        mediaPlayer.IsMuted = !mediaPlayer.IsMuted;
-                        return IntPtr.Zero;
-                    case 9: // Volume Down
-                        mediaPlayer.Volume = Math.Max(0, mediaPlayer.Volume - 0.05);
-                        return IntPtr.Zero;
-                    case 10: // Volume Up
-                        mediaPlayer.Volume = Math.Min(1, mediaPlayer.Volume + 0.05);
-                        return IntPtr.Zero;
-                    case 46: // Media Play/Pause
-                        TogglePlayPause();
-                        return IntPtr.Zero;
-                    case 11: // Media Next
-                        PlayNextTrack();
-                        return IntPtr.Zero;
-                    case 12: // Media Previous
-                        PlayPreviousTrack();
-                        return IntPtr.Zero;
-                    case 13: // Media Stop
-                        mediaPlayer.Pause();
-                        mediaPlayer.Position = TimeSpan.Zero;
-                        return IntPtr.Zero;
-                }
+                    try
+                    {
+                        switch (cmd)
+                        {
+                            case 8:  // APPCOMMAND_VOLUME_MUTE
+                                mediaPlayer.IsMuted = !mediaPlayer.IsMuted;
+                                break;
+                            case 9:  // APPCOMMAND_VOLUME_DOWN
+                                mediaPlayer.Volume = Math.Max(0, mediaPlayer.Volume - 0.05);
+                                break;
+                            case 10: // APPCOMMAND_VOLUME_UP
+                                mediaPlayer.Volume = Math.Min(1, mediaPlayer.Volume + 0.05);
+                                break;
+                            case 46: // APPCOMMAND_MEDIA_PLAY_PAUSE
+                                TogglePlayPause();
+                                break;
+                            case 11: // APPCOMMAND_MEDIA_NEXTTRACK
+                                PlayNextTrack();
+                                break;
+                            case 12: // APPCOMMAND_MEDIA_PREVIOUSTRACK
+                                if (mediaPlayer.Position.TotalSeconds >= 3)
+                                    mediaPlayer.Position = TimeSpan.Zero;
+                                else
+                                    PlayPreviousTrack();
+                                break;
+                            case 13: // APPCOMMAND_MEDIA_STOP
+                                mediaPlayer.Pause();
+                                mediaPlayer.Position = TimeSpan.Zero;
+                                break;
+                            case 47: // APPCOMMAND_MEDIA_PLAY
+                                mediaPlayer.Play();
+                                break;
+                            case 48: // APPCOMMAND_MEDIA_PAUSE
+                                mediaPlayer.Pause();
+                                break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error handling media key: {ex.Message}");
+                    }
+                });
+
+                return IntPtr.Zero;
             }
 
             if (_oldWndProc != 0)
