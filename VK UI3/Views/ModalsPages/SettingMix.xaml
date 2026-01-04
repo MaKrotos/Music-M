@@ -8,7 +8,9 @@
     xmlns:localsed="using:VK_UI3.Views.ModalsPages.MixControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    AutomationProperties.Name="Настройки микса"
+    AutomationProperties.HelpText="Страница настройки параметров микса">
     <UserControl.Resources>
         <DataTemplate x:Key="PicturedButtonTemplate">
             <localsed:PicturedControl />
@@ -50,10 +52,11 @@
             
             ItemTemplateSelector="{StaticResource MyTemplateSelector}"
             ItemsSource="{x:Bind mixCategories}"
-            SelectionMode="None">
+            SelectionMode="None"
+            AutomationProperties.Name="Список категорий настроек микса"
+            AutomationProperties.HelpText="Отображает доступные категории настроек для микса">
    
         </ListView>
-
 
 
 
@@ -68,12 +71,16 @@
                 Margin="5,0,0,0"
                 HorizontalAlignment="Stretch"
                 Command="{x:Bind ApplyCommand}"
-                Content="Применить" />
+                Content="Применить"
+                AutomationProperties.Name="Применить настройки микса"
+                AutomationProperties.HelpText="Сохраняет выбранные настройки микса" />
             <Button
                 Grid.Column="0"
                 HorizontalAlignment="Stretch"
                 Command="{x:Bind ResetCommand}"
-                Content="Сбросить" />
+                Content="Сбросить"
+                AutomationProperties.Name="Сбросить настройки микса"
+                AutomationProperties.HelpText="Возвращает настройки микса к значениям по умолчанию" />
         </Grid>
     </StackPanel>
 </Page>

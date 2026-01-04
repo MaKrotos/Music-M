@@ -46,8 +46,10 @@
 		<local:EqualizerControl x:Name="Equalizer" Grid.Row="1" Margin="10"/>
 
 		<!-- Нижняя панель с кнопкой -->
-		<Button x:Name="ApplyButton" Content="Применить" Grid.Row="2" 
-                HorizontalAlignment="Right" Margin="0,0,20,20" Width="120" Height="40"
-                Click="ApplyButton_Click"/>
+		<Button x:Name="ApplyButton" Content="Применить" Grid.Row="2"
+		              HorizontalAlignment="Right" Margin="0,0,20,20" Width="120" Height="40"
+		              Click="ApplyButton_Click"
+		              AutomationProperties.Name="Кнопка применения настроек эквалайзера"
+		              AutomationProperties.HelpText="Применить текущие настройки эквалайзера" />
 	</Grid>
 </UserControl>

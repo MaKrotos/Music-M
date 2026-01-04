@@ -9,7 +9,9 @@
 	xmlns:winui="using:WinUICommunity"
 	HorizontalAlignment="Stretch"
 	Background="{ThemeResource AcrylicInAppFillColorBaseBrush}"
-	mc:Ignorable="d">
+	mc:Ignorable="d"
+    AutomationProperties.Name="Страница текста песни"
+    AutomationProperties.HelpText="Отображает текст песни с синхронизацией по времени">
 
 	<Page.Resources>
 		<ThemeShadow x:Name="SharedShadow" />
@@ -23,7 +25,6 @@
 
 
 
-
 		<StackPanel
 			Grid.Row="0"
 			Margin="10,10,10,0"
@@ -33,18 +34,20 @@
 			Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
 			CornerRadius="4"
 			Orientation="Horizontal">
-			<Button Margin="0,0,5,0" Click="Button_Click">X</Button>
+			<Button Margin="0,0,5,0" Click="Button_Click" AutomationProperties.Name="Закрыть страницу текста песни" AutomationProperties.HelpText="Закрывает окно с текстом песни">X</Button>
 			<Button
 				x:Name="CopyClipboard"
 				Margin="0,0,5,0"
-				Click="CopyClipboard_Click">
+				Click="CopyClipboard_Click"
+                AutomationProperties.Name="Скопировать текст песни"
+                AutomationProperties.HelpText="Копирует текст песни в буфер обмена">
 				<StackPanel Orientation="Horizontal">
 					<FontIcon Margin="0,0,5,0" Glyph="&#xE8C8;" />
 					<TextBlock>Скопировать текст</TextBlock>
 				</StackPanel>
 			</Button>
 
-			<ComboBox x:Name="GeniusToggle" SelectionChanged="GeniusToggle_SelectionChanged" />
+			<ComboBox x:Name="GeniusToggle" SelectionChanged="GeniusToggle_SelectionChanged" AutomationProperties.Name="Выбор источника текста песни" AutomationProperties.HelpText="Позволяет выбрать источник для получения текста песни" />
 		</StackPanel>
 
 
@@ -75,7 +78,9 @@
 					VerticalAlignment="Stretch"
 					HorizontalContentAlignment="Stretch"
 					ItemsSource="{x:Bind Texts, Mode=OneWay}"
-					SelectionMode="None">
+					SelectionMode="None"
+                    AutomationProperties.Name="Список строк текста песни"
+                    AutomationProperties.HelpText="Отображает строки текста песни с синхронизацией по времени">
 
 					<ListView.ItemContainerStyle>
 						<Style TargetType="ListViewItem">
@@ -100,7 +105,9 @@
 			HorizontalAlignment="Center"
 			VerticalAlignment="Center"
 			Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"
-			CornerRadius="8">
+			CornerRadius="8"
+            AutomationProperties.Name="Индикатор загрузки текста песни"
+            AutomationProperties.HelpText="Отображается во время загрузки текста песни">
 			<ProgressRing
 				Grid.Row="3"
 				Width="100"
