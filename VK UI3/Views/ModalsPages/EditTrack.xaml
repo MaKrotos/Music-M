@@ -8,7 +8,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Margin="0"
     Padding="0"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    AutomationProperties.Name="Редактор трека"
+    AutomationProperties.HelpText="Страница для редактирования информации о треке">
 
     <ScrollView>
         <StackPanel
@@ -18,24 +20,38 @@
             <TextBlock
                 Margin="10,10,10,10"
                 FontSize="20"
-                Text="Редактирование трека" />
-            <TextBlock Margin="10,10,10,0" Text="Название" />
+                Text="Редактирование трека"
+                AutomationProperties.Name="Заголовок редактирования трека"
+                AutomationProperties.HelpText="Страница для редактирования информации о треке" />
+            <TextBlock Margin="10,10,10,0" Text="Название"
+                AutomationProperties.Name="Текст названия трека"
+                AutomationProperties.HelpText="Название трека" />
             <TextBox
                 x:Name="name"
                 Margin="10,0,10,10"
-                PlaceholderText="" />
-            <TextBlock Margin="10,10,10,0" Text="Исполнитель" />
+                PlaceholderText=""
+                AutomationProperties.Name="Поле ввода названия трека"
+                AutomationProperties.HelpText="Введите название трека" />
+            <TextBlock Margin="10,10,10,0" Text="Исполнитель"
+                AutomationProperties.Name="Текст исполнителя трека"
+                AutomationProperties.HelpText="Исполнитель трека" />
             <TextBox
                 x:Name="artist"
                 Margin="10,10,10,10"
-                PlaceholderText="" />
-            <TextBlock Margin="10,10,10,0" Text="Жанр" />
+                PlaceholderText=""
+                AutomationProperties.Name="Поле ввода исполнителя трека"
+                AutomationProperties.HelpText="Введите исполнителя трека" />
+            <TextBlock Margin="10,10,10,0" Text="Жанр"
+                AutomationProperties.Name="Текст жанра трека"
+                AutomationProperties.HelpText="Жанр трека" />
             <ComboBox
                 x:Name="Genres"
                 Margin="10,0,10,10"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
-                PlaceholderText="Выберите жанр">
+                PlaceholderText="Выберите жанр"
+                AutomationProperties.Name="Выпадающий список жанров"
+                AutomationProperties.HelpText="Выберите жанр трека">
                 <ComboBoxItem Content="Рок" Tag="1" />
                 <ComboBoxItem Content="Поп" Tag="2" />
                 <ComboBoxItem Content="Рэп и Хип-хоп" Tag="3" />
@@ -65,9 +81,9 @@
             <CheckBox
                 x:Name="Vivod"
                 Margin="10,0,10,10"
-                Content="Не выводить при поиске" />
-
-
+                Content="Не выводить при поиске"
+                AutomationProperties.Name="Флажок скрытия из поиска"
+                AutomationProperties.HelpText="Включите, чтобы скрыть трек из поиска" />
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                 <Button
                     x:Name="Cancel"
@@ -76,7 +92,9 @@
                     Margin="0,0,5,10"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
-                    Click="Cancel_Click">
+                    Click="Cancel_Click"
+                    AutomationProperties.Name="Кнопка отмены"
+                    AutomationProperties.HelpText="Нажмите для отмены редактирования трека">
                     Отмена
                 </Button>
                 <Button
@@ -86,7 +104,9 @@
                     Margin="0,0,10,10"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
-                    Click="Save_Click">
+                    Click="Save_Click"
+                    AutomationProperties.Name="Кнопка сохранения"
+                    AutomationProperties.HelpText="Нажмите для сохранения изменений трека">
                     Сохранить
                 </Button>
             </StackPanel>

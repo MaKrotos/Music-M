@@ -8,7 +8,9 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	Background="{ThemeResource AcrylicInAppFillColorBaseBrush}"
 	Loaded="Page_Loaded"
-	mc:Ignorable="d">
+	mc:Ignorable="d"
+	AutomationProperties.Name="Страница ввода капчи"
+    AutomationProperties.HelpText="Введите код с изображения капчи или пройдите веб-капчу">
 
 	<Page.Resources>
 		<ThemeShadow x:Name="SharedShadow" />
@@ -34,31 +36,41 @@
 				x:Name="CaptchaImage"
 				Width="220"
 				Height="150"
-				Visibility="Collapsed" />
+				Visibility="Collapsed"
+				AutomationProperties.Name="Изображение капчи"
+			             AutomationProperties.HelpText="Капча для подтверждения действий" />
 			<TextBox
 				Name="CodeBox"
 				TextAlignment="Center"
-				Visibility="Collapsed" />
+				Visibility="Collapsed"
+				AutomationProperties.Name="Поле ввода кода капчи"
+			             AutomationProperties.HelpText="Введите код с изображения капчи" />
 			<Button
 				x:Name="ConfirmButton"
 				Margin="0,20,0,0"
 				HorizontalAlignment="Stretch"
 				Click="Button_Click"
 				Content="Подтвердить"
-				Visibility="Collapsed" />
+				Visibility="Collapsed"
+				AutomationProperties.Name="Кнопка подтверждения капчи"
+			             AutomationProperties.HelpText="Нажмите для подтверждения введенного кода капчи" />
 
 			<WebView2
 				x:Name="CaptchaWebView"
 				Width="400"
 				Height="600"
-				Visibility="Collapsed" />
+				Visibility="Collapsed"
+				AutomationProperties.Name="Веб-капча"
+			             AutomationProperties.HelpText="Веб-интерфейс для прохождения капчи" />
 
 			<Button
 				x:Name="CancelButton"
 				Margin="0,10,0,0"
 				HorizontalAlignment="Stretch"
 				Click="CancelButton_Click"
-				Content="Закрыть" />
+				Content="Закрыть"
+				AutomationProperties.Name="Кнопка закрытия"
+			             AutomationProperties.HelpText="Нажмите для закрытия окна капчи" />
 		</StackPanel>
 	</Grid>
 </Page>

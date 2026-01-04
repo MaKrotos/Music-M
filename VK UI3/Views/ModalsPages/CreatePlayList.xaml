@@ -7,7 +7,9 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	Margin="-25"
 	CornerRadius="10"
-	mc:Ignorable="d">
+	mc:Ignorable="d"
+	AutomationProperties.Name="Страница создания плейлиста"
+    AutomationProperties.HelpText="Страница для создания или редактирования плейлиста">
 	<Page.Shadow>
 		<ThemeShadow />
 	</Page.Shadow>
@@ -34,13 +36,17 @@
 					DragOver="Grid_DragOver"
 					Drop="PlaylistImage_Drop"
 					PointerPressed="PlaylistImage_PointerPressed"
-					Translation="0,0,8">
+					Translation="0,0,8"
+					AutomationProperties.Name="Обложка плейлиста"
+			                 AutomationProperties.HelpText="Обложка плейлиста. Нажмите для выбора изображения или перетащите сюда файл">
 
 					<Image
 						x:Name="PlaylistImage"
 						HorizontalAlignment="Center"
 						VerticalAlignment="Center"
-						Stretch="UniformToFill" />
+						Stretch="UniformToFill"
+						AutomationProperties.Name="Изображение обложки плейлиста"
+			                     AutomationProperties.HelpText="Текущая обложка плейлиста" />
 					<SymbolIcon Symbol="Edit" />
 					<Button
 						Visibility="Collapsed"
@@ -51,7 +57,9 @@
 						HorizontalAlignment="Right"
 						VerticalAlignment="Top"
 						Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
-						Click="deleteFromAlbum_Click">
+						Click="deleteFromAlbum_Click"
+						AutomationProperties.Name="Кнопка удаления обложки"
+			                     AutomationProperties.HelpText="Нажмите для удаления текущей обложки плейлиста">
 						<FontIcon FontSize="16" Glyph="&#xE74D;" />
 					</Button>
 				</Grid>
@@ -60,7 +68,9 @@
 					Width="300"
 					Margin="0,10,0,0"
 					Header="Название"
-					MaxLength="1024" />
+					MaxLength="1024"
+					AutomationProperties.Name="Поле ввода названия плейлиста"
+			                 AutomationProperties.HelpText="Введите название для плейлиста" />
 				<TextBox
 					x:Name="Description"
 					Width="300"
@@ -68,13 +78,17 @@
 					AcceptsReturn="True"
 					Header="Описание"
 					MaxLength="1024"
-					TextWrapping="Wrap" />
+					TextWrapping="Wrap"
+					AutomationProperties.Name="Поле ввода описания плейлиста"
+			                 AutomationProperties.HelpText="Введите описание для плейлиста" />
 
 
 				<TextBlock
 					x:Name="GenText"
 					Margin="0,10,0,0"
-					Visibility="Collapsed">
+					Visibility="Collapsed"
+					AutomationProperties.Name="Текст глубины генерации"
+			                 AutomationProperties.HelpText="Глубина генерации плейлиста">
 					Глубина генерации
 				</TextBlock>
 				<Slider
@@ -84,18 +98,26 @@
 					Minimum="1"
 					StepFrequency="1"
 					Visibility="Collapsed"
-					Value="50" />
+					Value="50"
+					AutomationProperties.Name="Слайдер глубины генерации"
+			                 AutomationProperties.HelpText="Установите глубину генерации плейлиста" />
 
 				<ToggleSwitch
 					x:Name="HideFromSearch"
 					Margin="0,10,0,0"
-					Header="Скрыть из поиска и рекомендаций" />
+					Header="Скрыть из поиска и рекомендаций"
+					AutomationProperties.Name="Переключатель скрытия из поиска"
+			                 AutomationProperties.HelpText="Включите, чтобы скрыть плейлист из поиска и рекомендаций" />
 				<StackPanel
 					Margin="0,0,0,0"
 					HorizontalAlignment="Right"
 					Orientation="Horizontal">
-					<Button Margin="5" Click="Button_Click">Отмена</Button>
-					<Button x:Name="SaveBTN" Click="SaveBTN_Click">Сохранить</Button>
+					<Button Margin="5" Click="Button_Click"
+						AutomationProperties.Name="Кнопка отмены"
+			                     AutomationProperties.HelpText="Нажмите для отмены создания/редактирования плейлиста">Отмена</Button>
+					<Button x:Name="SaveBTN" Click="SaveBTN_Click"
+						AutomationProperties.Name="Кнопка сохранения"
+			                     AutomationProperties.HelpText="Нажмите для сохранения плейлиста">Сохранить</Button>
 				</StackPanel>
 			</StackPanel>
 		</ScrollView>

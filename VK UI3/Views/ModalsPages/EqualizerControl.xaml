@@ -7,7 +7,9 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="using:VK_UI3.Views.ModalsPages"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d">
+	mc:Ignorable="d"
+	AutomationProperties.Name="Эквалайзер"
+    AutomationProperties.HelpText="Контрол эквалайзера для настройки звука">
 
 	<Grid Padding="10">
 		<Grid.Resources>
@@ -38,7 +40,9 @@
 				<Slider
 					x:Name="Slider30Hz"
 					Style="{StaticResource EqualizerSliderStyle}"
-					ValueChanged="Slider_ValueChanged" />
+					ValueChanged="Slider_ValueChanged"
+					AutomationProperties.Name="Слайдер 30 Гц"
+			                 AutomationProperties.HelpText="Настройка уровня саббаса на частоте 30 Гц" />
 				<TextBlock
 					Margin="5,0,5,5"
 					HorizontalAlignment="Center"
@@ -53,7 +57,9 @@
 				<Slider
 					x:Name="Slider60Hz"
 					Style="{StaticResource EqualizerSliderStyle}"
-					ValueChanged="Slider_ValueChanged" />
+					ValueChanged="Slider_ValueChanged"
+					AutomationProperties.Name="Слайдер 60 Гц"
+			                 AutomationProperties.HelpText="Настройка уровня баса на частоте 60 Гц" />
 				<TextBlock
 					Margin="5,0,5,5"
 					HorizontalAlignment="Center"
@@ -69,7 +75,9 @@
 				<Slider
 					x:Name="Slider80Hz"
 					Style="{StaticResource EqualizerSliderStyle}"
-					ValueChanged="Slider_ValueChanged" />
+					ValueChanged="Slider_ValueChanged"
+					AutomationProperties.Name="Слайдер 80 Гц"
+			                 AutomationProperties.HelpText="Настройка уровня баса на частоте 80 Гц" />
 				<TextBlock
 					Margin="5,0,5,5"
 					HorizontalAlignment="Center"
@@ -84,7 +92,9 @@
 				<Slider
 					x:Name="Slider120Hz"
 					Style="{StaticResource EqualizerSliderStyle}"
-					ValueChanged="Slider_ValueChanged" />
+					ValueChanged="Slider_ValueChanged"
+					AutomationProperties.Name="Слайдер 120 Гц"
+			                 AutomationProperties.HelpText="Настройка уровня баса на частоте 120 Гц" />
 				<TextBlock
 					Margin="5,0,5,5"
 					HorizontalAlignment="Center"
@@ -100,7 +110,9 @@
 				<Slider
 					x:Name="Slider250Hz"
 					Style="{StaticResource EqualizerSliderStyle}"
-					ValueChanged="Slider_ValueChanged" />
+					ValueChanged="Slider_ValueChanged"
+					AutomationProperties.Name="Слайдер 250 Гц"
+			                 AutomationProperties.HelpText="Настройка уровня нижних средних частот на частоте 250 Гц" />
 				<TextBlock
 					Margin="5,0,5,5"
 					HorizontalAlignment="Center"
@@ -115,7 +127,9 @@
 				<Slider
 					x:Name="Slider400Hz"
 					Style="{StaticResource EqualizerSliderStyle}"
-					ValueChanged="Slider_ValueChanged" />
+					ValueChanged="Slider_ValueChanged"
+					AutomationProperties.Name="Слайдер 400 Гц"
+			                 AutomationProperties.HelpText="Настройка уровня нижних средних частот на частоте 400 Гц" />
 				<TextBlock
 					Margin="5,0,5,5"
 					HorizontalAlignment="Center"
@@ -131,7 +145,9 @@
 				<Slider
 					x:Name="Slider600Hz"
 					Style="{StaticResource EqualizerSliderStyle}"
-					ValueChanged="Slider_ValueChanged" />
+					ValueChanged="Slider_ValueChanged"
+					AutomationProperties.Name="Слайдер 600 Гц"
+			                 AutomationProperties.HelpText="Настройка уровня средних частот на частоте 600 Гц" />
 				<TextBlock
 					Margin="5,0,5,5"
 					HorizontalAlignment="Center"
@@ -146,7 +162,9 @@
 				<Slider
 					x:Name="Slider1kHz"
 					Style="{StaticResource EqualizerSliderStyle}"
-					ValueChanged="Slider_ValueChanged" />
+					ValueChanged="Slider_ValueChanged"
+					AutomationProperties.Name="Слайдер 1 кГц"
+			                 AutomationProperties.HelpText="Настройка уровня средних частот на частоте 1 кГц" />
 				<TextBlock
 					Margin="5,0,5,5"
 					HorizontalAlignment="Center"
@@ -162,7 +180,9 @@
 				<Slider
 					x:Name="Slider2_5kHz"
 					Style="{StaticResource EqualizerSliderStyle}"
-					ValueChanged="Slider_ValueChanged" />
+					ValueChanged="Slider_ValueChanged"
+					AutomationProperties.Name="Слайдер 2.5 кГц"
+			                 AutomationProperties.HelpText="Настройка уровня верхних средних частот на частоте 2.5 кГц" />
 				<TextBlock
 					Margin="5,0,5,5"
 					HorizontalAlignment="Center"
@@ -177,7 +197,9 @@
 				<Slider
 					x:Name="Slider4kHz"
 					Style="{StaticResource EqualizerSliderStyle}"
-					ValueChanged="Slider_ValueChanged" />
+					ValueChanged="Slider_ValueChanged"
+					AutomationProperties.Name="Слайдер 4 кГц"
+			                 AutomationProperties.HelpText="Настройка уровня верхних средних частот на частоте 4 кГц" />
 				<TextBlock
 					Margin="5,0,5,5"
 					HorizontalAlignment="Center"
@@ -193,7 +215,9 @@
 				<Slider
 					x:Name="Slider6kHz"
 					Style="{StaticResource EqualizerSliderStyle}"
-					ValueChanged="Slider_ValueChanged" />
+					ValueChanged="Slider_ValueChanged"
+					AutomationProperties.Name="Слайдер 6 кГц"
+			                 AutomationProperties.HelpText="Настройка уровня присутствия на частоте 6 кГц" />
 				<TextBlock
 					Margin="5,0,5,5"
 					HorizontalAlignment="Center"
@@ -208,7 +232,9 @@
 				<Slider
 					x:Name="Slider8kHz"
 					Style="{StaticResource EqualizerSliderStyle}"
-					ValueChanged="Slider_ValueChanged" />
+					ValueChanged="Slider_ValueChanged"
+					AutomationProperties.Name="Слайдер 8 кГц"
+			                 AutomationProperties.HelpText="Настройка уровня присутствия на частоте 8 кГц" />
 				<TextBlock
 					Margin="5,0,5,5"
 					HorizontalAlignment="Center"
@@ -224,7 +250,9 @@
 				<Slider
 					x:Name="Slider10kHz"
 					Style="{StaticResource EqualizerSliderStyle}"
-					ValueChanged="Slider_ValueChanged" />
+					ValueChanged="Slider_ValueChanged"
+					AutomationProperties.Name="Слайдер 10 кГц"
+			                 AutomationProperties.HelpText="Настройка уровня яркости на частоте 10 кГц" />
 				<TextBlock
 					Margin="5,0,5,5"
 					HorizontalAlignment="Center"
