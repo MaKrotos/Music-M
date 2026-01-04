@@ -24,15 +24,15 @@
             CornerRadius="8"
             ItemsSource="{x:Bind friends, Mode=OneWay}"
             SelectionChanged="scrollView_SelectionChanged"
-            SelectionMode="None">
-
+            SelectionMode="None"
+            AutomationProperties.Name="Список друзей">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <contr:UserControllers x:Name="DataController" Margin="-8,4,-8,4" />
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.Footer>
-                <ProgressRing x:Name="LoadingIndicator" IsActive="{x:Bind itsAll}" />
+                <ProgressRing x:Name="LoadingIndicator" IsActive="{x:Bind itsAll}" AutomationProperties.Name="Индикатор загрузки" />
             </ListView.Footer>
         </ListView>
         <Rectangle
@@ -49,17 +49,15 @@
             HorizontalAlignment="Right"
             Orientation="Horizontal">
 
-
-
-
             <Button
                 x:Name="Cancel"
                 Margin="10,10,10,10"
                 Click="Cancel_Click"
-                Visibility="Collapsed">
+                Visibility="Collapsed"
+                AutomationProperties.Name="Кнопка отмены">
                 <StackPanel Orientation="Horizontal">
-                    <FontIcon Glyph="&#xE711;" />
-                    <TextBlock Margin="5,0,0,0">Отмена</TextBlock>
+                    <FontIcon Glyph="&#xE711;" AutomationProperties.Name="Иконка отмены" />
+                    <TextBlock Margin="5,0,0,0" AutomationProperties.Name="Текст кнопки отмены">Отмена</TextBlock>
                 </StackPanel>
             </Button>
         </StackPanel>

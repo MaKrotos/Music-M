@@ -41,7 +41,6 @@ namespace VK_UI3.Views.Share.ShareControllers
 
 
 
-
             switch (messConv.conversation.Peer.Type.ToString())
             {
                 case "chat":
@@ -63,6 +62,7 @@ namespace VK_UI3.Views.Share.ShareControllers
                  
                     createAA($"{messConv.user.FirstName} {messConv.user.LastName}");
                     nameTXT.Text = $"{messConv.user.FirstName} {messConv.user.LastName}";
+                    AutomationProperties.SetName(nameTXT, $"{messConv.user.FirstName} {messConv.user.LastName}");
 
                     if ((bool)messConv.user.Online)
                         onlineStatus.Visibility = Visibility.Visible;
@@ -104,7 +104,6 @@ namespace VK_UI3.Views.Share.ShareControllers
 
 
 
-
             if (isDisabled && !messConv.conversation.CanWrite.Allowed)
             {
                 this.IsEnabled = false;
@@ -115,7 +114,7 @@ namespace VK_UI3.Views.Share.ShareControllers
                 this.IsEnabled = true;
                 this.Opacity = 1;
             }
-    
+     
         }
 
         private void createAA(string AAs)
@@ -148,7 +147,6 @@ namespace VK_UI3.Views.Share.ShareControllers
 
         private void StackPanel_PointerExited(object sender, PointerRoutedEventArgs e)
         {
-
             ShowAnimation.Pause();
             HideAnimation.Begin();
         }

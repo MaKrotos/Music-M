@@ -91,7 +91,8 @@
                 Width="50"
                 Height="50"
                 HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch" />
+                VerticalAlignment="Stretch"
+                AutomationProperties.Name="Аватар пользователя" />
         </Grid>
         <StackPanel Margin="8"   VerticalAlignment="Center" Grid.Column="1">
             <Ellipse
@@ -102,7 +103,8 @@
                 HorizontalAlignment="Left"
                 VerticalAlignment="Bottom"
                 Fill="LightGreen"
-                Visibility="Collapsed" />
+                Visibility="Collapsed"
+                AutomationProperties.Name="Статус онлайн" />
             <TextBlock
                 x:Name="nameTXT"
            
@@ -110,7 +112,8 @@
                 VerticalAlignment="Center"
                 MaxLines="2"
                 TextTrimming="CharacterEllipsis"
-                TextWrapping="Wrap" ></TextBlock>
+                TextWrapping="Wrap"
+                AutomationProperties.Name="Имя пользователя" ></TextBlock>
         </StackPanel>
 
 

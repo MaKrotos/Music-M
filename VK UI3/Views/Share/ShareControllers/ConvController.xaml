@@ -73,7 +73,6 @@
 
 
 
-
     <Grid
         Padding="8,8,8,8"
         HorizontalAlignment="Stretch"
@@ -100,15 +99,15 @@
                 FontFamily="{ThemeResource VKSansDemiBold}"
                 FontWeight="Bold"
                 Foreground="Black"
-                Opacity="0.75" />
+                Opacity="0.75"
+                AutomationProperties.Name="Инициалы пользователя" />
             <Image
                 x:Name="userIcon"
                 Width="50"
                 Height="50"
                 HorizontalAlignment="Center"
-                VerticalAlignment="Center" />
-
-
+                VerticalAlignment="Center"
+                AutomationProperties.Name="Аватар пользователя" />
         </Grid>
         <StackPanel
             Grid.Column="1"
@@ -121,14 +120,16 @@
                 HorizontalAlignment="Left"
                 VerticalAlignment="Bottom"
                 Fill="LightGreen"
-                Visibility="Collapsed" />
+                Visibility="Collapsed"
+                AutomationProperties.Name="Статус онлайн" />
             <TextBlock
                 x:Name="nameTXT"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 MaxLines="2"
                 TextTrimming="CharacterEllipsis"
-                TextWrapping="Wrap" />
+                TextWrapping="Wrap"
+                AutomationProperties.Name="Имя пользователя" />
         </StackPanel>
     </Grid>
 </UserControl>

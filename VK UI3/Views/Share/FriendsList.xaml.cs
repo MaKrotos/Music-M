@@ -58,7 +58,7 @@ namespace VK_UI3.Views.Share
             if (scrollViewer == null) scrollViewer = FindScrollViewer(scrollView);
             if (scrollViewer != null)
             {
-                // Подписываемся на событие изменения прокрутки
+                // РџРѕРґРїРёСЃС‹РІР°РµРјСЃСЏ РЅР° СЃРѕР±С‹С‚РёРµ РїСЂРѕРєСЂСѓС‚РєРё
                 scrollViewer.ViewChanged += ScrollViewer_ViewChanged; ;
             }
             if (friendsListParametrs.audio != null || friendsListParametrs.PlayList != null)
@@ -113,7 +113,6 @@ namespace VK_UI3.Views.Share
             var isAtBottom = scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight - 50;
             if (isAtBottom || CheckIfAllContentIsVisible(sender as ScrollViewer))
             {
-
                 if (itsAll)
                 {
                     LoadingIndicator.Visibility = Visibility.Collapsed;
@@ -151,7 +150,6 @@ namespace VK_UI3.Views.Share
         int counted = 0;
         private async Task loadMoreFriends()
         {
-
          
             if (itsAll)
             {

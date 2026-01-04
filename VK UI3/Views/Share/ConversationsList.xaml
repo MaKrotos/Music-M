@@ -21,7 +21,8 @@
             Padding="0,4,0,4"
             ItemsSource="{x:Bind nmessConv, Mode=OneWay}"
             SelectionChanged="scrollView_SelectionChanged"
-            SelectionMode="None">
+            SelectionMode="None"
+            AutomationProperties.Name="Список диалогов">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <contr:ConvController
@@ -31,7 +32,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.Footer>
-                <ProgressRing x:Name="LoadingIndicator" IsActive="False" />
+                <ProgressRing x:Name="LoadingIndicator" IsActive="False" AutomationProperties.Name="Индикатор загрузки" />
             </ListView.Footer>
         </ListView>
         <Rectangle
@@ -49,16 +50,15 @@
             Orientation="Horizontal">
 
 
-
-
             <Button
                 x:Name="Cancel"
                 Margin="10,10,10,10"
                 Click="Cancel_Click"
-                Visibility="Collapsed">
+                Visibility="Collapsed"
+                AutomationProperties.Name="Кнопка отмены">
                 <StackPanel Orientation="Horizontal">
-                    <FontIcon  Glyph="&#xE711;" />
-                    <TextBlock Margin="5,0,0,0">Отмена</TextBlock>
+                    <FontIcon Glyph="&#xE711;" AutomationProperties.Name="Иконка отмены" />
+                    <TextBlock Margin="5,0,0,0" AutomationProperties.Name="Текст кнопки отмены">Отмена</TextBlock>
                 </StackPanel>
             </Button>
         </StackPanel>

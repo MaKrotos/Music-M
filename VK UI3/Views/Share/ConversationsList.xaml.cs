@@ -65,7 +65,7 @@ namespace VK_UI3.Views.Share
             scrollViewer = FindScrollViewer(scrollView);
             if (scrollViewer != null)
             {
-                // Подписываемся на событие изменения прокрутки
+                // РџРѕРґРїРёСЃС‹РІР°РµРјСЃСЏ РЅР° СЃРѕР±С‹С‚РёРµ РїСЂРѕРєСЂСѓС‚РєРё
                 scrollViewer.ViewChanged += ScrollViewer_ViewChanged; ;
             }
         }
@@ -92,7 +92,6 @@ namespace VK_UI3.Views.Share
             var isAtBottom = scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight - 50;
             if (isAtBottom || CheckIfAllContentIsVisible(sender as ScrollViewer))
             {
-
                 if (itsAll)
                 {
                     LoadingIndicator.Visibility = Visibility.Collapsed;
@@ -128,7 +127,6 @@ namespace VK_UI3.Views.Share
             return null;
         }
         
-
 
         int counted = 0;
         private async Task loadMoreConv()
@@ -246,7 +244,6 @@ namespace VK_UI3.Views.Share
             if (conversationsListParams.PlayList != null)
             {
                 messagesSendParams.Attachments = new List<VkNet.Model.Attachments.AudioPlaylist> { conversationsListParams.PlayList };
-
             }
 
 
@@ -261,7 +258,7 @@ namespace VK_UI3.Views.Share
             }
             catch (Exception ex) { }
 
-            // Получение ID плейлиста
+            // Р’РѕР·РІСЂР°С‰Р°РµРј ID РґРёР°Р»РѕРіР°
             conversationsListParams.selectedDialog?.Invoke(nmessConv[a], EventArgs.Empty);
         }
 

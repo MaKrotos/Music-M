@@ -29,6 +29,7 @@ namespace VK_UI3.Views.Share.ShareControllers
             userIcon.Opacity = 0;
 
             nameTXT.Text = $"{this.user.FirstName} {this.user.LastName}";
+            AutomationProperties.SetName(nameTXT, $"{this.user.FirstName} {this.user.LastName}");
             animationsChangeImage.ChangeImageWithAnimation(this.user.Photo200Orig);
 
             if ((bool)this.user.Online)
@@ -39,7 +40,7 @@ namespace VK_UI3.Views.Share.ShareControllers
 
             if ((!isDisabled && !this.user.CanSeeAudio)
                  || (isDisabled && !this.user.CanWritePrivateMessage)
-              )
+               )
             {
                 this.IsEnabled = false;
                 this.Opacity = 0.2;
@@ -49,35 +50,22 @@ namespace VK_UI3.Views.Share.ShareControllers
                 this.IsEnabled = true;
                 this.Opacity = 1;
             }
-           
-    
         }
 
-
-
-
-        private void StackPanel_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        private void UserControl_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             if (isDisabled) return;
-            MainView.OpenSection(user.Id.ToString(), sectionType: SectionView.SectionType.UserSection);
-
-            //  if (e.GetCurrentPoint(sender as UIElement).Properties.IsLeftButtonPressed)
-            //  {
-
-            //      MainView.OpenPlayList(_PlayList.Playlist);
-            //  }
-
+            MainView.OpenUserPlayList(this.user);
         }
 
-        private void StackPanel_PointerEntered(object sender, PointerRoutedEventArgs e)
+        private void UserControl_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
             HideAnimation.Pause();
             ShowAnimation.Begin();
         }
 
-        private void StackPanel_PointerExited(object sender, PointerRoutedEventArgs e)
+        private void UserControl_PointerExited(object sender, PointerRoutedEventArgs e)
         {
-
             ShowAnimation.Pause();
             HideAnimation.Begin();
         }
