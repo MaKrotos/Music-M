@@ -153,10 +153,10 @@ jobs:
           }
           Write-Host "##[endgroup]"
           
-      - name: Run code analysis
+      - name: Run code analysis (optional)
         run: |
-          Write-Host "##[group]Running code analysis"
-          msbuild ${{ env.SOLUTION_NAME }} /p:RunCodeAnalysis=true /p:Configuration=${{ env.CONFIGURATION }}
+          Write-Host "##[group]Running code analysis (optional)"
+          msbuild ${{ env.SOLUTION_NAME }} /p:Configuration=${{ env.CONFIGURATION }} /p:RunCodeAnalysis=true 2>&1 | Out-Host
           Write-Host "##[endgroup]"
         continue-on-error: true
         
@@ -165,21 +165,42 @@ jobs:
         run: |
           Write-Host "##[group]Setting up certificate"
           
-          # Secure certificate handling
-          $certBytes = [Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
-          $tempCertPath = [System.IO.Path]::GetTempFileName() + ".pfx"
-          [System.IO.File]::WriteAllBytes($tempCertPath, $certBytes)
+          try {
+            # Secure certificate handling
+            $certBytes = [Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
+            $tempCertPath = [System.IO.Path]::GetTempFileName() + ".pfx"
+            [System.IO.File]::WriteAllBytes($tempCertPath, $certBytes)
+            
+            # Set restrictive permissions (исправленная команда icacls)
+            $userName = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
+            if ($userName -match '\\') {
+                $userName = $userName.Split('\')[1]
+            }
+            
+            Write-Host "Setting permissions for user: $userName"
+            icacls $tempCertPath /inheritance:r /grant:r "Administrators:F" /grant:r "${userName}:R" 2>&1 | Out-Host
+            
+            $pfxPassword = ConvertTo-SecureString "${{ secrets.PFX_PASSWORD }}" -AsPlainText -Force
+            
+            Write-Host "Importing certificate..."
+            $cert = Import-PfxCertificate -FilePath $tempCertPath -CertStoreLocation Cert:\LocalMachine\My -Password $pfxPassword -Exportable
+            
+            if ($cert) {
+                echo "THUMBPRINT=$($cert.Thumbprint)" >> $env:GITHUB_OUTPUT
+                echo "CERT_PATH=$tempCertPath" >> $env:GITHUB_OUTPUT
+                Write-Host "✓ Certificate installed with thumbprint: $($cert.Thumbprint)"
+            } else {
+                throw "Failed to import certificate"
+            }
+            
+          } catch {
+            Write-Error "Certificate setup failed: $_"
+            if (Test-Path $tempCertPath) {
+                Remove-Item $tempCertPath -Force -ErrorAction SilentlyContinue
+            }
+            exit 1
+          }
           
-          # Set restrictive permissions
-          icacls $tempCertPath /inheritance:r /grant:r "Administrators:F" /grant:r "$env:USERNAME:R"
-          
-          $pfxPassword = ConvertTo-SecureString "${{ secrets.PFX_PASSWORD }}" -AsPlainText -Force
-          $cert = Import-PfxCertificate -FilePath $tempCertPath -CertStoreLocation Cert:\LocalMachine\My -Password $pfxPassword
-          
-          echo "THUMBPRINT=$($cert.Thumbprint)" >> $env:GITHUB_OUTPUT
-          echo "CERT_PATH=$tempCertPath" >> $env:GITHUB_OUTPUT
-          
-          Write-Host "✓ Certificate installed with thumbprint: $($cert.Thumbprint)"
           Write-Host "##[endgroup]"
           
       - name: Update project with certificate thumbprint
@@ -331,33 +352,46 @@ jobs:
         run: |
           Write-Host "##[group]Signing EXE files"
           
-          $certBytes = [Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
-          $certPath = "${{ github.workspace }}\temp-sign.pfx"
-          [IO.File]::WriteAllBytes($certPath, $certBytes)
-          
-          $pfxPassword = ConvertTo-SecureString "${{ secrets.PFX_PASSWORD }}" -AsPlainText -Force
-          $cert = Import-PfxCertificate -FilePath $certPath -CertStoreLocation Cert:\LocalMachine\My -Password $pfxPassword
-          
-          $signtool = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter signtool.exe |
-                      Where-Object { $_.FullName -match 'x64' } |
-                      Select-Object -First 1 -ExpandProperty FullName
-        
-          if (-not $signtool) {
-            throw "signtool.exe not found"
-          }
-          
-          $arches = @("x64", "x86", "ARM64")
-          foreach ($arch in $arches) {
-            $exeFiles = Get-ChildItem "${{ env.BUILD_PATH }}\${{ env.SOLUTION_NAME_UNPACKED }}\bin\$arch\${{ env.CONFIGURATION_UNPACKED }}" -Recurse -Include *.exe
+          try {
+            $certBytes = [Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
+            $certPath = "${{ github.workspace }}\temp-sign.pfx"
+            [IO.File]::WriteAllBytes($certPath, $certBytes)
             
-            foreach ($exe in $exeFiles) {
-              Write-Host "Signing: $($exe.Name)"
-              & $signtool sign /f "$certPath" /p "${{ secrets.PFX_PASSWORD }}" /tr http://timestamp.digicert.com /td sha256 /fd sha256 $exe.FullName
-              Write-Host "✓ Signed: $($exe.Name)"
+            $pfxPassword = ConvertTo-SecureString "${{ secrets.PFX_PASSWORD }}" -AsPlainText -Force
+            $cert = Import-PfxCertificate -FilePath $certPath -CertStoreLocation Cert:\LocalMachine\My -Password $pfxPassword -Exportable
+            
+            $signtool = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter signtool.exe |
+                        Where-Object { $_.FullName -match 'x64' } |
+                        Select-Object -First 1 -ExpandProperty FullName
+          
+            if (-not $signtool) {
+              throw "signtool.exe not found"
+            }
+            
+            $arches = @("x64", "x86", "ARM64")
+            foreach ($arch in $arches) {
+              $buildPath = "${{ env.BUILD_PATH }}\${{ env.SOLUTION_NAME_UNPACKED }}\bin\$arch\${{ env.CONFIGURATION_UNPACKED }}"
+              if (Test-Path $buildPath) {
+                $exeFiles = Get-ChildItem $buildPath -Recurse -Include *.exe
+                
+                foreach ($exe in $exeFiles) {
+                  Write-Host "Signing: $($exe.Name)"
+                  & $signtool sign /f "$certPath" /p "${{ secrets.PFX_PASSWORD }}" /tr http://timestamp.digicert.com /td sha256 /fd sha256 $exe.FullName
+                  if ($LASTEXITCODE -eq 0) {
+                    Write-Host "✓ Signed: $($exe.Name)"
+                  } else {
+                    Write-Warning "Failed to sign: $($exe.Name)"
+                  }
+                }
+              }
+            }
+          } finally {
+            if (Test-Path $certPath) {
+              Remove-Item $certPath -Force -ErrorAction SilentlyContinue
+              Write-Host "✓ Removed temporary certificate"
             }
           }
           
-          Remove-Item $certPath -Force -ErrorAction SilentlyContinue
           Write-Host "##[endgroup]"
           
       - name: Create ZIP archives
@@ -372,17 +406,25 @@ jobs:
               $zipName = "VK_UI3_$arch.zip"
               Write-Host "Creating archive: $zipName"
               
-              Compress-Archive -Path "$buildDir\*" -DestinationPath $zipName -CompressionLevel Optimal
-              
-              # Add metadata
-              [PSCustomObject]@{
-                Architecture = $arch
-                Version = "${{ steps.get_version.outputs.VERSION }}"
-                BuildDate = Get-Date -Format "yyyy-MM-dd"
-                CommitHash = "${{ github.sha }}"
-              } | ConvertTo-Json | Out-File "metadata-$arch.json"
-              
-              Write-Host "✓ Created: $zipName"
+              # Проверяем, есть ли файлы для архивации
+              $files = Get-ChildItem $buildDir -File
+              if ($files.Count -gt 0) {
+                Compress-Archive -Path "$buildDir\*" -DestinationPath $zipName -CompressionLevel Optimal
+                
+                # Add metadata
+                [PSCustomObject]@{
+                  Architecture = $arch
+                  Version = "${{ steps.get_version.outputs.VERSION }}"
+                  BuildDate = Get-Date -Format "yyyy-MM-dd"
+                  CommitHash = "${{ github.sha }}"
+                } | ConvertTo-Json | Out-File "metadata-$arch.json"
+                
+                Write-Host "✓ Created: $zipName ($($files.Count) files)"
+              } else {
+                Write-Warning "No files found in $buildDir, skipping archive"
+              }
+            } else {
+              Write-Warning "Build directory not found: $buildDir"
             }
           }
           Write-Host "##[endgroup]"
@@ -413,6 +455,7 @@ jobs:
             ${{ env.ARTIFACTS_PATH }}/*.msix
           retention-days: 90
           compression-level: 9
+          if-no-files-found: warn
           
       - name: Upload EXE artifacts
         uses: actions/upload-artifact@v4
@@ -423,6 +466,7 @@ jobs:
             metadata-*.json
           retention-days: 90
           compression-level: 9
+          if-no-files-found: warn
           
       - name: Check if release exists
         id: check_release
