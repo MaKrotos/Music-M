@@ -2,7 +2,7 @@ name: Build and Release
 
 env:
   REPO_NAME: ${{ github.event.repository.name }}
-  BUILD_PATH: D:\a\$REPO_NAME\$REPO_NAME
+  BUILD_PATH: D:\a\${{ github.event.repository.name }}\${{ github.event.repository.name }}
   ARTIFACTS_PATH: Packages\
   SOLUTION_NAME: VK UI3.sln
   SOLUTION_NAME_UNPACKED: VK UI3 unpacked
@@ -47,10 +47,11 @@ jobs:
       - name: Setup common variables
         id: setup_vars
         run: |
-          Write-Log "INFO" "Setting up common variables"
+          Write-Host "##[group]Setting up common variables"
           $projectPath = "${{ env.BUILD_PATH }}\VK UI3"
           echo "projectPath=$projectPath" >> $env:GITHUB_OUTPUT
-          Write-Log "DEBUG" "Project path: $projectPath"
+          Write-Host "Project path: $projectPath"
+          Write-Host "##[endgroup]"
           
       - name: Setup structured logging
         id: setup_logging
@@ -70,12 +71,11 @@ jobs:
             }
             Write-Host "[$timestamp] [$Level] $Message" -ForegroundColor $color[$Level]
           }
-          echo "::set-output name=log_func::Write-Log"
+          echo "log_func=Write-Log" >> $env:GITHUB_OUTPUT
           
       - name: Check required files
         run: |
-          $logFunc = ${{ steps.setup_logging.outputs.log_func }}
-          & $logFunc "INFO" "Checking required files"
+          Write-Host "##[group]Checking required files"
           
           $requiredFiles = @(
             "${{ steps.setup_vars.outputs.projectPath }}\StaticParams.cs",
@@ -85,11 +85,12 @@ jobs:
           
           foreach ($file in $requiredFiles) {
             if (-not (Test-Path $file)) {
-              & $logFunc "ERROR" "Required file not found: $file"
+              Write-Error "Required file not found: $file"
               exit 1
             }
-            & $logFunc "DEBUG" "File found: $file"
+            Write-Host "✓ File found: $file"
           }
+          Write-Host "##[endgroup]"
           
       - name: Cache NuGet packages
         uses: actions/cache@v3
@@ -101,33 +102,47 @@ jobs:
             
       - name: Replace environment variable in code
         run: |
-          $logFunc = ${{ steps.setup_logging.outputs.log_func }}
+          Write-Host "##[group]Replacing environment variable in StaticParams.cs"
           $staticParamsPath = "${{ steps.setup_vars.outputs.projectPath }}\StaticParams.cs"
           
-          & $logFunc "INFO" "Replacing environment variable in StaticParams.cs"
-          $content = Get-Content -Path $staticParamsPath -Raw
-          
-          if ($content -match 'Environment\.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)') {
-            $updatedContent = $content -replace 'Environment\.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', '"${{ secrets.TOKEN_STAT_SLY }}"'
-            Set-Content -Path $staticParamsPath -Value $updatedContent -Encoding UTF8
-            & $logFunc "INFO" "Successfully replaced TOKEN_STAT_SLY"
+          if (Test-Path $staticParamsPath) {
+            $content = Get-Content -Path $staticParamsPath -Raw
+            
+            if ($content -match 'Environment\.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)') {
+              $updatedContent = $content -replace 'Environment\.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', '"${{ secrets.TOKEN_STAT_SLY }}"'
+              Set-Content -Path $staticParamsPath -Value $updatedContent -Encoding UTF8
+              Write-Host "✓ Successfully replaced TOKEN_STAT_SLY"
+            } else {
+              Write-Warning "TOKEN_STAT_SLY pattern not found in StaticParams.cs"
+            }
           } else {
-            & $logFunc "WARN" "TOKEN_STAT_SLY pattern not found in StaticParams.cs"
+            Write-Error "StaticParams.cs not found at: $staticParamsPath"
+            exit 1
           }
+          Write-Host "##[endgroup]"
           
       - name: Setup .NET and MSBuild
-        uses: ./.github/actions/setup-build
+        run: |
+          Write-Host "##[group]Setting up .NET and MSBuild"
+          Write-Host "Installing .NET 8.0.x"
+          Write-Host "##[endgroup]"
+        shell: bash
+          
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-          solution-name: ${{ env.SOLUTION_NAME }}
+          
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
           
       - name: Extract version from project
         id: get_version
         run: |
-          $logFunc = ${{ steps.setup_logging.outputs.log_func }}
+          Write-Host "##[group]Extracting version from project"
           $csprojPath = "${{ steps.setup_vars.outputs.projectPath }}\VK UI3.csproj"
           
-          & $logFunc "INFO" "Extracting version from $csprojPath"
+          Write-Host "Reading: $csprojPath"
           try {
             [xml]$doc = Get-Content $csprojPath
             $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText.Trim()
@@ -136,40 +151,46 @@ jobs:
               throw "Version not found in csproj"
             }
             
-            & $logFunc "INFO" "Extracted version: $version"
+            Write-Host "✓ Extracted version: $version"
             echo "VERSION=$version" >> $env:GITHUB_OUTPUT
             echo "version=$version" >> $env:GITHUB_OUTPUT
           } catch {
-            & $logFunc "ERROR" "Failed to extract version: $_"
+            Write-Error "Failed to extract version: $_"
             exit 1
           }
+          Write-Host "##[endgroup]"
           
       - name: Update manifest with version
         run: |
-          $logFunc = ${{ steps.setup_vars.outputs.log_func }}
+          Write-Host "##[group]Updating Package.appxmanifest with version"
           $version = "${{ steps.get_version.outputs.VERSION }}"
           $manifestPath = "${{ env.BUILD_PATH }}\VK UI3 (Package)\Package.appxmanifest"
           
-          & $logFunc "INFO" "Updating Package.appxmanifest with version $version"
+          Write-Host "Version: $version"
+          Write-Host "Manifest: $manifestPath"
           
-          [xml]$xml = Get-Content $manifestPath
-          $xml.Package.Identity.Version = $version
-          $xml.Save($manifestPath)
-          
-          & $logFunc "INFO" "Successfully updated manifest"
+          if (Test-Path $manifestPath) {
+            [xml]$xml = Get-Content $manifestPath
+            $xml.Package.Identity.Version = $version
+            $xml.Save($manifestPath)
+            Write-Host "✓ Successfully updated manifest"
+          } else {
+            Write-Error "Manifest not found: $manifestPath"
+            exit 1
+          }
+          Write-Host "##[endgroup]"
           
       - name: Run code analysis
         run: |
-          $logFunc = ${{ steps.setup_logging.outputs.log_func }}
-          & $logFunc "INFO" "Running code analysis"
+          Write-Host "##[group]Running code analysis"
           msbuild ${{ env.SOLUTION_NAME }} /p:RunCodeAnalysis=true /p:Configuration=${{ env.CONFIGURATION }}
+          Write-Host "##[endgroup]"
         continue-on-error: true
         
       - name: Setup certificate securely
         id: setup_cert
         run: |
-          $logFunc = ${{ steps.setup_logging.outputs.log_func }}
-          & $logFunc "INFO" "Setting up certificate"
+          Write-Host "##[group]Setting up certificate"
           
           # Secure certificate handling
           $certBytes = [Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
@@ -185,49 +206,57 @@ jobs:
           echo "THUMBPRINT=$($cert.Thumbprint)" >> $env:GITHUB_OUTPUT
           echo "CERT_PATH=$tempCertPath" >> $env:GITHUB_OUTPUT
           
-          & $logFunc "INFO" "Certificate installed with thumbprint: $($cert.Thumbprint)"
+          Write-Host "✓ Certificate installed with thumbprint: $($cert.Thumbprint)"
+          Write-Host "##[endgroup]"
           
       - name: Update project with certificate thumbprint
         run: |
-          $logFunc = ${{ steps.setup_logging.outputs.log_func }}
+          Write-Host "##[group]Updating project file with certificate thumbprint"
           $thumbprint = "${{ steps.setup_cert.outputs.THUMBPRINT }}"
           $projectFile = "${{ env.BUILD_PATH }}\VK UI3 (Package)\VK UI3 (Package).wapproj"
           
-          & $logFunc "INFO" "Updating project file with certificate thumbprint"
+          Write-Host "Thumbprint: $thumbprint"
+          Write-Host "Project file: $projectFile"
           
-          $content = Get-Content -Path $projectFile -Raw
-          $pattern = '(?<=<PackageCertificateThumbprint>).+?(?=</PackageCertificateThumbprint>)'
-          
-          if ($content -match $pattern) {
-            $content = $content -replace $pattern, $thumbprint
-            Set-Content -Path $projectFile -Value $content
-            & $logFunc "INFO" "Successfully updated certificate thumbprint"
+          if (Test-Path $projectFile) {
+            $content = Get-Content -Path $projectFile -Raw
+            $pattern = '(?<=<PackageCertificateThumbprint>).+?(?=</PackageCertificateThumbprint>)'
+            
+            if ($content -match $pattern) {
+              $content = $content -replace $pattern, $thumbprint
+              Set-Content -Path $projectFile -Value $content
+              Write-Host "✓ Successfully updated certificate thumbprint"
+            } else {
+              Write-Warning "PackageCertificateThumbprint tag not found"
+            }
           } else {
-            & $logFunc "WARN" "PackageCertificateThumbprint tag not found"
+            Write-Error "Project file not found: $projectFile"
+            exit 1
           }
+          Write-Host "##[endgroup]"
           
       - name: Clean publish directories
         run: |
-          $logFunc = ${{ steps.setup_logging.outputs.log_func }}
-          & $logFunc "INFO" "Cleaning publish directories"
+          Write-Host "##[group]Cleaning publish directories"
           
           $dirs = @("publish-x64", "publish-x86", "publish-arm64", "Packages")
           foreach ($dir in $dirs) {
             if (Test-Path $dir) {
               Remove-Item -Recurse -Force $dir
-              & $logFunc "DEBUG" "Cleaned directory: $dir"
+              Write-Host "✓ Cleaned directory: $dir"
             }
           }
+          Write-Host "##[endgroup]"
           
       - name: Build MSIX packages for all architectures
         run: |
-          $logFunc = ${{ steps.setup_logging.outputs.log_func }}
+          Write-Host "##[group]Building MSIX packages"
           $certPath = "${{ steps.setup_cert.outputs.CERT_PATH }}"
           
           $platforms = @("x64", "x86", "ARM64")
           
           foreach ($platform in $platforms) {
-            & $logFunc "INFO" "Building MSIX package for $platform"
+            Write-Host "--- Building MSIX package for $platform ---"
             
             $result = msbuild ${{ env.SOLUTION_NAME }} `
               /p:Configuration=${{ env.CONFIGURATION }} `
@@ -247,22 +276,24 @@ jobs:
               /flp:logfile=msbuild-$platform.log;verbosity=diagnostic
               
             if ($LASTEXITCODE -ne 0) {
-              & $logFunc "ERROR" "Build failed for $platform"
+              Write-Error "Build failed for $platform"
               Get-Content "msbuild-$platform.log" | Select-Object -Last 50
               exit 1
+            } else {
+              Write-Host "✓ Successfully built $platform"
             }
           }
+          Write-Host "##[endgroup]"
           
       - name: Process and rename artifacts
         run: |
-          $logFunc = ${{ steps.setup_logging.outputs.log_func }}
-          & $logFunc "INFO" "Processing build artifacts"
+          Write-Host "##[group]Processing build artifacts"
           
           # Rename .cer files
           Get-ChildItem -Path "${{ env.ARTIFACTS_PATH }}" -Filter *.cer -Recurse -Depth 1 | ForEach-Object {
             $newPath = Join-Path $_.Directory "Certificate.cer"
             Move-Item -Path $_.FullName -Destination $newPath -Force
-            & $logFunc "DEBUG" "Renamed: $($_.Name) -> Certificate.cer"
+            Write-Host "✓ Renamed: $($_.Name) -> Certificate.cer"
           }
           
           # Move files to root artifacts directory
@@ -272,15 +303,17 @@ jobs:
               $destination = "${{ env.ARTIFACTS_PATH }}\" + $_.Name
               if (-not (Test-Path $destination)) {
                 Move-Item -Path $_.FullName -Destination $destination -Force
-                & $logFunc "DEBUG" "Moved: $($_.Name)"
+                Write-Host "✓ Moved: $($_.Name)"
               }
             }
           }
+          Write-Host "##[endgroup]"
           
-      - name: Build EXE packages (parallel)
+      - name: Build EXE packages
+        env:
+          SOLUTION_UNPACKED_PATH: "${{ env.BUILD_PATH }}\${{ env.SOLUTION_NAME_UNPACKED }}\${{ env.SOLUTION_NAME_UNPACKED }}.csproj"
         run: |
-          $logFunc = ${{ steps.setup_logging.outputs.log_func }}
-          & $logFunc "INFO" "Building EXE packages in parallel"
+          Write-Host "##[group]Building EXE packages"
           
           $jobs = @(
             @{ Platform = "x64"; RID = "win-x64" },
@@ -288,50 +321,74 @@ jobs:
             @{ Platform = "ARM64"; RID = "win-arm64" }
           )
           
-          $jobs | ForEach-Object -Parallel {
-            $job = $_
-            function Write-Log { param($l,$m) Write-Host "[$(Get-Date -Format 'HH:mm:ss')] [$l] [$($job.Platform)] $m" }
-            
-            Write-Log "INFO" "Starting build"
+          foreach ($job in $jobs) {
+            Write-Host "--- Building $($job.Platform) ---"
             
             # Restore dependencies
-            msbuild "$using:solutionUnpacked" `
-              "/p:Configuration=$using:configuration" `
+            msbuild "${{ env.SOLUTION_UNPACKED_PATH }}" `
+              "/p:Configuration=${{ env.CONFIGURATION_UNPACKED }}" `
               "/p:Platform=$($job.Platform)" `
               "/p:RuntimeIdentifier=$($job.RID)" `
               /t:Restore `
               /clp:ErrorsOnly
               
             # Build project
-            msbuild "$using:solutionUnpacked" `
-              "/p:Configuration=$using:configuration" `
+            msbuild "${{ env.SOLUTION_UNPACKED_PATH }}" `
+              "/p:Configuration=${{ env.CONFIGURATION_UNPACKED }}" `
               "/p:Platform=$($job.Platform)" `
               "/p:RuntimeIdentifier=$($job.RID)" `
               "/p:DisableRuntimeIdentifierInference=true" `
               "/p:EnableNETAnalyzers=false" `
               "/p:Optimize=true" `
               "/p:WarningLevel=0" `
-              /m:$using:numProcs `
+              /m:${{ env.NUMBER_OF_PROCESSORS }} `
               /clp:ErrorsOnly
               
-            Write-Log "INFO" "Build completed"
-          } -ThrottleLimit 3
-          
-        env:
-          solutionUnpacked: "${{ env.SOLUTION_NAME_UNPACKED }}\${{ env.SOLUTION_NAME_UNPACKED }}.csproj"
-          configuration: ${{ env.CONFIGURATION_UNPACKED }}
-          numProcs: ${{ env.NUMBER_OF_PROCESSORS }}
+            if ($LASTEXITCODE -eq 0) {
+              Write-Host "✓ Successfully built $($job.Platform)"
+            } else {
+              Write-Error "Build failed for $($job.Platform)"
+              exit 1
+            }
+          }
+          Write-Host "##[endgroup]"
           
       - name: Sign EXE files
-        uses: ./.github/actions/sign-artifacts
-        with:
-          pfx-base64: ${{ secrets.BASE64_ENCODED_PFX }}
-          pfx-password: ${{ secrets.PFX_PASSWORD }}
-          artifacts-path: "${{ env.BUILD_PATH }}"
+        run: |
+          Write-Host "##[group]Signing EXE files"
+          
+          $certBytes = [Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
+          $certPath = "${{ github.workspace }}\temp-sign.pfx"
+          [IO.File]::WriteAllBytes($certPath, $certBytes)
+          
+          $pfxPassword = ConvertTo-SecureString "${{ secrets.PFX_PASSWORD }}" -AsPlainText -Force
+          $cert = Import-PfxCertificate -FilePath $certPath -CertStoreLocation Cert:\LocalMachine\My -Password $pfxPassword
+          
+          $signtool = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter signtool.exe |
+                      Where-Object { $_.FullName -match 'x64' } |
+                      Select-Object -First 1 -ExpandProperty FullName
+        
+          if (-not $signtool) {
+            throw "signtool.exe not found"
+          }
+          
+          $arches = @("x64", "x86", "ARM64")
+          foreach ($arch in $arches) {
+            $exeFiles = Get-ChildItem "${{ env.BUILD_PATH }}\${{ env.SOLUTION_NAME_UNPACKED }}\bin\$arch\${{ env.CONFIGURATION_UNPACKED }}" -Recurse -Include *.exe
+            
+            foreach ($exe in $exeFiles) {
+              Write-Host "Signing: $($exe.Name)"
+              & $signtool sign /f "$certPath" /p "${{ secrets.PFX_PASSWORD }}" /tr http://timestamp.digicert.com /td sha256 /fd sha256 $exe.FullName
+              Write-Host "✓ Signed: $($exe.Name)"
+            }
+          }
+          
+          Remove-Item $certPath -Force -ErrorAction SilentlyContinue
+          Write-Host "##[endgroup]"
           
       - name: Create ZIP archives
         run: |
-          $logFunc = ${{ steps.setup_logging.outputs.log_func }}
+          Write-Host "##[group]Creating ZIP archives"
           $arches = @("x64", "x86", "ARM64")
           
           foreach ($arch in $arches) {
@@ -339,7 +396,7 @@ jobs:
             
             if (Test-Path $buildDir) {
               $zipName = "VK_UI3_$arch.zip"
-              & $logFunc "INFO" "Creating archive: $zipName"
+              Write-Host "Creating archive: $zipName"
               
               Compress-Archive -Path "$buildDir\*" -DestinationPath $zipName -CompressionLevel Optimal
               
@@ -350,22 +407,27 @@ jobs:
                 BuildDate = Get-Date -Format "yyyy-MM-dd"
                 CommitHash = "${{ github.sha }}"
               } | ConvertTo-Json | Out-File "metadata-$arch.json"
+              
+              Write-Host "✓ Created: $zipName"
             }
           }
+          Write-Host "##[endgroup]"
           
       - name: Clean up temporary files
         run: |
-          $logFunc = ${{ steps.setup_logging.outputs.log_func }}
-          & $logFunc "INFO" "Cleaning up temporary files"
+          Write-Host "##[group]Cleaning up temporary files"
           
           # Remove certificate file
           $certPath = "${{ steps.setup_cert.outputs.CERT_PATH }}"
           if (Test-Path $certPath) {
             Remove-Item $certPath -Force
+            Write-Host "✓ Removed certificate file"
           }
           
           # Clean build logs
           Remove-Item "msbuild-*.log" -ErrorAction SilentlyContinue
+          Write-Host "✓ Cleaned build logs"
+          Write-Host "##[endgroup]"
           
       - name: Upload MSIX artifacts
         uses: actions/upload-artifact@v4
@@ -392,10 +454,10 @@ jobs:
         id: check_release
         if: github.event.inputs.release == 'true'
         run: |
-          $logFunc = ${{ steps.setup_logging.outputs.log_func }}
+          Write-Host "##[group]Checking if release exists"
           $version = "${{ steps.get_version.outputs.VERSION }}"
           
-          & $logFunc "INFO" "Checking if release $version exists"
+          Write-Host "Checking for release with tag: $version"
           
           $headers = @{
             "Authorization" = "token ${{ secrets.TOKEN }}"
@@ -409,17 +471,18 @@ jobs:
             }
             
             if ($existingRelease) {
-              & $logFunc "WARN" "Release with tag $version already exists"
+              Write-Host "⚠️ Release with tag $version already exists"
               echo "exists=true" >> $env:GITHUB_OUTPUT
               echo "release_id=$($existingRelease.id)" >> $env:GITHUB_OUTPUT
             } else {
-              & $logFunc "INFO" "Release $version does not exist"
+              Write-Host "✓ Release $version does not exist"
               echo "exists=false" >> $env:GITHUB_OUTPUT
             }
           } catch {
-            & $logFunc "ERROR" "Failed to check releases: $_"
+            Write-Error "Failed to check releases: $_"
             echo "exists=false" >> $env:GITHUB_OUTPUT
           }
+          Write-Host "##[endgroup]"
           
       - name: Create GitHub release
         if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
@@ -452,8 +515,7 @@ jobs:
       - name: Send Telegram notification
         if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
         run: |
-          $logFunc = ${{ steps.setup_logging.outputs.log_func }}
-          & $logFunc "INFO" "Sending Telegram notification"
+          Write-Host "##[group]Sending Telegram notification"
           
           $message = @"
           🚀 *New Release Published!*
@@ -474,11 +536,18 @@ jobs:
             disable_web_page_preview = $true
           }
           
-          Invoke-RestMethod `
-            -Uri "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" `
-            -Method Post `
-            -Body ($body | ConvertTo-Json) `
-            -ContentType "application/json"
+          try {
+            $response = Invoke-RestMethod `
+              -Uri "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" `
+              -Method Post `
+              -Body ($body | ConvertTo-Json) `
+              -ContentType "application/json"
+              
+            Write-Host "✓ Telegram notification sent"
+          } catch {
+            Write-Warning "Failed to send Telegram notification: $_"
+          }
+          Write-Host "##[endgroup]"
             
       - name: Notify on failure
         if: failure()
@@ -497,10 +566,15 @@ jobs:
             [View failed run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
             `;
             
-            await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: issueTitle,
-              body: issueBody,
-              labels: ['build-failed']
-            });
+            try {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: issueTitle,
+                body: issueBody,
+                labels: ['build-failed']
+              });
+              console.log('✓ Created issue for failed build');
+            } catch (error) {
+              console.error('Failed to create issue:', error.message);
+            }
