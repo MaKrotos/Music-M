@@ -53,26 +53,6 @@ jobs:
           Write-Host "Project path: $projectPath"
           Write-Host "##[endgroup]"
           
-      - name: Setup structured logging
-        id: setup_logging
-        run: |
-          function Write-Log {
-            param(
-              [ValidateSet('DEBUG','INFO','WARN','ERROR')]
-              [string]$Level,
-              [string]$Message
-            )
-            $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-            $color = @{
-              'DEBUG' = 'Gray'
-              'INFO'  = 'Green'
-              'WARN'  = 'Yellow'
-              'ERROR' = 'Red'
-            }
-            Write-Host "[$timestamp] [$Level] $Message" -ForegroundColor $color[$Level]
-          }
-          echo "log_func=Write-Log" >> $env:GITHUB_OUTPUT
-          
       - name: Check required files
         run: |
           Write-Host "##[group]Checking required files"
@@ -120,13 +100,6 @@ jobs:
             exit 1
           }
           Write-Host "##[endgroup]"
-          
-      - name: Setup .NET and MSBuild
-        run: |
-          Write-Host "##[group]Setting up .NET and MSBuild"
-          Write-Host "Installing .NET 8.0.x"
-          Write-Host "##[endgroup]"
-        shell: bash
           
       - name: Install .NET Core
         uses: actions/setup-dotnet@v4
@@ -310,10 +283,11 @@ jobs:
           Write-Host "##[endgroup]"
           
       - name: Build EXE packages
-        env:
-          SOLUTION_UNPACKED_PATH: "${{ env.BUILD_PATH }}\${{ env.SOLUTION_NAME_UNPACKED }}\${{ env.SOLUTION_NAME_UNPACKED }}.csproj"
         run: |
           Write-Host "##[group]Building EXE packages"
+          
+          $solutionUnpackedPath = "${{ env.BUILD_PATH }}\${{ env.SOLUTION_NAME_UNPACKED }}\${{ env.SOLUTION_NAME_UNPACKED }}.csproj"
+          Write-Host "Solution path: $solutionUnpackedPath"
           
           $jobs = @(
             @{ Platform = "x64"; RID = "win-x64" },
@@ -325,7 +299,7 @@ jobs:
             Write-Host "--- Building $($job.Platform) ---"
             
             # Restore dependencies
-            msbuild "${{ env.SOLUTION_UNPACKED_PATH }}" `
+            msbuild "$solutionUnpackedPath" `
               "/p:Configuration=${{ env.CONFIGURATION_UNPACKED }}" `
               "/p:Platform=$($job.Platform)" `
               "/p:RuntimeIdentifier=$($job.RID)" `
@@ -333,7 +307,7 @@ jobs:
               /clp:ErrorsOnly
               
             # Build project
-            msbuild "${{ env.SOLUTION_UNPACKED_PATH }}" `
+            msbuild "$solutionUnpackedPath" `
               "/p:Configuration=${{ env.CONFIGURATION_UNPACKED }}" `
               "/p:Platform=$($job.Platform)" `
               "/p:RuntimeIdentifier=$($job.RID)" `
