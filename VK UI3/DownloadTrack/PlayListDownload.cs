@@ -149,7 +149,7 @@ namespace VK_UI3.DownloadTrack
 
                         string input = a.Url.ToString();
                         var invalidChars = Path.GetInvalidFileNameChars();
-                        var titl = $"{a.Title}-{a.Artist}.mp3";
+                        var titl = $"{a.Artist} - {a.Title}.mp3";
                         titl = new string(titl.Where(ch => !invalidChars.Contains(ch)).ToArray());
                         string output = Path.Combine(location, titl);
 
@@ -256,7 +256,7 @@ namespace VK_UI3.DownloadTrack
 
                 audioFile.Save();
 
-                string newFileName = $"{audio.Title} - {audio.Artist}.mp3";
+                string newFileName = $"{audio.Artist} - {audio.Title}.mp3";
                 string folderPath = Path.GetDirectoryName(filePath);
                 string newFilePath = System.IO.Path.Combine(folderPath, newFileName);
 
