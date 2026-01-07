@@ -58,6 +58,7 @@ namespace VK_UI3.Services
         public static event EventHandler AudioPlayedChangeEvent;
         public static event EventHandler<VolumeChangedEventArgs> VolumeChanged;
         public static event EventHandler<bool> MediaKeyEnabledChanged;
+        public static event EventHandler<TimeSpan> PositionChanged;
 
         #endregion
 
@@ -281,7 +282,12 @@ namespace VK_UI3.Services
 
         private static void MediaPlayer_MediaOpened(Windows.Media.Playback.MediaPlayer sender, object args)
         {
-            // Можно обновить длительность трека если нужно
+            // Update track duration when a new track is loaded
+            if (PlayingTrack?.audio?.Duration > 0)
+            {
+                // The AudioPlayer will update its TrackDurationMs property when AudioPlayedChangeEvent is raised
+                NotifyAudioPlayedChange(PlayingTrack);
+            }
         }
 
         private static void MediaPlayer_MediaEnded(Windows.Media.Playback.MediaPlayer sender, object args)
@@ -301,12 +307,14 @@ namespace VK_UI3.Services
             if (PlayingTrack != null)
             {
                 UpdateSystemMediaDisplay(PlayingTrack);
+                NotifyAudioPlayedChange(PlayingTrack);
             }
         }
 
         private static void PlaybackSession_PositionChanged(MediaPlaybackSession sender, object args)
         {
             // Обновить позицию воспроизведения
+            PositionChanged?.Invoke(null, sender.Position);
         }
 
         private static void PlaybackSession_PlaybackStateChanged(MediaPlaybackSession sender, object args)

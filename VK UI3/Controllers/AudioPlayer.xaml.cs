@@ -201,6 +201,7 @@ namespace VK_UI3.Controllers
             VK_UI3.Services.MediaPlayerService.oniVKUpdate += AudioPlayer_oniVKUpdate;
             VK_UI3.Services.MediaPlayerService.AudioPlayedChangeEvent += AudioPlayer_AudioPlayedChange;
             VK_UI3.Services.MediaPlayerService.VolumeChanged += MediaPlayerService_VolumeChanged;
+            VK_UI3.Services.MediaPlayerService.PositionChanged += MediaPlayerService_PositionChanged;
             VK_UI3.Services.MediaPlayerService.MediaPlayer.CurrentStateChanged += MediaPlayer_CurrentStateChanged;
             TrackDataThisChanged.AddHandler(AudioPlayer_PropertyChanged);
         }
@@ -253,6 +254,7 @@ namespace VK_UI3.Controllers
         {
             VK_UI3.Services.MediaPlayerService.AudioPlayedChangeEvent -= AudioPlayer_AudioPlayedChange;
             VK_UI3.Services.MediaPlayerService.VolumeChanged -= MediaPlayerService_VolumeChanged;
+            VK_UI3.Services.MediaPlayerService.PositionChanged -= MediaPlayerService_PositionChanged;
             VK_UI3.Services.MediaPlayerService.MediaPlayer.CurrentStateChanged -= MediaPlayer_CurrentStateChanged;
         }
 
@@ -271,6 +273,12 @@ namespace VK_UI3.Controllers
         private void MediaPlayerService_VolumeChanged(object sender, VK_UI3.Services.Player.VolumeChangedEventArgs e)
         {
             OnPropertyChanged(nameof(simpleAudioBind));
+        }
+
+        private void MediaPlayerService_PositionChanged(object sender, TimeSpan e)
+        {
+            TrackPositionMs = (long)e.TotalMilliseconds;
+            SliderPositionMs = TrackPositionMs;
         }
 
         private void AudioPlayer_PropertyChanged(object sender, EventArgs e)
