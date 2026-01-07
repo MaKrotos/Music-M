@@ -40,7 +40,7 @@ namespace VK_UI3.Views
 
         private void desctruct() 
         {
-            AudioPlayer.onClickonTrack -= AudioPlayer_onClickonTrack;
+            VK_UI3.Services.MediaPlayerService.onClickonTrack -= AudioPlayer_onClickonTrack;
 
             this.Loaded -= PlayListPage_Loaded;
             this.Unloaded -= PlayListPage_Unloaded;
@@ -441,7 +441,7 @@ namespace VK_UI3.Views
         private void PlayListPage_Loaded(object sender, RoutedEventArgs e)
         {
             // Находим ScrollViewer внутри ListView
-            AudioPlayer.onClickonTrack += AudioPlayer_onClickonTrack;
+            VK_UI3.Services.MediaPlayerService.onClickonTrack += AudioPlayer_onClickonTrack;
             scrollViewer = FindScrollViewer(TrackListView);
             if (scrollViewer != null)
             {
@@ -551,7 +551,7 @@ namespace VK_UI3.Views
         {
 
             vkGetAudio.currentTrack = 0;
-            AudioPlayer.PlayList(vkGetAudio);
+            VK_UI3.Services.MediaPlayerService.PlayList(vkGetAudio);
         }
 
         private void EditPlaylist_Click(object sender, RoutedEventArgs e)

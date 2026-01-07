@@ -25,8 +25,9 @@ using VK_UI3.VKs.IVK;
 using Windows.Media;
 using Windows.Media.Playback;
 using Windows.Storage.Streams;
-using VK_UI3.Views.ModalsPages;
-using Windows.Foundation;
+         using VK_UI3.Views.ModalsPages;
+         using Windows.Foundation;
+         using VK_UI3.Services;
 
 namespace VK_UI3.Controllers
 {
@@ -38,29 +39,18 @@ namespace VK_UI3.Controllers
         #region Constants and Static Fields
 
         private const int GWL_WNDPROC = -4;
-        private const int WM_APPCOMMAND = 0x0319;
-        private static readonly IEnumerable<ITrackMediaSource> _mediaSources = App._host.Services.GetRequiredService<IEnumerable<ITrackMediaSource>>();
-        public static Windows.Media.Playback.MediaPlayer mediaPlayer = new MediaPlayer();
+                 private const int WM_APPCOMMAND = 0x0319;
 
         #endregion
 
         #region Events
-
-        public static event EventHandler oniVKUpdate;
-        public static event EventHandler onClickonTrack;
-        public static event EventHandler AudioPlayedChangeEvent;
-
-        #endregion
+        
+                #endregion
 
         #region Fields
 
         private DiscordRichPresenceManager discordRichPresenceManager = new DiscordRichPresenceManager();
-        private static IVKGetAudio _iVKGetAudio = null;
-        private static AudioEqualizer _equalizer = null;
-        private static ExtendedAudio _trackDataThis;
-        public static ExtendedAudio PlayingTrack = null;
-        private static CancellationTokenSource? _tokenSource;
-        private static WeakEventManager TrackDataThisChanged = new WeakEventManager();
+                 private static WeakEventManager TrackDataThisChanged = new WeakEventManager();
 
         // Animation fields
         private AnimationsChangeFontIcon changeIconPlayBTN = null;
@@ -94,41 +84,43 @@ namespace VK_UI3.Controllers
         private WndProcDelegate _wndProcDelegate;
         
         // Media key handling prevention
-        private static bool _isProcessingMediaKey = false;
-        private static DateTime _lastMediaKeyTime = DateTime.MinValue;
-        private const int MEDIA_KEY_DEBOUNCE_MS = 200;
+
+        #endregion
+
+        #region Properties
+        
+        // Media key handling prevention
 
         #endregion
 
         #region Properties
 
         public MediaPlayer MediaPlayer
-        {
-            get { return mediaPlayer; }
-            set { mediaPlayer = value; }
-        }
+                 {
+                     get { return VK_UI3.Services.MediaPlayerService.MediaPlayer; }
+                     set { VK_UI3.Services.MediaPlayerService.MediaPlayer = value; }
+                 }
 
         public static IVKGetAudio iVKGetAudio
-        {
-            get { return _iVKGetAudio; }
-            set
-            {
-                if (_iVKGetAudio == value) return;
-                _iVKGetAudio = value;
-                MainView.mainView.setNewPlayingList(value);
-                NotifyoniVKUpdate();
-            }
-        }
+                 {
+                     get { return VK_UI3.Services.MediaPlayerService.iVKGetAudio; }
+                     set
+                     {
+                         VK_UI3.Services.MediaPlayerService.iVKGetAudio = value;
+                         MainView.mainView.setNewPlayingList(value);
+                         NotifyoniVKUpdate();
+                     }
+                 }
 
         public static AudioEqualizer Equalizer
-        {
-            get { return _equalizer; }
-            set
-            {
-                _equalizer = value;
-                PlayTrack(position: mediaPlayer.Position);
-            }
-        }
+                 {
+                     get { return VK_UI3.Services.MediaPlayerService.Equalizer; }
+                     set
+                     {
+                         VK_UI3.Services.MediaPlayerService.Equalizer = value;
+                         // Note: PlayTrack(position: mediaPlayer.Position); should be handled elsewhere
+                     }
+                 }
 
         public ExtendedAudio TrackDataThis => _TrackDataThisGet().Result;
 
@@ -210,15 +202,15 @@ namespace VK_UI3.Controllers
         }
 
         public double simpleAudioBind
-        {
-            get => mediaPlayer?.Volume * 100 ?? 100;
-            set
-            {
-                var volume = value / 100;
-                SettingsTable.SetSetting("Volume", volume.ToString());
-                mediaPlayer.Volume = volume;
-            }
-        }
+                 {
+                     get => VK_UI3.Services.MediaPlayerService.MediaPlayer?.Volume * 100 ?? 100;
+                     set
+                     {
+                         var volume = value / 100;
+                         SettingsTable.SetSetting("Volume", volume.ToString());
+                         VK_UI3.Services.MediaPlayerService.MediaPlayer.Volume = volume;
+                     }
+                 }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -245,7 +237,7 @@ namespace VK_UI3.Controllers
                 RootGrid.SizeChanged += RootGrid_SizeChanged;
 
             this.Loaded += AudioPlayer_Loaded;
-            oniVKUpdate += AudioPlayer_oniVKUpdate;
+            VK_UI3.Services.MediaPlayerService.oniVKUpdate += AudioPlayer_oniVKUpdate;
             TrackDataThisChanged.AddHandler(AudioPlayer_PropertyChanged);
         }
 
@@ -260,50 +252,50 @@ namespace VK_UI3.Controllers
         }
 
         private void InitializeSettings()
-        {
-            var volumeSetting = SettingsTable.GetSetting("Volume");
-            if (volumeSetting != null)
-            {
-                mediaPlayer.Volume = double.Parse(volumeSetting.settingValue);
-            }
-
-            var enabledSetting = SettingsTable.GetSetting("Equalizer_Enabled", "1");
-            if (enabledSetting.settingValue == "1")
-            {
-                var eqControl = new EqualizerControl();
-                eqControl.LoadSettings();
-                Equalizer = eqControl.getEqualizes();
-            }
-
-            setStatusIcon();
-        }
+                 {
+                     var volumeSetting = SettingsTable.GetSetting("Volume");
+                     if (volumeSetting != null)
+                     {
+                         VK_UI3.Services.MediaPlayerService.MediaPlayer.Volume = double.Parse(volumeSetting.settingValue);
+                     }
+        
+                     var enabledSetting = SettingsTable.GetSetting("Equalizer_Enabled", "1");
+                     if (enabledSetting.settingValue == "1")
+                     {
+                         var eqControl = new EqualizerControl();
+                         eqControl.LoadSettings();
+                         Equalizer = eqControl.getEqualizes();
+                     }
+        
+                     setStatusIcon();
+                 }
 
         private void SetupSystemMediaTransportControls()
         {
             try
-            {
-                var systemControls = mediaPlayer.SystemMediaTransportControls;
-
-                // Включить кнопки
-                systemControls.IsPlayEnabled = true;
-                systemControls.IsPauseEnabled = true;
-                systemControls.IsNextEnabled = true;
-                systemControls.IsPreviousEnabled = true;
-                systemControls.IsStopEnabled = true;
-
-                // Подписаться на события
-                systemControls.ButtonPressed += SystemControls_ButtonPressed;
-
-                // Настроить отображение
-                systemControls.DisplayUpdater.Type = MediaPlaybackType.Music;
-                systemControls.DisplayUpdater.AppMediaId = "MusicM";
-
-                UpdateSystemMediaDisplay();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error setting up system media controls: {ex.Message}");
-            }
+                         {
+                             var systemControls = VK_UI3.Services.MediaPlayerService.MediaPlayer.SystemMediaTransportControls;
+            
+                             // Включить кнопки
+                             systemControls.IsPlayEnabled = true;
+                             systemControls.IsPauseEnabled = true;
+                             systemControls.IsNextEnabled = true;
+                             systemControls.IsPreviousEnabled = true;
+                             systemControls.IsStopEnabled = true;
+            
+                             // Подписаться на события
+                             systemControls.ButtonPressed += SystemControls_ButtonPressed;
+            
+                             // Настроить отображение
+                             systemControls.DisplayUpdater.Type = MediaPlaybackType.Music;
+                             systemControls.DisplayUpdater.AppMediaId = "MusicM";
+            
+                             UpdateSystemMediaDisplay();
+                         }
+                         catch (Exception ex)
+                         {
+                             Console.WriteLine($"Error setting up system media controls: {ex.Message}");
+                         }
         }
 
         private void SystemControls_ButtonPressed(SystemMediaTransportControls sender,
@@ -313,46 +305,46 @@ namespace VK_UI3.Controllers
             {
                 // Debounce для предотвращения двойного срабатывания
                 var now = DateTime.Now;
-                if ((now - _lastMediaKeyTime).TotalMilliseconds < MEDIA_KEY_DEBOUNCE_MS)
+                if ((now - VK_UI3.Services.MediaPlayerService._lastMediaKeyTime).TotalMilliseconds < VK_UI3.Services.MediaPlayerService.MEDIA_KEY_DEBOUNCE_MS)
                     return;
-                    
-                _lastMediaKeyTime = now;
                 
-                if (_isProcessingMediaKey)
+                VK_UI3.Services.MediaPlayerService._lastMediaKeyTime = now;
+                
+                if (VK_UI3.Services.MediaPlayerService._isProcessingMediaKey)
                     return;
-                    
-                _isProcessingMediaKey = true;
+                
+                VK_UI3.Services.MediaPlayerService._isProcessingMediaKey = true;
                 
                 try
                 {
                     switch (args.Button)
                     {
                         case SystemMediaTransportControlsButton.Play:
-                            mediaPlayer.Play();
-                            break;
-                        case SystemMediaTransportControlsButton.Pause:
-                            mediaPlayer.Pause();
-                            break;
-                        case SystemMediaTransportControlsButton.Next:
-                            PlayNextTrack();
-                            break;
-                        case SystemMediaTransportControlsButton.Previous:
-                            if (mediaPlayer.Position.TotalSeconds >= 3)
-                                mediaPlayer.Position = TimeSpan.Zero;
-                            else
-                                PlayPreviousTrack();
-                            break;
-                        case SystemMediaTransportControlsButton.Stop:
-                            mediaPlayer.Pause();
-                            mediaPlayer.Position = TimeSpan.Zero;
-                            break;
+                                                     VK_UI3.Services.MediaPlayerService.MediaPlayer.Play();
+                                                     break;
+                                                 case SystemMediaTransportControlsButton.Pause:
+                                                     VK_UI3.Services.MediaPlayerService.MediaPlayer.Pause();
+                                                     break;
+                                                 case SystemMediaTransportControlsButton.Next:
+                                                     VK_UI3.Services.MediaPlayerService.PlayNextTrack();
+                                                     break;
+                                                 case SystemMediaTransportControlsButton.Previous:
+                                                     if (VK_UI3.Services.MediaPlayerService.MediaPlayer.Position.TotalSeconds >= 3)
+                                                         VK_UI3.Services.MediaPlayerService.MediaPlayer.Position = TimeSpan.Zero;
+                                                     else
+                                                         VK_UI3.Services.MediaPlayerService.PlayPreviousTrack();
+                                                     break;
+                                                 case SystemMediaTransportControlsButton.Stop:
+                                                     VK_UI3.Services.MediaPlayerService.MediaPlayer.Pause();
+                                                     VK_UI3.Services.MediaPlayerService.MediaPlayer.Position = TimeSpan.Zero;
+                                                     break;
                     }
                 }
                 finally
                 {
-                    Task.Delay(MEDIA_KEY_DEBOUNCE_MS).ContinueWith(_ =>
+                    Task.Delay(VK_UI3.Services.MediaPlayerService.MEDIA_KEY_DEBOUNCE_MS).ContinueWith(_ =>
                     {
-                        _isProcessingMediaKey = false;
+                        VK_UI3.Services.MediaPlayerService._isProcessingMediaKey = false;
                     });
                 }
             });
@@ -364,8 +356,8 @@ namespace VK_UI3.Controllers
 
             try
             {
-                var systemControls = mediaPlayer.SystemMediaTransportControls;
-                var updater = systemControls.DisplayUpdater;
+                var systemControls = VK_UI3.Services.MediaPlayerService.MediaPlayer.SystemMediaTransportControls;
+                                 var updater = systemControls.DisplayUpdater;
 
                 updater.ClearAll();
                 updater.Type = MediaPlaybackType.Music;
@@ -407,13 +399,13 @@ namespace VK_UI3.Controllers
                 updater.Update();
 
                 // Обновить статус воспроизведения
-                systemControls.PlaybackStatus = mediaPlayer.PlaybackSession.PlaybackState switch
-                {
-                    MediaPlaybackState.Playing => MediaPlaybackStatus.Playing,
-                    MediaPlaybackState.Paused => MediaPlaybackStatus.Paused,
-                    MediaPlaybackState.Buffering => MediaPlaybackStatus.Changing,
-                    _ => MediaPlaybackStatus.Stopped
-                };
+                systemControls.PlaybackStatus = VK_UI3.Services.MediaPlayerService.MediaPlayer.PlaybackSession.PlaybackState switch
+                                 {
+                                     MediaPlaybackState.Playing => MediaPlaybackStatus.Playing,
+                                     MediaPlaybackState.Paused => MediaPlaybackStatus.Paused,
+                                     MediaPlaybackState.Buffering => MediaPlaybackStatus.Changing,
+                                     _ => MediaPlaybackStatus.Stopped
+                                 };
             }
             catch (Exception ex)
             {
@@ -426,24 +418,24 @@ namespace VK_UI3.Controllers
             TrackDurationMs = 0;
             TrackPosition = 0;
 
-            mediaPlayer.AudioCategory = MediaPlayerAudioCategory.Media;
-
-            // Отключаем CommandManager, чтобы избежать дублирования с SystemMediaTransportControls
-            mediaPlayer.CommandManager.IsEnabled = false;
-
-            mediaPlayer.SystemMediaTransportControls.DisplayUpdater.Type = MediaPlaybackType.Music;
-
-            // Media player events
-            mediaPlayer.MediaOpened += MediaPlayer_MediaOpened;
-            mediaPlayer.MediaEnded += MediaPlayer_MediaEnded;
-            mediaPlayer.MediaFailed += MediaPlayer_MediaFailed;
-            mediaPlayer.CurrentStateChanged += MediaPlayer_CurrentStateChanged;
-            mediaPlayer.SourceChanged += MediaPlayer_SourceChanged;
-
-            // Playback session events
-            mediaPlayer.PlaybackSession.PositionChanged += PlaybackSession_PositionChanged;
-            mediaPlayer.PlaybackSession.BufferedRangesChanged += PlaybackSession_BufferedRangesChanged;
-            mediaPlayer.PlaybackSession.PlaybackStateChanged += PlaybackSession_PlaybackStateChanged;
+            VK_UI3.Services.MediaPlayerService.MediaPlayer.AudioCategory = MediaPlayerAudioCategory.Media;
+            
+                         // Отключаем CommandManager, чтобы избежать дублирования с SystemMediaTransportControls
+                         VK_UI3.Services.MediaPlayerService.MediaPlayer.CommandManager.IsEnabled = false;
+            
+                         VK_UI3.Services.MediaPlayerService.MediaPlayer.SystemMediaTransportControls.DisplayUpdater.Type = MediaPlaybackType.Music;
+            
+                         // Media player events
+                         VK_UI3.Services.MediaPlayerService.MediaPlayer.MediaOpened += MediaPlayer_MediaOpened;
+                         VK_UI3.Services.MediaPlayerService.MediaPlayer.MediaEnded += MediaPlayer_MediaEnded;
+                         VK_UI3.Services.MediaPlayerService.MediaPlayer.MediaFailed += MediaPlayer_MediaFailed;
+                         VK_UI3.Services.MediaPlayerService.MediaPlayer.CurrentStateChanged += MediaPlayer_CurrentStateChanged;
+                         VK_UI3.Services.MediaPlayerService.MediaPlayer.SourceChanged += MediaPlayer_SourceChanged;
+            
+                         // Playback session events
+                         VK_UI3.Services.MediaPlayerService.MediaPlayer.PlaybackSession.PositionChanged += PlaybackSession_PositionChanged;
+                         VK_UI3.Services.MediaPlayerService.MediaPlayer.PlaybackSession.BufferedRangesChanged += PlaybackSession_BufferedRangesChanged;
+                         VK_UI3.Services.MediaPlayerService.MediaPlayer.PlaybackSession.PlaybackStateChanged += PlaybackSession_PlaybackStateChanged;
         }
 
         #endregion
@@ -462,9 +454,10 @@ namespace VK_UI3.Controllers
             HandleTrackPlayedHighlighting();
 
             if (SettingsTable.GetSetting("playNext").settingValue.Equals("RepeatOne"))
-                PlayTrack();
-            else
-                PlayNextTrack();
+                             // Note: PlayTrack() should be handled by the service
+                             VK_UI3.Services.MediaPlayerService.PlayNextTrack();
+                         else
+                             VK_UI3.Services.MediaPlayerService.PlayNextTrack();
         }
 
         private void MediaPlayer_MediaFailed(Windows.Media.Playback.MediaPlayer sender,
@@ -478,19 +471,19 @@ namespace VK_UI3.Controllers
             this.DispatcherQueue.TryEnqueue(async () =>
             {
                 switch (sender.CurrentState)
-                {
-                    case MediaPlayerState.Playing:
-                        changeIconPlayBTN.ChangeFontIconWithAnimation("\uE769");
-                        UpdateSystemMediaDisplay();
-                        break;
-                    case MediaPlayerState.Paused:
-                        changeIconPlayBTN.ChangeFontIconWithAnimation("\uE768");
-                        UpdateSystemMediaDisplay();
-                        break;
-                    case MediaPlayerState.Closed:
-                        PlayTrack(iVKGetAudio?.currentTrack);
-                        break;
-                }
+                                 {
+                                     case MediaPlayerState.Playing:
+                                         changeIconPlayBTN.ChangeFontIconWithAnimation("\uE769");
+                                         UpdateSystemMediaDisplay();
+                                         break;
+                                     case MediaPlayerState.Paused:
+                                         changeIconPlayBTN.ChangeFontIconWithAnimation("\uE768");
+                                         UpdateSystemMediaDisplay();
+                                         break;
+                                     case MediaPlayerState.Closed:
+                                         // Note: PlayTrack(iVKGetAudio?.currentTrack); should be handled by the service
+                                         break;
+                                 }
             });
         }
 
@@ -611,13 +604,13 @@ namespace VK_UI3.Controllers
 
         private void trackDoingBTN_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            if (PlayingTrack == null) return;
+            if (VK_UI3.Services.MediaPlayerService.PlayingTrack == null) return;
             FlyOutControl.ShowAt(sender as Button);
         }
 
         private void Grid_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            NotifyonClickonTrack();
+            VK_UI3.Services.MediaPlayerService.NotifyonClickonTrack();
         }
 
         private void openLirycBTN_Tapped(object sender, TappedRoutedEventArgs e)
@@ -639,7 +632,7 @@ namespace VK_UI3.Controllers
             if (isManualChange)
             {
                 SliderPositionMs = (long)e.NewValue;
-                mediaPlayer.PlaybackSession.Position = TimeSpan.FromMilliseconds(e.NewValue);
+                                 VK_UI3.Services.MediaPlayerService.MediaPlayer.PlaybackSession.Position = TimeSpan.FromMilliseconds(e.NewValue);
             }
         }
 
@@ -719,81 +712,28 @@ namespace VK_UI3.Controllers
 
         public static void NotifyoniVKUpdate()
         {
-            oniVKUpdate?.Invoke(null, EventArgs.Empty);
+            VK_UI3.Services.MediaPlayerService.NotifyoniVKUpdate();
         }
 
         public static void NotifyonClickonTrack()
         {
-            if (onClickonTrack != null && PlayingTrack != null)
-            {
-                onClickonTrack.Invoke(PlayingTrack, EventArgs.Empty);
-            }
+            VK_UI3.Services.MediaPlayerService.NotifyonClickonTrack();
         }
 
         internal static void PlayNextTrack()
-        {
-            // Debounce для предотвращения множественных вызовов
-            if (_isProcessingMediaKey) return;
-            
-            Task.Run(async () =>
-            {
-                _isProcessingMediaKey = true;
-                try
-                {
-                    iVKGetAudio?.setNextTrackForPlay();
-                    await PlayTrack();
-                }
-                finally
-                {
-                    await Task.Delay(MEDIA_KEY_DEBOUNCE_MS);
-                    _isProcessingMediaKey = false;
-                }
-            });
-        }
+                 {
+                     VK_UI3.Services.MediaPlayerService.PlayNextTrack();
+                 }
 
         internal static void PlayPreviousTrack()
-        {
-            // Debounce для предотвращения множественных вызовов
-            if (_isProcessingMediaKey) return;
-            
-            Task.Run(async () =>
-            {
-                _isProcessingMediaKey = true;
-                try
-                {
-                    iVKGetAudio?.setPreviusTrackForPlay();
-                    await PlayTrack();
-                }
-                finally
-                {
-                    await Task.Delay(MEDIA_KEY_DEBOUNCE_MS);
-                    _isProcessingMediaKey = false;
-                }
-            });
-        }
+                 {
+                     VK_UI3.Services.MediaPlayerService.PlayPreviousTrack();
+                 }
 
         internal static async void PlayList(IVKGetAudio userAudio)
-        {
-            if (userAudio.listAudio.Count == 0)
-            {
-                var tcs = new TaskCompletionSource<bool>();
-                EventHandler handler = null;
-                handler = (sender, args) =>
-                {
-                    userAudio.onListUpdate -= handler;
-                    tcs.SetResult(true);
-                };
-                userAudio.onListUpdate += handler;
-
-                userAudio.GetTracks();
-                await tcs.Task;
-            }
-
-            if (userAudio.listAudio.Count == 0) return;
-
-            iVKGetAudio = userAudio;
-            await AudioPlayer.PlayTrack();
-        }
+                 {
+                     VK_UI3.Services.MediaPlayerService.PlayList(userAudio);
+                 }
 
         #endregion
 
@@ -806,9 +746,9 @@ namespace VK_UI3.Controllers
             if (iVKGetAudio == null)
                 return;
 
-            _tokenSource?.Cancel();
-            _tokenSource?.Dispose();
-            _tokenSource = new();
+            VK_UI3.Services.MediaPlayerService._tokenSource?.Cancel();
+            VK_UI3.Services.MediaPlayerService._tokenSource?.Dispose();
+            VK_UI3.Services.MediaPlayerService._tokenSource = new();
 
             await EnsureTrackListLoaded();
 
@@ -853,12 +793,12 @@ namespace VK_UI3.Controllers
 
         private static void SendPlaybackStatistics(ExtendedAudio trackdata)
         {
-            ExtendedAudio previousTrack = PlayingTrack;
+            ExtendedAudio previousTrack = VK_UI3.Services.MediaPlayerService.PlayingTrack;
             int? previousTrackPlayedSeconds = null;
 
             if (previousTrack != null)
             {
-                previousTrackPlayedSeconds = (int)mediaPlayer.Position.TotalSeconds;
+                previousTrackPlayedSeconds = (int)VK_UI3.Services.MediaPlayerService.MediaPlayer.Position.TotalSeconds;
             }
 
             _ = KrotosVK.sendVKAudioPlayStat(
@@ -894,8 +834,8 @@ namespace VK_UI3.Controllers
             var mediaSource = Windows.Media.Core.MediaSource.CreateFromUri(new Uri(trackdata.audio.Url.ToString()));
             var mediaPlaybackItem = new Windows.Media.Playback.MediaPlaybackItem(mediaSource);
 
-            PlayingTrack = trackdata;
-            mediaPlayer.Pause();
+            VK_UI3.Services.MediaPlayerService.PlayingTrack = trackdata;
+            VK_UI3.Services.MediaPlayerService.MediaPlayer.Pause();
 
             if (new CheckFFmpeg().IsExist())
             {
@@ -908,18 +848,18 @@ namespace VK_UI3.Controllers
 
             if (position != null)
             {
-                mediaPlayer.Position = (TimeSpan)position;
+                VK_UI3.Services.MediaPlayerService.MediaPlayer.Position = (TimeSpan)position;
             }
 
-            mediaPlayer.Play();
+            VK_UI3.Services.MediaPlayerService.MediaPlayer.Play();
             iVKGetAudio.ChangePlayAudio(trackdata);
-            AudioPlayedChangeEvent?.Invoke(trackdata, EventArgs.Empty);
+            VK_UI3.Services.MediaPlayerService.NotifyAudioPlayedChange(trackdata);
         }
 
         private static async Task LoadWithMediaSources(ExtendedAudio trackdata)
         {
-            var allSourcesTask = Task.WhenAll(_mediaSources.Select(b =>
-                b.OpenWithMediaPlayerAsync(mediaPlayer, trackdata.audio, _tokenSource.Token, equalizer: _equalizer)));
+            var allSourcesTask = Task.WhenAll(VK_UI3.Services.MediaPlayerService._mediaSources.Select(b =>
+                             b.OpenWithMediaPlayerAsync(VK_UI3.Services.MediaPlayerService.MediaPlayer, trackdata.audio, VK_UI3.Services.MediaPlayerService._tokenSource.Token, equalizer: VK_UI3.Services.MediaPlayerService.Equalizer)));
 
             try
             {
@@ -963,9 +903,9 @@ namespace VK_UI3.Controllers
             }
 
             mediaPlaybackItem.ApplyDisplayProperties(props);
-            mediaPlayer.PlaybackSession.Position = TimeSpan.FromMilliseconds(1);
-            MainWindow.mainWindow.requstDownloadFFMpegAsync();
-            mediaPlayer.Source = mediaPlaybackItem;
+            VK_UI3.Services.MediaPlayerService.MediaPlayer.PlaybackSession.Position = TimeSpan.FromMilliseconds(1);
+                         MainWindow.mainWindow.requstDownloadFFMpegAsync();
+                         VK_UI3.Services.MediaPlayerService.MediaPlayer.Source = mediaPlaybackItem;
         }
 
         #endregion
@@ -974,15 +914,15 @@ namespace VK_UI3.Controllers
 
         private void TogglePlayPause()
         {
-            switch (mediaPlayer.CurrentState)
-            {
-                case MediaPlayerState.Playing:
-                    mediaPlayer.Pause();
-                    break;
-                case MediaPlayerState.Paused:
-                    mediaPlayer.Play();
-                    break;
-            }
+            switch (VK_UI3.Services.MediaPlayerService.MediaPlayer.CurrentState)
+                         {
+                             case MediaPlayerState.Playing:
+                                 VK_UI3.Services.MediaPlayerService.MediaPlayer.Pause();
+                                 break;
+                             case MediaPlayerState.Paused:
+                                 VK_UI3.Services.MediaPlayerService.MediaPlayer.Play();
+                                 break;
+                         }
         }
 
         private void UpdateTrackInfoDisplay()
@@ -1001,9 +941,9 @@ namespace VK_UI3.Controllers
         private void HandleTrackPlayedHighlighting()
         {
             var highlightSetting = SettingsTable.GetSetting("HighlightPlayedTracks");
-            if (highlightSetting != null && highlightSetting.settingValue.Equals("1") && PlayingTrack != null)
+            if (highlightSetting != null && highlightSetting.settingValue.Equals("1") && VK_UI3.Services.MediaPlayerService.PlayingTrack != null)
             {
-                PlayingTrack.iVKGetAudio.SelectAudio(PlayingTrack);
+                VK_UI3.Services.MediaPlayerService.PlayingTrack.iVKGetAudio.SelectAudio(VK_UI3.Services.MediaPlayerService.PlayingTrack);
             }
         }
 
@@ -1098,7 +1038,7 @@ namespace VK_UI3.Controllers
             if (setting != null && setting.settingValue.Equals("1"))
                 return;
 
-            discordRichPresenceManager.SetTrack(TrackDataThis, mediaPlayer);
+            discordRichPresenceManager.SetTrack(TrackDataThis, VK_UI3.Services.MediaPlayerService.MediaPlayer);
         }
 
         private void DisableAllChildren(DependencyObject parent, bool enable = false)
@@ -1246,7 +1186,7 @@ namespace VK_UI3.Controllers
             {
                 return await iVKGetAudio.GetTrackPlay(forced);
             }
-            return _trackDataThis;
+            return VK_UI3.Services.MediaPlayerService._trackDataThis;
         }
 
         #endregion

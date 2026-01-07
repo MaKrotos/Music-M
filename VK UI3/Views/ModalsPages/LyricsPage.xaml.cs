@@ -64,7 +64,7 @@ namespace VK_UI3.Views.ModalsPages
         public MvvmHelpers.ObservableRangeCollection<object> Texts { get; } = new MvvmHelpers.ObservableRangeCollection<object>();
 
         public VkNet.Model.Attachments.Audio Track =>
-            AudioPlayer.PlayingTrack?.audio;
+            VK_UI3.Services.MediaPlayerService.PlayingTrack?.audio;
 
         public LyricsPage()
         {
@@ -176,13 +176,13 @@ namespace VK_UI3.Views.ModalsPages
 
             if (timerTickCangeCheck != null)
             {
-                timerTickCangeCheck.Invoke(this, new ArgsSeconds((int)AudioPlayer.mediaPlayer.Position.TotalMilliseconds));
+                timerTickCangeCheck.Invoke(this, new ArgsSeconds((int)VK_UI3.Services.MediaPlayerService.MediaPlayer.Position.TotalMilliseconds));
             }
 
             if (disabledAutoScroll)
                 return;
 
-            var item = GetLineNumberBySeconds((int)AudioPlayer.mediaPlayer.Position.TotalMilliseconds);
+            var item = GetLineNumberBySeconds((int)VK_UI3.Services.MediaPlayerService.MediaPlayer.Position.TotalMilliseconds);
 
             var container = ListLyrics.ContainerFromIndex((int)item) as ListViewItem;
             if (container != null)

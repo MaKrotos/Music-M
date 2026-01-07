@@ -96,7 +96,7 @@ namespace VK_UI3.Controls.Blocks
             this.Loading -= MixControl_Loading;
             this.Unloaded -= MixControl_Unloaded;
             this.DataContextChanged -= MixControl_DataContextChanged;
-            AudioPlayer.oniVKUpdate -= AudioPlayer_oniVKUpdate;
+            Services.MediaPlayerService.oniVKUpdate -= AudioPlayer_oniVKUpdate;
             /*
           
             */
@@ -133,7 +133,7 @@ namespace VK_UI3.Controls.Blocks
                 }
             }
             */
-            AudioPlayer.oniVKUpdate += AudioPlayer_oniVKUpdate;
+            Services.MediaPlayerService.oniVKUpdate += AudioPlayer_oniVKUpdate;
 
         }
 
@@ -145,7 +145,7 @@ namespace VK_UI3.Controls.Blocks
         private void startPalki()
         {
             if (block == null) return;
-            if (AudioPlayer.iVKGetAudio != null && AudioPlayer.iVKGetAudio is MixAudio mixAudio
+            if (VK_UI3.Services.MediaPlayerService.iVKGetAudio != null && VK_UI3.Services.MediaPlayerService.iVKGetAudio is MixAudio mixAudio
             && mixAudio.data.Id == block.Audio_Stream_Mixes_Ids[0]
             )
             {
