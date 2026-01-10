@@ -250,9 +250,18 @@ namespace VK_UI3.Services
                         break;
                     case SystemMediaTransportControlsButton.Previous:
                         if (_mediaPlayer.Position.TotalSeconds >= 3)
+                        {
                             _mediaPlayer.Position = TimeSpan.Zero;
+                            // Перезапускаем текущий трек
+                            if (PlayingTrack != null)
+                            {
+                                NotifyAudioPlayedChange(PlayingTrack);
+                            }
+                        }
                         else
+                        {
                             PlayPreviousTrack();
+                        }
                         break;
                     case SystemMediaTransportControlsButton.Stop:
                         _mediaPlayer.Pause();
@@ -343,6 +352,11 @@ namespace VK_UI3.Services
                 if (_mediaPlayer.Position.TotalSeconds >= 3)
                 {
                     _mediaPlayer.Position = TimeSpan.Zero;
+                    // Перезапускаем текущий трек
+                    if (PlayingTrack != null)
+                    {
+                        NotifyAudioPlayedChange(PlayingTrack);
+                    }
                 }
                 else
                 {
@@ -477,9 +491,18 @@ namespace VK_UI3.Services
                         break;
                     case MediaKey.Previous:
                         if (_mediaPlayer.Position.TotalSeconds >= 3)
+                        {
                             _mediaPlayer.Position = TimeSpan.Zero;
+                            // Перезапускаем текущий трек
+                            if (PlayingTrack != null)
+                            {
+                                NotifyAudioPlayedChange(PlayingTrack);
+                            }
+                        }
                         else
+                        {
                             PlayPreviousTrack();
+                        }
                         break;
                     case MediaKey.Stop:
                         StopPlayback();
