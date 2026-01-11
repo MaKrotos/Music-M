@@ -104,6 +104,7 @@
         <Grid Padding="10">
             <StackPanel HorizontalAlignment="Left" Orientation="Vertical">
                 <TextBlock
+                    FontSize="20"
                     x:Name="Title"
                     TextWrapping="Wrap" AutomationProperties.Name="Название плейлиста" />
                 <TextBlock
