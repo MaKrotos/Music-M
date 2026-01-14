@@ -249,19 +249,7 @@ namespace VK_UI3.Services
                         PlayNextTrack();
                         break;
                     case SystemMediaTransportControlsButton.Previous:
-                        if (_mediaPlayer.Position.TotalSeconds >= 3)
-                        {
-                            _mediaPlayer.Position = TimeSpan.Zero;
-                            // Перезапускаем текущий трек
-                            if (PlayingTrack != null)
-                            {
-                                NotifyAudioPlayedChange(PlayingTrack);
-                            }
-                        }
-                        else
-                        {
-                            PlayPreviousTrack();
-                        }
+                        HandlePreviousTrack();
                         break;
                     case SystemMediaTransportControlsButton.Stop:
                         _mediaPlayer.Pause();
@@ -301,8 +289,23 @@ namespace VK_UI3.Services
 
         private static void MediaPlayer_MediaEnded(Windows.Media.Playback.MediaPlayer sender, object args)
         {
-            // Автопереход к следующему треку
-            PlayNextTrack();
+            // Проверяем режим повтора
+            var repeatMode = SettingsTable.GetSetting("playNext")?.settingValue ?? "RepeatAll";
+            
+            // Если режим "Повторять один", то перезапускаем текущий трек
+            if (repeatMode == "RepeatOne")
+            {
+                // Перезапускаем текущий трек
+                if (PlayingTrack != null)
+                {
+                    _ = PlayTrack();
+                }
+            }
+            else
+            {
+                // Автопереход к следующему треку
+                PlayNextTrack();
+            }
         }
 
         private static void MediaPlayer_CurrentStateChanged(Windows.Media.Playback.MediaPlayer sender, object args)
@@ -349,19 +352,7 @@ namespace VK_UI3.Services
         {
             Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread().TryEnqueue(() =>
             {
-                if (_mediaPlayer.Position.TotalSeconds >= 3)
-                {
-                    _mediaPlayer.Position = TimeSpan.Zero;
-                    // Перезапускаем текущий трек
-                    if (PlayingTrack != null)
-                    {
-                        NotifyAudioPlayedChange(PlayingTrack);
-                    }
-                }
-                else
-                {
-                    PlayPreviousTrack();
-                }
+                HandlePreviousTrack();
             });
         }
 
@@ -490,19 +481,7 @@ namespace VK_UI3.Services
                         PlayNextTrack();
                         break;
                     case MediaKey.Previous:
-                        if (_mediaPlayer.Position.TotalSeconds >= 3)
-                        {
-                            _mediaPlayer.Position = TimeSpan.Zero;
-                            // Перезапускаем текущий трек
-                            if (PlayingTrack != null)
-                            {
-                                NotifyAudioPlayedChange(PlayingTrack);
-                            }
-                        }
-                        else
-                        {
-                            PlayPreviousTrack();
-                        }
+                        HandlePreviousTrack();
                         break;
                     case MediaKey.Stop:
                         StopPlayback();
@@ -641,6 +620,43 @@ namespace VK_UI3.Services
         #endregion
 
         #region Private Methods
+
+       private static readonly object _previousTrackLock = new object();
+        private static DateTime _lastPreviousTrackTime = DateTime.MinValue;
+
+        /// <summary>
+        /// Handles the previous track logic consistently across all input methods
+        /// </summary>
+        public static void HandlePreviousTrack()
+        {
+            lock (_previousTrackLock)
+            {
+                var now = DateTime.Now;
+                
+                // Проверяем, прошло ли достаточно времени с последнего вызова
+                if ((now - _lastPreviousTrackTime).TotalMilliseconds < 100)
+                {
+                    return; // Слишком частый вызов - игнорируем
+                }
+                
+                _lastPreviousTrackTime = now;
+                
+                // Основная логика метода
+                if (_mediaPlayer.Position.TotalSeconds >= 3)
+                {
+                    _mediaPlayer.Position = TimeSpan.Zero;
+                    // Перезапускаем текущий трек
+                    if (PlayingTrack != null)
+                    {
+                        _ = PlayTrack();
+                    }
+                }
+                else
+                {
+                    PlayPreviousTrack();
+                }
+            }
+        }
 
         private async static Task PlayTrack(long? v = 0, TimeSpan? position = null)
         {

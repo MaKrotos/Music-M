@@ -306,7 +306,7 @@ namespace VK_UI3.Controllers
 
         private void PreviousBTN_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            PlayPreviousTrack();
+            VK_UI3.Services.MediaPlayerService.HandlePreviousTrack();
         }
 
         private void NextBTN_Tapped(object sender, TappedRoutedEventArgs e)
@@ -463,10 +463,6 @@ namespace VK_UI3.Controllers
             VK_UI3.Services.MediaPlayerService.PlayNextTrack();
         }
 
-        internal static void PlayPreviousTrack()
-        {
-            VK_UI3.Services.MediaPlayerService.PlayPreviousTrack();
-        }
 
         internal static async void PlayList(IVKGetAudio userAudio)
         {
