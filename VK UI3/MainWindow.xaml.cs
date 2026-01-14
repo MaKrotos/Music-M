@@ -76,12 +76,6 @@ namespace VK_UI3
             InitializeUIComponents();
             InitializeNavigation();
             MediaPlayerService.Initialize(this);
-
-            this.Closed += (sender, args) =>
-            {
-                MediaPlayerService.Cleanup();
-            };
-
         }
 
         private void InitializeWindowProperties()
