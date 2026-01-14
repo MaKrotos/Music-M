@@ -29,7 +29,7 @@ namespace VK_UI3.Services
     {
         #region Constants and Static Fields
 
-        public const int MEDIA_KEY_DEBOUNCE_MS = 200;
+        public const int MEDIA_KEY_DEBOUNCE_MS = 100;
         public static readonly IEnumerable<ITrackMediaSource> _mediaSources = App._host.Services.GetRequiredService<IEnumerable<ITrackMediaSource>>();
         public static Windows.Media.Playback.MediaPlayer _mediaPlayer = new MediaPlayer();
         public static IVKGetAudio _iVKGetAudio = null;
@@ -506,7 +506,7 @@ namespace VK_UI3.Services
                 // Если трек не загружен, пытаемся загрузить текущий
                 if (_mediaPlayer.Source == null && iVKGetAudio?.currentTrack != null)
                 {
-                    await PlayTrack();
+                    _ = PlayTrack();
                 }
                 else
                 {
@@ -563,11 +563,10 @@ namespace VK_UI3.Services
                 try
                 {
                     iVKGetAudio?.setNextTrackForPlay();
-                    await PlayTrack();
+                    _ = PlayTrack();
                 }
                 finally
                 {
-                    await Task.Delay(MEDIA_KEY_DEBOUNCE_MS);
                     _isProcessingMediaKey = false;
                 }
             });
@@ -584,7 +583,7 @@ namespace VK_UI3.Services
                 try
                 {
                     iVKGetAudio?.setPreviusTrackForPlay();
-                    await PlayTrack();
+                    _ = PlayTrack();
                 }
                 finally
                 {
@@ -614,7 +613,7 @@ namespace VK_UI3.Services
             if (userAudio.listAudio.Count == 0) return;
 
             iVKGetAudio = userAudio;
-            await PlayTrack();
+            _ = PlayTrack();
         }
 
         #endregion
@@ -634,7 +633,7 @@ namespace VK_UI3.Services
                 var now = DateTime.Now;
                 
                 // Проверяем, прошло ли достаточно времени с последнего вызова
-                if ((now - _lastPreviousTrackTime).TotalMilliseconds < 100)
+                if ((now - _lastPreviousTrackTime).TotalMilliseconds < MEDIA_KEY_DEBOUNCE_MS)
                 {
                     return; // Слишком частый вызов - игнорируем
                 }
