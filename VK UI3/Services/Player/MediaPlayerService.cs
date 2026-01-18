@@ -560,7 +560,7 @@ namespace VK_UI3.Services
 
             try
             {
-                Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread().TryEnqueue(() =>
+                MainWindow.mainWindow.DispatcherQueue.TryEnqueue(() =>
                 {
                     iVKGetAudio?.setNextTrackForPlay();
                     _ = PlayTrack();
@@ -586,7 +586,7 @@ namespace VK_UI3.Services
 
             try
             {
-                Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread().TryEnqueue(() =>
+                MainWindow.mainWindow.DispatcherQueue.TryEnqueue(() =>
                 {
                     iVKGetAudio?.setPreviusTrackForPlay();
                     _ = PlayTrack();
