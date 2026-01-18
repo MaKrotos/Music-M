@@ -29,7 +29,7 @@ namespace VK_UI3.Services
     {
         #region Constants and Static Fields
 
-        public const int MEDIA_KEY_DEBOUNCE_MS = 100;
+        public const int MEDIA_KEY_DEBOUNCE_MS = 250;
         public static readonly IEnumerable<ITrackMediaSource> _mediaSources = App._host.Services.GetRequiredService<IEnumerable<ITrackMediaSource>>();
         public static Windows.Media.Playback.MediaPlayer _mediaPlayer = new MediaPlayer();
         public static IVKGetAudio _iVKGetAudio = null;
@@ -318,7 +318,6 @@ namespace VK_UI3.Services
             // Обновить отображение текущего трека
             if (PlayingTrack != null)
             {
-                UpdateSystemMediaDisplay(PlayingTrack);
                 NotifyAudioPlayedChange(PlayingTrack);
             }
         }
@@ -549,7 +548,7 @@ namespace VK_UI3.Services
 
         public static void NotifyAudioPlayedChange(ExtendedAudio trackdata)
         {
-            AudioPlayedChangeEvent?.Invoke(trackdata, EventArgs.Empty);
+            
         }
 
         public static void PlayNextTrack()
@@ -672,6 +671,7 @@ namespace VK_UI3.Services
 
             if (v != null && iVKGetAudio.currentTrack == null)
                 iVKGetAudio.currentTrack = (long)v;
+            UpdateSystemMediaDisplay(PlayingTrack);
 
             var trackdata = await _TrackDataThisGet(true);
             if (trackdata == null)
@@ -686,7 +686,7 @@ namespace VK_UI3.Services
                 return;
             }
 
-            await LoadAndPlayTrack(trackdata, position);
+            LoadAndPlayTrack(trackdata, position);
         }
 
         private static async Task EnsureTrackListLoaded()
@@ -779,6 +779,9 @@ namespace VK_UI3.Services
         {
             try
             {
+                if (trackdata is null)
+                    return;
+
                 var systemControls = _mediaPlayer.SystemMediaTransportControls;
                 var updater = systemControls.DisplayUpdater;
 
@@ -823,6 +826,7 @@ namespace VK_UI3.Services
                     MediaPlaybackState.Buffering => MediaPlaybackStatus.Changing,
                     _ => MediaPlaybackStatus.Stopped
                 };
+                AudioPlayedChangeEvent?.Invoke(trackdata, EventArgs.Empty);
             }
             catch (Exception ex)
             {
