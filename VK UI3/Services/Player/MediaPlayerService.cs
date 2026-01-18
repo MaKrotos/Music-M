@@ -31,7 +31,7 @@ namespace VK_UI3.Services
 
         public const int MEDIA_KEY_DEBOUNCE_MS = 250;
         public static readonly IEnumerable<ITrackMediaSource> _mediaSources = App._host.Services.GetRequiredService<IEnumerable<ITrackMediaSource>>();
-        public static Windows.Media.Playback.MediaPlayer _mediaPlayer = new MediaPlayer();
+        public static MediaPlayer _mediaPlayer = new MediaPlayer();
         public static IVKGetAudio _iVKGetAudio = null;
         public static AudioEqualizer _equalizer = null;
         public static ExtendedAudio _trackDataThis;
@@ -556,41 +556,52 @@ namespace VK_UI3.Services
             // Debounce для предотвращения множественных вызовов
             if (_isProcessingMediaKey) return;
 
-            Task.Run(async () =>
+            _isProcessingMediaKey = true;
+
+            try
             {
-                _isProcessingMediaKey = true;
-                try
+                Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread().TryEnqueue(() =>
                 {
                     iVKGetAudio?.setNextTrackForPlay();
                     _ = PlayTrack();
-                }
-                finally
+                });
+            }
+            finally
+            {
+                // Снимаем флаг через небольшой таймаут
+                Task.Delay(MEDIA_KEY_DEBOUNCE_MS).ContinueWith(_ =>
                 {
                     _isProcessingMediaKey = false;
-                }
-            });
+                });
+            }
         }
+
 
         public static void PlayPreviousTrack()
         {
             // Debounce для предотвращения множественных вызовов
             if (_isProcessingMediaKey) return;
 
-            Task.Run(async () =>
+            _isProcessingMediaKey = true;
+
+            try
             {
-                _isProcessingMediaKey = true;
-                try
+                Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread().TryEnqueue(() =>
                 {
                     iVKGetAudio?.setPreviusTrackForPlay();
                     _ = PlayTrack();
-                }
-                finally
+                });
+            }
+            finally
+            {
+                // Снимаем флаг через небольшой таймаут
+                Task.Delay(MEDIA_KEY_DEBOUNCE_MS).ContinueWith(_ =>
                 {
-                    await Task.Delay(MEDIA_KEY_DEBOUNCE_MS);
                     _isProcessingMediaKey = false;
-                }
-            });
+                });
+            }
         }
+
 
         public static async void PlayList(IVKGetAudio userAudio)
         {
@@ -764,15 +775,17 @@ namespace VK_UI3.Services
 
             if (position != null)
             {
-                _mediaPlayer.Position = (TimeSpan)position;
+                _mediaPlayer.Position = new TimeSpan(0);
             }
 
-            _mediaPlayer.Play();
             iVKGetAudio.ChangePlayAudio(trackdata);
             NotifyAudioPlayedChange(trackdata);
 
             // Обновить отображение в SystemMediaTransportControls
             UpdateSystemMediaDisplay(trackdata);
+
+            _mediaPlayer.Play();
+
         }
 
         private static void UpdateSystemMediaDisplay(ExtendedAudio trackdata)
