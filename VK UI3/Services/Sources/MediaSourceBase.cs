@@ -157,8 +157,11 @@ public abstract class MediaSourceBase : ITrackMediaSource
 
     protected static MediaPlaybackItem CreateMediaPlaybackItem(MediaFile file)
     {
+        System.Diagnostics.Debug.WriteLine("[FFMedia] CreateMediaPlaybackItem started");
         var streamingSource = CreateFFMediaStreamSource(file);
-        return new MediaPlaybackItem(MediaSource.CreateFromMediaStreamSource(streamingSource));
+        var mediaPlaybackItem = new MediaPlaybackItem(MediaSource.CreateFromMediaStreamSource(streamingSource));
+        System.Diagnostics.Debug.WriteLine("[FFMedia] CreateMediaPlaybackItem completed");
+        return mediaPlaybackItem;
     }
 
     public static MediaStreamSource CreateFFMediaStreamSource(string url)
@@ -234,6 +237,11 @@ public abstract class MediaSourceBase : ITrackMediaSource
                 if (!file.IsDisposed)
                 {
                     file.Dispose();
+                    Debug.WriteLine("[FFMedia] File disposed successfully");
+                }
+                else
+                {
+                    Debug.WriteLine("[FFMedia] File was already disposed");
                 }
             }
             catch (Exception ex)
@@ -530,18 +538,26 @@ public abstract class MediaSourceBase : ITrackMediaSource
 
     protected static void RegisterSourceObjectReference(MediaPlayer player, IWinRTObject rtObject)
     {
+        Debug.WriteLine("[FFMedia] Registering source object reference");
         GC.SuppressFinalize(rtObject.NativeObject);
 
         player.SourceChanged += PlayerOnSourceChanged;
 
         void PlayerOnSourceChanged(MediaPlayer sender, object args)
         {
+            Debug.WriteLine("[FFMedia] Player source changed, disposing rtObject");
             player.SourceChanged -= PlayerOnSourceChanged;
 
             if (rtObject is IDisposable disposable)
+            {
                 disposable.Dispose();
+                Debug.WriteLine("[FFMedia] rtObject disposed successfully");
+            }
             else
+            {
                 GC.ReRegisterForFinalize(rtObject);
+                Debug.WriteLine("[FFMedia] rtObject re-registered for finalization");
+            }
         }
     }
 }

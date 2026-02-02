@@ -415,6 +415,7 @@ namespace VK_UI3.Services
 
         public static void Cleanup()
         {
+            System.Diagnostics.Debug.WriteLine("[MemoryLeakDebug] Cleanup started");
             if (!_isInitialized) return;
 
             _mediaKeyHook?.Dispose();
@@ -444,9 +445,14 @@ namespace VK_UI3.Services
 
                 _mediaPlayer.PlaybackSession.PositionChanged -= PlaybackSession_PositionChanged;
                 _mediaPlayer.PlaybackSession.PlaybackStateChanged -= PlaybackSession_PlaybackStateChanged;
+                
+                // Освобождаем ресурсы медиаплеера
+                _mediaPlayer.Dispose();
+                System.Diagnostics.Debug.WriteLine("[MemoryLeakDebug] MediaPlayer disposed");
             }
 
             _isInitialized = false;
+            System.Diagnostics.Debug.WriteLine("[MemoryLeakDebug] Cleanup completed");
         }
 
         private static void OnMediaPlayerVolumeChanged(Windows.Media.Playback.MediaPlayer sender, object args)
@@ -758,20 +764,28 @@ namespace VK_UI3.Services
 
         private static async Task LoadAndPlayTrack(ExtendedAudio trackdata, TimeSpan? position)
         {
+            System.Diagnostics.Debug.WriteLine($"[MemoryLeakDebug] LoadAndPlayTrack started for track: {trackdata.audio.Title}");
+
             var mediaSource = Windows.Media.Core.MediaSource.CreateFromUri(new Uri(trackdata.audio.Url.ToString()));
             var mediaPlaybackItem = new Windows.Media.Playback.MediaPlaybackItem(mediaSource);
 
             PlayingTrack = trackdata;
             _mediaPlayer.Pause();
 
+            System.Diagnostics.Debug.WriteLine($"[MemoryLeakDebug] Before LoadWithMediaSources/LodBasicMediaItem");
+
             if (new CheckFFmpeg().IsExist())
             {
+                System.Diagnostics.Debug.WriteLine($"[MemoryLeakDebug] Using FFmpeg path");
                 await LoadWithMediaSources(trackdata);
             }
             else
             {
+                System.Diagnostics.Debug.WriteLine($"[MemoryLeakDebug] Using basic media item path");
                 LoadBasicMediaItem(trackdata, mediaPlaybackItem);
             }
+
+            System.Diagnostics.Debug.WriteLine($"[MemoryLeakDebug] After LoadWithMediaSources/LodBasicMediaItem");
 
             if (position != null)
             {
@@ -786,6 +800,7 @@ namespace VK_UI3.Services
 
             _mediaPlayer.Play();
 
+            System.Diagnostics.Debug.WriteLine($"[MemoryLeakDebug] LoadAndPlayTrack completed for track: {trackdata.audio.Title}");
         }
 
         private static void UpdateSystemMediaDisplay(ExtendedAudio trackdata)
@@ -849,15 +864,18 @@ namespace VK_UI3.Services
 
         private static async Task LoadWithMediaSources(ExtendedAudio trackdata)
         {
+            System.Diagnostics.Debug.WriteLine($"[MemoryLeakDebug] LoadWithMediaSources started for track: {trackdata.audio.Title}");
             var allSourcesTask = Task.WhenAll(_mediaSources.Select(b =>
                 b.OpenWithMediaPlayerAsync(_mediaPlayer, trackdata.audio, _tokenSource.Token, equalizer: _equalizer)));
 
             try
             {
                 await allSourcesTask;
+                System.Diagnostics.Debug.WriteLine($"[MemoryLeakDebug] LoadWithMediaSources completed for track: {trackdata.audio.Title}");
             }
             catch
             {
+                System.Diagnostics.Debug.WriteLine($"[MemoryLeakDebug] LoadWithMediaSources failed for track: {trackdata.audio.Title}");
                 if (allSourcesTask.IsCanceled ||
                     allSourcesTask.Exception?.InnerExceptions.All(b => b is OperationCanceledException) is true)
                     return;
@@ -867,6 +885,7 @@ namespace VK_UI3.Services
 
             if (!allSourcesTask.Result.Any(b => b))
             {
+                System.Diagnostics.Debug.WriteLine($"[MemoryLeakDebug] No sources succeeded for track: {trackdata.audio.Title}");
                 PlayNextTrack();
                 return;
             }
@@ -874,6 +893,8 @@ namespace VK_UI3.Services
 
         private static void LoadBasicMediaItem(ExtendedAudio trackdata, MediaPlaybackItem mediaPlaybackItem)
         {
+            System.Diagnostics.Debug.WriteLine($"[MemoryLeakDebug] LoadBasicMediaItem started for track: {trackdata.audio.Title}");
+           
             MediaItemDisplayProperties props = mediaPlaybackItem.GetDisplayProperties();
             props.Type = Windows.Media.MediaPlaybackType.Music;
             props.MusicProperties.Title = trackdata.audio.Title;
@@ -897,6 +918,8 @@ namespace VK_UI3.Services
             _mediaPlayer.PlaybackSession.Position = TimeSpan.FromMilliseconds(1);
             // Note: MainWindow.mainWindow.requstDownloadFFMpegAsync(); will need to be handled elsewhere
             _mediaPlayer.Source = mediaPlaybackItem;
+            
+            System.Diagnostics.Debug.WriteLine($"[MemoryLeakDebug] LoadBasicMediaItem completed for track: {trackdata.audio.Title}");
         }
 
         public static async Task<ExtendedAudio> _TrackDataThisGet(bool forced = false)

@@ -128,7 +128,7 @@ public class VkMediaSource : MediaSourceBase
             // i think its better to use task.run over task.yield because we aren't doing async with ffmpeg
             var playbackItem = await Task.Run(() =>
             {
-                var file = MediaFile.Open(track.Url.ToString(), mediaOptions);
+                using var file = MediaFile.Open(track.Url.ToString(), mediaOptions);
 
                 return CreateMediaPlaybackItem(file);
             }, cancellationToken);
