@@ -36,7 +36,9 @@ namespace VK_UI3.Services
         public static AudioEqualizer _equalizer = null;
         public static ExtendedAudio _trackDataThis;
         public static ExtendedAudio _playingTrack = null;
+        public static ExtendedAudio _nextTrack = null;
         public static CancellationTokenSource? _tokenSource;
+        public static CancellationTokenSource? _nextTrackTokenSource;
         public static bool _isProcessingMediaKey = false;
         public static DateTime _lastMediaKeyTime = DateTime.MinValue;
 
@@ -724,6 +726,11 @@ namespace VK_UI3.Services
                 _tokenSource?.Dispose();
                 _tokenSource = new();
 
+                // Отменяем предзагрузку предыдущего следующего трека
+                _nextTrackTokenSource?.Cancel();
+                _nextTrackTokenSource?.Dispose();
+                _nextTrack = null;
+
                 await EnsureTrackListLoaded();
 
                 if (iVKGetAudio.listAudio.Count == 0) return;
@@ -864,6 +871,9 @@ namespace VK_UI3.Services
                 _mediaPlayer.Play();
 
                 System.Diagnostics.Debug.WriteLine($"[TrackSwitch] LoadAndPlayTrack completed for track: {trackdata.audio.Title}");
+
+                // Начинаем предзагрузку следующего трека
+                _ = PreloadNextTrack();
             }
             catch (Exception ex)
             {
@@ -1010,6 +1020,36 @@ namespace VK_UI3.Services
         private static void MediaPlaybackItem_TimedMetadataTracksChanged(MediaPlaybackItem sender, Windows.Foundation.Collections.IVectorChangedEventArgs args)
         {
             System.Diagnostics.Debug.WriteLine($"[TrackSwitch] Metadata tracks changed: {args.CollectionChange}");
+        }
+
+        private static async Task PreloadNextTrack()
+        {
+            try
+            {
+                // Создаем новый CancellationToken для предзагрузки
+                _nextTrackTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+
+                // Получаем следующий трек
+                var nextTrack = await iVKGetAudio?.GetTrackPlay(false);
+                if (nextTrack == null || string.IsNullOrEmpty(nextTrack.audio?.Url?.ToString()))
+                {
+                    return;
+                }
+
+                // Проверяем, не отменирован ли токен
+                if (_nextTrackTokenSource.Token.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                // Сохраняем следующий трек для быстрой загрузки
+                _nextTrack = nextTrack;
+                System.Diagnostics.Debug.WriteLine($"[Preload] Next track preloaded: {nextTrack.audio.Title}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Preload] Error preloading next track: {ex.Message}");
+            }
         }
     }
 }

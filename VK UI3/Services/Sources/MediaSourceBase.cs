@@ -139,12 +139,15 @@ public abstract class MediaSourceBase : ITrackMediaSource
                 ["reconnect_on_network_error"] = "1",
                 ["reconnect_delay_max"] = "5",
                 ["reconnect_on_http_error"] = "4xx,5xx",
-                ["stimeout"] = "10000000",
-                ["timeout"] = "10000000",
-                ["rw_timeout"] = "10000000",
+                ["stimeout"] = "5000000",
+                ["timeout"] = "5000000",
+                ["rw_timeout"] = "5000000",
                 ["avioflags"] = "direct",
                 ["multiple_requests"] = "1",
-                ["buffer_size"] = "1024000",
+                ["buffer_size"] = "4194304",
+                ["max_buffer_size"] = "2097152",
+                ["probesize"] = "1048576",
+                ["analyzeduration"] = "1000000",
                 ["max_delay"] = "500000",
                 ["fflags"] = "+nobuffer+fastseek",
                 ["http_proxy"] = "",
@@ -191,7 +194,7 @@ public abstract class MediaSourceBase : ITrackMediaSource
         var position = TimeSpan.Zero;
         var isBuffering = false;
         var lastSampleTime = DateTime.Now;
-        var bufferThreshold = TimeSpan.FromSeconds(1.5);
+        var bufferThreshold = TimeSpan.FromSeconds(0.5);
         var consecutiveErrors = 0;
         var maxConsecutiveErrors = 3;
 
