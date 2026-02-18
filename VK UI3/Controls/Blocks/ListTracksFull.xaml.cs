@@ -32,7 +32,7 @@ namespace VK_UI3.Controls.Blocks
 
         private void ListTracksFull_Loaded(object sender, RoutedEventArgs e)
         {
-            Services.MediaPlayerService.onClickonTrack += AudioPlayer_onClickonTrack;
+            AudioPlayer.onClickonTrack += AudioPlayer_onClickonTrack;
         }
 
         private T FindParentByName<T>(DependencyObject child, string name) where T : FrameworkElement
@@ -88,7 +88,7 @@ namespace VK_UI3.Controls.Blocks
         private void ListTracksFull_Unloaded(object sender, RoutedEventArgs e)
         {
             this.Loaded -= ListTracksFull_Loaded;
-            Services.MediaPlayerService.onClickonTrack -= AudioPlayer_onClickonTrack;
+            AudioPlayer.onClickonTrack -= AudioPlayer_onClickonTrack;
             this.DataContextChanged -= ListTracks_DataContextChanged;
             try
             {

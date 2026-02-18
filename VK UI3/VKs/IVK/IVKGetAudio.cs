@@ -402,7 +402,7 @@ namespace VK_UI3.VKs.IVK
         public void PlayThis()
         {
             this.currentTrack = 0;
-            VK_UI3.Services.MediaPlayerService.PlayList(this);
+            AudioPlayer.PlayList(this);
         }
         
         /// <summary>
@@ -419,7 +419,7 @@ namespace VK_UI3.VKs.IVK
             {
                 currentTrack = numberInList;
             }
-            VK_UI3.Services.MediaPlayerService.PlayList(this);
+            AudioPlayer.PlayList(this);
         }
         
         /// <summary>

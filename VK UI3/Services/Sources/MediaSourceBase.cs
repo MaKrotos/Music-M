@@ -139,15 +139,12 @@ public abstract class MediaSourceBase : ITrackMediaSource
                 ["reconnect_on_network_error"] = "1",
                 ["reconnect_delay_max"] = "5",
                 ["reconnect_on_http_error"] = "4xx,5xx",
-                ["stimeout"] = "5000000",
-                ["timeout"] = "5000000",
-                ["rw_timeout"] = "5000000",
+                ["stimeout"] = "10000000",
+                ["timeout"] = "10000000",
+                ["rw_timeout"] = "10000000",
                 ["avioflags"] = "direct",
                 ["multiple_requests"] = "1",
-                ["buffer_size"] = "4194304",
-                ["max_buffer_size"] = "2097152",
-                ["probesize"] = "1048576",
-                ["analyzeduration"] = "1000000",
+                ["buffer_size"] = "1024000",
                 ["max_delay"] = "500000",
                 ["fflags"] = "+nobuffer+fastseek",
                 ["http_proxy"] = "",
@@ -160,11 +157,8 @@ public abstract class MediaSourceBase : ITrackMediaSource
 
     protected static MediaPlaybackItem CreateMediaPlaybackItem(MediaFile file)
     {
-        System.Diagnostics.Debug.WriteLine("[FFMedia] CreateMediaPlaybackItem started");
         var streamingSource = CreateFFMediaStreamSource(file);
-        var mediaPlaybackItem = new MediaPlaybackItem(MediaSource.CreateFromMediaStreamSource(streamingSource));
-        System.Diagnostics.Debug.WriteLine("[FFMedia] CreateMediaPlaybackItem completed");
-        return mediaPlaybackItem;
+        return new MediaPlaybackItem(MediaSource.CreateFromMediaStreamSource(streamingSource));
     }
 
     public static MediaStreamSource CreateFFMediaStreamSource(string url)
@@ -194,7 +188,7 @@ public abstract class MediaSourceBase : ITrackMediaSource
         var position = TimeSpan.Zero;
         var isBuffering = false;
         var lastSampleTime = DateTime.Now;
-        var bufferThreshold = TimeSpan.FromSeconds(0.5);
+        var bufferThreshold = TimeSpan.FromSeconds(1.5);
         var consecutiveErrors = 0;
         var maxConsecutiveErrors = 3;
 
@@ -240,11 +234,6 @@ public abstract class MediaSourceBase : ITrackMediaSource
                 if (!file.IsDisposed)
                 {
                     file.Dispose();
-                    Debug.WriteLine("[FFMedia] File disposed successfully");
-                }
-                else
-                {
-                    Debug.WriteLine("[FFMedia] File was already disposed");
                 }
             }
             catch (Exception ex)
@@ -541,26 +530,18 @@ public abstract class MediaSourceBase : ITrackMediaSource
 
     protected static void RegisterSourceObjectReference(MediaPlayer player, IWinRTObject rtObject)
     {
-        Debug.WriteLine("[FFMedia] Registering source object reference");
         GC.SuppressFinalize(rtObject.NativeObject);
 
         player.SourceChanged += PlayerOnSourceChanged;
 
         void PlayerOnSourceChanged(MediaPlayer sender, object args)
         {
-            Debug.WriteLine("[FFMedia] Player source changed, disposing rtObject");
             player.SourceChanged -= PlayerOnSourceChanged;
 
             if (rtObject is IDisposable disposable)
-            {
                 disposable.Dispose();
-                Debug.WriteLine("[FFMedia] rtObject disposed successfully");
-            }
             else
-            {
                 GC.ReRegisterForFinalize(rtObject);
-                Debug.WriteLine("[FFMedia] rtObject re-registered for finalization");
-            }
         }
     }
 }

@@ -877,11 +877,11 @@ namespace VK_UI3.Views
 
             ExpandAnimationPlayingList.Begin();
 
-            if (VK_UI3.Services.MediaPlayerService.iVKGetAudio != null)
+            if (AudioPlayer.iVKGetAudio != null)
             {
                 var waitParameters = new WaitParameters();
                 waitParameters.sectionType = SectionType.CustomIVKGetAudio;
-                waitParameters.iVKGetAudio = VK_UI3.Services.MediaPlayerService.iVKGetAudio;
+                waitParameters.iVKGetAudio = AudioPlayer.iVKGetAudio;
                 SectionViewPageNowPlayingList.Navigate(typeof(WaitView), waitParameters, new DrillInNavigationTransitionInfo());
             }
         }
@@ -894,7 +894,7 @@ namespace VK_UI3.Views
             {
                 var waitParameters = new WaitParameters();
                 waitParameters.sectionType = SectionType.CustomIVKGetAudio;
-                waitParameters.iVKGetAudio = VK_UI3.Services.MediaPlayerService.iVKGetAudio;
+                waitParameters.iVKGetAudio = AudioPlayer.iVKGetAudio;
 
                 this.DispatcherQueue.TryEnqueue(async () =>
                 {

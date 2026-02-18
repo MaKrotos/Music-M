@@ -40,12 +40,12 @@ namespace VK_UI3.Controls
 
         private void PlaylistControl_Loaded(object sender, RoutedEventArgs e)
         {
-            Services.MediaPlayerService.oniVKUpdate += AudioPlayer_oniVKUpdate;
+            AudioPlayer.oniVKUpdate += AudioPlayer_oniVKUpdate;
         }
 
         private void PlaylistControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            Services.MediaPlayerService.oniVKUpdate -= AudioPlayer_oniVKUpdate;
+            AudioPlayer.oniVKUpdate -= AudioPlayer_oniVKUpdate;
 
             this.Unloaded -= PlaylistControl_Unloaded;
             this.Loaded -= PlaylistControl_Loaded;
@@ -69,7 +69,7 @@ namespace VK_UI3.Controls
                 {
                     icon = pause ? "\uE768" : "\uE769";
                 }
-                else if (isThisPlayList_Now_Play && VK_UI3.Services.MediaPlayerService.MediaPlayer.PlaybackSession.PlaybackState != Windows.Media.Playback.MediaPlaybackState.Paused)
+                else if (isThisPlayList_Now_Play && AudioPlayer.mediaPlayer.PlaybackSession.PlaybackState != Windows.Media.Playback.MediaPlaybackState.Paused)
                 {
                     icon = "\uE769";
                 }
@@ -96,13 +96,13 @@ namespace VK_UI3.Controls
         {
             get
             {
-                if (_PlayList == null || VK_UI3.Services.MediaPlayerService.iVKGetAudio == null)
+                if (_PlayList == null || AudioPlayer.iVKGetAudio == null)
                     return false;
 
-                if (!(VK_UI3.Services.MediaPlayerService.iVKGetAudio is PlayListVK))
+                if (!(AudioPlayer.iVKGetAudio is PlayListVK))
                     return false;
 
-                var playlist = (VK_UI3.Services.MediaPlayerService.iVKGetAudio as PlayListVK).playlist;
+                var playlist = (AudioPlayer.iVKGetAudio as PlayListVK).playlist;
 
                 if (playlist == _PlayList)
                     return true;
@@ -179,7 +179,7 @@ namespace VK_UI3.Controls
             }
             catch (Exception ex)
             {
-                // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+                // Добавьте здесь обработку исключений, например, логирование
                 Console.WriteLine(ex.Message);
             }
             updateAddedBTN();
@@ -272,12 +272,12 @@ namespace VK_UI3.Controls
                 if (AddRemove.Visibility != Visibility.Collapsed)
                     if (!_PlayList.IsFollowing && _PlayList.OwnerId != AccountsDB.activeAccount.id)
                     {
-                        AddRemove.Text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ";
+                        AddRemove.Text = "Добавить к себе";
                         AddRemove.Icon = new SymbolIcon(Symbol.Add);
                     }
                     else
                     {
-                        AddRemove.Text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ";
+                        AddRemove.Text = "Отписаться";
                         AddRemove.Icon = new SymbolIcon(Symbol.Delete);
 
 
@@ -326,14 +326,14 @@ namespace VK_UI3.Controls
 
             if (isThisPlayList_Now_Play)
             {
-                if (VK_UI3.Services.MediaPlayerService.MediaPlayer.PlaybackSession.PlaybackState != Windows.Media.Playback.MediaPlaybackState.Paused)
+                if (AudioPlayer.mediaPlayer.PlaybackSession.PlaybackState != Windows.Media.Playback.MediaPlaybackState.Paused)
                 {
-                    VK_UI3.Services.MediaPlayerService.MediaPlayer.Pause();
+                    AudioPlayer.mediaPlayer.Pause();
                     updatePlayState(true, true);
                 }
                 else
                 {
-                    VK_UI3.Services.MediaPlayerService.MediaPlayer.Play();
+                    AudioPlayer.mediaPlayer.Play();
                     updatePlayState(true, false);
                 }
 

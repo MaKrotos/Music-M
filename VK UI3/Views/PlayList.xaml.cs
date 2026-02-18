@@ -22,9 +22,9 @@ namespace VK_UI3.Views
         {
             get
             {
-                return VK_UI3.Services.MediaPlayerService.iVKGetAudio;
+                return AudioPlayer.iVKGetAudio;
             }
-            set { VK_UI3.Services.MediaPlayerService.iVKGetAudio = value; }
+            set { AudioPlayer.iVKGetAudio = value; }
 
         }
         public PlayList()
@@ -32,7 +32,7 @@ namespace VK_UI3.Views
             this.InitializeComponent();
             this.Loaded += PlayListPage_Loaded;
             this.Unloaded += PlayListPage_Unloaded;
-            VK_UI3.Services.MediaPlayerService.onClickonTrack += AudioPlayer_onClickonTrack;
+            AudioPlayer.onClickonTrack += AudioPlayer_onClickonTrack;
         }
 
         private void PlayListPage_Unloaded(object sender, RoutedEventArgs e)
@@ -76,7 +76,7 @@ namespace VK_UI3.Views
         ScrollViewer scrollViewer;
         private void desctruct()
         {
-            VK_UI3.Services.MediaPlayerService.onClickonTrack -= AudioPlayer_onClickonTrack;
+            AudioPlayer.onClickonTrack -= AudioPlayer_onClickonTrack;
 
             this.Loaded -= PlayListPage_Loaded;
             this.Unloaded -= PlayListPage_Unloaded;

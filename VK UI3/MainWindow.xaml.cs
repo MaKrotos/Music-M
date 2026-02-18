@@ -21,7 +21,6 @@ using System.Threading.Tasks;
 using VK_UI3.DB;
 using VK_UI3.DownloadTrack;
 using VK_UI3.Helpers;
-using VK_UI3.Services;
 using VK_UI3.Views;
 using VK_UI3.Views.LoginWindow;
 using VK_UI3.Views.Notification;
@@ -75,7 +74,8 @@ namespace VK_UI3
             InitializeEventHandlers();
             InitializeUIComponents();
             InitializeNavigation();
-            MediaPlayerService.Initialize(this);
+
+
         }
 
         private void InitializeWindowProperties()

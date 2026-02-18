@@ -50,7 +50,7 @@ namespace VK_UI3.Controls
             addedHandler = false;
             if (dataTrack != null)
             {
-                Services.MediaPlayerService.AudioPlayedChangeEvent -= UserAudio_AudioPlayedChangeEvent;
+                AudioPlayer.AudioPlayedChangeEvent -= UserAudio_AudioPlayedChangeEvent;
             }
             //   this.DataContextChanged -= TrackControl_DataContextChanged;
             //   Loaded -= TrackControl_Loaded;
@@ -248,7 +248,7 @@ namespace VK_UI3.Controls
 
             if (dataTrack != null && !addedHandler)
             {
-                Services.MediaPlayerService.AudioPlayedChangeEvent += UserAudio_AudioPlayedChangeEvent;
+                AudioPlayer.AudioPlayedChangeEvent += UserAudio_AudioPlayedChangeEvent;
                 addedHandler = true;
             }
         }
@@ -438,9 +438,9 @@ namespace VK_UI3.Controls
                 return;
             }
 
-            if (dataTrack.PlayThis && VK_UI3.Services.MediaPlayerService.MediaPlayer.CurrentState != Windows.Media.Playback.MediaPlayerState.Paused)
+            if (dataTrack.PlayThis && AudioPlayer.mediaPlayer.CurrentState != Windows.Media.Playback.MediaPlayerState.Paused)
             {
-                VK_UI3.Services.MediaPlayerService.MediaPlayer.Pause();
+                AudioPlayer.mediaPlayer.Pause();
                 return;
             }
 

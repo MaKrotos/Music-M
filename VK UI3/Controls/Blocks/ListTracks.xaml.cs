@@ -34,7 +34,7 @@ namespace VK_UI3.Controls.Blocks
             this.DataContextChanged -= ListTracks_DataContextChanged;
             this.Loaded -= ListTracks_Loaded;
             this.Unloaded -= ListTracks_Unloaded;
-            Services.MediaPlayerService.onClickonTrack -= AudioPlayer_onClickonTrack;
+            AudioPlayer.onClickonTrack -= AudioPlayer_onClickonTrack;
             if (connected)
             {
                 sectionAudio.onListUpdate -= SectionAudio_onListUpdate;
@@ -48,7 +48,7 @@ namespace VK_UI3.Controls.Blocks
 
         private void ListTracks_Loaded(object sender, RoutedEventArgs e)
         {
-            Services.MediaPlayerService.onClickonTrack += AudioPlayer_onClickonTrack;
+            AudioPlayer.onClickonTrack += AudioPlayer_onClickonTrack;
             try
             {
                 sectionAudio?.NotifyOnListUpdate();

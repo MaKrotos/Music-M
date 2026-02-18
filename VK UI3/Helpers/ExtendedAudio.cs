@@ -36,7 +36,7 @@ namespace VK_UI3.Helpers
         {
             get
             {
-                var trackdata = VK_UI3.Services.MediaPlayerService._TrackDataThisGet().Result;
+                var trackdata = AudioPlayer._TrackDataThisGet().Result;
 
                 if (trackdata == null) return false;
 

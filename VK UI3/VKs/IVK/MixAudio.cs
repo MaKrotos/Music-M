@@ -93,7 +93,7 @@ namespace VK_UI3.VKs.IVK
                     // onErrorLoad?.Invoke(this, new ErrorLoad(e));
                 }
                 this.currentTrack = 0;
-                VK_UI3.Services.MediaPlayerService.PlayList(this);
+                AudioPlayer.PlayList(this);
             });
         }
         

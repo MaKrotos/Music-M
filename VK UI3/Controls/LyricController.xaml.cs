@@ -102,7 +102,7 @@ namespace VK_UI3.Controls
                 return;
             }
 
-            VK_UI3.Services.MediaPlayerService.MediaPlayer.Position = TimeSpan.FromMilliseconds(lyricsTimestamp.Begin);
+            AudioPlayer.mediaPlayer.Position = TimeSpan.FromMilliseconds(lyricsTimestamp.Begin);
         }
 
         private void Grid_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)

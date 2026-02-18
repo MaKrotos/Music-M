@@ -35,11 +35,11 @@ public sealed partial class EqualizerControlPage : UserControl
     {
         if (EnableSwitch.IsEnabled)
         {
-            VK_UI3.Services.MediaPlayerService.Equalizer = Equalizer.getEqualizes();
+            AudioPlayer.Equalizer = Equalizer.getEqualizes();
         }
         else
         {
-            VK_UI3.Services.MediaPlayerService.Equalizer = null;
+            AudioPlayer.Equalizer = null;
         }
         Equalizer.SaveSettings();
         // Сохраняем состояние включения эквалайзера
