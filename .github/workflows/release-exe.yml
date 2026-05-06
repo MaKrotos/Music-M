@@ -35,15 +35,18 @@ jobs:
       run: |
         $rids = @("win-x64", "win-x86", "win-arm64")
         foreach ($rid in $rids) {
-          Write-Host "Building for $rid..."
-          dotnet publish "VK UI3/VK UI3.csproj" -c Release -r $rid --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:WindowsAppSDKSelfContained=true
+          $publishDir = "publish/$rid"
+          Write-Host "Building for $rid into $publishDir"
+          dotnet publish "VK UI3/VK UI3.csproj" -c Release -r $rid --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:WindowsAppSDKSelfContained=true -o $publishDir
           
           # Переименовываем exe, чтобы файлы не перезаписали друг друга в релизе
-          $exePath = Get-ChildItem -Path "VK UI3/bin/Release/*/$rid/publish/*.exe" -File | Select-Object -First 1
+          $exePath = Get-ChildItem -Path "$publishDir/*.exe" -File | Select-Object -First 1
           if ($exePath) {
             $newName = "$($exePath.BaseName)-$rid$($exePath.Extension)"
             Rename-Item -Path $exePath.FullName -NewName $newName
             Write-Host "Renamed to $newName"
+          } else {
+            Write-Host "WARNING: Could not find EXE in $publishDir"
           }
         }
       shell: pwsh
@@ -54,6 +57,6 @@ jobs:
         tag_name: ${{ github.event.inputs.tag_name }}
         name: ${{ github.event.inputs.release_name }}
         body: ${{ github.event.inputs.release_description }}
-        files: 'VK UI3/bin/Release/*/win-*/publish/*.exe'
+        files: 'publish/**/*.exe'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
