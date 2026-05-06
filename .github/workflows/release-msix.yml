@@ -1,0 +1,80 @@
+name: Release MSIX
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Тег релиза (например, v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+      release_name:
+        description: 'Название релиза'
+        required: true
+        default: 'VK M Update'
+      release_description:
+        description: 'Описание релиза'
+        required: false
+        default: 'Исправления и улучшения в этой версии.'
+
+jobs:
+  release:
+    runs-on: windows-latest
+    permissions:
+      contents: write # Необходимо для создания релиза в GitHub
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Decode Certificate
+      # Раскодируем сертификат из base64-секрета и сохраняем как файл во временную директорию
+      run: |
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.CERT_BASE64 }}")
+        [IO.File]::WriteAllBytes("${{ github.workspace }}\cert.pfx", $pfx_cert_byte)
+      shell: pwsh
+
+    - name: Restore dependencies
+      run: msbuild "VK UI3/VK UI3.csproj" -t:Restore -p:Configuration=Release -p:Platform=x64
+
+    - name: Build, Package and Sign MSIX
+      run: >
+        msbuild "VK UI3/VK UI3.csproj" 
+        -p:Configuration=Release 
+        -p:Platform=x64 
+        -p:UapAppxPackageBuildMode=SideloadOnly 
+        -p:AppxBundle=Never 
+        -p:GenerateAppxPackageOnBuild=true 
+        -p:WindowsPackageType=MSIX 
+        -p:AppxPackageSigningEnabled=true 
+        -p:PackageCertificateKeyFile="${{ github.workspace }}\cert.pfx" 
+        -p:PackageCertificatePassword="${{ secrets.CERT_PASSWORD }}"
+
+    - name: Find MSIX
+      id: find_msix
+      run: |
+        $msixPath = Get-ChildItem -Path . -Filter "*.msix" -Recurse | Select-Object -First 1
+        echo "msix_path=$($msixPath.FullName)" >> $env:GITHUB_OUTPUT
+      shell: pwsh
+
+    - name: Clean up certificate
+      if: always()
+      run: Remove-Item "${{ github.workspace }}\cert.pfx" -ErrorAction SilentlyContinue
+      shell: pwsh
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ github.event.inputs.tag_name }}
+        name: ${{ github.event.inputs.release_name }}
+        body: ${{ github.event.inputs.release_description }}
+        files: ${{ steps.find_msix.outputs.msix_path }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
