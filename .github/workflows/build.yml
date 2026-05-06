@@ -16,7 +16,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x' # Укажите версию .NET вашего проекта (например, 6.0.x, 7.0.x или 8.0.x)
+        dotnet-version: '8.0.0' # Укажите версию .NET вашего проекта (например, 6.0.x, 7.0.x или 8.0.x)
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v2
