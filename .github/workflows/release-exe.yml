@@ -1,0 +1,52 @@
+name: Release Single Exe
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Тег релиза (например, v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+      release_name:
+        description: 'Название релиза'
+        required: true
+        default: 'VK M Update'
+      release_description:
+        description: 'Описание релиза'
+        required: false
+        default: 'Исправления и улучшения в этой версии.'
+
+jobs:
+  release:
+    runs-on: windows-latest
+    permissions:
+      contents: write # Необходимо для создания релиза
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Publish Single-File Exe
+      run: >
+        dotnet publish "VK UI3/VK UI3.csproj" 
+        -c Release 
+        -r win10-x64 
+        --self-contained true 
+        -p:PublishSingleFile=true 
+        -p:IncludeNativeLibrariesForSelfExtract=true
+        -p:WindowsAppSDKSelfContained=true
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ github.event.inputs.tag_name }}
+        name: ${{ github.event.inputs.release_name }}
+        body: ${{ github.event.inputs.release_description }}
+        files: 'VK UI3/bin/Release/*/win10-x64/publish/*.exe'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
