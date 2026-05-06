@@ -103,7 +103,7 @@ namespace VK_UI3.DiscordRPC
                         Assets = new Assets()
                         {
                             LargeImageKey = image,
-                            LargeImageText = "VK Music",
+                            LargeImageText = "VK M",
                             SmallImageKey = imageSmall,
                             SmallImageText = "Слушает"
                         },
