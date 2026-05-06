@@ -33,12 +33,23 @@ jobs:
 
     - name: Publish and Rename Single-File Exes
       run: |
-        $rids = @("win-x64", "win-x86", "win-arm64")
-        foreach ($rid in $rids) {
+        $arches = @(
+          @{ Platform = "x64";   RID = "win-x64"   },
+          @{ Platform = "x86";   RID = "win-x86"   },
+          @{ Platform = "ARM64"; RID = "win-arm64" }
+        )
+        foreach ($a in $arches) {
+          $plat = $a.Platform
+          $rid = $a.RID
           $publishDir = "publish/$rid"
-          Write-Host "Building for $rid into $publishDir"
-          dotnet publish "VK UI3/VK UI3.csproj" -c Release -r $rid --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:WindowsAppSDKSelfContained=true -o $publishDir
+          Write-Host "Building for $rid ($plat) into $publishDir"
+          dotnet publish "VK UI3/VK UI3.csproj" -c Release -p:Platform=$plat -r $rid --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:WindowsAppSDKSelfContained=true -o $publishDir
           
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "Build failed for $rid. Check logs above."
+            exit 1
+          }
+
           # Переименовываем exe, чтобы файлы не перезаписали друг друга в релизе
           $exePath = Get-ChildItem -Path "$publishDir/*.exe" -File | Select-Object -First 1
           if ($exePath) {
@@ -46,7 +57,8 @@ jobs:
             Rename-Item -Path $exePath.FullName -NewName $newName
             Write-Host "Renamed to $newName"
           } else {
-            Write-Host "WARNING: Could not find EXE in $publishDir"
+            Write-Error "Could not find EXE in $publishDir"
+            exit 1
           }
         }
       shell: pwsh
