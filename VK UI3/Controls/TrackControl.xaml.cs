@@ -43,11 +43,22 @@ namespace VK_UI3.Controls
             changeIconPlayBTN = new AnimationsChangeIcon(PlayBTN);
         }
 
+        public static bool HighlightPlayingTrack
+        {
+            get => Windows.Storage.ApplicationData.Current.LocalSettings.Values["HighlightPlayingTrack"] as bool? ?? false;
+            set
+            {
+                Windows.Storage.ApplicationData.Current.LocalSettings.Values["HighlightPlayingTrack"] = value;
+                HighlightSettingChanged?.Invoke(null, EventArgs.Empty);
+            }
+        }
+        public static event EventHandler HighlightSettingChanged;
        
 
         private void TrackControl_Unloaded(object sender, RoutedEventArgs e)
         {
             addedHandler = false;
+            TrackControl.HighlightSettingChanged -= TrackControl_HighlightSettingChanged;
             if (dataTrack != null)
             {
                 Services.MediaPlayerService.AudioPlayedChangeEvent -= UserAudio_AudioPlayedChangeEvent;
@@ -240,6 +251,7 @@ namespace VK_UI3.Controls
                 Symbol symbol = dataTrack.PlayThis ? Symbol.Pause : Symbol.Play;
                 ChangeSymbolIcon(symbol);
                 HandleAnimation(dataTrack.PlayThis);
+                UpdatePlayingHighlight(dataTrack.PlayThis);
             }
             catch (Exception ex)
             {
@@ -253,6 +265,19 @@ namespace VK_UI3.Controls
             }
         }
 
+        private void UpdatePlayingHighlight(bool isPlaying)
+        {
+            if (isPlaying && HighlightPlayingTrack)
+            {
+                FadeOutStoryboardPlayingHighlight.Pause();
+                FadeInStoryboardPlayingHighlight.Begin();
+            }
+            else
+            {
+                FadeInStoryboardPlayingHighlight.Pause();
+                FadeOutStoryboardPlayingHighlight.Begin();
+            }
+        }
 
         public static string SecondsToTimeString(double totalSeconds)
         {
@@ -290,9 +315,21 @@ namespace VK_UI3.Controls
         AnimationsChangeImage changeImage = null;
         private void TrackControl_Loaded(object sender, RoutedEventArgs e)
         {
-           
+           TrackControl.HighlightSettingChanged -= TrackControl_HighlightSettingChanged;
+           TrackControl.HighlightSettingChanged += TrackControl_HighlightSettingChanged;
         }
        
+        private void TrackControl_HighlightSettingChanged(object sender, EventArgs e)
+        {
+            if (dataTrack != null)
+            {
+                this.DispatcherQueue.TryEnqueue(() =>
+                {
+                    UpdatePlayingHighlight(dataTrack.PlayThis);
+                });
+            }
+        }
+
         private void UserAudio_AudioPlayedChangeEvent(object sender, EventArgs e)
         {
             try
@@ -303,6 +340,7 @@ namespace VK_UI3.Controls
                 {
                     ChangeSymbolIcon(symbol);
                     HandleAnimation(a);
+                    UpdatePlayingHighlight(a);
                 });
             }
             catch (Exception ex)

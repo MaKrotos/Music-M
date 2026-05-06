@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿﻿<?xml version="1.0" encoding="utf-8" ?>
 <UserControl
 	x:Class="VK_UI3.Controls.TrackControl"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -71,6 +71,24 @@
 					Duration="0:0:0.15" />
 			</Storyboard>
 
+			<!--  Анимация появления обводки играющего трека  -->
+			<Storyboard x:Name="FadeInStoryboardPlayingHighlight">
+				<DoubleAnimation
+					Storyboard.TargetName="PlayingHighlightBorder"
+					Storyboard.TargetProperty="Opacity"
+					To="1"
+					Duration="0:0:0.15" />
+			</Storyboard>
+
+			<!--  Анимация исчезновения обводки играющего трека  -->
+			<Storyboard x:Name="FadeOutStoryboardPlayingHighlight">
+				<DoubleAnimation
+					Storyboard.TargetName="PlayingHighlightBorder"
+					Storyboard.TargetProperty="Opacity"
+					To="0"
+					Duration="0:0:0.15" />
+			</Storyboard>
+
 		</Grid.Resources>
 
 		<Grid
@@ -85,6 +103,13 @@
 			CornerRadius="3"
 			Opacity="0" />
 
+		<Grid
+			x:Name="PlayingHighlightBorder"
+			BorderBrush="DeepSkyBlue"
+			BorderThickness="2"
+			CornerRadius="5"
+			Opacity="0"
+			IsHitTestVisible="False" />
 
 		<Grid
 			x:Name="Card"
