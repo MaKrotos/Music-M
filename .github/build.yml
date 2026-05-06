@@ -1,0 +1,42 @@
+name: Build Single Exe
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch: # Позволяет запускать сборку вручную из интерфейса GitHub
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x' # Укажите версию .NET вашего проекта (например, 6.0.x, 7.0.x или 8.0.x)
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Restore dependencies
+      run: dotnet restore "VK UI3/VK_UI3.csproj"
+
+    - name: Publish Single-File Exe
+      # Сборка в один файл. Для WinUI 3 (Windows App SDK) часто требуются параметры распаковки нативных библиотек.
+      run: >
+        dotnet publish "VK UI3/VK_UI3.csproj" 
+        -c Release 
+        -r win10-x64 
+        --self-contained true 
+        -p:PublishSingleFile=true 
+        -p:IncludeNativeLibrariesForSelfExtract=true
+        -p:WindowsAppSDKSelfContained=true
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Music-M-Release-Exe
+        path: 'VK UI3/bin/Release/*/win10-x64/publish/*.exe'
