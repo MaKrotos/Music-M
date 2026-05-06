@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       tag_name:
-        description: 'Мне лень было писать('
+        description: 'Версия релиза'
         required: true
         default: 'v1.0.0'
       release_name:
-        description: 'Синяя обводка текущего трека'
+        description: 'Название релиза'
         required: true
         default: 'VK M Update'
       release_description:
