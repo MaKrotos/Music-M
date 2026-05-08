@@ -64,6 +64,12 @@ jobs:
       - name: Publish Single-File Executables
         shell: pwsh
         run: |
+          # Предварительное восстановление пакетов для всех архитектур.
+          # Это предотвращает поломку project.assets.json и кэша XamlCompiler при кросс-компиляции
+          dotnet restore "$env:Solution_Name\$env:Solution_Name.csproj" -r win-x64
+          dotnet restore "$env:Solution_Name\$env:Solution_Name.csproj" -r win-x86
+          dotnet restore "$env:Solution_Name\$env:Solution_Name.csproj" -r win-arm64
+          
           $arches = @(
             @{ Platform = "x64";   RID = "win-x64"   },
             @{ Platform = "x86";   RID = "win-x86"   },
@@ -73,20 +79,19 @@ jobs:
           foreach ($a in $arches) {
             Write-Host "=== Publish $($a.Platform) ==="
             
-            # Отключаем фоновые процессы MSBuild и удаляем кэш от предыдущих сборок
-            # Это решит проблему с XamlCompiler.exe exited with code 1 при кросс-компиляции для ARM64
+            # Отключаем фоновые процессы MSBuild для освобождения файлов между сборками
             dotnet build-server shutdown
-            if (Test-Path "$env:Solution_Name\obj") { Remove-Item -Recurse -Force "$env:Solution_Name\obj" }
-            if (Test-Path "$env:Solution_Name\bin") { Remove-Item -Recurse -Force "$env:Solution_Name\bin" }
 
             dotnet publish "$env:Solution_Name\$env:Solution_Name.csproj" `
               -c $env:Configuration `
               -r $($a.RID) `
               --self-contained true `
+              --no-restore `
               -p:PublishSingleFile=true `
               -p:EnableMsixTooling=true `
               -p:IncludeNativeLibrariesForSelfExtract=true `
               -p:Platform=$($a.Platform) `
+              -p:PlatformTarget=$($a.Platform) `
               -p:DisableRuntimeIdentifierInference=true `
               -p:EnableNETAnalyzers=false `
               -p:WarningLevel=0 `
