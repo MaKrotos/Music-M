@@ -1,0 +1,114 @@
+name: Автосборка Music M (Single-File Exe - все платформы)
+
+on:
+  workflow_dispatch:
+    inputs:
+      namevers:
+        description: "Название релиза"
+        required: true
+        default: "🤖 Автосборка (Один файл)"
+      descr:
+        description: "Описание релиза"
+        required: true
+        default: "❌ Описание сборки отсутствует"
+      release:
+        description: "Выкинуть в релиз?"
+        required: true
+        default: false
+        type: boolean
+      prerelease:
+        description: "Пререлиз?"
+        required: true
+        default: true
+        type: boolean
+
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-single-exe-all:
+    runs-on: windows-latest
+    env:
+      Solution_Name: "VK UI3"
+      Configuration: Release
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Фиксируем SDK 8.0
+      - name: Pin .NET SDK 8 via global.json
+        run: |
+          Set-Content -Path global.json -Value '{ "sdk": { "version": "8.0.100", "rollForward": "feature" } }'
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      # PFX
+      - name: Decode PFX
+        run: |
+          $bytes = [Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
+          $certPath = "${{ github.workspace }}\signcert.pfx"
+          [IO.File]::WriteAllBytes($certPath, $bytes)
+
+      # 1. Публикация в один файл (Single-file)
+      - name: Publish Single-File Executables
+        shell: pwsh
+        run: |
+          $arches = @(
+            @{ Platform = "x64";   RID = "win-x64"   },
+            @{ Platform = "x86";   RID = "win-x86"   },
+            @{ Platform = "ARM64"; RID = "win-arm64" }
+          )
+      
+          foreach ($a in $arches) {
+            Write-Host "=== Publish $($a.Platform) ==="
+            dotnet publish "$env:Solution_Name\$env:Solution_Name.csproj" `
+              -c $env:Configuration `
+              -r $($a.RID) `
+              --self-contained true `
+              -p:PublishSingleFile=true `
+              -p:IncludeNativeLibrariesForSelfExtract=true `
+              -p:Platform=$($a.Platform) `
+              -o "publish\$($a.Platform)"
+              
+            # Переименовываем собранный exe, чтобы было удобно прикреплять к релизу
+            $exePath = "publish\$($a.Platform)\$env:Solution_Name.exe"
+            if (Test-Path $exePath) {
+               Rename-Item $exePath "VK_UI3_$($a.Platform).exe"
+            }
+          }
+
+      # 2. Подпись
+      - name: Sign executables
+        shell: pwsh
+        run: |
+          $certPath = "${{ github.workspace }}\signcert.pfx"
+          $password = "${{ secrets.PFX_PASSWORD }}"
+          $signtool = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter signtool.exe |
+                      Where-Object { $_.FullName -match 'x64' } |
+                      Select-Object -First 1 -ExpandProperty FullName
+          if (-not $signtool) { throw "signtool.exe не найден" }
+      
+          Get-ChildItem "publish" -Recurse -Filter "VK_UI3_*.exe" | ForEach-Object {
+            & $signtool sign /f $certPath /p $password /tr http://timestamp.digicert.com /td sha256 /fd sha256 $_.FullName
+          }
+
+      # 3. Загрузка в релиз
+      - name: Upload exes to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.TOKEN }}
+          file: publish/*/VK_UI3_*.exe
+          tag: ${{ github.ref_name }}
+          overwrite: true
+          file_glob: true
