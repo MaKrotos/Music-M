@@ -73,6 +73,10 @@ jobs:
           foreach ($a in $arches) {
             Write-Host "=== Publish $($a.Platform) ==="
             
+            # Очищаем промежуточные папки, чтобы XamlCompiler не конфликтовал с кэшем от других архитектур
+            if (Test-Path "$env:Solution_Name\obj") { Remove-Item -Recurse -Force "$env:Solution_Name\obj" -ErrorAction SilentlyContinue }
+            if (Test-Path "$env:Solution_Name\bin") { Remove-Item -Recurse -Force "$env:Solution_Name\bin" -ErrorAction SilentlyContinue }
+
             # Восстанавливаем пакеты с теми же параметрами, что и при публикации
             dotnet restore "$env:Solution_Name\$env:Solution_Name.csproj" `
               -r $($a.RID) `
