@@ -167,6 +167,33 @@
                                 </Grid>
                             </StackPanel>
                         </Border>
+                        <Border>
+                            <StackPanel>
+                                <TextBlock AutomationProperties.HelpText="Ограничивает размер кэша для сохраненных треков" AutomationProperties.Name="Размер кеша аудио" Text="Размер кеша аудио" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Slider x:Name="AudioCacheSlider" Minimum="100" Maximum="10000" StepFrequency="100" Value="1024" Grid.Column="0" ValueChanged="AudioCacheSlider_ValueChanged" AutomationProperties.Name="Ползунок размера кеша аудио" />
+                                    <TextBlock Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" Text="{x:Bind AudioCacheSlider.Value, Mode=OneWay}" />
+                                    <TextBlock Grid.Column="2" Margin="5,0,0,0" VerticalAlignment="Center" Text="МБ" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                        <Border>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="0" Content="Очистить кэш аудио" Click="ClearAudioCacheButton_Click" HorizontalAlignment="Stretch" Margin="0,0,10,0" AutomationProperties.Name="Кнопка очистки кеша аудио" AutomationProperties.HelpText="Полностью удаляет все скачанные треки с жесткого диска" />
+                                <ProgressRing x:Name="AudioCacheCalcProgress" Grid.Column="1" Width="16" Height="16" Margin="0,0,10,0" IsActive="True" VerticalAlignment="Center" />
+                                <TextBlock x:Name="AudioCacheSizeText" Grid.Column="2" VerticalAlignment="Center" Text="Вычисление..." Foreground="{ThemeResource TextFillColorSecondaryBrush}" AutomationProperties.Name="Текущий размер кеша аудио" />
+                            </Grid>
+                        </Border>
                     </StackPanel>
                 </Expander.Content>
             </Expander>

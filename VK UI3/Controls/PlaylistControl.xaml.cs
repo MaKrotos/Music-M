@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml;
+﻿﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.Controllers;
 using VK_UI3.DB;
@@ -645,6 +646,109 @@ namespace VK_UI3.Controls
             dialog.BorderThickness = new Thickness(0);
             dialog.Translation = new System.Numerics.Vector3(0, 0, -100);
             frame.Navigate(typeof(WaitView), waitParameters, new DrillInNavigationTransitionInfo());
+        }
+
+        private CancellationTokenSource _cacheCancellationTokenSource;
+
+        private void CachePlaylist_Click(object sender, RoutedEventArgs e)
+        {
+            if (_PlayList == null) return;
+
+            // Если процесс уже запущен — отменяем его
+            if (_cacheCancellationTokenSource != null)
+            {
+                _cacheCancellationTokenSource.Cancel();
+                _cacheCancellationTokenSource = null;
+                return;
+            }
+
+            _cacheCancellationTokenSource = new CancellationTokenSource();
+            var token = _cacheCancellationTokenSource.Token;
+
+            var menuItem = sender as MenuFlyoutItem;
+            if (menuItem != null) menuItem.Text = "Отменить кэширование";
+
+            // Показываем ProgressRing в режиме "ожидания" на время загрузки списка треков
+            this.DispatcherQueue.TryEnqueue(() => 
+            {
+                CacheSuccessInfoBar.IsOpen = false;
+                CacheProgressGrid.Visibility = Visibility.Visible;
+                CacheProgress.IsIndeterminate = true;
+                CacheProgress.Value = 0;
+            });
+
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var playlistVk = new PlayListVK(_PlayList, this.DispatcherQueue);
+
+                    // Подгружаем все треки плейлиста, если они еще не загружены до конца
+                    while (!playlistVk.itsAll)
+                    {
+                        if (token.IsCancellationRequested) break;
+
+                        var tcs = new TaskCompletionSource<bool>();
+                        EventHandler handler = null;
+                        handler = (s, args) => { playlistVk.onListUpdate -= handler; tcs.TrySetResult(true); };
+                        
+                        playlistVk.onListUpdate += handler;
+                        playlistVk.GetTracks();
+                        await tcs.Task;
+                    }
+
+                    if (token.IsCancellationRequested) return;
+
+                    // Переводим ProgressRing в режим процентов для кэширования
+                    this.DispatcherQueue.TryEnqueue(() => CacheProgress.IsIndeterminate = false);
+
+                    // Создаем IProgress для обновления интерфейса
+                    var progress = new Progress<double>(percent =>
+                    {
+                        this.DispatcherQueue.TryEnqueue(() => CacheProgress.Value = percent);
+                    });
+
+                    // Запускаем кэширование и дожидаемся завершения всех потоков
+                    await VK_UI3.Services.AudioCacheService.CacheTracksAsync(playlistVk.listAudio, progress, token);
+
+                    if (!token.IsCancellationRequested)
+                    {
+                        // Скрываем индикатор после успешной загрузки
+                        this.DispatcherQueue.TryEnqueue(() => 
+                        {
+                            CacheProgressGrid.Visibility = Visibility.Collapsed;
+                            CacheSuccessInfoBar.Message = "Плейлист успешно сохранен";
+                            CacheSuccessInfoBar.Severity = InfoBarSeverity.Success;
+                            CacheSuccessInfoBar.IsOpen = true;
+                        });
+                    }
+                }
+                catch (OperationCanceledException) { }
+                finally
+                {
+                    _cacheCancellationTokenSource = null;
+
+                    this.DispatcherQueue.TryEnqueue(() => 
+                    {
+                        if (menuItem != null) menuItem.Text = "Скачать плейлист в кэш";
+                        CacheProgressGrid.Visibility = Visibility.Collapsed;
+
+                        if (token.IsCancellationRequested)
+                        {
+                            CacheSuccessInfoBar.Message = "Кэширование отменено";
+                            CacheSuccessInfoBar.Severity = InfoBarSeverity.Warning;
+                            CacheSuccessInfoBar.IsOpen = true;
+                        }
+                    });
+
+                    // Автоматически скрываем уведомление через 3 секунды
+                    await Task.Delay(3000);
+                    this.DispatcherQueue.TryEnqueue(() => 
+                    {
+                        CacheSuccessInfoBar.IsOpen = false;
+                    });
+                }
+            }, token);
         }
     }
 }
