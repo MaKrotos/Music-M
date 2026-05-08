@@ -53,13 +53,6 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      # PFX
-      - name: Decode PFX
-        run: |
-          $bytes = [Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
-          $certPath = "${{ github.workspace }}\signcert.pfx"
-          [IO.File]::WriteAllBytes($certPath, $bytes)
-
       # 1. Публикация в один файл (Single-file)
       - name: Publish Single-File Executables
         shell: pwsh
@@ -109,22 +102,7 @@ jobs:
             }
           }
 
-      # 2. Подпись
-      - name: Sign executables
-        shell: pwsh
-        run: |
-          $certPath = "${{ github.workspace }}\signcert.pfx"
-          $password = "${{ secrets.PFX_PASSWORD }}"
-          $signtool = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter signtool.exe |
-                      Where-Object { $_.FullName -match 'x64' } |
-                      Select-Object -First 1 -ExpandProperty FullName
-          if (-not $signtool) { throw "signtool.exe не найден" }
-      
-          Get-ChildItem "publish" -Recurse -Filter "VK_UI3_*.exe" | ForEach-Object {
-            & $signtool sign /f $certPath /p $password /tr http://timestamp.digicert.com /td sha256 /fd sha256 $_.FullName
-          }
-
-      # 3. Загрузка в релиз
+      # 2. Загрузка в релиз
       - name: Извлечь версию
         id: get_version
         shell: pwsh
@@ -145,7 +123,7 @@ jobs:
           overwrite: true
           file_glob: true
 
-      # 4. Уведомление в Telegram
+      # 3. Уведомление в Telegram
       - name: Отправить сообщение в Telegram
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
