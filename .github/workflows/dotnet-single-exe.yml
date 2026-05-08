@@ -64,12 +64,6 @@ jobs:
       - name: Publish Single-File Executables
         shell: pwsh
         run: |
-          # Предварительное восстановление пакетов для всех архитектур.
-          # Это предотвращает поломку project.assets.json и кэша XamlCompiler при кросс-компиляции
-          dotnet restore "$env:Solution_Name\$env:Solution_Name.csproj" -r win-x64
-          dotnet restore "$env:Solution_Name\$env:Solution_Name.csproj" -r win-x86
-          dotnet restore "$env:Solution_Name\$env:Solution_Name.csproj" -r win-arm64
-          
           $arches = @(
             @{ Platform = "x64";   RID = "win-x64"   },
             @{ Platform = "x86";   RID = "win-x86"   },
@@ -79,6 +73,13 @@ jobs:
           foreach ($a in $arches) {
             Write-Host "=== Publish $($a.Platform) ==="
             
+            # Восстанавливаем пакеты с теми же параметрами, что и при публикации
+            dotnet restore "$env:Solution_Name\$env:Solution_Name.csproj" `
+              -r $($a.RID) `
+              -p:Configuration=$env:Configuration `
+              -p:Platform=$($a.Platform) `
+              -p:PlatformTarget=$($a.Platform)
+
             # Отключаем фоновые процессы MSBuild для освобождения файлов между сборками
             dotnet build-server shutdown
 
