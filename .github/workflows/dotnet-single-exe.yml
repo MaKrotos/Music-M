@@ -73,9 +73,12 @@ jobs:
           foreach ($a in $arches) {
             Write-Host "=== Publish $($a.Platform) ==="
             
+            # Отключаем фоновые процессы MSBuild для освобождения файлов от предыдущей сборки
+            dotnet build-server shutdown
+
             # Очищаем промежуточные папки, чтобы XamlCompiler не конфликтовал с кэшем от других архитектур
-            if (Test-Path "$env:Solution_Name\obj") { Remove-Item -Recurse -Force "$env:Solution_Name\obj" -ErrorAction SilentlyContinue }
-            if (Test-Path "$env:Solution_Name\bin") { Remove-Item -Recurse -Force "$env:Solution_Name\bin" -ErrorAction SilentlyContinue }
+            if (Test-Path "$env:Solution_Name\obj") { Remove-Item -Recurse -Force "$env:Solution_Name\obj" }
+            if (Test-Path "$env:Solution_Name\bin") { Remove-Item -Recurse -Force "$env:Solution_Name\bin" }
 
             # Восстанавливаем пакеты с теми же параметрами, что и при публикации
             dotnet restore "$env:Solution_Name\$env:Solution_Name.csproj" `
@@ -83,9 +86,6 @@ jobs:
               -p:Configuration=$env:Configuration `
               -p:Platform=$($a.Platform) `
               -p:PlatformTarget=$($a.Platform)
-
-            # Отключаем фоновые процессы MSBuild для освобождения файлов между сборками
-            dotnet build-server shutdown
 
             dotnet publish "$env:Solution_Name\$env:Solution_Name.csproj" `
               -c $env:Configuration `
