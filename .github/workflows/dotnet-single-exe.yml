@@ -72,6 +72,13 @@ jobs:
       
           foreach ($a in $arches) {
             Write-Host "=== Publish $($a.Platform) ==="
+            
+            # Отключаем фоновые процессы MSBuild и удаляем кэш от предыдущих сборок
+            # Это решит проблему с XamlCompiler.exe exited with code 1 при кросс-компиляции для ARM64
+            dotnet build-server shutdown
+            if (Test-Path "$env:Solution_Name\obj") { Remove-Item -Recurse -Force "$env:Solution_Name\obj" }
+            if (Test-Path "$env:Solution_Name\bin") { Remove-Item -Recurse -Force "$env:Solution_Name\bin" }
+
             dotnet publish "$env:Solution_Name\$env:Solution_Name.csproj" `
               -c $env:Configuration `
               -r $($a.RID) `
@@ -80,6 +87,9 @@ jobs:
               -p:EnableMsixTooling=true `
               -p:IncludeNativeLibrariesForSelfExtract=true `
               -p:Platform=$($a.Platform) `
+              -p:DisableRuntimeIdentifierInference=true `
+              -p:EnableNETAnalyzers=false `
+              -p:WarningLevel=0 `
               -o "publish\$($a.Platform)"
               
             # Переименовываем собранный exe, чтобы было удобно прикреплять к релизу
@@ -105,7 +115,7 @@ jobs:
           }
 
       # 3. Загрузка в релиз
-      - name: Upload executables to GitHub Release
+      - name: Upload exes to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.TOKEN }}
