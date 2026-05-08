@@ -120,11 +120,48 @@ jobs:
           }
 
       # 3. Загрузка в релиз
+      - name: Извлечь версию
+        id: get_version
+        shell: pwsh
+        run: |
+          $csprojPath = "${{ github.workspace }}\$env:Solution_Name\$env:Solution_Name.csproj"
+          [xml]$doc = Get-Content $csprojPath
+          $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText
+          echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+          Write-Host "Версия: $version"
+
       - name: Upload exes to release
         uses: svenstaro/upload-release-action@v2
+        if: github.event.inputs.release == 'true'
         with:
           repo_token: ${{ secrets.TOKEN }}
           file: publish/*/VK_UI3_*.exe
-          tag: ${{ github.ref_name }}
+          tag: ${{ steps.get_version.outputs.VERSION }}
           overwrite: true
           file_glob: true
+
+      # 4. Уведомление в Telegram
+      - name: Отправить сообщение в Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RELEASE_URL: https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}
+        run: |
+          $telegramBotToken = '${{ secrets.TELEGRAM_BOT_TOKEN }}'
+          $telegramChatId = '${{ secrets.TELEGRAM_CHAT_ID }}'
+          $releaseUrl = 'https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}'
+          $message = @"
+          <b>🎉 Новый релиз:</b> ${{ github.event.inputs.namevers }}
+          <b>📦 Версия:</b> ${{ steps.get_version.outputs.VERSION }}
+          <b>📝 Описание:</b> ${{ github.event.inputs.descr }}
+          <b>🔗 <a href='$releaseUrl'>Ссылка на релиз</a></b>
+          "@
+          $uri = 'https://api.telegram.org/bot' + $telegramBotToken + '/sendMessage'
+          $body = @{
+              chat_id = $telegramChatId
+              text = $message
+              parse_mode = 'HTML'
+          }
+          $bodyJson = $body | ConvertTo-Json -Compress
+          Invoke-RestMethod -Uri $uri -Method Post -Body $bodyJson -ContentType 'application/json'
+        if: github.event.inputs.release == 'true'
