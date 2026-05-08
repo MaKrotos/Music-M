@@ -1,4 +1,4 @@
-name: Автосборка Music M (Single-File Exe - все платформы)
+name: Автосборка Music M от Werhes
 
 on:
   workflow_dispatch:
