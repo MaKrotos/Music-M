@@ -83,7 +83,7 @@ jobs:
           Configuration: ${{ matrix.configuration }}
 
       - name: Restore the application
-        run: msbuild "$env:Solution_Name_Unpacked\$env:Solution_Name_Unpacked.csproj" /t:Restore /p:Configuration=$env:Configuration_unpacked
+        run: dotnet restore "$env:Solution_Name_Unpacked\$env:Solution_Name_Unpacked.csproj"
 
       # 1. Сборка
       - name: Build EXE
@@ -96,6 +96,9 @@ jobs:
           )
       
           foreach ($a in $arches) {
+            Write-Host "=== Restore $($a.Platform) ==="
+            dotnet restore "$env:Solution_Name_Unpacked\$env:Solution_Name_Unpacked.csproj" -r $($a.RID)
+
             Write-Host "=== Build $($a.Platform) ==="
             msbuild "$env:Solution_Name_Unpacked\$env:Solution_Name_Unpacked.csproj" `
               "/p:Configuration=$env:Configuration_unpacked" `
