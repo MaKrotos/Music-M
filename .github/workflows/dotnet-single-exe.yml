@@ -82,6 +82,9 @@ jobs:
         env:
           Configuration: ${{ matrix.configuration }}
 
+      - name: Restore the application
+        run: msbuild "$env:Solution_Name_Unpacked\$env:Solution_Name_Unpacked.csproj" /t:Restore /p:Configuration=$env:Configuration_unpacked
+
       # 1. Сборка
       - name: Build EXE
         shell: pwsh
