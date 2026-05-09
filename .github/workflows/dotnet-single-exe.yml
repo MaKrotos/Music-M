@@ -1,4 +1,4 @@
-name: Автосборка Music M от Werhes
+name: Автосборка Music M exe
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
       namevers:
         description: "Название релиза"
         required: true
-        default: "🤖 Автосборка (Один файл)"
+        default: "🤖 Автосборка"
       descr:
         description: "Описание релиза"
         required: true
@@ -28,33 +28,35 @@ on:
     branches: [main]
 
 jobs:
-  build-single-exe-all:
-    runs-on: windows-latest
+  build:
+    strategy:
+      matrix:
+        configuration: [Release]
+        platform: [x64]
+
+    runs-on:
+      windows-latest # Для получения списка доступных типов раннеров
+      # см. https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+
     env:
-      Solution_Name: "VK UI3"
-      Configuration: Release
+      Solution_Name: "VK UI3 (Package)" # Замените на имя вашего решения, например, App1.sln.
+      Solution_Name_Unpacked: "VK UI3"
+      Configuration_unpacked: Unpacked
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          node-version: 16
           fetch-depth: 0
 
-      # Фиксируем SDK 8.0
-      - name: Pin .NET SDK 8 via global.json
-        run: |
-          Set-Content -Path global.json -Value '{ "sdk": { "version": "8.0.100", "rollForward": "feature" } }'
+      - name: Clean build artifacts
+        run: msbuild $env:Solution_Name /t:Clean /p:Configuration=$env:Configuration
+        env:
+          Configuration: ${{ matrix.configuration }}
 
-      - name: Setup .NET 8
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 8.0.x
-
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v2
-
-      # 1. Публикация в один файл (Single-file)
-      - name: Publish Single-File Executables
+      # 1. Сборка
+      - name: Build EXE
         shell: pwsh
         run: |
           $arches = @(
@@ -64,66 +66,113 @@ jobs:
           )
       
           foreach ($a in $arches) {
-            Write-Host "=== Publish $($a.Platform) ==="
-            
-            # Отключаем фоновые процессы MSBuild для освобождения файлов от предыдущей сборки
-            dotnet build-server shutdown
+            Write-Host "=== Build $($a.Platform) ==="
+            msbuild "$env:Solution_Name_Unpacked\$env:Solution_Name_Unpacked.csproj" `
+              "/p:Configuration=$env:Configuration_unpacked" `
+              "/p:Platform=$($a.Platform)" `
+              "/p:RuntimeIdentifier=$($a.RID)" `
+              /restore `
+              /p:DisableRuntimeIdentifierInference=true `
+              /p:EnableNETAnalyzers=false `
+              /p:WarningLevel=0 `
+              /p:TreatWarningsAsErrors=false `
+              /clp:ErrorsOnly
 
-            # Очищаем промежуточные папки, чтобы XamlCompiler не конфликтовал с кэшем от других архитектур
-            if (Test-Path "$env:Solution_Name\obj") { Remove-Item -Recurse -Force "$env:Solution_Name\obj" }
-            if (Test-Path "$env:Solution_Name\bin") { Remove-Item -Recurse -Force "$env:Solution_Name\bin" }
-
-            # Восстанавливаем пакеты с теми же параметрами, что и при публикации
-            dotnet restore "$env:Solution_Name\$env:Solution_Name.csproj" `
-              -r $($a.RID) `
-              -p:Configuration=$env:Configuration `
-              -p:Platform=$($a.Platform) `
-              -p:PlatformTarget=$($a.Platform)
-
-            dotnet publish "$env:Solution_Name\$env:Solution_Name.csproj" `
-              -c $env:Configuration `
-              -r $($a.RID) `
-              --self-contained true `
-              --no-restore `
-              -p:PublishSingleFile=true `
-              -p:EnableMsixTooling=true `
-              -p:IncludeNativeLibrariesForSelfExtract=true `
-              -p:Platform=$($a.Platform) `
-              -p:PlatformTarget=$($a.Platform) `
-              -p:DisableRuntimeIdentifierInference=true `
-              -p:EnableNETAnalyzers=false `
-              -p:WarningLevel=0 `
-              -o "publish\$($a.Platform)"
-              
-            # Переименовываем собранный exe, чтобы было удобно прикреплять к релизу
-            $exePath = "publish\$($a.Platform)\$env:Solution_Name.exe"
-            if (Test-Path $exePath) {
-               Rename-Item $exePath "VK_UI3_$($a.Platform).exe"
-            }
           }
 
-      # 2. Загрузка в релиз
-      - name: Извлечь версию
-        id: get_version
+
+
+      # 2. Архивирование целой build‑папки
+      - name: Package build folders
         shell: pwsh
         run: |
-          $csprojPath = "${{ github.workspace }}\$env:Solution_Name\$env:Solution_Name.csproj"
-          [xml]$doc = Get-Content $csprojPath
-          $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText
-          echo "VERSION=$version" >> $env:GITHUB_OUTPUT
-          Write-Host "Версия: $version"
+          $arches = @("x64","x86","ARM64")
+          foreach ($platform in $arches) {
+            $buildDir = Join-Path "$env:Solution_Name_Unpacked\bin" "$platform\$env:Configuration_unpacked"
+            if (-not (Test-Path $buildDir)) { throw "Папка сборки для $platform не найдена" }
+      
+            $zipName = "VK_UI3_$platform.zip"
+            if (Test-Path $zipName) { Remove-Item $zipName -Force }
+      
+            Compress-Archive -Path "$buildDir\*" -DestinationPath $zipName -Force
+          }
 
-      - name: Upload exes to release
-        uses: svenstaro/upload-release-action@v2
+      - name: Upload zips to artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: VK_UI3_Zips_${{ github.run_id }}
+          path: VK_UI3_*.zip
+          retention-days: 30
+
+
+
+#------------------------------------------
+
+
+      - name: Проверить существование релиза
+        id: check_release
+        run: |
+          $version = "${{ steps.get_version.outputs.VERSION }}"
+          $headers = @{
+            "Authorization" = "token ${{ secrets.TOKEN }}"
+            "Accept" = "application/vnd.github.v3+json"
+          }
+          try {
+            $releases = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases" -Headers $headers
+            $release = $releases | Where-Object { $_.tag_name -eq $version -and $_.draft -eq $false -and $_.prerelease -eq $false }
+            if ($release) {
+              Write-Host "Релиз с тегом $version уже существует"
+              echo "exists=true" >> $env:GITHUB_OUTPUT
+            } else {
+              Write-Host "Релиз с тегом $version не найден"
+              echo "exists=false" >> $env:GITHUB_OUTPUT
+            }
+          } catch {
+            Write-Host "Ошибка при проверке релизов: $($_.Exception.Message)"
+            echo "exists=false" >> $env:GITHUB_OUTPUT
+          }
+        shell: pwsh
         if: github.event.inputs.release == 'true'
+      
+      - name: Создать релиз
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          name: ${{ github.event.inputs.namevers }}
+          body: |
+            ${{ github.event.inputs.descr }}
+          draft: false
+          prerelease: ${{ github.event.inputs.prerelease == 'true' }}
+          generate_release_notes: false
+        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
+        
+      
+      # Загрузка zip файлов
+      - name: Upload zips to release
+        uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.TOKEN }}
-          file: publish/*/VK_UI3_*.exe
+          file: VK_UI3_*.zip
           tag: ${{ steps.get_version.outputs.VERSION }}
           overwrite: true
           file_glob: true
+        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
+      
+      # Загрузка пакетов
+      - name: Upload packages to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.TOKEN }}
+          file: ${{ env.Solution_Name }}/Packages/*
+          tag: ${{ steps.get_version.outputs.VERSION }}
+          overwrite: true
+          file_glob: true
+        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
 
-      # 3. Уведомление в Telegram
+
       - name: Отправить сообщение в Telegram
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -147,4 +196,4 @@ jobs:
           }
           $bodyJson = $body | ConvertTo-Json -Compress
           Invoke-RestMethod -Uri $uri -Method Post -Body $bodyJson -ContentType 'application/json'
-        if: github.event.inputs.release == 'true'
+        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
