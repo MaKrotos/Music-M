@@ -47,11 +47,38 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          node-version: 16
           fetch-depth: 0
 
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Setup MSBuild.exe
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Обновить TOKEN_STAT_SLY
+        run: |
+          $path = "${{ github.workspace }}\VK UI3\StaticParams.cs"
+          if (Test-Path $path) {
+            $content = Get-Content -Path $path
+            $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', '"${{ secrets.TOKEN_STAT_SLY }}"'
+            Set-Content -Path $path -Value $updatedContent
+          }
+
+      - name: Извлечь версию
+        id: get_version
+        run: |
+          $csprojPath = "${{ github.workspace }}\VK UI3\VK UI3.csproj"
+          $doc = New-Object xml
+          $doc.Load((Convert-Path $csprojPath))
+          $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText
+          echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+          echo "Версия: $version"
+        continue-on-error: true
+
       - name: Clean build artifacts
-        run: msbuild $env:Solution_Name /t:Clean /p:Configuration=$env:Configuration
+        run: msbuild "$env:Solution_Name" /t:Clean /p:Configuration=$env:Configuration
         env:
           Configuration: ${{ matrix.configuration }}
 
@@ -160,18 +187,6 @@ jobs:
           overwrite: true
           file_glob: true
         if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
-      
-      # Загрузка пакетов
-      - name: Upload packages to release
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.TOKEN }}
-          file: ${{ env.Solution_Name }}/Packages/*
-          tag: ${{ steps.get_version.outputs.VERSION }}
-          overwrite: true
-          file_glob: true
-        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
-
 
       - name: Отправить сообщение в Telegram
         env:
