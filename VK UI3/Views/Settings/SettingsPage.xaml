@@ -169,7 +169,7 @@
                         </Border>
                         <Border>
                             <StackPanel>
-                                <TextBlock AutomationProperties.HelpText="Ограничивает размер кэша для сохраненных треков" AutomationProperties.Name="Размер кеша аудио" Text="Размер кеша аудио" />
+                                <TextBlock AutomationProperties.HelpText="Ограничивает размер кэша" AutomationProperties.Name="Размер кеша аудио" Text="Размер кеша аудио" />
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
