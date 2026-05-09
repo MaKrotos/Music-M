@@ -62151,6 +62151,26 @@
             Запросов в секунду.
             </summary>
         </member>
+        <member name="F:VkNet.VkApi._maxConcurrentRequests">
+            <summary>
+            Максимальное количество параллельных запросов
+            </summary>
+        </member>
+        <member name="F:VkNet.VkApi._concurrentSemaphore">
+            <summary>
+            Семафор для контроля параллельных запросов
+            </summary>
+        </member>
+        <member name="F:VkNet.VkApi._requestTimestamps">
+            <summary>
+            Очередь временных меток запросов для контроля RPS
+            </summary>
+        </member>
+        <member name="F:VkNet.VkApi._rpsLock">
+            <summary>
+            Объект блокировки для RPS
+            </summary>
+        </member>
         <member name="P:VkNet.VkApi.LastInvokeTime">
             <inheritdoc />
         </member>
@@ -62159,6 +62179,11 @@
         </member>
         <member name="P:VkNet.VkApi.RequestsPerSecond">
             <inheritdoc />
+        </member>
+        <member name="P:VkNet.VkApi.MaxConcurrentRequests">
+            <summary>
+            Максимальное количество параллельных запросов
+            </summary>
         </member>
         <member name="P:VkNet.VkApi.CaptchaHandler">
             <summary>
@@ -62306,6 +62331,11 @@
             <param name="skipAuthorization"> Пропустить авторизацию </param>
             <returns> Ответ от vk.ru в формате json </returns>
             <exception cref="T:VkNet.Exception.CaptchaNeededException"> Требуется ввести капчу </exception>
+        </member>
+        <member name="M:VkNet.VkApi.WaitForRateLimitAsync">
+            <summary>
+            Ожидание для соблюдения RPS лимита
+            </summary>
         </member>
         <member name="M:VkNet.VkApi.AuthorizeWithAntiCaptcha(VkNet.Model.IApiAuthParams)">
             <summary>

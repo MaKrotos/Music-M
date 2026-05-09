@@ -1,0 +1,220 @@
+name: Автосборка Music M exe
+
+on:
+  workflow_dispatch:
+    inputs:
+      namevers:
+        description: "Название релиза"
+        required: true
+        default: "🤖 Автосборка"
+      descr:
+        description: "Описание релиза"
+        required: true
+        default: "❌ Описание сборки отсутствует"
+      release:
+        description: "Выкинуть в релиз?"
+        required: true
+        default: false
+        type: boolean
+      prerelease:
+        description: "Пререлиз?"
+        required: true
+        default: true
+        type: boolean
+
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        configuration: [Release]
+        platform: [x64]
+
+    runs-on:
+      windows-latest # Для получения списка доступных типов раннеров
+      # см. https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+
+    env:
+      Solution_Name: "VK UI3 (Package)" # Замените на имя вашего решения, например, App1.sln.
+      Solution_Name_Unpacked: "VK UI3"
+      Configuration_unpacked: Unpacked
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Setup MSBuild.exe
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Обновить TOKEN_STAT_SLY
+        run: |
+          $path = "${{ github.workspace }}\VK UI3\StaticParams.cs"
+          if (Test-Path $path) {
+            $content = Get-Content -Path $path
+            $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', '"${{ secrets.TOKEN_STAT_SLY }}"'
+            Set-Content -Path $path -Value $updatedContent
+          }
+
+      - name: Извлечь версию
+        id: get_version
+        run: |
+          $csprojPath = "${{ github.workspace }}\VK UI3\VK UI3.csproj"
+          $doc = New-Object xml
+          $doc.Load((Convert-Path $csprojPath))
+          $version = $doc.SelectSingleNode('//AppxPackageVersion').InnerText
+          echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+          echo "Версия: $version"
+        continue-on-error: true
+
+      - name: Clean build artifacts
+        run: msbuild "$env:Solution_Name" /t:Clean /p:Configuration=$env:Configuration
+        env:
+          Configuration: ${{ matrix.configuration }}
+
+      - name: Restore the application
+        run: dotnet restore "$env:Solution_Name_Unpacked\$env:Solution_Name_Unpacked.csproj"
+
+      # 1. Сборка
+      - name: Build EXE
+        shell: pwsh
+        run: |
+          $arches = @(
+            @{ Platform = "x64";   RID = "win-x64"   },
+            @{ Platform = "x86";   RID = "win-x86"   },
+            @{ Platform = "ARM64"; RID = "win-arm64" }
+          )
+      
+          foreach ($a in $arches) {
+            Write-Host "=== Restore $($a.Platform) ==="
+            dotnet restore "$env:Solution_Name_Unpacked\$env:Solution_Name_Unpacked.csproj" -r $($a.RID)
+
+            Write-Host "=== Build $($a.Platform) ==="
+            msbuild "$env:Solution_Name_Unpacked\$env:Solution_Name_Unpacked.csproj" `
+              "/p:Configuration=$env:Configuration_unpacked" `
+              "/p:Platform=$($a.Platform)" `
+              "/p:RuntimeIdentifier=$($a.RID)" `
+              /restore `
+              /p:DisableRuntimeIdentifierInference=true `
+              /p:EnableNETAnalyzers=false `
+              /p:WarningLevel=0 `
+              /p:TreatWarningsAsErrors=false `
+              /clp:ErrorsOnly
+
+          }
+
+
+
+      # 2. Архивирование целой build‑папки
+      - name: Package build folders
+        shell: pwsh
+        run: |
+          $arches = @("x64","x86","ARM64")
+          foreach ($platform in $arches) {
+            $buildDir = Join-Path "$env:Solution_Name_Unpacked\bin" "$platform\$env:Configuration_unpacked"
+            if (-not (Test-Path $buildDir)) { throw "Папка сборки для $platform не найдена" }
+      
+            $zipName = "VK_UI3_$platform.zip"
+            if (Test-Path $zipName) { Remove-Item $zipName -Force }
+      
+            Compress-Archive -Path "$buildDir\*" -DestinationPath $zipName -Force
+          }
+
+      - name: Upload zips to artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: VK_UI3_Zips_${{ github.run_id }}
+          path: VK_UI3_*.zip
+          retention-days: 30
+
+
+
+#------------------------------------------
+
+
+      - name: Проверить существование релиза
+        id: check_release
+        run: |
+          $version = "${{ steps.get_version.outputs.VERSION }}"
+          $headers = @{
+            "Authorization" = "token ${{ secrets.TOKEN }}"
+            "Accept" = "application/vnd.github.v3+json"
+          }
+          try {
+            $releases = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases" -Headers $headers
+            $release = $releases | Where-Object { $_.tag_name -eq $version -and $_.draft -eq $false -and $_.prerelease -eq $false }
+            if ($release) {
+              Write-Host "Релиз с тегом $version уже существует"
+              echo "exists=true" >> $env:GITHUB_OUTPUT
+            } else {
+              Write-Host "Релиз с тегом $version не найден"
+              echo "exists=false" >> $env:GITHUB_OUTPUT
+            }
+          } catch {
+            Write-Host "Ошибка при проверке релизов: $($_.Exception.Message)"
+            echo "exists=false" >> $env:GITHUB_OUTPUT
+          }
+        shell: pwsh
+        if: github.event.inputs.release == 'true'
+      
+      - name: Создать релиз
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          name: ${{ github.event.inputs.namevers }}
+          body: |
+            ${{ github.event.inputs.descr }}
+          draft: false
+          prerelease: ${{ github.event.inputs.prerelease == 'true' }}
+          generate_release_notes: false
+        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
+        
+      
+      # Загрузка zip файлов
+      - name: Upload zips to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.TOKEN }}
+          file: VK_UI3_*.zip
+          tag: ${{ steps.get_version.outputs.VERSION }}
+          overwrite: true
+          file_glob: true
+        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
+
+      - name: Отправить сообщение в Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RELEASE_URL: https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}
+        run: |
+          $telegramBotToken = '${{ secrets.TELEGRAM_BOT_TOKEN }}'
+          $telegramChatId = '${{ secrets.TELEGRAM_CHAT_ID }}'
+          $releaseUrl = 'https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}'
+          $message = @"
+          <b>🎉 Новый релиз:</b> ${{ github.event.inputs.namevers }}
+          <b>📦 Версия:</b> ${{ steps.get_version.outputs.VERSION }}
+          <b>📝 Описание:</b> ${{ github.event.inputs.descr }}
+          <b>🔗 <a href='$releaseUrl'>Ссылка на релиз</a></b>
+          "@
+          $uri = 'https://api.telegram.org/bot' + $telegramBotToken + '/sendMessage'
+          $body = @{
+              chat_id = $telegramChatId
+              text = $message
+              parse_mode = 'HTML'
+          }
+          $bodyJson = $body | ConvertTo-Json -Compress
+          Invoke-RestMethod -Uri $uri -Method Post -Body $bodyJson -ContentType 'application/json'
+        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
