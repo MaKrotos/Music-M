@@ -1,16 +1,26 @@
-<ResourceDictionary
+ï»¿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"    
-    xmlns:local="using:VK_UI3.SnowFlake">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:snow="using:VK_UI3.SnowFlake">
 
-    <!-- Ñòèëü äëÿ SnowFlakeEffect -->
-    <Style TargetType="local:SnowFlakeEffect">
+    <!--  Ð¡Ñ‚Ð¸Ð»ÑŒ Ð´Ð»Ñ SnowFlakeEffect  -->
+    <Style TargetType="snow:SnowFlakeEffect">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="local:SnowFlakeEffect">
-                    <!-- Canvas äëÿ ñíåæèíîê -->
-                    <Canvas x:Name="PART_Canvas" 
-                            Background="Transparent"/>
+                <ControlTemplate TargetType="snow:SnowFlakeEffect">
+                    <!--  Canvas Ð´Ð»Ñ ÑÐ½ÐµÐ¶Ð¸Ð½Ð¾Ðº  -->
+                    <Canvas x:Name="PART_Canvas" Background="Transparent" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  Ð¡Ñ‚Ð¸Ð»ÑŒ Ð´Ð»Ñ FireworkEffect  -->
+    <Style TargetType="snow:FireworkEffect">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="snow:FireworkEffect">
+                    <Canvas x:Name="PART_Canvas" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
