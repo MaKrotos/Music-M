@@ -16,7 +16,7 @@
     xmlns:snow="using:VK_UI3.SnowFlake"
     xmlns:upload="using:VK_UI3.Views.Upload"
     x:Name="mainWindoww"
-    Title="VK M (fix by werhes)"
+    Title="VK M"
     mc:Ignorable="d">
     <Window.SystemBackdrop>
         <DesktopAcrylicBackdrop />
