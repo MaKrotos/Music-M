@@ -3,22 +3,30 @@ using System;
 using System.Threading;
 using VK_UI3.Helpers;
 using Windows.Media.Playback;
-using Windows.System.Profile;
 
 namespace VK_UI3.DiscordRPC
 {
     public class DiscordRichPresenceManager : IDisposable
     {
-        private readonly DiscordRpcClient _client;
+        private DiscordRpcClient _client;
         private Timer _timer;
         private Timer _reconnectTimer;
-        private int _currentSecond;
         private string _currentTrack;
         private string _currentArtist;
-        private const int ReconnectDelay = 5000; 
+        private const int ReconnectDelay = 5000;
+        private const int UpdateInterval = 5000;
+        private readonly object _lock = new object();
+        private bool _disposed;
 
         public DiscordRichPresenceManager()
         {
+            CreateClient();
+            InitializeClient();
+        }
+
+        private void CreateClient()
+        {
+            _client?.Dispose();
             _client = new DiscordRpcClient("1350750411811983440");
 
             _client.OnReady += (sender, e) =>
@@ -42,15 +50,13 @@ namespace VK_UI3.DiscordRPC
                 Console.WriteLine("Connection to Discord closed.");
                 AttemptReconnect();
             };
-
-            InitializeClient();
         }
 
         private void InitializeClient()
         {
             try
             {
-                if (!_client.IsInitialized)
+                if (!_client.IsInitialized && !_client.IsDisposed)
                 {
                     _client.Initialize();
                     Console.WriteLine("Discord RPC initialized successfully.");
@@ -65,16 +71,25 @@ namespace VK_UI3.DiscordRPC
 
         private void AttemptReconnect()
         {
-            _reconnectTimer?.Dispose(); // Останавливаем предыдущий таймер, если он был
-            _reconnectTimer = new Timer(_ =>
+            lock (_lock)
             {
-                Console.WriteLine("Attempting to reconnect to Discord...");
-                InitializeClient();
-            }, null, ReconnectDelay, Timeout.Infinite); // Повторная попытка через ReconnectDelay миллисекунд
+                if (_disposed) return;
+
+                _reconnectTimer?.Dispose();
+                _reconnectTimer = new Timer(_ =>
+                {
+                    lock (_lock)
+                    {
+                        if (_disposed) return;
+                        Console.WriteLine("Attempting to reconnect to Discord...");
+                        CreateClient();
+                        InitializeClient();
+                    }
+                }, null, ReconnectDelay, Timeout.Infinite);
+            }
         }
 
         string image;
-        string imageSmall;
 
         /// <summary>
         /// Обновляет статус в Discord.
@@ -88,12 +103,15 @@ namespace VK_UI3.DiscordRPC
         {
             try
             {
-                if (_client.IsInitialized)
+                lock (_lock)
                 {
+                    if (_disposed || !_client.IsInitialized || media == null)
+                        return;
+
                     var presence = new RichPresence()
                     {
-                        Details = $"{_currentTrack}",
-                        State = $"{_currentArtist}",
+                        Details = _currentTrack ?? "Неизвестный трек",
+                        State = _currentArtist ?? "Неизвестен",
                         Type = ActivityType.Listening,
                         Timestamps = new Timestamps()
                         {
@@ -104,7 +122,7 @@ namespace VK_UI3.DiscordRPC
                         {
                             LargeImageKey = image,
                             LargeImageText = "VK Music",
-                            SmallImageKey = imageSmall,
+                            SmallImageKey = null,
                             SmallImageText = "Слушает"
                         },
                         Buttons = new Button[]
@@ -122,15 +140,11 @@ namespace VK_UI3.DiscordRPC
                         }
                     };
                     _client.SetPresence(presence);
-
-                }
-                else
-                {
                 }
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine($"Error updating Discord presence: {ex.Message}");
             }
         }
 
@@ -139,9 +153,33 @@ namespace VK_UI3.DiscordRPC
         /// </summary>
         public void Dispose()
         {
-            _timer?.Dispose();
-            _reconnectTimer?.Dispose();
-            _client.Dispose();
+            lock (_lock)
+            {
+                if (_disposed) return;
+                _disposed = true;
+
+                _timer?.Dispose();
+                _timer = null;
+
+                _reconnectTimer?.Dispose();
+                _reconnectTimer = null;
+
+                try
+                {
+                    if (_client.IsInitialized)
+                    {
+                        _client.ClearPresence();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error clearing Discord presence: {ex.Message}");
+                }
+
+                _client.Dispose();
+                _client = null;
+                media = null;
+            }
         }
 
         MediaPlayer media;
@@ -150,33 +188,43 @@ namespace VK_UI3.DiscordRPC
         {
             try
             {
-                _currentTrack = trackDataThis.audio.Title;
-                _currentArtist = trackDataThis.audio.Artist ?? "Неизвестен";
-                media = mediaPlayer;
-
-             
-                _timer?.Dispose(); 
-                _timer = new Timer(UpdatePresence, null, 0, 5000);
-
-
-                if (trackDataThis != null && trackDataThis.audio != null && trackDataThis.audio.Album != null && trackDataThis.audio.Album.Thumb != null)
+                lock (_lock)
                 {
-                    this.image = 
-                        trackDataThis.audio.Album.Thumb.Photo68 ??
-                        trackDataThis.audio.Album.Thumb.Photo300 ??
-                        trackDataThis.audio.Album.Thumb.Photo1200 ??
-                        trackDataThis.audio.Album.Thumb.Photo1200 ??
-                        trackDataThis.audio.Album.Thumb.Photo600 ??
-                        trackDataThis.audio.Album.Thumb.Photo270 ??
-                        null;
-                    ///this.imageSmall = imageSmall;
+                    if (_disposed) return;
+
+                    _currentTrack = trackDataThis?.audio?.Title ?? "Неизвестный трек";
+                    _currentArtist = trackDataThis?.audio?.Artist ?? "Неизвестен";
+                    media = mediaPlayer;
+
+                    // Обновляем изображение альбома
+                    if (trackDataThis?.audio?.Album?.Thumb != null)
+                    {
+                        var thumb = trackDataThis.audio.Album.Thumb;
+                        string photoUrl = thumb.Photo68 ?? thumb.Photo300 ?? thumb.Photo600 ?? thumb.Photo270 ?? thumb.Photo1200;
+                        if (!string.IsNullOrEmpty(photoUrl))
+                        {
+                            // Discord требует формат mp:external/ для внешних изображений
+                            this.image = $"mp:external/{photoUrl}";
+                        }
+                        else
+                        {
+                            this.image = null;
+                        }
+                    }
+                    else
+                    {
+                        this.image = null;
+                    }
                 }
+
+                // Перезапускаем таймер обновления
+                _timer?.Dispose();
+                _timer = new Timer(UpdatePresence, null, 0, UpdateInterval);
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine($"Error setting Discord track: {ex.Message}");
             }
-            update();
         }
     }
 }
