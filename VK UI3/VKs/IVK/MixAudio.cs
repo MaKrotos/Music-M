@@ -61,7 +61,7 @@ namespace VK_UI3.VKs.IVK
     public class MixAudio : IVKGetAudio
     {
         #region Поля и свойства
-        private int append = 1;
+        private int append = 0;
         /// <summary>
         /// Данные микса
         /// </summary>
@@ -70,7 +70,7 @@ namespace VK_UI3.VKs.IVK
         /// <summary>
         /// Семафор для ограничения количества одновременных запросов
         /// </summary>
-        private static SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+        private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
         
         #endregion
         
@@ -91,7 +91,7 @@ namespace VK_UI3.VKs.IVK
             {
                 try
                 {
-                    var audios = await VK.vkService.GetStreamMixAudios(data.Id, data.Append, 50, options: data.Options, data.PromptEvents, data.Ref, data.EntityId);
+                    var audios = await VK.vkService.GetStreamMixAudios(data.Id, this.append++, 50, options: data.Options, data.PromptEvents, data.Ref, data.EntityId);
                  
                     foreach (var item in audios)
                     {
@@ -159,15 +159,14 @@ namespace VK_UI3.VKs.IVK
         /// </summary>
         public override void GetTracks()
         {
-            semaphore.Wait(); // Ожидает освобождения семафора
+            if (getLoadedTracks) return;
+            getLoadedTracks = true;
             
-            try
+            task = Task.Run(async () =>
             {
-                if (getLoadedTracks) return;
-                getLoadedTracks = true;
-                
-                task = Task.Run(async () =>
+                try
                 {
+                    await semaphore.WaitAsync();
                     try
                     {
                         var tracks = await VK.vkService.GetStreamMixAudios(data.Id, this.append++, 50, options: data.Options, data.PromptEvents, data.Ref, data.EntityId);
@@ -178,21 +177,21 @@ namespace VK_UI3.VKs.IVK
                         if (listAudio.Count == 0)
                             itsAll = true;
                     }
-                    catch (Exception e)
+                    finally
                     {
-                        // Логируем ошибку
-                        Console.WriteLine($"Ошибка при получении треков микса: {e.Message}");
-                        // Можно также вызвать событие ошибки, если это предусмотрено
-                        // onErrorLoad?.Invoke(this, new ErrorLoad(e));
+                        semaphore.Release();
                     }
-                    getLoadedTracks = false;
-                    NotifyOnListUpdate();
-                });
-            }
-            finally
-            {
-                semaphore.Release(); 
-            }
+                }
+                catch (Exception e)
+                {
+                    // Логируем ошибку
+                    Console.WriteLine($"Ошибка при получении треков микса: {e.Message}");
+                    // Можно также вызвать событие ошибки, если это предусмотрено
+                    // onErrorLoad?.Invoke(this, new ErrorLoad(e));
+                }
+                getLoadedTracks = false;
+                NotifyOnListUpdate();
+            });
         }
         
         #endregion

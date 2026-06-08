@@ -48,7 +48,7 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)'=='Unpacked'">
-        <AssemblyName>VK M</AssemblyName>
+        <AssemblyName>VK M (fix by werhes)</AssemblyName>
         <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
         <WindowsPackageType>None</WindowsPackageType>
         <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>

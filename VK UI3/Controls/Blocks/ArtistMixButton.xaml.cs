@@ -85,23 +85,9 @@ namespace VK_UI3.Controls.Blocks
 
             // Очистка предыдущих изображений
             GridThumbs.Children.Clear();
+            GridThumbsForeground.Children.Clear();
 
-            // Загружаем только первое изображение на весь контрол
-            var firstImage = _button.Images.First();
-            var imageControl = new Microsoft.UI.Xaml.Controls.Image
-            {
-                Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(firstImage.Url)),
-                Stretch = Microsoft.UI.Xaml.Media.Stretch.UniformToFill
-            };
-
-            // Устанавливаем одну строку и один столбец
-            GridThumbs.RowDefinitions.Clear();
-            GridThumbs.ColumnDefinitions.Clear();
-            GridThumbs.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            GridThumbs.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-
-            Grid.SetRow(imageControl, 0);
-            Grid.SetColumn(imageControl, 0);
+            // Загружаем изображения через вспомогательный метод
             foreach (var item in _button.Images)
             {
                 GridThumbs.AddImagesToGrid(item.Url);
