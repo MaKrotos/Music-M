@@ -73,7 +73,7 @@
                         <Button.RenderTransformOrigin>
                             0.5,0.5
                         </Button.RenderTransformOrigin>
-                        <FontIcon FontSize="16" Glyph="&#xE72B;">
+                        <FontIcon FontSize="16" Glyинph="&#xE72B;">
                             <FontIcon.RenderTransform>
                                 <ScaleTransform x:Name="IconScaleTransformBackBTN" ScaleX="1" ScaleY="1" />
                             </FontIcon.RenderTransform>
@@ -199,7 +199,7 @@
                         Margin="5,0,5,5"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="VK M (fix by werhes)"
+                        Text="VK M"
                         AutomationProperties.Name="Название приложения" />
 
                     <customBTN:AnimatedButton
