@@ -18,6 +18,9 @@
         <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
         <UserSecretsId>645ec4a4-9b68-4fbd-bdfd-4f49ee06b285</UserSecretsId>
         <Configurations>Debug;Release;Unpacked</Configurations>
+        
+        <!-- Workaround for .NET 10 SDK: Point to VS2022 MSBuild extensions for WinAppSDK PRI tasks -->
+        <AppxMSBuildToolsPath Condition="'$(AppxMSBuildToolsPath)' == '' and Exists('C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Microsoft\VisualStudio\v18.0\AppxPackage\')">C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Microsoft\VisualStudio\v18.0\AppxPackage\</AppxMSBuildToolsPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
         <DefineConstants>X64</DefineConstants>
