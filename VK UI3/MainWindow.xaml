@@ -199,7 +199,7 @@
                         Margin="5,0,5,5"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="VK M"
+                        Text="VK M (fix by werhes)"
                         AutomationProperties.Name="Название приложения" />
 
                     <customBTN:AnimatedButton

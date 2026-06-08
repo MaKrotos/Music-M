@@ -87,7 +87,7 @@ namespace VK_UI3.Controls.Blocks
         private void AnimateGradientStops()
         {
 
-         
+          
         }
 
 
@@ -97,9 +97,10 @@ namespace VK_UI3.Controls.Blocks
             this.Unloaded -= MixControl_Unloaded;
             this.DataContextChanged -= MixControl_DataContextChanged;
             Services.MediaPlayerService.oniVKUpdate -= AudioPlayer_oniVKUpdate;
+            ChoosenControl.onChangeSelected -= ChoosenControl_onChangeSelected;
             /*
           
-            */
+             */
 
         }
 
@@ -145,6 +146,7 @@ namespace VK_UI3.Controls.Blocks
         private void startPalki()
         {
             if (block == null) return;
+            if (block.Audio_Stream_Mixes_Ids == null || block.Audio_Stream_Mixes_Ids.Count == 0) return;
             if (VK_UI3.Services.MediaPlayerService.iVKGetAudio != null && VK_UI3.Services.MediaPlayerService.iVKGetAudio is MixAudio mixAudio
             && mixAudio.data.Id == block.Audio_Stream_Mixes_Ids[0]
             )
@@ -217,9 +219,14 @@ namespace VK_UI3.Controls.Blocks
                 // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
                 dialog.XamlRoot = this.XamlRoot;
 
+                var mixID = "common";
+                if (ChoosenControl.choosen != 0)
+                {
+                    mixID = "my_music";
+                }
 
                 var a = new SettingMix();
-                await a.LoadSettings("common");
+                await a.LoadSettings(mixID);
                 dialog.Content = a;
                 dialog.Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
 
@@ -229,7 +236,7 @@ namespace VK_UI3.Controls.Blocks
                     dialog.Hide();
 
                     new MixAudio(
-                      new MixOptions("common", Options: _options)
+                      new MixOptions(mixID, Options: _options)
                    , this.DispatcherQueue);
                     a.ResetCommand = null;
                     a.ApplyCommand = null;
@@ -242,7 +249,7 @@ namespace VK_UI3.Controls.Blocks
                     dialog.Hide();
 
                     new MixAudio(
-                      new MixOptions("common", Options: _options)
+                      new MixOptions(mixID, Options: _options)
                    , this.DispatcherQueue);
                     a.ResetCommand = null;
                     a.ApplyCommand = null;
