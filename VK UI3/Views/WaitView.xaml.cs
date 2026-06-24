@@ -222,7 +222,7 @@ namespace VK_UI3.Views
             }
             catch (Exception ex)
             {
-                frameSection.Navigate(typeof(ErrorPage), ex.Message, new DrillInNavigationTransitionInfo());
+                frameSection.Navigate(typeof(ErrorPage), ex, new DrillInNavigationTransitionInfo());
             }
             finally
             {

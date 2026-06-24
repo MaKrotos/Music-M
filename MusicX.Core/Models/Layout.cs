@@ -21,5 +21,7 @@ namespace MusicX.Core.Models
 
         [JsonProperty("subtitle")]
         public string Subtitle { get; set; }
+        [JsonProperty("style")]
+        public string Style { get; set; }
     }
 }

@@ -146,12 +146,12 @@ public class VkApiInvoke : IVkApiInvoke
 
             // Таймаут через Task.WhenAny (без изменения IRestClient)
             var requestTask = _client.PostAsync(new(_apiBaseUri, methodName), parameters, Encoding.UTF8);
-            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(5));
+            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(30));
 
             var completedTask = await Task.WhenAny(requestTask, timeoutTask);
             if (completedTask == timeoutTask)
             {
-                throw new TimeoutException($"VK API method '{methodName}' timed out after 5 seconds");
+                throw new TimeoutException($"VK API method '{methodName}' timed out after 30 seconds");
             }
 
             var response = await requestTask;

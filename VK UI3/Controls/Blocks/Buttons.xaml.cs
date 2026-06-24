@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using MusicX.Core.Models;
 using VK_UI3.Views.Controls;
@@ -30,46 +30,58 @@ namespace VK_UI3.Controls.Blocks
             gridV.Items.Clear();
 
 
-            foreach (var item in bloc.Actions)
+            foreach (var action in bloc.Actions)
             {
-                var action = item;
+                UIElement buttonElement = null;
 
-                // Проверяем, является ли кнопка микса артиста (есть MixId или Images)
-                if (!string.IsNullOrEmpty(action.MixId) || (action.Images != null && action.Images.Count > 0))
+                // 1. Определяем тип кнопки по layout и стилю
+                if (bloc.Layout.Name == "crop_slider")
                 {
-                    // Создаем ArtistMixButton
-                    var mixButton = new ArtistMixButton()
+                    // Плитки жанров и настроений
+                    buttonElement = new MixCropButton()
                     {
                         Margin = new Thickness(0, 10, 15, 10),
-                        Width = 200,
-                        Height = 260,
                         DataContext = action,
                         Button = action
                     };
-                    gridV.Items.Add(mixButton);
                 }
-                else
+                else if (bloc.Layout.Name == "large_slider" && bloc.Layout.Style == "artist_mix")
                 {
-                    // Обычная кнопка
+                    // Карточки миксов по артистам
+                    buttonElement = new ArtistMixButton()
+                    {
+                        Margin = new Thickness(0, 10, 15, 10),
+                        DataContext = action,
+                        Button = action
+                    };
+                }
+                else if (bloc.Layout.Name == "horizontal_buttons")
+                {
+                    // Fallback: обычная кнопка для неизвестных типов
+                    var viewModel = new BlockBTN(action, parentBlock: block);
                     var button = new BlockButtonView()
                     {
                         Margin = new Thickness(0, 10, 15, 10),
-                        DataContext = new BlockBTN(action, parentBlock: block),
+                        DataContext = viewModel,
+                        blockBTN = viewModel,
                         Height = 45,
-                        blockBTN = new BlockBTN(action, parentBlock: block)
+                        MinWidth = 170
                     };
 
-                    if (button.DataContext is BlockBTN viewModel)
+                    if (viewModel != null)
                     {
                         button.Command = button.InvokeCommand;
                     }
 
-                    button.MinWidth = 170;
                     button.Refresh();
-                    gridV.Items.Add(button);
+                    buttonElement = button;
+                }
+
+                if (buttonElement != null)
+                {
+                    gridV.Items.Add(buttonElement);
                 }
             }
-
         }
     }
 }

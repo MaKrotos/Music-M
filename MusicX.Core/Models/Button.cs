@@ -54,12 +54,15 @@ namespace MusicX.Core.Models
         public List<Image> ForegroundImages { get; set; } = new List<Image>();
         
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public string Id { get; set; }
         
         [JsonProperty("mix_id")]
         public string MixId { get; set; }
         
         [JsonProperty("entity_id")]
         public long EntityId { get; set; }
+
+        [JsonProperty("mix_options")]
+        public string? MixOptions { get; set; }
     }
 }

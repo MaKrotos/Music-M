@@ -17,6 +17,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.DB;
 using VK_UI3.DownloadTrack;
+using VK_UI3.Helpers;
 using VK_UI3.VKs.Ext;
 using VkNet.Abstractions;
 using VkNet.AudioBypassService.Abstractions;
@@ -194,12 +195,29 @@ namespace VK_UI3
 
             _host.Start();
 
+            // Глобальные обработчики необработанных исключений
+            this.UnhandledException += App_UnhandledException;
+
+            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+            {
+                var exception = args.ExceptionObject as Exception;
+                var report = ErrorReportHelper.BuildFullReport(exception, "AppDomain.UnhandledException");
+                ErrorReportHelper.ShowErrorDialog(report);
+                Environment.Exit(1);
+            };
+
+            TaskScheduler.UnobservedTaskException += (sender, args) =>
+            {
+                var report = ErrorReportHelper.BuildFullReport(args.Exception, "TaskScheduler.UnobservedTaskException");
+                ErrorReportHelper.ShowErrorDialog(report);
+                args.SetObserved();
+                Environment.Exit(1);
+            };
+
             m_window = new MainWindow();
             m_window.Closed += M_window_Closed;
 
             m_window.Activate();
-
-            this.UnhandledException += App_UnhandledException;
 
             //   await (appUpdater.CheckForUpdaterBool)
         }
@@ -309,53 +327,69 @@ namespace VK_UI3
 
         private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
         {
-            if (_mutex != null)
+            // Предотвращаем стандартное закрытие приложения, чтобы показать отчёт
+            e.Handled = true;
+
+            // Собираем полный отчёт об ошибке
+            var report = ErrorReportHelper.BuildFullReport(e.Exception, "App.UnhandledException");
+
+            // Отправляем статистику (в фоне, не блокируя показ отчёта)
+            SendExceptionStat(e.Exception, sender);
+
+            // Показываем системный MessageBox с полным отчётом
+            ErrorReportHelper.ShowErrorDialog(report);
+
+            // Завершаем приложение
+            Environment.Exit(1);
+        }
+
+        /// <summary>
+        /// Отправляет статистику об исключении в StatSly.
+        /// </summary>
+        private static void SendExceptionStat(Exception exception, object sender)
+        {
+            try
             {
-                _mutex.ReleaseMutex();
-                _mutex = null;
-                return;
-            }
+                var setting = DB.SettingsTable.GetSetting("UserUniqID");
+                string UserUniqID;
+                if (setting == null)
+                {
+                    UserUniqID = Helpers.SmallHelpers.GenerateRandomString(100);
+                    DB.SettingsTable.SetSetting("UserUniqID", UserUniqID);
+                }
+                else
+                {
+                    UserUniqID = setting.settingValue;
+                }
 
-            var setting = DB.SettingsTable.GetSetting("UserUniqID");
-            string UserUniqID;
-            if (setting == null)
+                var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
+                var version = $"{assemblyVersion.Major}.{assemblyVersion.Minor}.{assemblyVersion.Build}.{assemblyVersion.Revision}";
+
+                var listParams = new List<EventParams>
+                {
+                    new EventParams("userID", UserUniqID),
+                    new EventParams("Accounts Count", AccountsDB.GetAllAccounts().Count),
+                    new EventParams("versionAPP", version),
+                    new EventParams("Sender", sender?.ToString() ?? "null"),
+                    new EventParams("Exception", exception.Message),
+                    new EventParams("StackTrace", exception.StackTrace),
+                    new EventParams("OSArchitecture", RuntimeInformation.OSArchitecture.ToString()),
+                    new EventParams("AppArchitecture", RuntimeInformation.ProcessArchitecture.ToString())
+                };
+
+                if (AccountsDB.GetAllAccounts().Count > 0)
+                {
+                    var account = AccountsDB.GetActiveAccount();
+                    listParams.Add(new EventParams("ActiveAccount", account.GetHash()));
+                }
+
+                Event @event = new Event("Exception", DateTime.Now, eventParams: listParams);
+                _ = new VKMStatSly().SendEvent(@event);
+            }
+            catch
             {
-                UserUniqID = Helpers.SmallHelpers.GenerateRandomString(100);
-                DB.SettingsTable.SetSetting("UserUniqID", UserUniqID);
-
-
-
+                // Игнорируем ошибки отправки статистики — это не критично
             }
-            else
-            {
-                UserUniqID = setting.settingValue;
-            }
-
-
-            var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
-            var version = $"{assemblyVersion.Major}.{assemblyVersion.Minor}.{assemblyVersion.Build}.{assemblyVersion.Revision}";
-
-
-            var listParams = new List<EventParams>
-                    {
-                        new EventParams("userID", UserUniqID),
-                        new EventParams("Accounts Count", AccountsDB.GetAllAccounts().Count),
-                        new EventParams("versionAPP", version),
-                        new EventParams("Sender", sender.ToString()),
-                        new EventParams("Exception", e.Message),
-                        new EventParams("StackTrace", e.Exception.StackTrace),
-                        new EventParams("OSArchitecture", RuntimeInformation.OSArchitecture.ToString()),
-                        new EventParams("AppArchitecture", RuntimeInformation.ProcessArchitecture.ToString())
-                    };
-
-            if (AccountsDB.GetAllAccounts().Count > 0)
-            {
-                var account = AccountsDB.GetActiveAccount();
-                listParams.Add(new EventParams("ActiveAccount", account.GetHash()));
-            }
-
-            Event @event = new Event("Exception", DateTime.Now, eventParams: listParams);
-            _ = new VKMStatSly().SendEvent(@event);
         }
 
       

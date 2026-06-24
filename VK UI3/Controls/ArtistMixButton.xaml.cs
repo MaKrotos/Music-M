@@ -1,4 +1,4 @@
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -11,7 +11,7 @@ using VK_UI3.Helpers.Animations;
 using VK_UI3.VKs.IVK;
 using Windows.UI;
 
-namespace VK_UI3.Controls.Blocks
+namespace VK_UI3.Controls
 {
     public sealed partial class ArtistMixButton : UserControl
     {
