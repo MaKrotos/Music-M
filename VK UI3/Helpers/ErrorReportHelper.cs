@@ -1,14 +1,20 @@
 using System;
+using System.Collections.Concurrent;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using VK_UI3.DB;
 
 namespace VK_UI3.Helpers
 {
     internal static class ErrorReportHelper
     {
+        private static readonly object _lock = new object();
+        private static bool _isDialogShowing = false;
+        private static IntPtr _currentDialogHwnd = IntPtr.Zero;
+
         /// <summary>
         /// Собирает полный отчёт об ошибке в форматированную строку.
         /// </summary>
@@ -82,16 +88,83 @@ namespace VK_UI3.Helpers
 
         /// <summary>
         /// Показывает нативное диалоговое окно с полным отчётом об ошибке.
-        /// Окно содержит текстовое поле (можно выделять и копировать текст),
-        /// кнопку "Копировать в буфер обмена" и кнопку "Закрыть".
-        /// Запускается в отдельном STA-потоке, чтобы не зависеть от состояния UI-потока WinUI.
+        /// Запускается в отдельном STA-потоке, не блокируя UI приложения.
         /// </summary>
         public static void ShowErrorDialog(string report)
         {
-            var thread = new Thread(() => ShowNativeErrorDialog(report));
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-            thread.Join();
+            lock (_lock)
+            {
+                // Если диалог уже показан, обновляем его содержимое или игнорируем
+                if (_isDialogShowing)
+                {
+                    // Можно обновить содержимое существующего окна
+                    if (_currentDialogHwnd != IntPtr.Zero)
+                    {
+                        UpdateDialogContent(_currentDialogHwnd, report);
+                    }
+                    return;
+                }
+
+                _isDialogShowing = true;
+            }
+
+            try
+            {
+                var thread = new Thread(() =>
+                {
+                    try
+                    {
+                        ShowNativeErrorDialog(report);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Если не удалось показать диалог, пробуем через MessageBox
+                        try
+                        {
+                            MessageBoxW(IntPtr.Zero,
+                                $"Ошибка при показе диалога ошибки:\n{ex.Message}\n\nОригинальный отчет:\n{report}",
+                                "VK M — Критическая ошибка",
+                                0x00000010 | 0x00001000);
+                        }
+                        catch { /* Игнорируем */ }
+                    }
+                    finally
+                    {
+                        lock (_lock)
+                        {
+                            _isDialogShowing = false;
+                            _currentDialogHwnd = IntPtr.Zero;
+                        }
+                    }
+                });
+
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.IsBackground = true;
+                thread.Start();
+            }
+            catch
+            {
+                lock (_lock)
+                {
+                    _isDialogShowing = false;
+                }
+                // Если не удалось создать поток, показываем MessageBox в текущем потоке
+                MessageBoxW(IntPtr.Zero, report, "VK M — Критическая ошибка", 0x00000010 | 0x00001000);
+            }
+        }
+
+        private static void UpdateDialogContent(IntPtr hwnd, string newReport)
+        {
+            try
+            {
+                const int IDC_TEXT_EDIT = 102;
+                var hEdit = GetDlgItem(hwnd, IDC_TEXT_EDIT);
+                if (hEdit != IntPtr.Zero)
+                {
+                    SetWindowTextW(hEdit, newReport);
+                }
+            }
+            catch { /* Игнорируем ошибки обновления */ }
         }
 
         private static void ShowNativeErrorDialog(string report)
@@ -113,7 +186,6 @@ namespace VK_UI3.Helpers
             var atom = RegisterClassExW(ref wc);
             if (atom == 0)
             {
-                // Если не удалось зарегистрировать класс — показываем обычный MessageBox
                 MessageBoxW(IntPtr.Zero, report, "VK M — Критическая ошибка", 0x00000010 | 0x00001000);
                 return;
             }
@@ -132,9 +204,14 @@ namespace VK_UI3.Helpers
                 return;
             }
 
-            // Сохраняем отчёт для использования в оконной процедуре
+            // Сохраняем отчёт и хэндл окна для глобального доступа
             var gcHandle = GCHandle.Alloc(report, GCHandleType.Normal);
             SetWindowLongPtrW(hwnd, GWLP_USERDATA, GCHandle.ToIntPtr(gcHandle));
+
+            lock (_lock)
+            {
+                _currentDialogHwnd = hwnd;
+            }
 
             // Центрируем окно на экране
             CenterWindow(hwnd);
@@ -144,6 +221,11 @@ namespace VK_UI3.Helpers
             {
                 TranslateMessage(ref msg);
                 DispatchMessageW(ref msg);
+            }
+
+            lock (_lock)
+            {
+                _currentDialogHwnd = IntPtr.Zero;
             }
 
             gcHandle.Free();
@@ -171,6 +253,7 @@ namespace VK_UI3.Helpers
             const int WM_SIZE = 0x0005;
             const int WM_COMMAND = 0x0111;
             const int WM_GETMINMAXINFO = 0x0024;
+            const int WM_CLOSE = 0x0010;
             const int IDC_COPY_BUTTON = 100;
             const int IDC_CLOSE_BUTTON = 101;
             const int IDC_TEXT_EDIT = 102;
@@ -179,11 +262,10 @@ namespace VK_UI3.Helpers
             {
                 case WM_CREATE:
                     {
-                        // Получаем отчёт из USERDATA
                         var gcHandle = GCHandle.FromIntPtr(GetWindowLongPtrW(hWnd, GWLP_USERDATA));
                         var report = gcHandle.Target as string ?? string.Empty;
 
-                        // Создаём текстовое поле (EDIT control) с возможностью выделения и прокрутки
+                        // Создаём текстовое поле
                         CreateWindowExW(
                             0, "EDIT", report,
                             (uint)(EditStyles.ES_MULTILINE | EditStyles.ES_READONLY | EditStyles.ES_AUTOVSCROLL |
@@ -210,7 +292,7 @@ namespace VK_UI3.Helpers
                             hWnd, (IntPtr)IDC_CLOSE_BUTTON, IntPtr.Zero, IntPtr.Zero
                         );
 
-                        // Устанавливаем моноширинный шрифт для текстового поля
+                        // Устанавливаем моноширинный шрифт
                         var hFont = CreateFontW(
                             -13, 0, 0, 0, 0, 0, 0, 0,
                             DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
@@ -218,7 +300,6 @@ namespace VK_UI3.Helpers
                         );
                         if (hFont == IntPtr.Zero)
                         {
-                            // Fallback на SystemFont, если Consolas не найден
                             hFont = CreateFontW(
                                 -13, 0, 0, 0, 0, 0, 0, 0,
                                 DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
@@ -234,12 +315,17 @@ namespace VK_UI3.Helpers
                         return 0;
                     }
 
+                case WM_CLOSE:
+                    {
+                        DestroyWindow(hWnd);
+                        return 0;
+                    }
+
                 case WM_SIZE:
                     {
                         var width = (int)(lParam & 0xFFFF);
                         var height = (int)((lParam >> 16) & 0xFFFF);
 
-                        // Изменяем размер текстового поля
                         var hEdit = GetDlgItem(hWnd, IDC_TEXT_EDIT);
                         if (hEdit != IntPtr.Zero)
                         {
@@ -248,7 +334,6 @@ namespace VK_UI3.Helpers
                                 SWP_NOZORDER);
                         }
 
-                        // Перемещаем кнопки
                         var hCopyBtn = GetDlgItem(hWnd, IDC_COPY_BUTTON);
                         if (hCopyBtn != IntPtr.Zero)
                         {
@@ -273,7 +358,6 @@ namespace VK_UI3.Helpers
                         {
                             case IDC_COPY_BUTTON:
                                 {
-                                    // Копируем текст из EDIT control в буфер обмена
                                     var hEdit = GetDlgItem(hWnd, IDC_TEXT_EDIT);
                                     var textLength = GetWindowTextLengthW(hEdit);
                                     var sb = new StringBuilder(textLength + 1);
@@ -333,7 +417,6 @@ namespace VK_UI3.Helpers
         private const uint SWP_NOSIZE = 0x0001;
         private const uint SWP_NOZORDER = 0x0004;
 
-        // Шрифтовые константы
         private const byte DEFAULT_CHARSET = 1;
         private const uint OUT_DEFAULT_PRECIS = 0;
         private const uint CLIP_DEFAULT_PRECIS = 0;
@@ -513,6 +596,9 @@ namespace VK_UI3.Helpers
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern IntPtr GetWindowLongPtrW(IntPtr hWnd, int nIndex);
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        private static extern bool SetWindowTextW(IntPtr hWnd, string text);
 
         [DllImport("gdi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         private static extern IntPtr CreateFontW(

@@ -206,6 +206,7 @@ namespace VK_UI3
                 Environment.Exit(1);
             };
 
+            /*
             TaskScheduler.UnobservedTaskException += (sender, args) =>
             {
                 var report = ErrorReportHelper.BuildFullReport(args.Exception, "TaskScheduler.UnobservedTaskException");
@@ -213,6 +214,7 @@ namespace VK_UI3
                 args.SetObserved();
                 Environment.Exit(1);
             };
+            */
 
             m_window = new MainWindow();
             m_window.Closed += M_window_Closed;
