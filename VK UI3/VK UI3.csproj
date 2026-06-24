@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
 
-        <AppxPackageVersion>0.3.8.7</AppxPackageVersion>
+        <AppxPackageVersion>0.3.8.8</AppxPackageVersion>
         <Version>$(AppxPackageVersion)</Version>
         <OutputType>WinExe</OutputType>
         <TargetFramework>net8.0-windows10.0.22000.0</TargetFramework>
@@ -18,7 +18,7 @@
         <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
         <UserSecretsId>645ec4a4-9b68-4fbd-bdfd-4f49ee06b285</UserSecretsId>
         <Configurations>Debug;Release;Unpacked</Configurations>
-        
+
         <!-- Workaround for .NET 10 SDK: Point to VS2022 MSBuild extensions for WinAppSDK PRI tasks -->
         <AppxMSBuildToolsPath Condition="'$(AppxMSBuildToolsPath)' == '' and Exists('C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Microsoft\VisualStudio\v18.0\AppxPackage\')">C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Microsoft\VisualStudio\v18.0\AppxPackage\</AppxMSBuildToolsPath>
     </PropertyGroup>
@@ -298,10 +298,10 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <Content Update="Assets\SVGs\bookmark-black-shape.svg">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Update="Assets\SVGs\bookmark-white.svg">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <None Update="Controls\ListPlaylists.xaml">
             <Generator>MSBuild:Compile</Generator>
@@ -313,10 +313,10 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <Page Update="Views\TestSnow\TestSnow.xaml">
-          <Generator>MSBuild:Compile</Generator>
+            <Generator>MSBuild:Compile</Generator>
         </Page>
         <Page Update="Views\ErrorPage.xaml">
-          <Generator>MSBuild:Compile</Generator>
+            <Generator>MSBuild:Compile</Generator>
         </Page>
         <Page Update="Views\ModalsPages\EqualizerControlPage.xaml">
             <Generator>MSBuild:Compile</Generator>
