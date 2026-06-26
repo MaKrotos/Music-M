@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<StackPanel
+    x:Class="VK_UI3.Views.Settings.HotkeySettingsExpander"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:VK_UI3.Views.Settings"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Spacing="12"
+    mc:Ignorable="d">
+
+    <!--  Пояснительный текст  -->
+    <Border Padding="12" CornerRadius="6">
+        <StackPanel Spacing="4">
+            <TextBlock
+                FontSize="13"
+                FontWeight="SemiBold"
+                Text="Как настроить горячие клавиши" />
+            <TextBlock
+                FontSize="12"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Text="1. Нажмите на поле с комбинацией клавиш, чтобы начать запись&#x0a;2. Нажмите нужную клавишу на клавиатуре (можно с модификаторами Ctrl/Shift/Alt)&#x0a;3. Нажмите Escape для отмены записи&#x0a;4. Отключайте отдельные комбинации через чекбокс справа"
+                TextWrapping="Wrap" />
+        </StackPanel>
+    </Border>
+
+    <!--  Список горячих клавиш  -->
+    <StackPanel x:Name="HotkeysContainer" Spacing="6" />
+
+    <!--  Кнопки управления  -->
+    <Grid Margin="0,0,0,0" ColumnSpacing="8">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Button
+            x:Name="DisableAllButton"
+            Grid.Column="0"
+            HorizontalAlignment="Stretch"
+            Click="DisableAllButton_Click"
+            ToolTipService.ToolTip="Отключает все горячие клавиши">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <FontIcon FontSize="12" Glyph="&#xE9CE;" />
+                <TextBlock Text="Отключить все" />
+            </StackPanel>
+        </Button>
+
+        <Button
+            x:Name="ResetAllButton"
+            Grid.Column="1"
+            Click="ResetAllButton_Click"
+            ToolTipService.ToolTip="Сбрасывает все горячие клавиши к стандартным комбинациям">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <FontIcon FontSize="12" Glyph="&#xE777;" />
+                <TextBlock Text="Сбросить все" />
+            </StackPanel>
+        </Button>
+
+        <Button
+            x:Name="EnableAllButton"
+            Grid.Column="2"
+            Click="EnableAllButton_Click"
+            ToolTipService.ToolTip="Включает все горячие клавиши">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <FontIcon FontSize="12" Glyph="&#xE8FB;" />
+                <TextBlock Text="Включить все" />
+            </StackPanel>
+        </Button>
+    </Grid>
+
+</StackPanel>

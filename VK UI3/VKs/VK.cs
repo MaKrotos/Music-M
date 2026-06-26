@@ -265,6 +265,58 @@ namespace VK_UI3.VKs
             }
         }
 
+        public static async Task<bool> AddLike(long Id, long OwnerId)
+        {
+            try
+            {
+                var parameters = new VkParameters
+                {
+                    { "audio_ids", $"{OwnerId}_{Id}" }
+                };
+
+                var response = await api.CallAsync("audio.addLike", parameters);
+
+                if (response.RawJson == "1")
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static async Task<bool> RemoveLike(long Id, long OwnerId)
+        {
+            try
+            {
+                var parameters = new VkParameters
+                {
+                    { "audio_ids", $"{OwnerId}_{Id}" }
+                };
+
+                var response = await api.CallAsync("audio.removeLike", parameters);
+
+                if (response.RawJson == "1")
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public static async Task<bool> deleteFromPlaylist(long Id, long OwnerId, long playlistID)
         {
             try

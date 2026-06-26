@@ -16,6 +16,7 @@ using Windows.Media.Playback;
 using Windows.Storage.Streams;
 using Windows.Foundation;
 using VK_UI3.Helpers;
+using VK_UI3.Models;
 using MusicX.Services.Player;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -263,16 +264,9 @@ namespace VK_UI3.Services
 
         private static void InitializeWin32MediaKeys(IntPtr hwnd)
         {
-            try
-            {
-                _mediaKeyHook = new MediaKeyHook(hwnd, GWL_WNDPROC);
-                _mediaKeyHook.MediaKeyPressed += OnMediaKeyPressed;
-                _mediaKeyHook.VolumeKeyPressed += OnVolumeKeyPressed;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Failed to initialize Win32 media keys: {ex.Message}");
-            }
+            // Медиа-клавиши теперь обрабатываются через HotkeyService в MainWindow.NewWindowProc
+            // MediaKeyHook отключен, так как он конфликтует с NewWindowProc
+            System.Diagnostics.Debug.WriteLine("[MediaPlayerService] Win32 media keys handled by HotkeyService");
         }
 
         #endregion
@@ -1030,6 +1024,43 @@ namespace VK_UI3.Services
         private static void MediaPlaybackItem_TimedMetadataTracksChanged(MediaPlaybackItem sender, Windows.Foundation.Collections.IVectorChangedEventArgs args)
         {
             System.Diagnostics.Debug.WriteLine($"[TrackSwitch] Metadata tracks changed: {args.CollectionChange}");
+        }
+
+        /// <summary>
+        /// Выполняет указанное действие плеера. Используется горячими клавишами.
+        /// </summary>
+        public static void ExecuteAction(PlayerAction action)
+        {
+            switch (action)
+            {
+                case PlayerAction.PlayPause:
+                    _ = TogglePlayPause();
+                    break;
+
+                case PlayerAction.NextTrack:
+                    PlayNextTrack();
+                    break;
+
+                case PlayerAction.PreviousTrack:
+                    HandlePreviousTrack();
+                    break;
+
+                case PlayerAction.VolumeUp:
+                    Volume = Math.Min(1.0, Volume + 0.05);
+                    break;
+
+                case PlayerAction.VolumeDown:
+                    Volume = Math.Max(0.0, Volume - 0.05);
+                    break;
+
+                case PlayerAction.Mute:
+                    IsMuted = !IsMuted;
+                    break;
+
+                case PlayerAction.Stop:
+                    StopPlayback();
+                    break;
+            }
         }
 
         private static async Task PreloadNextTrack()

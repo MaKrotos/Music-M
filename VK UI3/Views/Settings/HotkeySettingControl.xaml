@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<UserControl
+    x:Class="VK_UI3.Views.Settings.HotkeySettingControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Border
+        Padding="12,12"
+        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+        BorderThickness="1"
+        CornerRadius="6">
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!--  Верхняя строка: название действия и чекбокс  -->
+            <Grid
+                Grid.Row="0"
+                Grid.Column="0"
+                VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock
+                    x:Name="ActionNameText"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    FontSize="14"
+                    FontWeight="SemiBold"
+                    Text="{x:Bind ActionDisplayName, Mode=OneWay}" />
+
+                <CheckBox
+                    x:Name="EnableCheckBox"
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Checked="EnableCheckBox_Checked"
+                    IsChecked="{x:Bind IsBindingEnabled, Mode=TwoWay}"
+                    ToolTipService.ToolTip="Включить/отключить горячую клавишу"
+                    Unchecked="EnableCheckBox_Unchecked" />
+            </Grid>
+
+            <!--  Нижняя строка: комбинация клавиш и кнопки  -->
+            <Grid
+                Grid.Row="1"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Margin="0,6,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!--  Скрытое текстовое поле для захвата фокуса при записи  -->
+                <TextBox
+                    x:Name="HiddenTextBox"
+                    Grid.Column="0"
+                    Width="1"
+                    Height="1"
+                    Margin="0"
+                    Padding="0"
+                    GotFocus="HiddenTextBox_GotFocus"
+                    IsHitTestVisible="False"
+                    IsTabStop="True"
+                    KeyDown="HiddenTextBox_KeyDown"
+                    Opacity="0.01" />
+
+                <!--  Кнопка для отображения/записи комбинации  -->
+                <Border
+                    x:Name="KeyBindingBorder"
+                    Grid.Column="0"
+                    Height="32"
+                    Padding="12,0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    Background="{ThemeResource TextControlBackground}"
+                    BorderBrush="{ThemeResource TextControlBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Tapped="KeyBindingBorder_Tapped"
+                    ToolTipService.ToolTip="Нажмите, чтобы изменить комбинацию клавиш">
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock
+                            x:Name="KeyCombinationText"
+                            Grid.Column="0"
+                            VerticalAlignment="Center"
+                            FontSize="13"
+                            FontWeight="Medium"
+                            Text="{x:Bind KeyCombinationDisplay, Mode=OneWay}" />
+
+                        <!--  Иконка записи  -->
+                        <FontIcon
+                            x:Name="RecordIcon"
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            FontSize="12"
+                            Glyph="&#xE915;"
+                            Opacity="0.5"
+                            Visibility="Visible" />
+                    </Grid>
+                </Border>
+
+                <!--  Кнопка сброса  -->
+                <Button
+                    x:Name="ResetButton"
+                    Grid.Column="1"
+                    Width="32"
+                    Height="32"
+                    Margin="6,0,0,0"
+                    Padding="0"
+                    VerticalAlignment="Center"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Click="ResetButton_Click"
+                    ToolTipService.ToolTip="Сбросить к стандартной комбинации"
+                    Visibility="Collapsed">
+                    <FontIcon
+                        FontSize="12"
+                        Glyph="&#xE777;"
+                        Opacity="0.6" />
+                </Button>
+
+            </Grid>
+        </Grid>
+    </Border>
+
+</UserControl>

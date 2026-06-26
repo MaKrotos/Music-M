@@ -1,13 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Page x:Class="VK_UI3.Views.Settings.SettingsPage"
+<Page
+    x:Class="VK_UI3.Views.Settings.SettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:VK_UI3.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:VK_UI3.Views.Settings"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d">
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
     <ScrollView>
-        <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <StackPanel.Resources>
                 <Style TargetType="Border">
                     <Setter Property="Margin" Value="5,5,5,0" />
@@ -21,16 +23,29 @@
                 </Style>
             </StackPanel.Resources>
 
-            <!-- Общие настройки -->
-            <Expander Margin="0,0,0,8" IsExpanded="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <!--  Общие настройки  -->
+            <Expander
+                Margin="0,0,0,8"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                IsExpanded="False">
                 <Expander.Header>
                     <StackPanel Orientation="Horizontal" Spacing="8">
-                        <FontIcon VerticalAlignment="Center" FontSize="16" Glyph="&#xE8F1;" />
-                        <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="Общие настройки" />
+                        <FontIcon
+                            VerticalAlignment="Center"
+                            FontSize="16"
+                            Glyph="&#xE8F1;" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Text="Общие настройки" />
                     </StackPanel>
                 </Expander.Header>
                 <Expander.Content>
-                    <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Spacing="8">
+                    <StackPanel
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Spacing="8">
                         <Border>
                             <local:StartUpSetting AutomationProperties.HelpText="Включает или выключает автоматический запуск приложения при старте системы" AutomationProperties.Name="Добавить приложение в автозагрузку" />
                         </Border>
@@ -43,26 +58,47 @@
                         <Border>
                             <StackPanel Orientation="Horizontal">
                                 <local:CheckUpdate AutomationProperties.HelpText="Проверяет наличие новых версий приложения" AutomationProperties.Name="Проверить обновления" />
-                                <TextBlock Margin="15,0,0,0" VerticalAlignment="Center" AutomationProperties.HelpText="Отображает текущую версию приложения" AutomationProperties.Name="Текст текущей версии">
+                                <TextBlock
+                                    Margin="15,0,0,0"
+                                    VerticalAlignment="Center"
+                                    AutomationProperties.HelpText="Отображает текущую версию приложения"
+                                    AutomationProperties.Name="Текст текущей версии">
                                     Текущая версия:
                                 </TextBlock>
-                                <local:AppVersionText Margin="15,0,0,0" VerticalAlignment="Center" AutomationProperties.HelpText="Отображает текущую версию приложения" AutomationProperties.Name="Версия приложения" />
+                                <local:AppVersionText
+                                    Margin="15,0,0,0"
+                                    VerticalAlignment="Center"
+                                    AutomationProperties.HelpText="Отображает текущую версию приложения"
+                                    AutomationProperties.Name="Версия приложения" />
                             </StackPanel>
                         </Border>
                     </StackPanel>
                 </Expander.Content>
             </Expander>
 
-            <!-- Внешний вид и анимации -->
-            <Expander Margin="0,0,0,8" IsExpanded="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <!--  Внешний вид и анимации  -->
+            <Expander
+                Margin="0,0,0,8"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                IsExpanded="False">
                 <Expander.Header>
                     <StackPanel Orientation="Horizontal" Spacing="8">
-                        <FontIcon VerticalAlignment="Center" FontSize="16" Glyph="&#xE7F4;" />
-                        <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="Внешний вид и анимации" />
+                        <FontIcon
+                            VerticalAlignment="Center"
+                            FontSize="16"
+                            Glyph="&#xE7F4;" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Text="Внешний вид и анимации" />
                     </StackPanel>
                 </Expander.Header>
                 <Expander.Content>
-                    <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Spacing="8">
+                    <StackPanel
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Spacing="8">
                         <Border>
                             <local:BackDropSetting AutomationProperties.HelpText="Включает или выключает эффект прозрачности в приложении" AutomationProperties.Name="Выключить прозрачность" />
                         </Border>
@@ -73,22 +109,38 @@
                             <local:SnowflakesSettingsExpander AutomationProperties.HelpText="Настройки анимации снежинок" AutomationProperties.Name="Настройки снежинок" />
                         </Border>
                         <Border>
+                            <local:FireworksSettingsExpander AutomationProperties.HelpText="Настройки анимации фейерверков" AutomationProperties.Name="Настройки фейерверков" />
+                        </Border>
+                        <Border>
                             <local:HighlightPlayedTracks AutomationProperties.HelpText="Выделяет цветом треки, которые были полностью прослушаны" AutomationProperties.Name="Выделять полностью прослушанные треки" />
                         </Border>
                     </StackPanel>
                 </Expander.Content>
             </Expander>
 
-            <!-- Загрузка и управление музыкой -->
-            <Expander Margin="0,0,0,8" IsExpanded="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <!--  Загрузка и управление музыкой  -->
+            <Expander
+                Margin="0,0,0,8"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                IsExpanded="False">
                 <Expander.Header>
                     <StackPanel Orientation="Horizontal" Spacing="8">
-                        <FontIcon VerticalAlignment="Center" FontSize="16" Glyph="&#xE896;" />
-                        <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="Загрузка и управление музыкой" />
+                        <FontIcon
+                            VerticalAlignment="Center"
+                            FontSize="16"
+                            Glyph="&#xE896;" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Text="Загрузка и управление музыкой" />
                     </StackPanel>
                 </Expander.Header>
                 <Expander.Content>
-                    <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Spacing="8">
+                    <StackPanel
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Spacing="8">
                         <Border>
                             <local:DownloadAllSetting AutomationProperties.HelpText="Автоматически запускает параллельное скачивание всех плейлистов" AutomationProperties.Name="Запускать параллельное скачивание автоматически" />
                         </Border>
@@ -105,16 +157,29 @@
                 </Expander.Content>
             </Expander>
 
-            <!-- Интеграции -->
-            <Expander Margin="0,0,0,8" IsExpanded="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <!--  Интеграции  -->
+            <Expander
+                Margin="0,0,0,8"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                IsExpanded="False">
                 <Expander.Header>
                     <StackPanel Orientation="Horizontal" Spacing="8">
-                        <FontIcon VerticalAlignment="Center" FontSize="16" Glyph="&#xE8F2;" />
-                        <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="Интеграции" />
+                        <FontIcon
+                            VerticalAlignment="Center"
+                            FontSize="16"
+                            Glyph="&#xE8F2;" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Text="Интеграции" />
                     </StackPanel>
                 </Expander.Header>
                 <Expander.Content>
-                    <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Spacing="8">
+                    <StackPanel
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Spacing="8">
                         <Border>
                             <local:DisableDiscordIntegration AutomationProperties.HelpText="Отключает отображение информации о воспроизводимой музыке в статусе Discord" AutomationProperties.Name="Отключить интеграцию с Discord" />
                         </Border>
@@ -122,48 +187,125 @@
                 </Expander.Content>
             </Expander>
 
-            <!-- Воспроизведение и аудио -->
-            <Expander Margin="0,0,0,8" IsExpanded="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <!--  Горячие клавиши  -->
+            <Expander
+                Margin="0,0,0,8"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                IsExpanded="False">
                 <Expander.Header>
                     <StackPanel Orientation="Horizontal" Spacing="8">
-                        <FontIcon VerticalAlignment="Center" FontSize="16" Glyph="&#xE8D6;" />
-                        <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="Воспроизведение и аудио" />
+                        <FontIcon
+                            VerticalAlignment="Center"
+                            FontSize="16"
+                            Glyph="&#xE92E;" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Text="Горячие клавиши" />
                     </StackPanel>
                 </Expander.Header>
                 <Expander.Content>
-                    <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Spacing="8">
-                        <Border>
-                            <local:UseFfmpegForPlaybackSetting AutomationProperties.HelpText="Включает или выключает использование FFMPEG для декодирования аудио" AutomationProperties.Name="Использовать FFMPEG для воспроизведения" />
-                        </Border>
-                      
-                            <local:FfmpegSettingsExpander Margin="5" AutomationProperties.HelpText="Настройки параметров FFMPEG для воспроизведения аудио" AutomationProperties.Name="Настройки FFMPEG" />
-                  
+                    <StackPanel
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Spacing="8">
+
+                        <local:HotkeySettingsExpander AutomationProperties.HelpText="Настройки горячих клавиш для управления воспроизведением музыки" AutomationProperties.Name="Горячие клавиши" />
+
                     </StackPanel>
                 </Expander.Content>
             </Expander>
 
-            <!-- Кэш и память -->
-            <Expander Margin="0,0,0,8" IsExpanded="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <!--  Воспроизведение и аудио  -->
+            <Expander
+                Margin="0,0,0,8"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                IsExpanded="False">
                 <Expander.Header>
                     <StackPanel Orientation="Horizontal" Spacing="8">
-                        <FontIcon VerticalAlignment="Center" FontSize="16" Glyph="&#xE8D5;" />
-                        <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="Кэш и память" />
+                        <FontIcon
+                            VerticalAlignment="Center"
+                            FontSize="16"
+                            Glyph="&#xE8D6;" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Text="Воспроизведение и аудио" />
                     </StackPanel>
                 </Expander.Header>
                 <Expander.Content>
-                    <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Spacing="8">
+                    <StackPanel
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Spacing="8">
+                        <Border>
+                            <local:UseFfmpegForPlaybackSetting AutomationProperties.HelpText="Включает или выключает использование FFMPEG для декодирования аудио" AutomationProperties.Name="Использовать FFMPEG для воспроизведения" />
+                        </Border>
+
+                        <local:FfmpegSettingsExpander
+                            Margin="5"
+                            AutomationProperties.HelpText="Настройки параметров FFMPEG для воспроизведения аудио"
+                            AutomationProperties.Name="Настройки FFMPEG" />
+
+                    </StackPanel>
+                </Expander.Content>
+            </Expander>
+
+            <!--  Кэш и память  -->
+            <Expander
+                Margin="0,0,0,8"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                IsExpanded="False">
+                <Expander.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <FontIcon
+                            VerticalAlignment="Center"
+                            FontSize="16"
+                            Glyph="&#xE8D5;" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Text="Кэш и память" />
+                    </StackPanel>
+                </Expander.Header>
+                <Expander.Content>
+                    <StackPanel
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Spacing="8">
                         <Border>
                             <StackPanel>
-                                <TextBlock AutomationProperties.HelpText="Отображает размер кеша для хранения фотографий" AutomationProperties.Name="Размер кеша фотографий" Text="Размер кеша фотографий" />
+                                <TextBlock
+                                    AutomationProperties.HelpText="Отображает размер кеша для хранения фотографий"
+                                    AutomationProperties.Name="Размер кеша фотографий"
+                                    Text="Размер кеша фотографий" />
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <local:PhotoCacheSize x:Name="photocache" Grid.Column="0" AutomationProperties.HelpText="Регулирует размер кеша для хранения фотографий в мегабайтах" AutomationProperties.Name="Ползунок размера кеша фотографий" />
-                                    <TextBlock Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" AutomationProperties.HelpText="Текущее значение размера кеша фотографий в мегабайтах" AutomationProperties.Name="Значение размера кеша фотографий" Text="{x:Bind photocache.Value, Mode=OneWay}" />
-                                    <TextBlock Grid.Column="2" VerticalAlignment="Center" AutomationProperties.HelpText="Единицы измерения размера кеша фотографий" AutomationProperties.Name="Единицы измерения кеша фотографий" Text="МБ" />
+                                    <local:PhotoCacheSize
+                                        x:Name="photocache"
+                                        Grid.Column="0"
+                                        AutomationProperties.HelpText="Регулирует размер кеша для хранения фотографий в мегабайтах"
+                                        AutomationProperties.Name="Ползунок размера кеша фотографий" />
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        Margin="10,0,0,0"
+                                        VerticalAlignment="Center"
+                                        AutomationProperties.HelpText="Текущее значение размера кеша фотографий в мегабайтах"
+                                        AutomationProperties.Name="Значение размера кеша фотографий"
+                                        Text="{x:Bind photocache.Value, Mode=OneWay}" />
+                                    <TextBlock
+                                        Grid.Column="2"
+                                        VerticalAlignment="Center"
+                                        AutomationProperties.HelpText="Единицы измерения размера кеша фотографий"
+                                        AutomationProperties.Name="Единицы измерения кеша фотографий"
+                                        Text="МБ" />
                                 </Grid>
                             </StackPanel>
                         </Border>
@@ -171,8 +313,12 @@
                 </Expander.Content>
             </Expander>
 
-            <!-- Ссылка на Telegram -->
-            <TextBlock Margin="0,20,0,0" AutomationProperties.HelpText="Ссылка на Telegram канал разработчика" AutomationProperties.Name="Ссылка на Telegram" TextAlignment="Center">
+            <!--  Ссылка на Telegram  -->
+            <TextBlock
+                Margin="0,20,0,0"
+                AutomationProperties.HelpText="Ссылка на Telegram канал разработчика"
+                AutomationProperties.Name="Ссылка на Telegram"
+                TextAlignment="Center">
                 <Hyperlink NavigateUri="https://t.me/VK_M_creator">Music M в telegram</Hyperlink>
             </TextBlock>
 

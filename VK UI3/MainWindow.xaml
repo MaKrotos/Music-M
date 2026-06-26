@@ -26,6 +26,7 @@
             x:Name="snow"
             AutoStart="False"
             FlakeCount="100" />
+        <snow:FireworkEffect x:Name="fireworks" AutoStart="False" />
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -56,14 +57,14 @@
                         Height="0"
                         Margin="0,0,0,0"
                         Padding="0"
+                        AutomationProperties.Name="Назад"
                         Background="Transparent"
                         BorderThickness="0"
                         Click="BackClick"
                         CornerRadius="5"
                         OriginalHeight="25"
                         OriginalMargin="0,0,0,5"
-                        OriginalWidth="35"
-                        AutomationProperties.Name="Назад">
+                        OriginalWidth="35">
                         <Button.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform x:Name="BackBTNScale" ScaleX="1" ScaleY="1" />
@@ -115,14 +116,14 @@
                         Height="0"
                         Margin="0,0,0,5"
                         Padding="0"
+                        AutomationProperties.Name="Обновить"
                         Background="Transparent"
                         BorderThickness="0"
                         Click="RefreshClick_Click"
                         CornerRadius="5"
                         OriginalHeight="25"
                         OriginalMargin="0,0,0,5"
-                        OriginalWidth="35"
-                        AutomationProperties.Name="Обновить">
+                        OriginalWidth="35">
                         <Button.RenderTransform>
                             <ScaleTransform x:Name="AnimatedButtonScaleTransform" ScaleX="1" ScaleY="1" />
                         </Button.RenderTransform>
@@ -161,9 +162,9 @@
 
                     <Grid
                         Grid.Column="2"
+                        AutomationProperties.Name="Уведомления"
                         Background="Transparent"
-                        Tapped="TitIcon_Tapped"
-                        AutomationProperties.Name="Уведомления">
+                        Tapped="TitIcon_Tapped">
                         <Grid.ContextFlyout>
                             <Flyout
                                 x:Name="NotifList"
@@ -178,8 +179,8 @@
                                 x:Name="TitIcon"
                                 Width="20"
                                 Height="20"
-                                Source="ms-appx:///Assets/StoreLogo.scale-400.png"
-                                AutomationProperties.Name="Логотип приложения" />
+                                AutomationProperties.Name="Логотип приложения"
+                                Source="ms-appx:///Assets/StoreLogo.scale-400.png" />
                             <Ellipse
                                 x:Name="NotifIndicator"
                                 Width="8"
@@ -187,9 +188,9 @@
                                 Margin="0,0,-2,0"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Top"
+                                AutomationProperties.Name="Новые уведомления"
                                 Fill="Red"
-                                Visibility="Collapsed"
-                                AutomationProperties.Name="Новые уведомления" />
+                                Visibility="Collapsed" />
                         </Grid>
                     </Grid>
 
@@ -199,8 +200,8 @@
                         Margin="5,0,5,5"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="VK M"
-                        AutomationProperties.Name="Название приложения" />
+                        AutomationProperties.Name="Название приложения"
+                        Text="VK M" />
 
                     <customBTN:AnimatedButton
                         x:Name="DownLoadBTN"
@@ -211,12 +212,12 @@
                         Padding="0"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
+                        AutomationProperties.Name="Загрузки"
                         Background="Transparent"
                         CornerRadius="5"
                         OriginalHeight="25"
                         OriginalMargin="5,0,0,5"
-                        OriginalWidth="35"
-                        AutomationProperties.Name="Загрузки">
+                        OriginalWidth="35">
                         <Button.Flyout>
                             <Flyout>
                                 <custom:DownloadsList />
@@ -234,12 +235,12 @@
                         Padding="0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
+                        AutomationProperties.Name="Задачи"
                         Background="Transparent"
                         CornerRadius="5"
                         OriginalHeight="25"
                         OriginalMargin="5,0,0,5"
-                        OriginalWidth="35"
-                        AutomationProperties.Name="Задачи">
+                        OriginalWidth="35">
                         <Button.Flyout>
                             <Flyout>
                                 <customTasks:TaskList />
@@ -261,12 +262,12 @@
                             Padding="0"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
+                            AutomationProperties.Name="Загрузить"
                             Background="Transparent"
                             CornerRadius="5"
                             OriginalHeight="25"
                             OriginalMargin="5,0,5,5"
-                            OriginalWidth="35"
-                            AutomationProperties.Name="Загрузить">
+                            OriginalWidth="35">
                             <Button.Flyout>
                                 <Flyout>
                                     <upload:UploadList />
@@ -283,9 +284,9 @@
                             Margin="0,0,0,5"
                             Padding="0"
                             HorizontalAlignment="Right"
+                            AutomationProperties.Name="Профили"
                             Background="Transparent"
-                            CornerRadius="5"
-                            AutomationProperties.Name="Профили">
+                            CornerRadius="5">
                             <Button.Flyout>
                                 <Flyout>
                                     <customLogin:AccountList Margin="-15,-13,-15,-15" Padding="0" />
