@@ -11,6 +11,7 @@
 
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+                <ResourceDictionary Source="ms-appx:///DevWinUI/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
 

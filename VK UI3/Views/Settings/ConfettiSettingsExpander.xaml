@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Expander
+    x:Class="VK_UI3.Views.Settings.ConfettiSettingsExpander"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:VK_UI3.Views.Settings"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    HorizontalAlignment="Stretch"
+    Margin="5"
+    HorizontalContentAlignment="Stretch"
+    IsExpanded="False"
+    mc:Ignorable="d">
+
+    <Expander.Header>
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <FontIcon
+                VerticalAlignment="Center"
+                FontSize="16"
+                Glyph="&#xE9CA;" />
+            <TextBlock
+                VerticalAlignment="Center"
+                FontWeight="SemiBold"
+                Text="Настройки конфетти" />
+        </StackPanel>
+    </Expander.Header>
+
+    <Expander.Content>
+        <StackPanel Spacing="12">
+            <!-- Включение конфетти -->
+            <local:ConfettiSetting
+                AutomationProperties.HelpText="Включает или выключает непрерывную анимацию конфетти в приложении"
+                AutomationProperties.Name="Включить конфетти" />
+
+            <!-- Выбор пресета -->
+            <StackPanel>
+                <TextBlock
+                    AutomationProperties.HelpText="Выберите тип анимации конфетти"
+                    AutomationProperties.Name="Пресет конфетти"
+                    Text="Пресет" />
+                <local:ConfettiPresetSetting
+                    AutomationProperties.HelpText="Выберите тип анимации конфетти: FireBasic, FireRandomDirection, FireRealistic, FireFireworks, FireStars, FireSnow, FireSchoolPride или Custom"
+                    AutomationProperties.Name="Выбор пресета конфетти" />
+            </StackPanel>
+
+            <!-- Кнопки управления -->
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <local:ConfettiManualFireButton
+                    AutomationProperties.HelpText="Запускает анимацию конфетти с выбранным пресетом"
+                    AutomationProperties.Name="Запустить конфетти сейчас" />
+                <local:ConfettiStopButton
+                    AutomationProperties.HelpText="Немедленно останавливает текущую анимацию конфетти"
+                    AutomationProperties.Name="Выключить конфетти" />
+                <local:ConfettiResetButton
+                    AutomationProperties.HelpText="Сбрасывает все настройки конфетти на значения по умолчанию"
+                    AutomationProperties.Name="Сбросить настройки конфетти" />
+            </StackPanel>
+
+            <!-- Режим случайных цветов -->
+            <local:ConfettiRandomColorSetting
+                AutomationProperties.HelpText="Включает или выключает случайные цвета для конфетти. При включении цвета будут выбираться случайным образом."
+                AutomationProperties.Name="Случайные цвета конфетти" />
+
+            <!-- Выбор цвета -->
+            <StackPanel>
+                <TextBlock
+                    AutomationProperties.HelpText="Выберите цвет конфетти. Если включен режим случайных цветов, этот цвет игнорируется."
+                    AutomationProperties.Name="Цвет конфетти"
+                    Text="Цвет конфетти" />
+                <local:ConfettiColorSetting HorizontalAlignment="Left"
+                    AutomationProperties.HelpText="Выберите цвет конфетти. Если включен режим случайных цветов, этот цвет игнорируется."
+                    AutomationProperties.Name="Палитра цвета конфетти" />
+            </StackPanel>
+
+            <!-- Случайное место вылета -->
+            <local:ConfettiRandomOriginSetting
+                AutomationProperties.HelpText="Включает или выключает случайное место появления конфетти. При включении конфетти будут вылетать из случайных точек на экране."
+                AutomationProperties.Name="Случайное место вылета конфетти" />
+
+            <!-- Количество частиц -->
+            <StackPanel>
+                <TextBlock
+                    AutomationProperties.HelpText="Устанавливает количество частиц конфетти от 1 до 500"
+                    AutomationProperties.Name="Подпись количества частиц"
+                    Text="Количество частиц" />
+                <local:ConfettiParticleCountSetting
+                    AutomationProperties.HelpText="Устанавливает количество частиц конфетти от 1 до 500"
+                    AutomationProperties.Name="Слайдер количества частиц" />
+            </StackPanel>
+
+            <!-- Угол вылета -->
+            <StackPanel>
+                <TextBlock
+                    AutomationProperties.HelpText="Устанавливает угол вылета конфетти от 0 до 360 градусов"
+                    AutomationProperties.Name="Подпись угла вылета"
+                    Text="Угол вылета (°)" />
+                <local:ConfettiAngleSetting
+                    AutomationProperties.HelpText="Устанавливает угол вылета конфетти от 0 до 360 градусов"
+                    AutomationProperties.Name="Слайдер угла вылета" />
+            </StackPanel>
+
+            <!-- Разброс -->
+            <StackPanel>
+                <TextBlock
+                    AutomationProperties.HelpText="Устанавливает разброс конфетти от 0 до 360 градусов"
+                    AutomationProperties.Name="Подпись разброса"
+                    Text="Разброс (°)" />
+                <local:ConfettiSpreadSetting
+                    AutomationProperties.HelpText="Устанавливает разброс конфетти от 0 до 360 градусов"
+                    AutomationProperties.Name="Слайдер разброса" />
+            </StackPanel>
+
+            <!-- Скорость -->
+            <StackPanel>
+                <TextBlock
+                    AutomationProperties.HelpText="Устанавливает начальную скорость частиц конфетти от 1 до 100"
+                    AutomationProperties.Name="Подпись скорости"
+                    Text="Скорость" />
+                <local:ConfettiStartVelocitySetting
+                    AutomationProperties.HelpText="Устанавливает начальную скорость частиц конфетти от 1 до 100"
+                    AutomationProperties.Name="Слайдер скорости" />
+            </StackPanel>
+
+            <!-- Гравитация -->
+            <StackPanel>
+                <TextBlock
+                    AutomationProperties.HelpText="Устанавливает гравитацию для частиц конфетти от 0 до 5"
+                    AutomationProperties.Name="Подпись гравитации"
+                    Text="Гравитация" />
+                <local:ConfettiGravitySetting
+                    AutomationProperties.HelpText="Устанавливает гравитацию для частиц конфетти от 0 до 5"
+                    AutomationProperties.Name="Слайдер гравитации" />
+            </StackPanel>
+
+            <!-- Дрифт -->
+            <StackPanel>
+                <TextBlock
+                    AutomationProperties.HelpText="Устанавливает горизонтальный дрифт частиц конфетти от -2 до 2"
+                    AutomationProperties.Name="Подпись дрифта"
+                    Text="Дрифт" />
+                <local:ConfettiDriftSetting
+                    AutomationProperties.HelpText="Устанавливает горизонтальный дрифт частиц конфетти от -2 до 2"
+                    AutomationProperties.Name="Слайдер дрифта" />
+            </StackPanel>
+
+            <!-- Длительность жизни -->
+            <StackPanel>
+                <TextBlock
+                    AutomationProperties.HelpText="Устанавливает длительность жизни частиц конфетти в тиках от 10 до 500"
+                    AutomationProperties.Name="Подпись длительности жизни"
+                    Text="Длительность жизни (тики)" />
+                <local:ConfettiTicksSetting
+                    AutomationProperties.HelpText="Устанавливает длительность жизни частиц конфетти в тиках от 10 до 500"
+                    AutomationProperties.Name="Слайдер длительности жизни" />
+            </StackPanel>
+
+            <!-- Масштаб -->
+            <StackPanel>
+                <TextBlock
+                    AutomationProperties.HelpText="Устанавливает масштаб частиц конфетти от 0.1 до 3"
+                    AutomationProperties.Name="Подпись масштаба"
+                    Text="Масштаб" />
+                <local:ConfettiScalarSetting
+                    AutomationProperties.HelpText="Устанавливает масштаб частиц конфетти от 0.1 до 3"
+                    AutomationProperties.Name="Слайдер масштаба" />
+            </StackPanel>
+
+            <!-- Формы частиц -->
+            <StackPanel>
+
+                <local:ConfettiShapesSetting
+                    AutomationProperties.HelpText="Выберите форму частиц конфетти: квадраты, круги, звёзды или их комбинации"
+                    AutomationProperties.Name="Выбор форм частиц конфетти" />
+            </StackPanel>
+
+            <!-- Интервал непрерывного режима -->
+            <StackPanel>
+                <TextBlock
+                    AutomationProperties.HelpText="Устанавливает интервал между запусками конфетти в непрерывном режиме от 1 до 60 секунд"
+                    AutomationProperties.Name="Подпись интервала"
+                    Text="Интервал (сек)" />
+                <local:ConfettiContinuousIntervalSetting
+                    AutomationProperties.HelpText="Устанавливает интервал между запусками конфетти в непрерывном режиме от 1 до 60 секунд"
+                    AutomationProperties.Name="Слайдер интервала" />
+            </StackPanel>
+        </StackPanel>
+    </Expander.Content>
+</Expander>

@@ -16,7 +16,6 @@ using VkNet.Model.Attachments;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.Storage.Pickers;
-using Windows.Web.Http;
 using HttpClient = System.Net.Http.HttpClient;
 
 // To learn more about WinUI, the WinUI project structure,

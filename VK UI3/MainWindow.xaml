@@ -10,6 +10,7 @@
     xmlns:customNotif="using:VK_UI3.Views.Notification"
     xmlns:customTasks="using:VK_UI3.Views.Tasks"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:devCommunity="using:DevWinUI"
     xmlns:local="using:VK_UI3"
     xmlns:login="using:VK_UI3.Views.LoginWindow"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -22,11 +23,11 @@
         <DesktopAcrylicBackdrop />
     </Window.SystemBackdrop>
     <Grid>
-        <snow:SnowFlakeEffect
+        <devCommunity:ConfettiCannon x:Name="ConfettiCanon" />
+        <snow:SnowFlakeEffect Background="Red"
             x:Name="snow"
             AutoStart="False"
             FlakeCount="100" />
-        <snow:FireworkEffect x:Name="fireworks" AutoStart="False" />
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -309,5 +310,6 @@
                 </Frame.ContentTransitions>
             </login:ExtendFrame>
         </Grid>
+
     </Grid>
 </Window>

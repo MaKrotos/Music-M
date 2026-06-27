@@ -18,12 +18,14 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.Controllers;
 using VK_UI3.DB;
 using VK_UI3.DownloadTrack;
 using VK_UI3.Helpers.Animations;
+using VK_UI3.Services;
 using VK_UI3.Views.ModalsPages;
 using VK_UI3.Views.Notification;
 using VK_UI3.VKs;
@@ -46,7 +48,6 @@ namespace VK_UI3.Views
         public static MainView mainView;
         private static NavigateFrame frame;
         public NavigateFrame ContentFramePublic => ContentFrame;
-
 
         public MainView()
         {
@@ -201,10 +202,6 @@ namespace VK_UI3.Views
             dispatcherQueue = this.DispatcherQueue;
 
             MainWindow.mainWindow.MainWindow_showRefresh();
-
-
-
-
 
             _ = CheckMemberVK();
 

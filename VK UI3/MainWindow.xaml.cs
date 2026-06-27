@@ -23,6 +23,7 @@ using VK_UI3.DownloadTrack;
 using VK_UI3.Helpers;
 using VK_UI3.Services;
 using VK_UI3.Views;
+using VK_UI3.Views;
 using VK_UI3.Views.LoginWindow;
 using VK_UI3.Views.Notification;
 using VK_UI3.Views.Upload;
@@ -49,6 +50,7 @@ namespace VK_UI3
         public static EventHandler updateMica;
         public static EventHandler onRefreshClicked;
         public EventHandler onBackClicked;
+        public ConfettiService ConfettiService { get; private set; }
         public static WeakEventManager onDownloadClicked = new WeakEventManager();
         public static DownloadFileWithProgress downloadFileWithProgress = null;
 
@@ -441,7 +443,13 @@ namespace VK_UI3
 #endif
             checkNotifications();
             InitializeSnow();
-            InitializeFireworks();
+
+            // Инициализация конфетти
+            ConfettiService = new ConfettiService(ConfettiCanon);
+            ConfettiService.Initialize();
+
+            // Проверка версии и запуск приветственного конфетти при обновлении
+            CheckVersionAndFireConfetti();
         }
 
         private async void checkNotifications()
@@ -657,135 +665,6 @@ namespace VK_UI3
         }
 
         public VK_UI3.SnowFlake.SnowFlakeEffect Snow { get { return snow; }  }
-
-        public VK_UI3.SnowFlake.FireworkEffect Fireworks { get { return fireworks; } }
-
-        #endregion
-
-        #region Fireworks
-        private void InitializeFireworks()
-        {
-            var enabledSetting = SettingsTable.GetSetting("fireworksEnabled");
-
-            if (enabledSetting == null)
-            {
-                // По умолчанию фейерверки выключены
-                fireworks.Stop();
-                return;
-            }
-
-            if (enabledSetting.settingValue == "1")
-            {
-                SetRocketCount();
-                SetFireworksRainbowMode();
-                SetFireworksColor();
-                SetFireworksAnimationSpeed();
-                SetFireworksMaxParticles();
-                fireworks.Start();
-            }
-            else
-            {
-                fireworks.Stop();
-                // Устанавливаем свойства, даже если фейерверки выключены
-                SetRocketCount();
-                SetFireworksRainbowMode();
-                SetFireworksColor();
-                SetFireworksAnimationSpeed();
-                SetFireworksMaxParticles();
-            }
-        }
-
-        private void SetRocketCount()
-        {
-            var countSetting = SettingsTable.GetSetting("fireworksRocketCount");
-            fireworks.RocketCount = countSetting == null
-                ? 5
-                : ParseRocketCount(countSetting.settingValue);
-        }
-
-        private int ParseRocketCount(string value)
-        {
-            if (int.TryParse(value, out int count) && count > 0 && count <= 20)
-            {
-                return count;
-            }
-            return 5;
-        }
-
-        private void SetFireworksRainbowMode()
-        {
-            var rainbowSetting = SettingsTable.GetSetting("fireworksUseRainbowColors");
-            fireworks.UseRainbowColors = rainbowSetting != null && rainbowSetting.settingValue.Equals("1");
-        }
-
-        private void SetFireworksColor()
-        {
-            var colorSetting = SettingsTable.GetSetting("fireworksColor");
-            if (colorSetting != null && !string.IsNullOrEmpty(colorSetting.settingValue))
-            {
-                try
-                {
-                    string colorStr = colorSetting.settingValue.Trim();
-                    if (colorStr.StartsWith("#"))
-                    {
-                        colorStr = colorStr.Substring(1);
-                        if (colorStr.Length == 6)
-                        {
-                            colorStr = "FF" + colorStr;
-                        }
-                        if (colorStr.Length == 8)
-                        {
-                            byte a = Convert.ToByte(colorStr.Substring(0, 2), 16);
-                            byte r = Convert.ToByte(colorStr.Substring(2, 2), 16);
-                            byte g = Convert.ToByte(colorStr.Substring(4, 2), 16);
-                            byte b = Convert.ToByte(colorStr.Substring(6, 2), 16);
-                            fireworks.RocketColor = Windows.UI.Color.FromArgb(a, r, g, b);
-                            return;
-                        }
-                    }
-                }
-                catch
-                {
-                    // В случае ошибки используем цвет по умолчанию
-                }
-            }
-            // Цвет по умолчанию (красный)
-            fireworks.RocketColor = Windows.UI.Color.FromArgb(255, 255, 50, 50);
-        }
-
-        private void SetFireworksAnimationSpeed()
-        {
-            var speedSetting = SettingsTable.GetSetting("fireworksAnimationSpeed");
-            fireworks.AnimationSpeed = speedSetting == null
-                ? 1.0
-                : ParseAnimationSpeed(speedSetting.settingValue);
-        }
-
-        private double ParseAnimationSpeed(string value)
-        {
-            if (double.TryParse(value, out double speed) && speed > 0 && speed <= 3.0)
-            {
-                return speed;
-            }
-            return 1.0;
-        }
-
-        private void SetFireworksMaxParticles()
-        {
-            var particlesSetting = SettingsTable.GetSetting("fireworksMaxParticles");
-            fireworks.MaxParticles = particlesSetting == null
-                ? 2000
-                : ParseMaxParticles(particlesSetting.settingValue);
-        }
-
-        private int ParseMaxParticles(string value)
-        {
-            if (int.TryParse(value, out int count) && count >= 500 && count <= 5000)
-            {
-                return count;
-            }
-            return 2000;
-        }
 
         #endregion
 

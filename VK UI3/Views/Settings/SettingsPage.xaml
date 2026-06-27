@@ -105,9 +105,12 @@
                         <Border>
                             <local:DisableNavigationAnimationsSetting AutomationProperties.HelpText="Включает или выключает анимации при переходе между разделами. Отключение анимаций может ускорить восприятие загрузки." AutomationProperties.Name="Отключить анимации переходов" />
                         </Border>
-                        <Border>
+                 
                             <local:SnowflakesSettingsExpander AutomationProperties.HelpText="Настройки анимации снежинок" AutomationProperties.Name="Настройки снежинок" />
-                        </Border>
+                     
+                     
+                            <local:ConfettiSettingsExpander AutomationProperties.HelpText="Настройки анимации конфетти" AutomationProperties.Name="Настройки конфетти" />
+                
                         <Border>
                             <local:FireworksSettingsExpander AutomationProperties.HelpText="Настройки анимации фейерверков" AutomationProperties.Name="Настройки фейерверков" />
                         </Border>

@@ -7,6 +7,8 @@
     xmlns:local="using:VK_UI3.Views.Settings"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     HorizontalAlignment="Stretch"
+    Margin="5"
+
     HorizontalContentAlignment="Stretch"
     IsExpanded="False"
     mc:Ignorable="d">

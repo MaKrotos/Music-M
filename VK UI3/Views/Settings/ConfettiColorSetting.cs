@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace VK_UI3.Views.Settings
 {
-    public sealed class SnowflakesColorSetting : ColorPicker
+    public sealed class ConfettiColorSetting : ColorPicker
     {
-        public SnowflakesColorSetting()
+        public ConfettiColorSetting()
         {
             // Настройки ColorPicker согласно указанным параметрам
             this.ColorSpectrumShape = ColorSpectrumShape.Box;
@@ -22,19 +22,19 @@ namespace VK_UI3.Views.Settings
             this.IsAlphaSliderVisible = true;
             this.IsAlphaTextInputVisible = true;
 
-            this.Loaded += SnowflakesColorSetting_Loaded;
-            this.ColorChanged += SnowflakesColorSetting_ColorChanged;
+            this.Loaded += ConfettiColorSetting_Loaded;
+            this.ColorChanged += ConfettiColorSetting_ColorChanged;
 
             // Добавляем свойства доступности для экранного диктера
-            AutomationProperties.SetName(this, "Цвет снежинок");
-            AutomationProperties.SetHelpText(this, "Выберите цвет снежинок. Если включен режим радуги, этот цвет игнорируется.");
+            AutomationProperties.SetName(this, "Цвет конфетти");
+            AutomationProperties.SetHelpText(this, "Выберите цвет конфетти. Если включен режим случайных цветов, этот цвет игнорируется.");
         }
 
-        private void SnowflakesColorSetting_Loaded(object sender, RoutedEventArgs e)
+        private void ConfettiColorSetting_Loaded(object sender, RoutedEventArgs e)
         {
             this.DispatcherQueue.TryEnqueue(async () =>
             {
-                var setting = SettingsTable.GetSetting("snowflakesColor");
+                var setting = SettingsTable.GetSetting("confettiColor");
                 if (setting != null && !string.IsNullOrEmpty(setting.settingValue))
                 {
                     try
@@ -62,27 +62,23 @@ namespace VK_UI3.Views.Settings
                     }
                     catch
                     {
-                        // В случае ошибки используем цвет по умолчанию (белый)
-                        this.Color = Color.FromArgb(255, 255, 255, 255);
+                        // В случае ошибки используем цвет по умолчанию
+                        this.Color = Color.FromArgb(255, 255, 105, 180); // Розовый по умолчанию
                     }
                 }
                 else
                 {
-                    // Цвет по умолчанию (белый)
-                    this.Color = Color.FromArgb(255, 255, 255, 255);
+                    // Цвет по умолчанию
+                    this.Color = Color.FromArgb(255, 255, 105, 180); // Розовый
                 }
             });
         }
 
-        private void SnowflakesColorSetting_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
+        private void ConfettiColorSetting_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
         {
             // Сохраняем цвет в формате #AARRGGBB асинхронно, чтобы не блокировать UI
             string colorHex = $"#{args.NewColor.A:X2}{args.NewColor.R:X2}{args.NewColor.G:X2}{args.NewColor.B:X2}";
-            _ = Task.Run(() => SettingsTable.SetSetting("snowflakesColor", colorHex));
-
-            // Применяем цвет к снежинкам (это быстрое свойство, можно на UI-потоке)
-            if (MainWindow.mainWindow?.Snow != null)
-                MainWindow.mainWindow.Snow.FlakeColor = args.NewColor;
+            _ = Task.Run(() => SettingsTable.SetSetting("confettiColor", colorHex));
         }
     }
 }
