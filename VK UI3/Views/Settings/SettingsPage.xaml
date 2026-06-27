@@ -112,9 +112,6 @@
                             <local:ConfettiSettingsExpander AutomationProperties.HelpText="Настройки анимации конфетти" AutomationProperties.Name="Настройки конфетти" />
                 
                         <Border>
-                            <local:FireworksSettingsExpander AutomationProperties.HelpText="Настройки анимации фейерверков" AutomationProperties.Name="Настройки фейерверков" />
-                        </Border>
-                        <Border>
                             <local:HighlightPlayedTracks AutomationProperties.HelpText="Выделяет цветом треки, которые были полностью прослушаны" AutomationProperties.Name="Выделять полностью прослушанные треки" />
                         </Border>
                     </StackPanel>

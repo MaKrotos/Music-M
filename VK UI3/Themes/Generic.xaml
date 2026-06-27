@@ -15,15 +15,4 @@
         </Setter>
     </Style>
 
-    <!--  Стиль для FireworkEffect  -->
-    <Style TargetType="snow:FireworkEffect">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="snow:FireworkEffect">
-                    <Canvas x:Name="PART_Canvas" />
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
 </ResourceDictionary>

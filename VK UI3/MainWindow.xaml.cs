@@ -452,6 +452,31 @@ namespace VK_UI3
             CheckVersionAndFireConfetti();
         }
 
+        private void CheckVersionAndFireConfetti()
+        {
+            try
+            {
+                var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
+                var currentVersion = $"{assemblyVersion.Major}.{assemblyVersion.Minor}.{assemblyVersion.Build}.{assemblyVersion.Revision}";
+
+                var savedVersion = SettingsTable.GetSetting("appVersion");
+                if (savedVersion == null || savedVersion.settingValue != currentVersion)
+                {
+                    SettingsTable.SetSetting("appVersion", currentVersion);
+
+                    // Если конфетти включено, запускаем приветственный салют
+                    if (ConfettiService != null)
+                    {
+                        ConfettiService.FireSchoolPrideConfetti();
+                    }
+                }
+            }
+            catch
+            {
+                // Игнорируем ошибки при проверке версии
+            }
+        }
+
         private async void checkNotifications()
         {
             try
