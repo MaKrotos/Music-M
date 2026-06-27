@@ -28,6 +28,7 @@
             x:Name="snow"
             AutoStart="False"
             FlakeCount="100" />
+  
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
