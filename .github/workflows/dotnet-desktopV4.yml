@@ -1,31 +1,7 @@
-name: Автосборка Music M
+name: [УСТАРЕВШИЕ] Автосборка Music M
 
 on:
   workflow_dispatch:
-    inputs:
-      namevers:
-        description: "Название релиза"
-        required: true
-        default: "🤖 Автосборка"
-      descr:
-        description: "Описание релиза"
-        required: true
-        default: "❌ Описание сборки отсутствует"
-      release:
-        description: "Выкинуть в релиз?"
-        required: true
-        default: false
-        type: boolean
-      prerelease:
-        description: "Пререлиз?"
-        required: true
-        default: true
-        type: boolean
-
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
 
 jobs:
   build:
