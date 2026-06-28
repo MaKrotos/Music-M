@@ -320,6 +320,14 @@ namespace VK_UI3.Services
             if (binding.KeyCode == 0 || _hwnd == IntPtr.Zero)
                 return;
 
+            // Если это стандартная медиа-клавиша без модификаторов, 
+            // не регистрируем её через RegisterHotKey, чтобы не было конфликта с WM_APPCOMMAND.
+            if (binding.Modifiers == VirtualKeyModifiers.None && 
+                binding.KeyCode >= 0xB0 && binding.KeyCode <= 0xB6)
+            {
+                return;
+            }
+
             uint modifiers = ConvertModifiers(binding.Modifiers);
             uint vk = (uint)binding.KeyCode;
 
