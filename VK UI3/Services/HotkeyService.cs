@@ -321,12 +321,19 @@ namespace VK_UI3.Services
                 return;
 
             // Если это стандартная медиа-клавиша без модификаторов, 
-            // не регистрируем её через RegisterHotKey, чтобы не было конфликта с WM_APPCOMMAND.
+            // мы все равно можем попробовать зарегистрировать её как глобальный хоткей,
+            // если пользователь хочет, чтобы она работала всегда.
+            // Однако, чтобы избежать конфликтов с системным поведением WM_APPCOMMAND,
+            // мы оставим этот фильтр только для тех, кто НЕ хочет переопределять их.
+            // Но в текущей реализации мы просто пропускаем их.
+            // Уберем это ограничение, чтобы RegisterHotKey мог перехватить их глобально.
+            /* 
             if (binding.Modifiers == VirtualKeyModifiers.None && 
                 binding.KeyCode >= 0xB0 && binding.KeyCode <= 0xB6)
             {
                 return;
             }
+            */
 
             uint modifiers = ConvertModifiers(binding.Modifiers);
             uint vk = (uint)binding.KeyCode;
