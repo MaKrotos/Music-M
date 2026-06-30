@@ -70,6 +70,18 @@
                                     VerticalAlignment="Center"
                                     AutomationProperties.HelpText="Отображает текущую версию приложения"
                                     AutomationProperties.Name="Версия приложения" />
+                                <TextBlock
+                                    Margin="15,0,0,0"
+                                    VerticalAlignment="Center"
+                                    AutomationProperties.HelpText="Отображает хэш пользователя"
+                                    AutomationProperties.Name="Текст хэша пользователя">
+                                    Хэш пользователя:
+                                </TextBlock>
+                                <local:UserHashText
+                                    Margin="15,0,0,0"
+                                    VerticalAlignment="Center"
+                                    AutomationProperties.HelpText="Отображает хэш текущего пользователя"
+                                    AutomationProperties.Name="Хэш пользователя" />
                             </StackPanel>
                         </Border>
                     </StackPanel>
