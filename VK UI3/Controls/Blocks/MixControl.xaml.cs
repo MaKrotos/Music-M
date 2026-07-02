@@ -73,7 +73,7 @@ namespace VK_UI3.Controls.Blocks
             {
                
                _= settingBTN.HideButton();
-               DownTextBoxAnim.ChangeTextWithAnimation("Любимые треки из Вашей колелкции");
+               DownTextBoxAnim.ChangeTextWithAnimation("Любимые треки из Вашей коллекции");
                upTextBoxAnim.ChangeTextWithAnimation("Слушать мои треки");
 
             }
