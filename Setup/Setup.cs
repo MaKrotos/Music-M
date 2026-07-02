@@ -29,7 +29,7 @@ namespace Setup
                 label10.Text = appUpdater.version;
                 label9.Text = appUpdater.Name;
                 whatsNews.Text = appUpdater.Tit;
-                label7.Text = Math.Round((float)appUpdater.sizeFile / 1024 / 1024, 2).ToString() + " Мб";
+                label7.Text = Math.Round((float)appUpdater.sizeFile / 1024 / 1024, 2).ToString() + " МБ";
                 label10.Text = appUpdater.version;
                 button1.Enabled = true;
                 progressBar1.Style = ProgressBarStyle.Blocks;
@@ -75,7 +75,7 @@ namespace Setup
                 return;
             }
             progressBar1.Value = (int)Math.Round(e.Percentage);
-            label6.Text = Math.Round((float)e.BytesDownloaded / 1024 / 1024, 2).ToString() + " Мб";
+            label6.Text = Math.Round((float)e.BytesDownloaded / 1024 / 1024, 2).ToString() + " МБ";
         }
 
         private async void button1_Click(object sender, EventArgs e)
@@ -108,7 +108,7 @@ namespace Setup
                         else
                         {
                             var resultw = MessageBox.Show(
-                               $"Отсуствуют некоторые компоненты для автоматической установки .NET После установки приложение, .NET необходимо будет установить вручную."
+                               $"Отсутствуют некоторые компоненты для автоматической установки .NET. После установки приложения .NET необходимо будет установить вручную."
                             );
                         }
                     }
@@ -152,7 +152,7 @@ namespace Setup
             {
                 appUpdater.SelectedPackageType = PackageType.ZIP;
             }
-            label7.Text = Math.Round((float)appUpdater.sizeFile / 1024 / 1024, 2).ToString() + " Мб";
+            label7.Text = Math.Round((float)appUpdater.sizeFile / 1024 / 1024, 2).ToString() + " МБ";
         }
     }
 }

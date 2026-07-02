@@ -184,7 +184,7 @@
             label11.Name = "label11";
             label11.Size = new Size(374, 47);
             label11.TabIndex = 16;
-            label11.Text = " (Активируйте, если у Вас отключены некоторые компоненты и службы Windows, или просто не устаанавливается по причине невозможности установить пакеты зависимостей.)";
+            label11.Text = " (Активируйте, если у Вас отключены некоторые компоненты и службы Windows, или просто не устанавливается по причине невозможности установить пакеты зависимостей.)";
             // 
             // logTextBox
             // 
@@ -228,7 +228,7 @@
             EXERadio.Size = new Size(339, 19);
             EXERadio.TabIndex = 20;
             EXERadio.TabStop = true;
-            EXERadio.Text = "EXE (Если не установулен MS Store или не ставится MSIX)";
+            EXERadio.Text = "EXE (Если не установлен MS Store или не ставится MSIX)";
             EXERadio.UseVisualStyleBackColor = true;
             EXERadio.CheckedChanged += Radio_CheckedChanged;
             // 
