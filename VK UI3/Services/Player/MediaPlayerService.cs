@@ -1,5 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Shapes;
+using MusicX.Services.Player;
 using MusicX.Services.Player.Sources;
 using System;
 using System.Collections.Generic;
@@ -9,20 +14,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.DB;
 using VK_UI3.DownloadTrack;
+using VK_UI3.Helpers;
+using VK_UI3.Models;
+using VK_UI3.Services.Player;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
+using Windows.Foundation;
 using Windows.Media;
 using Windows.Media.Playback;
 using Windows.Storage.Streams;
-using Windows.Foundation;
-using VK_UI3.Helpers;
-using VK_UI3.Models;
-using MusicX.Services.Player;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
 using Windows.System;
-using VK_UI3.Services.Player;
 
 namespace VK_UI3.Services
 {
@@ -740,6 +741,7 @@ namespace VK_UI3.Services
 
                 SendPlaybackStatistics(trackdata);
                 SendVKStartEvent(trackdata);
+                SetVKStatus(trackdata);
                 UpdateSystemMediaDisplay(PlayingTrack);
 
                 if (ShouldSkipTrack(trackdata))
@@ -754,6 +756,20 @@ namespace VK_UI3.Services
             {
                 _playTrackSemaphore.Release();
             }
+        }
+
+
+
+
+        private async static void SetVKStatus(ExtendedAudio trackdata)
+        {
+            var share = SettingsTable.GetSetting("shareFriend");
+            if (share.settingValue == "true" && trackdata != null)
+
+                await VK.api.Audio.SetBroadcastAsync(
+                   trackdata.audio.OwnerId + "_" + trackdata.audio.Id
+                );
+
         }
 
         private static async Task EnsureTrackListLoaded()
