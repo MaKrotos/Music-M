@@ -288,7 +288,7 @@ namespace VK_UI3.VKs.IVK
                 // Запрашиваем треки с текущим значением append
                 var tracks = await VK.vkService.GetStreamMixAudios(
                     data.Id,
-                    currentAppend,
+                    1,
                     50,
                     options: data.Options,
                     data.PromptEvents,

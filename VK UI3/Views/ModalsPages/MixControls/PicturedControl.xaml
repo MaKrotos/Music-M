@@ -19,10 +19,6 @@
         VerticalAlignment="Center">
         <TextBlock Margin="0,0,0,4" FontSize="20" HorizontalAlignment="Center" FontFamily="{ThemeResource VKSansBold}" x:Name="TitleText" />
 
-
-
-      
-
         <universal:UniversalControl
             ScrollViewer.VerticalScrollBarVisibility="Visible"
             x:Name="StaggeredRepeater"
