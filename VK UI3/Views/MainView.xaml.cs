@@ -371,6 +371,29 @@ namespace VK_UI3.Views
                         navigateInvoke();
                         ClearMenuItems();
                     });
+
+                    // Add "Что слушают" to the navigation menu
+                    this.DispatcherQueue.TryEnqueue(async () =>
+                    {
+                        var whatListeningSet = new NavSettings()
+                        {
+                            Icon = "\uE783", // People
+                            MyMusicItem = "Что слушают",
+                            section = null
+                        };
+                        
+                        var navViewItem = new AnimatedNavMenuController
+                        {
+                            navSettings = whatListeningSet,
+                            Content = whatListeningSet.MyMusicItem,
+                            Icon = new FontIcon { Glyph = whatListeningSet.Icon }
+                        };
+                        
+                        // Insert it before the "Settings" if possible, or just add to the list
+                        // For now, adding it as a new item to be handled by navigateInvoke
+                       // NavWiv.MenuItems.Add(navViewItem);
+                       // navMenuControllers.Add(navViewItem);
+                    });
                     var catalogs = await VK.vkService.GetAudioCatalogAsync();
 
 
@@ -955,6 +978,10 @@ namespace VK_UI3.Views
                         return;
                         break;
 
+
+                    case "что слушают":
+                        frame.Navigate(typeof(WhatListeningPage), null, new DrillInNavigationTransitionInfo());
+                        break;
 
                     default:
                         var Item = NavWiv.SelectedItem as NavMenuController;

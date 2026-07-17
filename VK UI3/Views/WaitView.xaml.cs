@@ -195,8 +195,8 @@ namespace VK_UI3.Views
                     SectionType.UserSection => LoadUserCestion(waitParameters.SectionID),
 
                     SectionType.Search => string.IsNullOrEmpty(waitParameters.searchText) ?
-                                            loadSection(waitParameters.SectionID) :
-                                            LoadSearchSection(waitParameters.searchText),
+                                             loadSection(waitParameters.SectionID) :
+                                             LoadSearchSection(waitParameters.searchText),
 
                     SectionType.PlayList => LoadPlayList(handlerContainer),
                     SectionType.UserPlayListList => UserPlayListList(),
@@ -204,7 +204,13 @@ namespace VK_UI3.Views
                     SectionType.ConversDialogs => LoadDialogs(),
                     SectionType.LoadFriends => LoadFriends(),
                     SectionType.CustomIVKGetAudio => LoadCustomiVKGetAudio(handlerContainer),
-
+                    SectionType.WhatListening => Task.Run(() =>
+                    {
+                        this.DispatcherQueue.TryEnqueue(() =>
+                        {
+                            frameSection.Navigate(typeof(WhatListeningPage), null, GetNavigationTransitionInfo());
+                        });
+                    }),
 
                     _ => throw new ArgumentOutOfRangeException()
                 });

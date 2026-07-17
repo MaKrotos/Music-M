@@ -1,0 +1,68 @@
+[
+  {
+    "UserName": "Иван Иванов",
+    "UserAvatar": "https://example.com/avatars/user1.jpg",
+    "Playlists": [
+      {
+        "Name": "Лучшее из 2000-х",
+        "Avatar": "https://example.com/covers/pl1.jpg",
+        "Type": "Playlist"
+      },
+      {
+        "Name": "Макс Корж",
+        "Avatar": "https://example.com/artists/artist1.jpg",
+        "Type": "Artist"
+      },
+      {
+        "Name": "Новинки",
+        "Avatar": "https://example.com/covers/pl3.jpg",
+        "Type": "Playlist"
+      }
+    ],
+    "SocialLinks": [
+      {
+        "Name": "ВКонтакте",
+        "LinkType": "VK"
+      },
+      {
+        "Name": "Telegram",
+        "LinkType": "Telegram"
+      },
+      {
+        "Name": "Discord",
+        "LinkType": "Discord"
+      }
+    ]
+  },
+  {
+    "UserName": "Мария Петрова",
+    "UserAvatar": "https://example.com/avatars/user2.jpg",
+    "Playlists": [
+      {
+        "Name": "Джаз для души",
+        "Avatar": "https://example.com/covers/pl4.jpg",
+        "Type": "Playlist"
+      },
+      {
+        "Name": "Miles Davis",
+        "Avatar": "https://example.com/artists/artist2.jpg",
+        "Type": "Artist"
+      },
+      {
+        "Name": "Kind of Blue",
+        "Avatar": "https://example.com/albums/alb1.jpg",
+        "Type": "Album"
+      }
+    ],
+    "SocialLinks": [
+      {
+        "Name": "GitHub",
+        "LinkType": "GitHub"
+      },
+      {
+        "Name": "Twitter",
+        "LinkType": "Twitter"
+      }
+    ]
+  }
+]

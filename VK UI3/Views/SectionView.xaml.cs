@@ -130,6 +130,7 @@ namespace VK_UI3.Views
             ConversDialogs,
             LoadFriends,
             CustomIVKGetAudio,
+            WhatListening,
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -344,18 +345,18 @@ namespace VK_UI3.Views
                 var toReplaceBlockIds = replaces.Replacements.ReplacementsModels.SelectMany(b => b.FromBlockIds)
                     .ToHashSet();
 
-                // Найти блоки, которые нужно заменить
+                // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                 var blocksToReplace = blocks.Where(block => toReplaceBlockIds.Contains(block.Id)).ToList();
 
                 this.DispatcherQueue.TryEnqueue(() =>
                 {
-                    // Удалить блоки
+                    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
                     foreach (var block in blocksToReplace)
                     {
                         blocks.Remove(block);
                     }
 
-                    // Добавить новые блоки
+                    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
                     foreach (var block in replaces.Replacements.ReplacementsModels.SelectMany(b => b.ToBlocks))
                     {
                         blocks.Add(block);
@@ -364,7 +365,7 @@ namespace VK_UI3.Views
             }
             catch (Exception ex)
             {
-                // Обработка исключений
+                // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             }
         }
 

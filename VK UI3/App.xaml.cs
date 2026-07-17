@@ -76,6 +76,7 @@ namespace VK_UI3
             FFMediaToolkit.FFmpegLoader.FFmpegPath = new CheckFFmpeg().GetFFmpegDirectory() + "\\";
 
             services.AddSingleton<ICustomSectionsService, CustomSectionsService>();
+            services.AddSingleton<IWhatListeningService, WhatListeningService>();
 
             var container = StaticService.Container = services.BuildServiceProvider();
 
