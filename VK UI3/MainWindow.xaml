@@ -19,9 +19,6 @@
     x:Name="mainWindoww"
     Title="VK M"
     mc:Ignorable="d">
-    <Window.SystemBackdrop>
-        <DesktopAcrylicBackdrop />
-    </Window.SystemBackdrop>
     <Grid>
   
         <snow:SnowFlakeEffect Background="Red"

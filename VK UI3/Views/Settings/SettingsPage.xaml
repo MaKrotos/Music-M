@@ -112,7 +112,7 @@
                         VerticalAlignment="Stretch"
                         Spacing="8">
                         <Border>
-                            <local:BackDropSetting AutomationProperties.HelpText="Включает или выключает эффект прозрачности в приложении" AutomationProperties.Name="Выключить прозрачность" />
+                            <local:BackDropSetting AutomationProperties.HelpText="Выбирает стиль фонового оформления окна" AutomationProperties.Name="Стиль фона" />
                         </Border>
                         <Border>
                             <local:DisableNavigationAnimationsSetting AutomationProperties.HelpText="Включает или выключает анимации при переходе между разделами. Отключение анимаций может ускорить восприятие загрузки." AutomationProperties.Name="Отключить анимации переходов" />

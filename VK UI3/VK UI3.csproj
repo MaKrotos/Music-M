@@ -155,6 +155,7 @@
         <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.1.240916" />
         <PackageReference Include="CommunityToolkit.WinUI.Lottie" Version="8.1.240821" />
         <PackageReference Include="DevWinUI" Version="10.1.0" />
+        <PackageReference Include="DevWinUI.Base" Version="10.1.0" />
         <PackageReference Include="FFmpegInteropX" Version="2.0.0-pre3" />
         <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
 

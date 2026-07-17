@@ -1,4 +1,5 @@
 ﻿#define SKIP_ERROR_PRONE_CODE
+using DevWinUI;
 using Microsoft.UI;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Dispatching;
@@ -13,22 +14,21 @@ using SetupLib;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using VK_UI3.DB;
+using DevWinUI;
+
 using VK_UI3.DownloadTrack;
 using VK_UI3.Helpers;
 using VK_UI3.Services;
-using VK_UI3.Views;
 using VK_UI3.Views;
 using VK_UI3.Views.LoginWindow;
 using VK_UI3.Views.Notification;
 using VK_UI3.Views.Upload;
 using VK_UI3.VKs;
-using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Media;
 using Windows.UI.ViewManagement;
@@ -884,14 +884,48 @@ namespace VK_UI3
         private void CheckMica()
         {
             var set = SettingsTable.GetSetting("backDrop");
-            if (set != null)
+            string backdropKey = set?.settingValue ?? "acrylic_default";
+
+            // Migration from old binary format ("1" meant Mica BaseAlt)
+            if (backdropKey == "1")
             {
-                if (!(SystemBackdrop is MicaBackdrop))
-                    SystemBackdrop = new MicaBackdrop() { Kind = MicaKind.BaseAlt };
+                backdropKey = "mica_basealt";
+                SettingsTable.SetSetting("backDrop", "mica_basealt");
             }
-            else if (!(SystemBackdrop is DesktopAcrylicBackdrop))
+
+            switch (backdropKey)
             {
-                SystemBackdrop = new DesktopAcrylicBackdrop();
+                case "null":
+                    if (SystemBackdrop != null)
+                        SystemBackdrop = null;
+                    break;
+
+                case "mica_base":
+                    if (!(SystemBackdrop is MicaBackdrop) ||
+                        (SystemBackdrop is MicaBackdrop mica && mica.Kind != MicaKind.Base))
+                        SystemBackdrop = new MicaBackdrop() { Kind = MicaKind.Base };
+                    break;
+
+                case "mica_basealt":
+                    if (!(SystemBackdrop is MicaBackdrop) ||
+                        (SystemBackdrop is MicaBackdrop micaAlt && micaAlt.Kind != MicaKind.BaseAlt))
+                        SystemBackdrop = new MicaBackdrop() { Kind = MicaKind.BaseAlt };
+                    break;
+
+                case "acrylic_default":
+                    if (!(SystemBackdrop is DesktopAcrylicBackdrop))
+                        SystemBackdrop = new DesktopAcrylicBackdrop();
+                    break;
+
+                case "transparent":
+                    if (!(SystemBackdrop is TransparentBackdrop))
+                        SystemBackdrop = new TransparentBackdrop();
+                    break;
+
+                default:
+                    if (!(SystemBackdrop is DesktopAcrylicBackdrop))
+                        SystemBackdrop = new DesktopAcrylicBackdrop();
+                    break;
             }
         }
         #endregion
