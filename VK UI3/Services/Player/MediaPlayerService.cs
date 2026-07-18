@@ -1,15 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Shapes;
 using MusicX.Services.Player;
 using MusicX.Services.Player.Sources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.DB;
@@ -19,11 +14,9 @@ using VK_UI3.Models;
 using VK_UI3.Services.Player;
 using VK_UI3.VKs;
 using VK_UI3.VKs.IVK;
-using Windows.Foundation;
 using Windows.Media;
 using Windows.Media.Playback;
 using Windows.Storage.Streams;
-using Windows.System;
 
 namespace VK_UI3.Services
 {
@@ -41,15 +34,7 @@ namespace VK_UI3.Services
         public static ExtendedAudio _nextTrack = null;
         public static CancellationTokenSource? _tokenSource;
         public static CancellationTokenSource? _nextTrackTokenSource;
-        public static bool _isProcessingMediaKey = false;
-        public static DateTime _lastMediaKeyTime = DateTime.MinValue;
 
-        // Win32 API константы
-        private const int WM_APPCOMMAND = 0x0319;
-        private const int GWL_WNDPROC = -4;
-
-        private static IntPtr _hwnd = IntPtr.Zero;
-        private static MediaKeyHook _mediaKeyHook;
         private static bool _isInitialized = false;
         private static Window _mainWindow;
 
@@ -61,7 +46,6 @@ namespace VK_UI3.Services
         public static event EventHandler onClickonTrack;
         public static event EventHandler AudioPlayedChangeEvent;
         public static event EventHandler<VolumeChangedEventArgs> VolumeChanged;
-        public static event EventHandler<bool> MediaKeyEnabledChanged;
         public static event EventHandler<TimeSpan> PositionChanged;
 
         #endregion
@@ -101,8 +85,6 @@ namespace VK_UI3.Services
             set { _playingTrack = value; }
         }
 
-        public static bool IsMediaKeysEnabled { get; private set; } = true;
-
         private static double _volume = 1.0;
         public static double Volume
         {
@@ -135,16 +117,6 @@ namespace VK_UI3.Services
 
         #endregion
 
-        #region Win32 Interop
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
-
-        #endregion
-
         #region Initialization and Cleanup
 
         public static void Initialize(Window window)
@@ -152,20 +124,11 @@ namespace VK_UI3.Services
             if (_isInitialized) return;
             _mainWindow = window;
 
-            // Получаем handle окна
-            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
-            if (hwnd == IntPtr.Zero) return;
-
-            _hwnd = hwnd;
-
             // Настраиваем медиаплеер
             InitializeMediaPlayer();
 
             // Настраиваем SystemMediaTransportControls
             SetupSystemMediaTransportControls();
-
-            // Инициализируем Win32 хук
-            InitializeWin32MediaKeys(hwnd);
 
             _isInitialized = true;
         }
@@ -177,10 +140,13 @@ namespace VK_UI3.Services
                 // Настраиваем медиаплеер как в старом коде
                 _mediaPlayer.AudioCategory = MediaPlayerAudioCategory.Media;
 
-                // ВКЛЮЧАЕМ CommandManager - это КРИТИЧЕСКИ важно!
+                // ВКЛЮЧАЕМ CommandManager — это КРИТИЧЕСКИ важно для глобальной обработки
+                // медиа-клавиш через SystemMediaTransportControls, даже когда окно свёрнуто.
+                // Когда CommandManager включён, Windows сама маршрутизирует медиа-клавиши
+                // в приложение через SMTC, независимо от состояния окна.
                 _mediaPlayer.CommandManager.IsEnabled = true;
 
-                // Настраиваем поведение команд
+                // Настраиваем правила включения для всех медиа-команд
                 _mediaPlayer.CommandManager.NextBehavior.EnablingRule = MediaCommandEnablingRule.Always;
                 _mediaPlayer.CommandManager.PreviousBehavior.EnablingRule = MediaCommandEnablingRule.Always;
                 _mediaPlayer.CommandManager.PlayBehavior.EnablingRule = MediaCommandEnablingRule.Always;
@@ -261,13 +227,6 @@ namespace VK_UI3.Services
                         break;
                 }
             });
-        }
-
-        private static void InitializeWin32MediaKeys(IntPtr hwnd)
-        {
-            // Медиа-клавиши теперь обрабатываются через HotkeyService в MainWindow.NewWindowProc
-            // MediaKeyHook отключен, так как он конфликтует с NewWindowProc
-            System.Diagnostics.Debug.WriteLine("[MediaPlayerService] Win32 media keys handled by HotkeyService");
         }
 
         #endregion
@@ -372,50 +331,12 @@ namespace VK_UI3.Services
 
         #endregion
 
-        #region Media Key Handlers
-
-        private static void OnMediaKeyPressed(object sender, MediaKeyEventArgs e)
-        {
-            if (!IsMediaKeysEnabled || _isProcessingMediaKey) return;
-
-            // Дебаунс для предотвращения множественных срабатываний
-            var now = DateTime.Now;
-            if ((now - _lastMediaKeyTime).TotalMilliseconds < MEDIA_KEY_DEBOUNCE_MS)
-                return;
-
-            _lastMediaKeyTime = now;
-
-            HandleMediaKey(e.Key);
-        }
-
-        private static void OnVolumeKeyPressed(object sender, VolumeKeyEventArgs e)
-        {
-            if (!IsMediaKeysEnabled) return;
-
-            switch (e.Key)
-            {
-                case VolumeKey.VolumeUp:
-                    Volume = Math.Min(1.0, Volume + 0.05);
-                    break;
-                case VolumeKey.VolumeDown:
-                    Volume = Math.Max(0.0, Volume - 0.05);
-                    break;
-                case VolumeKey.VolumeMute:
-                    IsMuted = !IsMuted;
-                    break;
-            }
-        }
-
-        #endregion
-
         #region Cleanup
 
         public static void Cleanup()
         {
             System.Diagnostics.Debug.WriteLine("[MemoryLeakDebug] Cleanup started");
             if (!_isInitialized) return;
-
-            _mediaKeyHook?.Dispose();
 
             if (_mediaPlayer != null)
             {
@@ -471,7 +392,6 @@ namespace VK_UI3.Services
 
         private static async void HandleMediaKey(MediaKey key)
         {
-            _isProcessingMediaKey = true;
             try
             {
                 switch (key)
@@ -493,7 +413,6 @@ namespace VK_UI3.Services
             finally
             {
                 await Task.Delay(MEDIA_KEY_DEBOUNCE_MS);
-                _isProcessingMediaKey = false;
             }
         }
 
@@ -521,15 +440,6 @@ namespace VK_UI3.Services
         {
             _mediaPlayer.Pause();
             _mediaPlayer.PlaybackSession.Position = TimeSpan.Zero;
-        }
-
-        public static void EnableMediaKeys(bool enable)
-        {
-            if (IsMediaKeysEnabled != enable)
-            {
-                IsMediaKeysEnabled = enable;
-                MediaKeyEnabledChanged?.Invoke(null, enable);
-            }
         }
 
         #endregion
@@ -750,7 +660,15 @@ namespace VK_UI3.Services
                     return;
                 }
 
-                await LoadAndPlayTrack(trackdata, position);
+                try
+                {
+                    await LoadAndPlayTrack(trackdata, position);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[TrackSwitch] Error in PlayTrack loading track: {ex.Message}");
+                    // Не пробрасываем исключение дальше — приложение не должно падать
+                }
             }
             finally
             {
@@ -824,7 +742,8 @@ namespace VK_UI3.Services
 
         private static bool ShouldSkipTrack(ExtendedAudio trackdata)
         {
-            return trackdata.audio.Url == null ||
+            return trackdata?.audio == null ||
+                   trackdata.audio.Url == null ||
                    new DB.SkipPerformerDB().skipIsSet(trackdata.audio.Artist);
         }
 
@@ -898,7 +817,7 @@ namespace VK_UI3.Services
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[TrackSwitch] Error in LoadAndPlayTrack: {ex.Message}");
-                throw;
+                // Не пробрасываем исключение — приложение не должно падать
             }
         }
 
@@ -972,14 +891,15 @@ namespace VK_UI3.Services
                 await allSourcesTask;
                 System.Diagnostics.Debug.WriteLine($"[MemoryLeakDebug] LoadWithMediaSources completed for track: {trackdata.audio.Title}");
             }
-            catch
+            catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[MemoryLeakDebug] LoadWithMediaSources failed for track: {trackdata.audio.Title}");
+                System.Diagnostics.Debug.WriteLine($"[MemoryLeakDebug] LoadWithMediaSources failed for track: {trackdata.audio.Title}: {ex.Message}");
                 if (allSourcesTask.IsCanceled ||
                     allSourcesTask.Exception?.InnerExceptions.All(b => b is OperationCanceledException) is true)
                     return;
 
-                throw;
+                // Не пробрасываем исключение — приложение не должно падать
+                return;
             }
 
             if (!allSourcesTask.Result.Any(b => b))
@@ -1040,6 +960,96 @@ namespace VK_UI3.Services
         private static void MediaPlaybackItem_TimedMetadataTracksChanged(MediaPlaybackItem sender, Windows.Foundation.Collections.IVectorChangedEventArgs args)
         {
             System.Diagnostics.Debug.WriteLine($"[TrackSwitch] Metadata tracks changed: {args.CollectionChange}");
+        }
+
+        // Debounce для предотвращения дублирования WM_APPCOMMAND
+        // между глобальным хуком (GlobalMediaKeyHook) и оконной процедурой (NewWindowProc).
+        private static readonly object _appCommandLock = new object();
+        private static DateTime _lastAppCommandTime = DateTime.MinValue;
+
+        /// <summary>
+        /// Обрабатывает WM_APPCOMMAND (медиа-клавиши с клавиатуры).
+        /// Вызывается из MainWindow.NewWindowProc и GlobalMediaKeyHook.
+        /// </summary>
+        public static void HandleAppCommand(int cmd)
+        {
+            // Debounce: если команда была обработана менее 300 мс назад — игнорируем.
+            // Это защита от дублирования, когда WM_APPCOMMAND приходит и через глобальный хук,
+            // и через оконную процедуру одновременно.
+            lock (_appCommandLock)
+            {
+                var now = DateTime.Now;
+                if ((now - _lastAppCommandTime).TotalMilliseconds < MEDIA_KEY_DEBOUNCE_MS)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[MediaPlayerService] WM_APPCOMMAND cmd={cmd} debounced (too frequent)");
+                    return;
+                }
+                _lastAppCommandTime = now;
+            }
+
+            // Проверяем, не назначена ли эта медиа-клавиша в HotkeyService.
+            // Если назначена - пропускаем, т.к. она будет обработана через WM_HOTKEY.
+            if (HotkeyService.Instance != null)
+            {
+                int vkCode = AppCommandToVkCode(cmd);
+                if (vkCode != 0 && HotkeyService.Instance.IsMediaKeyRegistered(vkCode))
+                {
+                    System.Diagnostics.Debug.WriteLine($"[MediaPlayerService] WM_APPCOMMAND cmd={cmd} skipped - handled by HotkeyService (VK=0x{vkCode:X2})");
+                    return;
+                }
+            }
+
+            MediaKey? key = null;
+
+            switch (cmd)
+            {
+                case 8:  // APPCOMMAND_VOLUME_MUTE
+                    IsMuted = !IsMuted;
+                    return;
+                case 9:  // APPCOMMAND_VOLUME_DOWN
+                    Volume = Math.Max(0.0, Volume - 0.05);
+                    return;
+                case 10: // APPCOMMAND_VOLUME_UP
+                    Volume = Math.Min(1.0, Volume + 0.05);
+                    return;
+                case 11: // APPCOMMAND_MEDIA_NEXTTRACK
+                    key = MediaKey.Next;
+                    break;
+                case 12: // APPCOMMAND_MEDIA_PREVIOUSTRACK
+                    key = MediaKey.Previous;
+                    break;
+                case 13: // APPCOMMAND_MEDIA_STOP
+                    key = MediaKey.Stop;
+                    break;
+                case 14: // APPCOMMAND_MEDIA_PLAY_PAUSE
+                case 46: // APPCOMMAND_MEDIA_PLAY
+                case 47: // APPCOMMAND_MEDIA_PAUSE
+                    key = MediaKey.PlayPause;
+                    break;
+            }
+
+            if (key.HasValue)
+            {
+                HandleMediaKey(key.Value);
+            }
+        }
+
+        /// <summary>
+        /// Преобразует APPCOMMAND код в Win32 VirtualKey код.
+        /// </summary>
+        private static int AppCommandToVkCode(int cmd)
+        {
+            return cmd switch
+            {
+                8  => 0xB4, // APPCOMMAND_VOLUME_MUTE → VK_VOLUME_MUTE
+                9  => 0xB6, // APPCOMMAND_VOLUME_DOWN → VK_VOLUME_DOWN
+                10 => 0xB5, // APPCOMMAND_VOLUME_UP → VK_VOLUME_UP
+                11 => 0xB2, // APPCOMMAND_MEDIA_NEXTTRACK → VK_MEDIA_NEXT_TRACK
+                12 => 0xB1, // APPCOMMAND_MEDIA_PREVIOUSTRACK → VK_MEDIA_PREV_TRACK
+                13 => 0xB3, // APPCOMMAND_MEDIA_STOP → VK_MEDIA_STOP
+                14 or 46 or 47 => 0xB0, // APPCOMMAND_MEDIA_PLAY_PAUSE/PLAY/PAUSE → VK_MEDIA_PLAY_PAUSE
+                _ => 0
+            };
         }
 
         /// <summary>

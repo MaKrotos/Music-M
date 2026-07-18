@@ -183,33 +183,36 @@ namespace VK_UI3.Models
 
         /// <summary>
         /// Создаёт привязку по умолчанию для указанного действия.
+        /// Медиа-клавиши (0xB0-0xB6) не назначаются по умолчанию,
+        /// так как они обрабатываются через WM_APPCOMMAND старым механизмом
+        /// (MediaPlayerService.HandleAppCommand) и не должны конфликтовать с HotkeyService.
         /// </summary>
         public static HotkeyBinding GetDefault(PlayerAction action)
         {
-            var binding = new HotkeyBinding { Action = action, IsEnabled = true };
+            var binding = new HotkeyBinding { Action = action, IsEnabled = false };
 
             switch (action)
             {
                 case PlayerAction.PlayPause:
-                    binding.KeyCode = 0xB0; // VK_MEDIA_PLAY_PAUSE
+                    binding.KeyCode = 0; // Не назначаем, обрабатывается через WM_APPCOMMAND
                     break;
                 case PlayerAction.NextTrack:
-                    binding.KeyCode = 0xB2; // VK_MEDIA_NEXT_TRACK
+                    binding.KeyCode = 0; // Не назначаем, обрабатывается через WM_APPCOMMAND
                     break;
                 case PlayerAction.PreviousTrack:
-                    binding.KeyCode = 0xB1; // VK_MEDIA_PREV_TRACK
+                    binding.KeyCode = 0; // Не назначаем, обрабатывается через WM_APPCOMMAND
                     break;
                 case PlayerAction.VolumeUp:
-                    binding.KeyCode = 0xB5; // VK_VOLUME_UP (0xAF)
+                    binding.KeyCode = 0; // Не назначаем, обрабатывается через WM_APPCOMMAND
                     break;
                 case PlayerAction.VolumeDown:
-                    binding.KeyCode = 0xB6; // VK_VOLUME_DOWN (0xAE)
+                    binding.KeyCode = 0; // Не назначаем, обрабатывается через WM_APPCOMMAND
                     break;
                 case PlayerAction.Mute:
-                    binding.KeyCode = 0xB4; // VK_VOLUME_MUTE (0xAD)
+                    binding.KeyCode = 0; // Не назначаем, обрабатывается через WM_APPCOMMAND
                     break;
                 case PlayerAction.Stop:
-                    binding.KeyCode = 0xB3; // VK_MEDIA_STOP
+                    binding.KeyCode = 0; // Не назначаем, обрабатывается через WM_APPCOMMAND
                     break;
             }
 

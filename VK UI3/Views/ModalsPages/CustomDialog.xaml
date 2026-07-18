@@ -20,6 +20,10 @@
 
 
 
+    <ContentDialog.Resources>
+        <Thickness x:Key="ContentDialogPadding">0,0,0,0</Thickness>
+    </ContentDialog.Resources>
+
     <ContentDialog.Transitions>
         <TransitionCollection>
             <PopupThemeTransition />

@@ -240,6 +240,7 @@ namespace VK_UI3
             {
                 HotkeyService.Initialize(hwnd, this.DispatcherQueue);
             }
+
             string assetsPath;
             try
             {
@@ -389,7 +390,6 @@ namespace VK_UI3
             }
             // При выборе "Отмена" – ничего не делаем, окно остаётся открытым.
         }
-
 
         private void close(object sender, EventArgs e) => Application.Current.Exit();
         #endregion
@@ -841,15 +841,20 @@ namespace VK_UI3
             if (Msg == WM_HOTKEY)
             {
                 int hotkeyId = (int)(wParam.Value);
+
+                // Передаём в HotkeyService (пользовательские горячие клавиши)
                 HotkeyService.Instance?.HandleHotkeyPressed(hotkeyId);
                 return IntPtr.Zero;
             }
 
             if (Msg == WM_APPCOMMAND)
             {
+                // Медиа-клавиши обрабатываются через MediaPlayerService.
+                // WM_APPCOMMAND приходит, когда окно в фокусе.
+                // Когда окно свёрнуто - SystemMediaTransportControls обрабатывает глобально.
                 const int APPCOMMAND_MASK = 0xF000;
                 int cmd = (int)((lParam.ToInt64() >> 16) & 0xFFFF) & ~APPCOMMAND_MASK;
-                HotkeyService.Instance?.HandleAppCommand(cmd);
+                MediaPlayerService.HandleAppCommand(cmd);
                 return IntPtr.Zero;
             }
 

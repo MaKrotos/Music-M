@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<UserControl
+    x:Class="VK_UI3.Views.Settings.HotkeySettingControlDevWinUI"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dev="using:DevWinUI"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Border
+        Padding="12,12"
+        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+        BorderThickness="1"
+        CornerRadius="6">
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!--  Верхняя строка: название действия и чекбокс  -->
+            <Grid
+                Grid.Row="0"
+                Grid.Column="0"
+                VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock
+                    x:Name="ActionNameText"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    FontSize="14"
+                    FontWeight="SemiBold"
+                    Text="{x:Bind ActionDisplayName, Mode=OneWay}" />
+
+                <CheckBox
+                    x:Name="EnableCheckBox"
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Checked="EnableCheckBox_Checked"
+                    IsChecked="{x:Bind IsBindingEnabled, Mode=TwoWay}"
+                    ToolTipService.ToolTip="Включить/отключить горячую клавишу"
+                    Unchecked="EnableCheckBox_Unchecked" />
+            </Grid>
+
+            <!--  Нижняя строка: Shortcut и кнопка сброса  -->
+            <Grid
+                Grid.Row="1"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Margin="0,6,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!--  DevWinUI Shortcut для ввода комбинации клавиш  -->
+                <dev:Shortcut
+                    x:Name="MainShortcut"
+                    Grid.Column="0"
+                    CloseButtonClick="OnMainShortcutCloseButtonClick"
+                    CloseButtonText="Закрыть"
+                    ContentDialogTitle="Нажмите новую комбинацию"
+                    ErrorTitle="Ошибка"
+                    ErrorToolTip="Некорректная комбинация клавиш"
+                    InfoTitle="Нажмите сочетание клавиш для назначения"
+                    PrimaryButtonClick="OnMainShortcutPrimaryButtonClick"
+                    PrimaryButtonText="Сохранить"
+                    SecondaryButtonClick="OnMainShortcutSecondaryButtonClick"
+                    SecondaryButtonText="Отмена"
+                    UseAutoValidation="True"
+                    WarningTitle="Предупреждение"
+                    WarningToolTip="Комбинация клавиш может быть недоступна" />
+
+                <!--  Кнопка сброса  -->
+                <Button
+                    x:Name="ResetButton"
+                    Grid.Column="1"
+                    Width="32"
+                    Height="32"
+                    Margin="6,0,0,0"
+                    Padding="0"
+                    VerticalAlignment="Center"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Click="ResetButton_Click"
+                    ToolTipService.ToolTip="Сбросить к стандартной комбинации"
+                    Visibility="Collapsed">
+                    <FontIcon
+                        FontSize="12"
+                        Glyph="&#xE777;"
+                        Opacity="0.6" />
+                </Button>
+
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

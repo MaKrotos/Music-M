@@ -365,3 +365,4 @@ FodyWeavers.xsd
 /Build/Unpacked
 /Build/Unpacked/net6.0/VkNet.dll
 /Decompile
+.codeassistant/mcp.json

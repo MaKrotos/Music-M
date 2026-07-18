@@ -102,6 +102,18 @@ namespace VK_UI3.Services
                 if (setting != null && !string.IsNullOrEmpty(setting.settingValue))
                 {
                     binding = HotkeyBinding.Deserialize(action, setting.settingValue);
+
+                    // Миграция: если в БД сохранена медиа-клавиша (0xB0-0xB6) без модификаторов,
+                    // отключаем её. Медиа-клавиши теперь обрабатываются через WM_APPCOMMAND
+                    // старым механизмом (MediaPlayerService.HandleAppCommand), а не через RegisterHotKey.
+                    // Если пользователь хочет использовать медиа-клавишу через HotkeyService,
+                    // он может явно включить её в настройках.
+                    if (binding.Modifiers == Windows.System.VirtualKeyModifiers.None &&
+                        binding.KeyCode >= 0xB0 && binding.KeyCode <= 0xB6)
+                    {
+                        binding.IsEnabled = false;
+                        Debug.WriteLine($"[HotkeyService] Migrated media key {binding.DisplayKeyCombination} to disabled (now handled via WM_APPCOMMAND)");
+                    }
                 }
                 else
                 {
@@ -287,6 +299,18 @@ namespace VK_UI3.Services
         }
 
         /// <summary>
+        /// Проверяет, зарегистрирована ли указанная медиа-клавиша (0xB0-0xB6) в HotkeyService.
+        /// Если да - WM_APPCOMMAND не должен её обрабатывать, чтобы избежать двойного срабатывания.
+        /// </summary>
+        public bool IsMediaKeyRegistered(int keyCode)
+        {
+            return _bindings.Values.Any(b =>
+                b.KeyCode == keyCode &&
+                b.Modifiers == VirtualKeyModifiers.None &&
+                b.IsEnabled);
+        }
+
+        /// <summary>
         /// Проверяет, не занята ли уже указанная комбинация клавиш другим действием.
         /// </summary>
         public bool IsCombinationTaken(int keyCode, VirtualKeyModifiers modifiers, PlayerAction excludeAction)
@@ -320,20 +344,12 @@ namespace VK_UI3.Services
             if (binding.KeyCode == 0 || _hwnd == IntPtr.Zero)
                 return;
 
-            // Если это стандартная медиа-клавиша без модификаторов, 
-            // мы все равно можем попробовать зарегистрировать её как глобальный хоткей,
-            // если пользователь хочет, чтобы она работала всегда.
-            // Однако, чтобы избежать конфликтов с системным поведением WM_APPCOMMAND,
-            // мы оставим этот фильтр только для тех, кто НЕ хочет переопределять их.
-            // Но в текущей реализации мы просто пропускаем их.
-            // Уберем это ограничение, чтобы RegisterHotKey мог перехватить их глобально.
-            /* 
-            if (binding.Modifiers == VirtualKeyModifiers.None && 
-                binding.KeyCode >= 0xB0 && binding.KeyCode <= 0xB6)
-            {
-                return;
-            }
-            */
+            // Медиа-клавиши (0xB0-0xB6) без модификаторов можно регистрировать через RegisterHotKey.
+            // Если они зарегистрированы - MediaPlayerService.HandleAppCommand пропустит WM_APPCOMMAND,
+            // и клавиша будет обработана через WM_HOTKEY (HotkeyService).
+            // Если не зарегистрированы - WM_APPCOMMAND обработает их старым механизмом.
+            // Это позволяет пользователю выбирать: использовать стандартное поведение
+            // или переназначить медиа-клавиши через горячие клавиши.
 
             uint modifiers = ConvertModifiers(binding.Modifiers);
             uint vk = (uint)binding.KeyCode;

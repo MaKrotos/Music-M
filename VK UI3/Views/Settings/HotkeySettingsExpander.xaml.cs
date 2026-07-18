@@ -33,7 +33,7 @@ namespace VK_UI3.Views.Settings
 
             foreach (PlayerAction action in Enum.GetValues(typeof(PlayerAction)))
             {
-                var control = new HotkeySettingControl();
+                var control = new HotkeySettingControlDevWinUI();
                 control.Initialize(action);
                 HotkeysContainer.Children.Add(control);
             }
