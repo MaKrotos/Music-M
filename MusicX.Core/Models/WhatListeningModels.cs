@@ -33,6 +33,7 @@ namespace MusicX.Core.Models
     {
         public string Name { get; set; }
         public string Avatar { get; set; }
+        public string Url { get; set; }
         public ContentType Type { get; set; }
         
         public string Icon 
@@ -55,8 +56,9 @@ namespace MusicX.Core.Models
     {
         public string Name { get; set; }
         public SocialLinkType LinkType { get; set; }
+        public string Url { get; set; }
         
-        public string Icon 
+        public string Icon
         { 
             get 
             {

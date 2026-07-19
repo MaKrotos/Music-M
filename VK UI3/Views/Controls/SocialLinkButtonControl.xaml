@@ -1,0 +1,27 @@
+<UserControl
+    x:Class="VK_UI3.Views.Controls.SocialLinkButtonControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:MusicX.Core.Models"
+    mc:Ignorable="d">
+
+    <Button
+        x:Name="SocialButton"
+        Height="36"
+        Padding="14,0"
+        Background="{ThemeResource CustomAcrylicInAppBrush}"
+        CornerRadius="18"
+        Click="SocialButton_Click"
+        ToolTipService.ToolTip="{x:Bind SocialLink.Url, Mode=OneWay}">
+        <Button.Content>
+            <TextBlock
+                x:Name="ServiceText"
+                FontSize="14"
+                FontWeight="SemiBold"
+                Foreground="White"
+                Text="{x:Bind SocialLink.Name, Mode=OneWay}" />
+        </Button.Content>
+    </Button>
+</UserControl>

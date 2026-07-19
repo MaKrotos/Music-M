@@ -1,0 +1,58 @@
+<UserControl
+    x:Class="VK_UI3.Views.Controls.ListeningContentItemControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:devUI="using:DevWinUI"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:MusicX.Core.Models"
+    mc:Ignorable="d">
+
+    <devUI:ParallaxTilt>
+        <Grid
+            x:Name="mainGrid"
+            Width="175"
+            Height="220"
+            PointerPressed="OnPointerPressed">
+            <Border Background="{ThemeResource CustomAlternativeAcrylicInAppBrush}" CornerRadius="8">
+                <StackPanel Padding="10" HorizontalAlignment="Center">
+
+                    <!--  Обложка  -->
+                    <Border
+                        Width="155"
+                        Height="165"
+                        Background="{ThemeResource CustomAlternativeAcrylicInAppBrush}"
+                        CornerRadius="6">
+                        <Grid>
+                            <!--  Изображение обложки  -->
+                            <Image
+                                x:Name="AvatarImage"
+                                ImageFailed="OnImageFailed"
+                                Stretch="UniformToFill" />
+
+                            <!--  Заглушка, если изображение не загрузилось или Avatar пустой  -->
+                            <FontIcon
+                                x:Name="FallbackIcon"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="24"
+                                Foreground="LightGray"
+                                Visibility="Collapsed" />
+                        </Grid>
+                    </Border>
+
+                    <!--  Название под картинкой  -->
+                    <TextBlock
+                        x:Name="ItemNameText"
+                        Margin="0,6,0,0"
+                        HorizontalAlignment="Center"
+                        Foreground="White"
+                        Style="{StaticResource BodyTextBlockStyle}"
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="NoWrap" />
+
+                </StackPanel>
+            </Border>
+        </Grid>
+    </devUI:ParallaxTilt>
+</UserControl>

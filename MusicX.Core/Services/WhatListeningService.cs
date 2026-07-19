@@ -6,7 +6,7 @@ namespace MusicX.Core.Services
     public class WhatListeningService : IWhatListeningService
     {
         private readonly HttpClient _httpClient;
-        private const string DefaultUrl = "https://your-api-endpoint.com/what-listening.json"; // Replace with actual URL
+        private const string DefaultUrl = "https://vkm.makrotos.ru/WhatListening.json"; // Replace with actual URL
 
         public WhatListeningService(HttpClient httpClient)
         {

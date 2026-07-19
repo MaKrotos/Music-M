@@ -175,9 +175,9 @@ namespace VK_UI3.Helpers.Animations
                         UpdateImage(image);
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // Ошибка уже обработана в основном потоке загрузки
+                    System.Diagnostics.Debug.WriteLine($"[AnimationsChangeImage] Existing download failed for {imageUri}: {ex.Message}");
                 }
                 return;
             }
@@ -190,11 +190,31 @@ namespace VK_UI3.Helpers.Animations
             {
                 await downloadTask;
             }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[AnimationsChangeImage] Download task failed for {imageUri}: {ex.Message}");
+            }
             finally
             {
                 _activeDownloads.TryRemove(imageUri, out _);
             }
         }
+
+        private static readonly HttpClient _sharedHttpClient = new HttpClient(new SocketsHttpHandler
+        {
+            AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate,
+            PooledConnectionLifetime = TimeSpan.FromMinutes(5),
+            PooledConnectionIdleTimeout = TimeSpan.FromMinutes(2),
+            MaxConnectionsPerServer = 10,
+            ConnectTimeout = TimeSpan.FromSeconds(15)
+        })
+        {
+            Timeout = TimeSpan.FromMinutes(2),
+            DefaultRequestHeaders =
+            {
+                { "User-Agent", "VK-Music/1.0" }
+            }
+        };
 
         private async Task<BitmapImage> DownloadAndSetImage(Uri imageUri, bool setColorTheme)
         {
@@ -211,25 +231,43 @@ namespace VK_UI3.Helpers.Animations
 
             try
             {
-                using (var httpClient = new HttpClient { Timeout = TimeSpan.FromMinutes(3) })
+                const int maxRetries = 2;
+                const int delayMs = 1000;
+                byte[] buffer = null;
+
+                for (int attempt = 0; attempt <= maxRetries; attempt++)
                 {
-                    var buffer = await httpClient.GetByteArrayAsync(imageUri);
-                    if (buffer == null || buffer.Length == 0)
-                        return null;
-
-                    await _cacheManager.SaveImageToCacheAsync(imageUri, buffer, setColorTheme);
-                    var cachedImage = await _cacheManager.GetCachedImageAsync(imageUri, setColorTheme);
-
-                    if (cachedImage != null && _currentImageSource == imageUri)
+                    try
                     {
-                        _dispatcherQueue.TryEnqueue(() => ShowImage(cachedImage));
+                        buffer = await _sharedHttpClient.GetByteArrayAsync(imageUri);
+                        break; // успешно — выходим из цикла
                     }
-
-                    return cachedImage;
+                    catch (Exception ex) when (attempt < maxRetries)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[AnimationsChangeImage] Download attempt {attempt + 1} failed for {imageUri}: {ex.Message}. Retrying...");
+                        await Task.Delay(delayMs * (attempt + 1)); // exponential backoff
+                    }
                 }
+
+                if (buffer == null || buffer.Length == 0)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[AnimationsChangeImage] Failed to download image after {maxRetries + 1} attempts: {imageUri}");
+                    return null;
+                }
+
+                await _cacheManager.SaveImageToCacheAsync(imageUri, buffer, setColorTheme);
+                var cachedImage = await _cacheManager.GetCachedImageAsync(imageUri, setColorTheme);
+
+                if (cachedImage != null && _currentImageSource == imageUri)
+                {
+                    _dispatcherQueue.TryEnqueue(() => ShowImage(cachedImage));
+                }
+
+                return cachedImage;
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"[AnimationsChangeImage] Download failed for {imageUri}: {ex.GetType().Name}: {ex.Message}");
                 return null;
             }
             finally

@@ -344,6 +344,10 @@ namespace VK_UI3.Views
         public List<AnimatedNavMenuController> navMenuControllers = new();
         private CancellationTokenSource _cts = new CancellationTokenSource();
         //   private CancellationTokenSource cts = null;
+        
+        // Поле для хранения предзагруженных данных "Что слушают"
+        private List<ListeningItem> _whatListeningData;
+
         private async Task CreateNavigation()
         {
             // Отменить предыдущую задачу, если она была запущена
@@ -372,28 +376,6 @@ namespace VK_UI3.Views
                         ClearMenuItems();
                     });
 
-                    // Add "Что слушают" to the navigation menu
-                    this.DispatcherQueue.TryEnqueue(async () =>
-                    {
-                        var whatListeningSet = new NavSettings()
-                        {
-                            Icon = "\uE783", // People
-                            MyMusicItem = "Что слушают",
-                            section = null
-                        };
-                        
-                        var navViewItem = new AnimatedNavMenuController
-                        {
-                            navSettings = whatListeningSet,
-                            Content = whatListeningSet.MyMusicItem,
-                            Icon = new FontIcon { Glyph = whatListeningSet.Icon }
-                        };
-                        
-                        // Insert it before the "Settings" if possible, or just add to the list
-                        // For now, adding it as a new item to be handled by navigateInvoke
-                       // NavWiv.MenuItems.Add(navViewItem);
-                       // navMenuControllers.Add(navViewItem);
-                    });
                     var catalogs = await VK.vkService.GetAudioCatalogAsync();
 
 
@@ -427,6 +409,19 @@ namespace VK_UI3.Views
                             navSettings.Add(navSet);
                         }
                     }
+
+                    // Загружаем данные "Что слушают" в фоне
+                    try
+                    {
+                        var whatListeningService = StaticService.Container.GetRequiredService<IWhatListeningService>();
+                        _whatListeningData = await whatListeningService.GetWhatListeningAsync();
+                    }
+                    catch
+                    {
+                        // Если загрузка не удалась — просто не добавляем кнопку
+                        _whatListeningData = null;
+                    }
+
                     int index = 0;
                     this.DispatcherQueue.TryEnqueue(async () =>
                     {
@@ -451,6 +446,46 @@ namespace VK_UI3.Views
                             navMenuControllers.Add(navViewItem);
                             index++;
 
+                        }
+
+                        // Добавляем "Что слушают" после "Для вас", только если данные загрузились
+                        if (_whatListeningData != null && _whatListeningData.Count > 0)
+                        {
+                            var whatListeningSet = new NavSettings()
+                            {
+                                Icon = "\uE783",
+                                MyMusicItem = "Что слушают",
+                                section = null
+                            };
+
+                            var navViewItem = new AnimatedNavMenuController
+                            {
+                                navSettings = whatListeningSet,
+                                Content = whatListeningSet.MyMusicItem,
+                                Icon = new FontIcon { Glyph = whatListeningSet.Icon }
+                            };
+
+                            // Находим индекс элемента "Для вас" и вставляем после него
+                            int insertIndex = -1;
+                            for (int i = 0; i < NavWiv.MenuItems.Count; i++)
+                            {
+                                if (NavWiv.MenuItems[i] is NavigationViewItem item &&
+                                    item.Content?.ToString().Equals("Для Вас", StringComparison.OrdinalIgnoreCase) == true)
+                                {
+                                    insertIndex = i + 1;
+                                    break;
+                                }
+                            }
+
+                            if (insertIndex >= 0)
+                            {
+                                NavWiv.MenuItems.Insert(insertIndex, navViewItem);
+                            }
+                            else
+                            {
+                                NavWiv.MenuItems.Add(navViewItem);
+                            }
+                            navMenuControllers.Add(navViewItem);
                         }
                     });
 
@@ -980,7 +1015,7 @@ namespace VK_UI3.Views
 
 
                     case "что слушают":
-                        frame.Navigate(typeof(WhatListeningPage), null, new DrillInNavigationTransitionInfo());
+                        frame.Navigate(typeof(WhatListeningPage), _whatListeningData, new DrillInNavigationTransitionInfo());
                         break;
 
                     default:

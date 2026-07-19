@@ -7,6 +7,7 @@ using MusicX.Core.Models;
 using MusicX.Core.Services;
 using System;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Navigation;
 using MusicX.Services;
 
 namespace VK_UI3.Views
@@ -14,6 +15,7 @@ namespace VK_UI3.Views
     public sealed partial class WhatListeningPage : Page
     {
         private readonly IWhatListeningService _whatListeningService;
+        private List<ListeningItem> _preloadedData;
 
         public WhatListeningPage()
         {
@@ -25,9 +27,25 @@ namespace VK_UI3.Views
             this.Loaded += WhatListeningPage_Loaded;
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            if (e.Parameter is List<ListeningItem> data)
+            {
+                _preloadedData = data;
+            }
+            base.OnNavigatedTo(e);
+        }
+
         private async void WhatListeningPage_Loaded(object sender, RoutedEventArgs e)
         {
-            await LoadDataAsync();
+            if (_preloadedData != null && _preloadedData.Count > 0)
+            {
+                ListeningList.ItemsSource = new ObservableCollection<ListeningItem>(_preloadedData);
+            }
+            else
+            {
+                await LoadDataAsync();
+            }
         }
 
         private async Task LoadDataAsync()
@@ -42,15 +60,13 @@ namespace VK_UI3.Views
                 }
                 else
                 {
-                    // Handle empty state if needed
+             
                 }
             }
             catch (Exception ex)
             {
                 // Simple error handling: could show a message to the user
                 System.Diagnostics.Debug.WriteLine($"Error loading WhatListening data: {ex.Message}");
-                
-                // Fallback to mock data for development if service completely fails
                 LoadMockData();
             }
         }
