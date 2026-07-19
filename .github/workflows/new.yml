@@ -28,11 +28,12 @@ on:
     branches: [main]
 
 jobs:
-  # ============ JOB 1: Подготовка и получение версии ============
+  # ============ JOB 1: Подготовка ============
   prepare:
     runs-on: windows-latest
     outputs:
       VERSION: ${{ steps.get_version.outputs.VERSION }}
+      CACHE_KEY: ${{ steps.cache_key.outputs.CACHE_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -50,24 +51,47 @@ jobs:
           echo "VERSION=$version" >> $env:GITHUB_OUTPUT
           echo "Версия: $version"
 
-  # ============ JOB 2: Сборка MSIX пакета (x64) ============
-  build_msix_x64:
+      - name: Сгенерировать ключ кэша
+        id: cache_key
+        run: |
+          $repoName = "${{ github.repository }}".Split('/')[1]
+          $csprojPath = "D:\a\$repoName\$repoName\VK UI3\VK UI3.csproj"
+          $hash = Get-FileHash -Path $csprojPath -Algorithm MD5
+          $key = "dotnet-8-$($hash.Hash)-${{ runner.os }}"
+          echo "CACHE_KEY=$key" >> $env:GITHUB_OUTPUT
+          echo "Ключ кэша: $key"
+
+  # ============ JOB 2: Установка зависимостей и кэширование ============
+  setup:
     needs: prepare
     runs-on: windows-latest
-    env:
-      Solution_Name: "VK UI3 (Package)"
-      Configuration: Release
+    outputs:
+      CACHE_KEY: ${{ needs.prepare.outputs.CACHE_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Decode the pfx
+      - name: Установить .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Установить MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Декодировать PFX сертификат
         run: |
           $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
           $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
           [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
+
+      - name: Импортировать PFX сертификат
+        run: |
+          $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
+          $password = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -Force -AsPlainText
+          Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation Cert:\LocalMachine\My -Password $password
 
       - name: Обновить TOKEN_STAT_SLY
         run: |
@@ -75,14 +99,6 @@ jobs:
           $content = Get-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs"
           $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', '"${{ secrets.TOKEN_STAT_SLY }}"'
           Set-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs" -Value $updatedContent
-
-      - name: Install .NET Core
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 8.0.x
-
-      - name: Setup MSBuild.exe
-        uses: microsoft/setup-msbuild@v2
 
       - name: Подставить версию в Package.appxmanifest
         run: |
@@ -93,10 +109,7 @@ jobs:
           $xml.Package.Identity.Version = $version
           $xml.Save($manifest)
 
-      - name: Restore the application
-        run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration /clp:Minimal
-
-      - name: Get Certificate Thumbprint
+      - name: Получить Thumbprint сертификата
         run: |
           $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
           $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
@@ -108,16 +121,95 @@ jobs:
           $content = $content -replace '(?<=<PackageCertificateThumbprint>).+?(?=</PackageCertificateThumbprint>)', $pfxCert.Thumbprint
           Set-Content -Path $projectFile -Value $content
 
-      - name: Install PFX certificate
+      - name: Восстановить зависимости
         run: |
-          $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
-          $password = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -Force -AsPlainText
-          Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation Cert:\LocalMachine\My -Password $password
+          msbuild "VK UI3 (Package)/VK UI3 (Package).wapproj" /t:Restore /p:Configuration=Release /clp:Minimal
+          msbuild "VK UI3/VK UI3.csproj" /t:Restore /p:Configuration=Unpacked /clp:Minimal
 
-      - name: Create MSIX package (x64)
+      - name: Кэшировать зависимости
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.nuget/packages
+            C:\ProgramData\Microsoft\VisualStudio\Packages
+            C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild
+            C:\Program Files\dotnet\sdk
+          key: ${{ needs.prepare.outputs.CACHE_KEY }}
+          restore-keys: |
+            ${{ needs.prepare.outputs.CACHE_KEY }}
+
+      - name: Кэшировать сертификат
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}\GitHubActionsWorkflow.pfx
+          key: cert-${{ secrets.BASE64_ENCODED_PFX }}-${{ secrets.PFX_PASSWORD }}
+          restore-keys: |
+            cert-${{ secrets.BASE64_ENCODED_PFX }}-${{ secrets.PFX_PASSWORD }}
+
+      - name: Загрузить подготовленные файлы
+        uses: actions/upload-artifact@v4
+        with:
+          name: prepared-files
+          path: |
+            ${{ github.workspace }}\GitHubActionsWorkflow.pfx
+            VK UI3\StaticParams.cs
+            "VK UI3 (Package)\Package.appxmanifest"
+            "VK UI3 (Package)\VK UI3 (Package).wapproj"
+          retention-days: 1
+
+  # ============ JOB 3: Сборка MSIX x64 ============
+  build_msix_x64:
+    needs: [prepare, setup]
+    runs-on: windows-latest
+    env:
+      Solution_Name: "VK UI3 (Package)"
+      Configuration: Release
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Восстановить зависимости из кэша
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.nuget/packages
+            C:\ProgramData\Microsoft\VisualStudio\Packages
+            C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild
+            C:\Program Files\dotnet\sdk
+          key: ${{ needs.prepare.outputs.CACHE_KEY }}
+          fail-on-cache-miss: true
+
+      - name: Установить .NET Core (если кэш не сработал)
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Установить MSBuild (если кэш не сработал)
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Восстановить подготовленные файлы
+        uses: actions/download-artifact@v4
+        with:
+          name: prepared-files
+          path: ${{ github.workspace }}
+
+      - name: Восстановить сертификат из кэша
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}\GitHubActionsWorkflow.pfx
+          key: cert-${{ secrets.BASE64_ENCODED_PFX }}-${{ secrets.PFX_PASSWORD }}
+          fail-on-cache-miss: true
+
+      - name: Собрать MSIX x64
         run: |
           $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
-          msbuild $env:Solution_Name `
+          msbuild "$env:Solution_Name" `
             /p:Configuration=$env:Configuration `
             /p:Platform=x64 `
             /p:UapAppxPackageBuildMode=SideloadOnly `
@@ -134,17 +226,13 @@ jobs:
         env:
           TOKEN_STAT_SLY: ${{ secrets.TOKEN_STAT_SLY }}
 
-      - name: Remove the pfx
-        run: |
-          Remove-Item -path "${{ github.workspace }}\GitHubActionsWorkflow.pfx" -Force
-
-      - name: Rename .cer file
+      - name: Переименовать .cer файл
         run: |
           Get-ChildItem -Path "${{ env.Solution_Name }}\\Packages" -Filter *.cer -Recurse -Depth 1 | ForEach-Object {
             Rename-Item -Path $_.FullName -NewName "Certificate.cer"
           }
 
-      - name: Move files to Packages folder
+      - name: Переместить файлы в Packages
         run: |
           $fileTypes = "*.msix", "*.cer", "*.msixbundle"
           foreach ($fileType in $fileTypes) {
@@ -156,7 +244,7 @@ jobs:
             }
           }
 
-      - name: Upload MSIX package (x64)
+      - name: Загрузить MSIX x64
         uses: actions/upload-artifact@v4
         with:
           name: MSIX_Package_x64
@@ -164,10 +252,11 @@ jobs:
             ${{ env.Solution_Name }}\\Packages\*.cer
             ${{ env.Solution_Name }}\\Packages\*.msixbundle
             ${{ env.Solution_Name }}\\Packages\*.msix
+          retention-days: 30
 
-  # ============ JOB 3: Сборка MSIX пакета (x86) ============
+  # ============ JOB 4: Сборка MSIX x86 ============
   build_msix_x86:
-    needs: prepare
+    needs: [prepare, setup]
     runs-on: windows-latest
     env:
       Solution_Name: "VK UI3 (Package)"
@@ -178,61 +267,45 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Decode the pfx
-        run: |
-          $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
-          $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
-          [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
+      - name: Восстановить зависимости из кэша
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.nuget/packages
+            C:\ProgramData\Microsoft\VisualStudio\Packages
+            C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild
+            C:\Program Files\dotnet\sdk
+          key: ${{ needs.prepare.outputs.CACHE_KEY }}
+          fail-on-cache-miss: true
 
-      - name: Обновить TOKEN_STAT_SLY
-        run: |
-          $repoName = "${{ github.repository }}".Split('/')[1]
-          $content = Get-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs"
-          $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', '"${{ secrets.TOKEN_STAT_SLY }}"'
-          Set-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs" -Value $updatedContent
-
-      - name: Install .NET Core
+      - name: Установить .NET Core (если кэш не сработал)
+        if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
 
-      - name: Setup MSBuild.exe
+      - name: Установить MSBuild (если кэш не сработал)
+        if: steps.cache.outputs.cache-hit != 'true'
         uses: microsoft/setup-msbuild@v2
 
-      - name: Подставить версию в Package.appxmanifest
-        run: |
-          $repoName = "${{ github.repository }}".Split('/')[1]
-          $version = "${{ needs.prepare.outputs.VERSION }}"
-          $manifest = "D:\a\$repoName\$repoName\VK UI3 (Package)\Package.appxmanifest"
-          [xml]$xml = Get-Content $manifest
-          $xml.Package.Identity.Version = $version
-          $xml.Save($manifest)
+      - name: Восстановить подготовленные файлы
+        uses: actions/download-artifact@v4
+        with:
+          name: prepared-files
+          path: ${{ github.workspace }}
 
-      - name: Restore the application
-        run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration /clp:Minimal
+      - name: Восстановить сертификат из кэша
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}\GitHubActionsWorkflow.pfx
+          key: cert-${{ secrets.BASE64_ENCODED_PFX }}-${{ secrets.PFX_PASSWORD }}
+          fail-on-cache-miss: true
 
-      - name: Get Certificate Thumbprint
-        run: |
-          $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
-          $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
-          [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
-          $pfxPassword = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -AsPlainText -Force
-          $pfxCert = Get-PfxCertificate -FilePath $certificatePath -Password $pfxPassword
-          $projectFile = "VK UI3 (Package)/VK UI3 (Package).wapproj"
-          $content = Get-Content -Path $projectFile -Raw
-          $content = $content -replace '(?<=<PackageCertificateThumbprint>).+?(?=</PackageCertificateThumbprint>)', $pfxCert.Thumbprint
-          Set-Content -Path $projectFile -Value $content
-
-      - name: Install PFX certificate
+      - name: Собрать MSIX x86
         run: |
           $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
-          $password = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -Force -AsPlainText
-          Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation Cert:\LocalMachine\My -Password $password
-
-      - name: Create MSIX package (x86)
-        run: |
-          $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
-          msbuild $env:Solution_Name `
+          msbuild "$env:Solution_Name" `
             /p:Configuration=$env:Configuration `
             /p:Platform=x86 `
             /p:UapAppxPackageBuildMode=SideloadOnly `
@@ -249,17 +322,13 @@ jobs:
         env:
           TOKEN_STAT_SLY: ${{ secrets.TOKEN_STAT_SLY }}
 
-      - name: Remove the pfx
-        run: |
-          Remove-Item -path "${{ github.workspace }}\GitHubActionsWorkflow.pfx" -Force
-
-      - name: Rename .cer file
+      - name: Переименовать .cer файл
         run: |
           Get-ChildItem -Path "${{ env.Solution_Name }}\\Packages" -Filter *.cer -Recurse -Depth 1 | ForEach-Object {
             Rename-Item -Path $_.FullName -NewName "Certificate.cer"
           }
 
-      - name: Move files to Packages folder
+      - name: Переместить файлы в Packages
         run: |
           $fileTypes = "*.msix", "*.cer", "*.msixbundle"
           foreach ($fileType in $fileTypes) {
@@ -271,7 +340,7 @@ jobs:
             }
           }
 
-      - name: Upload MSIX package (x86)
+      - name: Загрузить MSIX x86
         uses: actions/upload-artifact@v4
         with:
           name: MSIX_Package_x86
@@ -279,10 +348,11 @@ jobs:
             ${{ env.Solution_Name }}\\Packages\*.cer
             ${{ env.Solution_Name }}\\Packages\*.msixbundle
             ${{ env.Solution_Name }}\\Packages\*.msix
+          retention-days: 30
 
-  # ============ JOB 4: Сборка MSIX пакета (ARM64) ============
+  # ============ JOB 5: Сборка MSIX ARM64 ============
   build_msix_arm64:
-    needs: prepare
+    needs: [prepare, setup]
     runs-on: windows-latest
     env:
       Solution_Name: "VK UI3 (Package)"
@@ -293,61 +363,45 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Decode the pfx
-        run: |
-          $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
-          $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
-          [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
+      - name: Восстановить зависимости из кэша
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.nuget/packages
+            C:\ProgramData\Microsoft\VisualStudio\Packages
+            C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild
+            C:\Program Files\dotnet\sdk
+          key: ${{ needs.prepare.outputs.CACHE_KEY }}
+          fail-on-cache-miss: true
 
-      - name: Обновить TOKEN_STAT_SLY
-        run: |
-          $repoName = "${{ github.repository }}".Split('/')[1]
-          $content = Get-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs"
-          $updatedContent = $content -replace 'Environment.GetEnvironmentVariable\("TOKEN_STAT_SLY"\)', '"${{ secrets.TOKEN_STAT_SLY }}"'
-          Set-Content -Path "D:\a\$repoName\$repoName\VK UI3\StaticParams.cs" -Value $updatedContent
-
-      - name: Install .NET Core
+      - name: Установить .NET Core (если кэш не сработал)
+        if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
 
-      - name: Setup MSBuild.exe
+      - name: Установить MSBuild (если кэш не сработал)
+        if: steps.cache.outputs.cache-hit != 'true'
         uses: microsoft/setup-msbuild@v2
 
-      - name: Подставить версию в Package.appxmanifest
-        run: |
-          $repoName = "${{ github.repository }}".Split('/')[1]
-          $version = "${{ needs.prepare.outputs.VERSION }}"
-          $manifest = "D:\a\$repoName\$repoName\VK UI3 (Package)\Package.appxmanifest"
-          [xml]$xml = Get-Content $manifest
-          $xml.Package.Identity.Version = $version
-          $xml.Save($manifest)
+      - name: Восстановить подготовленные файлы
+        uses: actions/download-artifact@v4
+        with:
+          name: prepared-files
+          path: ${{ github.workspace }}
 
-      - name: Restore the application
-        run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration /clp:Minimal
+      - name: Восстановить сертификат из кэша
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}\GitHubActionsWorkflow.pfx
+          key: cert-${{ secrets.BASE64_ENCODED_PFX }}-${{ secrets.PFX_PASSWORD }}
+          fail-on-cache-miss: true
 
-      - name: Get Certificate Thumbprint
-        run: |
-          $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
-          $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
-          [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
-          $pfxPassword = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -AsPlainText -Force
-          $pfxCert = Get-PfxCertificate -FilePath $certificatePath -Password $pfxPassword
-          $projectFile = "VK UI3 (Package)/VK UI3 (Package).wapproj"
-          $content = Get-Content -Path $projectFile -Raw
-          $content = $content -replace '(?<=<PackageCertificateThumbprint>).+?(?=</PackageCertificateThumbprint>)', $pfxCert.Thumbprint
-          Set-Content -Path $projectFile -Value $content
-
-      - name: Install PFX certificate
+      - name: Собрать MSIX ARM64
         run: |
           $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
-          $password = ConvertTo-SecureString -String "${{ secrets.PFX_PASSWORD }}" -Force -AsPlainText
-          Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation Cert:\LocalMachine\My -Password $password
-
-      - name: Create MSIX package (ARM64)
-        run: |
-          $certificatePath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
-          msbuild $env:Solution_Name `
+          msbuild "$env:Solution_Name" `
             /p:Configuration=$env:Configuration `
             /p:Platform=ARM64 `
             /p:UapAppxPackageBuildMode=SideloadOnly `
@@ -364,17 +418,13 @@ jobs:
         env:
           TOKEN_STAT_SLY: ${{ secrets.TOKEN_STAT_SLY }}
 
-      - name: Remove the pfx
-        run: |
-          Remove-Item -path "${{ github.workspace }}\GitHubActionsWorkflow.pfx" -Force
-
-      - name: Rename .cer file
+      - name: Переименовать .cer файл
         run: |
           Get-ChildItem -Path "${{ env.Solution_Name }}\\Packages" -Filter *.cer -Recurse -Depth 1 | ForEach-Object {
             Rename-Item -Path $_.FullName -NewName "Certificate.cer"
           }
 
-      - name: Move files to Packages folder
+      - name: Переместить файлы в Packages
         run: |
           $fileTypes = "*.msix", "*.cer", "*.msixbundle"
           foreach ($fileType in $fileTypes) {
@@ -386,7 +436,7 @@ jobs:
             }
           }
 
-      - name: Upload MSIX package (ARM64)
+      - name: Загрузить MSIX ARM64
         uses: actions/upload-artifact@v4
         with:
           name: MSIX_Package_ARM64
@@ -394,10 +444,11 @@ jobs:
             ${{ env.Solution_Name }}\\Packages\*.cer
             ${{ env.Solution_Name }}\\Packages\*.msixbundle
             ${{ env.Solution_Name }}\\Packages\*.msix
+          retention-days: 30
 
-  # ============ JOB 5: Сборка EXE (x64) ============
+  # ============ JOB 6: Сборка EXE x64 ============
   build_exe_x64:
-    needs: prepare
+    needs: [prepare, setup]
     runs-on: windows-latest
     env:
       Solution_Name_Unpacked: "VK UI3"
@@ -408,21 +459,36 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Decode PFX
-        run: |
-          $bytes = [Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
-          $certPath = "${{ github.workspace }}\signcert.pfx"
-          [IO.File]::WriteAllBytes($certPath, $bytes)
+      - name: Восстановить зависимости из кэша
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.nuget/packages
+            C:\ProgramData\Microsoft\VisualStudio\Packages
+            C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild
+            C:\Program Files\dotnet\sdk
+          key: ${{ needs.prepare.outputs.CACHE_KEY }}
+          fail-on-cache-miss: true
 
-      - name: Install .NET Core
+      - name: Установить .NET Core (если кэш не сработал)
+        if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
 
-      - name: Setup MSBuild.exe
+      - name: Установить MSBuild (если кэш не сработал)
+        if: steps.cache.outputs.cache-hit != 'true'
         uses: microsoft/setup-msbuild@v2
 
-      - name: Build EXE x64
+      - name: Восстановить сертификат из кэша
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}\GitHubActionsWorkflow.pfx
+          key: cert-${{ secrets.BASE64_ENCODED_PFX }}-${{ secrets.PFX_PASSWORD }}
+          fail-on-cache-miss: true
+
+      - name: Собрать EXE x64
         run: |
           msbuild "$env:Solution_Name_Unpacked\$env:Solution_Name_Unpacked.csproj" `
             "/p:Configuration=$env:Configuration_unpacked" `
@@ -435,9 +501,9 @@ jobs:
             /p:TreatWarningsAsErrors=false `
             /clp:ErrorsOnly
 
-      - name: Sign exe x64
+      - name: Подписать EXE x64
         run: |
-          $certPath = "${{ github.workspace }}\signcert.pfx"
+          $certPath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
           $password = "${{ secrets.PFX_PASSWORD }}"
           $signtool = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter signtool.exe |
                       Where-Object { $_.FullName -match 'x64' } |
@@ -447,7 +513,7 @@ jobs:
           if (-not $exe) { throw "Не найден exe для x64" }
           & $signtool sign /f $certPath /p $password /tr http://timestamp.digicert.com /td sha256 /fd sha256 $exe.FullName
 
-      - name: Package build folder x64
+      - name: Упаковать папку сборки x64
         run: |
           $buildDir = Join-Path "$env:Solution_Name_Unpacked\bin" "x64\$env:Configuration_unpacked"
           if (-not (Test-Path $buildDir)) { throw "Папка сборки для x64 не найдена" }
@@ -455,16 +521,16 @@ jobs:
           if (Test-Path $zipName) { Remove-Item $zipName -Force }
           Compress-Archive -Path "$buildDir\*" -DestinationPath $zipName -Force
 
-      - name: Upload EXE x64
+      - name: Загрузить EXE x64
         uses: actions/upload-artifact@v4
         with:
           name: EXE_x64
           path: VK_UI3_x64.zip
           retention-days: 30
 
-  # ============ JOB 6: Сборка EXE (x86) ============
+  # ============ JOB 7: Сборка EXE x86 ============
   build_exe_x86:
-    needs: prepare
+    needs: [prepare, setup]
     runs-on: windows-latest
     env:
       Solution_Name_Unpacked: "VK UI3"
@@ -475,21 +541,36 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Decode PFX
-        run: |
-          $bytes = [Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
-          $certPath = "${{ github.workspace }}\signcert.pfx"
-          [IO.File]::WriteAllBytes($certPath, $bytes)
+      - name: Восстановить зависимости из кэша
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.nuget/packages
+            C:\ProgramData\Microsoft\VisualStudio\Packages
+            C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild
+            C:\Program Files\dotnet\sdk
+          key: ${{ needs.prepare.outputs.CACHE_KEY }}
+          fail-on-cache-miss: true
 
-      - name: Install .NET Core
+      - name: Установить .NET Core (если кэш не сработал)
+        if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
 
-      - name: Setup MSBuild.exe
+      - name: Установить MSBuild (если кэш не сработал)
+        if: steps.cache.outputs.cache-hit != 'true'
         uses: microsoft/setup-msbuild@v2
 
-      - name: Build EXE x86
+      - name: Восстановить сертификат из кэша
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}\GitHubActionsWorkflow.pfx
+          key: cert-${{ secrets.BASE64_ENCODED_PFX }}-${{ secrets.PFX_PASSWORD }}
+          fail-on-cache-miss: true
+
+      - name: Собрать EXE x86
         run: |
           msbuild "$env:Solution_Name_Unpacked\$env:Solution_Name_Unpacked.csproj" `
             "/p:Configuration=$env:Configuration_unpacked" `
@@ -502,9 +583,9 @@ jobs:
             /p:TreatWarningsAsErrors=false `
             /clp:ErrorsOnly
 
-      - name: Sign exe x86
+      - name: Подписать EXE x86
         run: |
-          $certPath = "${{ github.workspace }}\signcert.pfx"
+          $certPath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
           $password = "${{ secrets.PFX_PASSWORD }}"
           $signtool = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter signtool.exe |
                       Where-Object { $_.FullName -match 'x64' } |
@@ -514,7 +595,7 @@ jobs:
           if (-not $exe) { throw "Не найден exe для x86" }
           & $signtool sign /f $certPath /p $password /tr http://timestamp.digicert.com /td sha256 /fd sha256 $exe.FullName
 
-      - name: Package build folder x86
+      - name: Упаковать папку сборки x86
         run: |
           $buildDir = Join-Path "$env:Solution_Name_Unpacked\bin" "x86\$env:Configuration_unpacked"
           if (-not (Test-Path $buildDir)) { throw "Папка сборки для x86 не найдена" }
@@ -522,16 +603,16 @@ jobs:
           if (Test-Path $zipName) { Remove-Item $zipName -Force }
           Compress-Archive -Path "$buildDir\*" -DestinationPath $zipName -Force
 
-      - name: Upload EXE x86
+      - name: Загрузить EXE x86
         uses: actions/upload-artifact@v4
         with:
           name: EXE_x86
           path: VK_UI3_x86.zip
           retention-days: 30
 
-  # ============ JOB 7: Сборка EXE (ARM64) ============
+  # ============ JOB 8: Сборка EXE ARM64 ============
   build_exe_arm64:
-    needs: prepare
+    needs: [prepare, setup]
     runs-on: windows-latest
     env:
       Solution_Name_Unpacked: "VK UI3"
@@ -542,21 +623,36 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Decode PFX
-        run: |
-          $bytes = [Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
-          $certPath = "${{ github.workspace }}\signcert.pfx"
-          [IO.File]::WriteAllBytes($certPath, $bytes)
+      - name: Восстановить зависимости из кэша
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.nuget/packages
+            C:\ProgramData\Microsoft\VisualStudio\Packages
+            C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild
+            C:\Program Files\dotnet\sdk
+          key: ${{ needs.prepare.outputs.CACHE_KEY }}
+          fail-on-cache-miss: true
 
-      - name: Install .NET Core
+      - name: Установить .NET Core (если кэш не сработал)
+        if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
 
-      - name: Setup MSBuild.exe
+      - name: Установить MSBuild (если кэш не сработал)
+        if: steps.cache.outputs.cache-hit != 'true'
         uses: microsoft/setup-msbuild@v2
 
-      - name: Build EXE ARM64
+      - name: Восстановить сертификат из кэша
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}\GitHubActionsWorkflow.pfx
+          key: cert-${{ secrets.BASE64_ENCODED_PFX }}-${{ secrets.PFX_PASSWORD }}
+          fail-on-cache-miss: true
+
+      - name: Собрать EXE ARM64
         run: |
           msbuild "$env:Solution_Name_Unpacked\$env:Solution_Name_Unpacked.csproj" `
             "/p:Configuration=$env:Configuration_unpacked" `
@@ -569,9 +665,9 @@ jobs:
             /p:TreatWarningsAsErrors=false `
             /clp:ErrorsOnly
 
-      - name: Sign exe ARM64
+      - name: Подписать EXE ARM64
         run: |
-          $certPath = "${{ github.workspace }}\signcert.pfx"
+          $certPath = "${{ github.workspace }}\GitHubActionsWorkflow.pfx"
           $password = "${{ secrets.PFX_PASSWORD }}"
           $signtool = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter signtool.exe |
                       Where-Object { $_.FullName -match 'x64' } |
@@ -581,7 +677,7 @@ jobs:
           if (-not $exe) { throw "Не найден exe для ARM64" }
           & $signtool sign /f $certPath /p $password /tr http://timestamp.digicert.com /td sha256 /fd sha256 $exe.FullName
 
-      - name: Package build folder ARM64
+      - name: Упаковать папку сборки ARM64
         run: |
           $buildDir = Join-Path "$env:Solution_Name_Unpacked\bin" "ARM64\$env:Configuration_unpacked"
           if (-not (Test-Path $buildDir)) { throw "Папка сборки для ARM64 не найдена" }
@@ -589,14 +685,14 @@ jobs:
           if (Test-Path $zipName) { Remove-Item $zipName -Force }
           Compress-Archive -Path "$buildDir\*" -DestinationPath $zipName -Force
 
-      - name: Upload EXE ARM64
+      - name: Загрузить EXE ARM64
         uses: actions/upload-artifact@v4
         with:
           name: EXE_ARM64
           path: VK_UI3_ARM64.zip
           retention-days: 30
 
-  # ============ JOB 8: Создание релиза (зависит от всех сборок) ============
+  # ============ JOB 9: Создание релиза ============
   create_release:
     needs: [prepare, build_msix_x64, build_msix_x86, build_msix_arm64, build_exe_x64, build_exe_x86, build_exe_arm64]
     runs-on: windows-latest
@@ -607,7 +703,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Download all artifacts
+      - name: Загрузить все артефакты
         uses: actions/download-artifact@v4
         with:
           path: artifacts
@@ -649,7 +745,7 @@ jobs:
           generate_release_notes: false
         if: steps.check_release.outputs.exists == 'false'
 
-      - name: Upload all artifacts to release
+      - name: Загрузить все артефакты в релиз
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.TOKEN }}
