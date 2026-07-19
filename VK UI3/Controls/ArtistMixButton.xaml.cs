@@ -61,14 +61,16 @@ namespace VK_UI3.Controls
 
         private void UpdateDisplay()
         {
+
+
+            // Загрузка изображений
+            LoadImages();
+
             if (_button == null) return;
 
             // Обновление текстов
             TitleText.Text = _button.Title ?? string.Empty;
             DescriptionText.Text = _button.Description ?? string.Empty;
-
-            // Загрузка изображений
-            LoadImages();
         }
 
         private void LoadImages()

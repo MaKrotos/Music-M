@@ -11,8 +11,10 @@ using StatSlyLib.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.DB;
@@ -201,10 +203,21 @@ namespace VK_UI3
 
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
             {
-                var exception = args.ExceptionObject as Exception;
-                var report = ErrorReportHelper.BuildFullReport(exception, "AppDomain.UnhandledException");
-                ErrorReportHelper.ShowErrorDialog(report);
-                Environment.Exit(1);
+                try
+                {
+                    var exception = args.ExceptionObject as Exception;
+                    var report = ErrorReportHelper.BuildFullReport(exception, "AppDomain.UnhandledException");
+
+                    // Используем синхронный показ диалога
+                    ErrorReportHelper.ShowErrorDialogAndWait(report);
+                }
+                catch
+                {
+                }
+                finally
+                {
+                    Environment.Exit(1);
+                }
             };
 
             /*
@@ -333,23 +346,40 @@ namespace VK_UI3
             // Предотвращаем стандартное закрытие приложения, чтобы показать отчёт
             e.Handled = true;
 
-            // Собираем полный отчёт об ошибке
-            var report = ErrorReportHelper.BuildFullReport(e.Exception, "App.UnhandledException");
+            try
+            {
+                // Собираем полный отчёт об ошибке
+                var report = ErrorReportHelper.BuildFullReport(e.Exception, "App.UnhandledException");
 
-            // Отправляем статистику (в фоне, не блокируя показ отчёта)
-            SendExceptionStat(e.Exception, sender);
+                // Отправляем статистику (в фоне, не блокируя показ отчёта)
+                SendExceptionStat(e.Exception, sender, report);
 
-            // Показываем системный MessageBox с полным отчётом
-            ErrorReportHelper.ShowErrorDialog(report);
-
-            // Завершаем приложение
-            Environment.Exit(1);
+                // Показываем диалог и ждём его закрытия
+                ErrorReportHelper.ShowErrorDialogAndWait(report);
+            }
+            catch (Exception ex)
+            {
+                // Если даже диалог ошибки не работает, показываем MessageBox
+                try
+                {
+                    Windows.UI.Popups.MessageDialog dialog = new Windows.UI.Popups.MessageDialog(
+                        $"Критическая ошибка:\n{ex.Message}\n\n{e.Exception?.Message}",
+                        "VK M - Критическая ошибка");
+                    dialog.ShowAsync();
+                }
+                catch { }
+            }
+            finally
+            {
+                // Завершаем приложение только после закрытия диалога
+                Environment.Exit(1);
+            }
         }
 
         /// <summary>
-        /// Отправляет статистику об исключении в StatSly.
+        /// Отправляет статистику об исключении в StatSly с полной информацией.
         /// </summary>
-        private static void SendExceptionStat(Exception exception, object sender)
+        private static void SendExceptionStat(Exception exception, object sender, string report)
         {
             try
             {
@@ -368,34 +398,64 @@ namespace VK_UI3
                 var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
                 var version = $"{assemblyVersion.Major}.{assemblyVersion.Minor}.{assemblyVersion.Build}.{assemblyVersion.Revision}";
 
-                var listParams = new List<EventParams>
-                {
-                    new EventParams("userID", UserUniqID),
-                    new EventParams("Accounts Count", AccountsDB.GetAllAccounts().Count),
-                    new EventParams("versionAPP", version),
-                    new EventParams("Sender", sender?.ToString() ?? "null"),
-                    new EventParams("Exception", exception.Message),
-                    new EventParams("StackTrace", exception.StackTrace),
-                    new EventParams("OSArchitecture", RuntimeInformation.OSArchitecture.ToString()),
-                    new EventParams("AppArchitecture", RuntimeInformation.ProcessArchitecture.ToString())
-                };
+                // Получаем детальную информацию о месте ошибки
+                var stackTrace = new StackTrace(exception, true);
+                var frames = stackTrace.GetFrames();
+         
+                int lineNumber = 0;
+                int columnNumber = 0;
 
-                if (AccountsDB.GetAllAccounts().Count > 0)
+                if (frames != null && frames.Length > 0)
                 {
-                    var account = AccountsDB.GetActiveAccount();
-                    listParams.Add(new EventParams("ActiveAccount", account.GetHash()));
+                    var firstFrame = frames[0];
+                    var method = firstFrame.GetMethod();
+                    
+                    lineNumber = firstFrame.GetFileLineNumber();
+                    columnNumber = firstFrame.GetFileColumnNumber();
                 }
 
+                var listParams = new List<EventParams>
+                {
+                    // Основная информация
+                    new EventParams("userID", UserUniqID),
+                    new EventParams("versionAPP", version),
+                    new EventParams("sender", sender?.GetType().FullName ?? "null"),
+            
+                    // Информация об исключении
+                    new EventParams("exception_type", exception.GetType().FullName),
+                    new EventParams("exception_message", exception.Message ?? "null"),
+                    new EventParams("exception_source", exception.Source ?? "null"),
+                    new EventParams("exception_hresult", $"0x{exception.HResult:X8}"),
+                    new EventParams("exception_targetsite", exception.TargetSite?.ToString() ?? "null"),
+            
+                    new EventParams("report", report),
+                    new EventParams("error_line", lineNumber.ToString()),
+                    new EventParams("error_column", columnNumber.ToString()),
+            
+                    // Полный стек
+                    new EventParams("stack_trace", exception.StackTrace ?? "null"),
+            
+                    // Вложенное исключение (если есть)
+                    new EventParams("has_inner_exception", (exception.InnerException != null).ToString()),
+                };
+
+      
+
+                
+
                 Event @event = new Event("Exception", DateTime.Now, eventParams: listParams);
-                _ = new VKMStatSly().SendEvent(@event);
+
+                // Синхронное ожидание завершения отправки с таймаутом
+                var task = new VKMStatSly().SendEvent(@event);
+                task.Wait(TimeSpan.FromSeconds(5));
             }
-            catch
+            catch (Exception ex)
             {
-                // Игнорируем ошибки отправки статистики — это не критично
+                // Игнорируем ошибки отправки статистики, но логируем в Debug
+                System.Diagnostics.Debug.WriteLine($"SendExceptionStat error: {ex.Message}");
             }
         }
 
-      
         public static Microsoft.UI.Xaml.Window m_window;
     }
 }
