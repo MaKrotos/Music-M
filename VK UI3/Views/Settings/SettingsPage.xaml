@@ -325,6 +325,53 @@
                 </Expander.Content>
             </Expander>
 
+            <!--  О приложении  -->
+            <Expander
+                Margin="0,0,0,8"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                IsExpanded="False">
+                <Expander.Header>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <FontIcon
+                            VerticalAlignment="Center"
+                            FontSize="16"
+                            Glyph="&#xE946;" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Text="О приложении" />
+                    </StackPanel>
+                </Expander.Header>
+                <Expander.Content>
+                    <StackPanel
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Spacing="8">
+                        <Border>
+                            <local:StatSlyToggleSetting AutomationProperties.HelpText="Включает или выключает отправку анонимной статистики использования и отчётов об ошибках на сервер StatSly" AutomationProperties.Name="Отправлять анонимную статистику использования" />
+                        </Border>
+                        <Border>
+                            <Button
+                                x:Name="PrivacyPolicyButton"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Left"
+                                Click="PrivacyPolicyButton_Click"
+                                AutomationProperties.HelpText="Открывает политику конфиденциальности приложения"
+                                AutomationProperties.Name="Политика конфиденциальности">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon
+                                        VerticalAlignment="Center"
+                                        FontSize="14"
+                                        Glyph="&#xE8F8;" />
+                                    <TextBlock VerticalAlignment="Center" Text="Политика конфиденциальности" />
+                                </StackPanel>
+                            </Button>
+                        </Border>
+                    </StackPanel>
+                </Expander.Content>
+            </Expander>
+
             <!--  Ссылка на Telegram  -->
             <TextBlock
                 Margin="0,20,0,0"

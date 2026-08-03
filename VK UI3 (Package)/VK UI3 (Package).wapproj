@@ -60,7 +60,7 @@
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <WinUISDKReferences>false</WinUISDKReferences>
-	<CsWinRTEnabled>false</CsWinRTEnabled>
+    <CsWinRTEnabled>false</CsWinRTEnabled>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
     <PackageCertificateKeyFile>VK UI3 %28Package%29_TemporaryKey.pfx</PackageCertificateKeyFile>
@@ -154,6 +154,7 @@
     <Content Include="Images\Wide310x150Logo.scale-150.png" />
     <Content Include="Images\Wide310x150Logo.scale-200.png" />
     <Content Include="Images\Wide310x150Logo.scale-400.png" />
+    <None Include="VK UI3 %28Package%29_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VK UI3\VK UI3.csproj">

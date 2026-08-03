@@ -50,7 +50,31 @@ namespace VK_UI3.Views.LoginWindow
             LoginTextBox.Focus(FocusState.Pointer);
             MainWindow.mainWindow.MainWindow_hideRefresh();
 
-         
+            PrivacyToggle.Toggled += PrivacyToggle_Toggled;
+
+            // Загружаем состояние сбора статистики из БД
+            var statSlySetting = DB.SettingsTable.GetSetting("StatSlyEnabled");
+            if (statSlySetting == null)
+            {
+                StatSlyToggle.IsOn = true;
+                DB.SettingsTable.SetSetting("StatSlyEnabled", "1");
+            }
+            else
+            {
+                StatSlyToggle.IsOn = statSlySetting.settingValue.Equals("1");
+            }
+            StatSlyToggle.Toggled += StatSlyToggle_Toggled;
+        }
+
+        private void PrivacyToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            LoginButton.IsEnabled = PrivacyToggle.IsOn;
+        }
+
+        private void StatSlyToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            DB.SettingsTable.SetSetting("StatSlyEnabled", StatSlyToggle.IsOn ? "1" : "0");
+            VKMStatSly.SyncEnabledFromSettings();
         }
 
 
@@ -296,6 +320,15 @@ namespace VK_UI3.Views.LoginWindow
         {
             errorTextBlock.Text = argSender.ErrorText;
             errorTextBlock.Visibility = Visibility.Visible;
+        }
+
+        private void PrivacyPolicyLink_Click(Microsoft.UI.Xaml.Documents.Hyperlink sender, Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs args)
+        {
+            var dialog = new Views.Settings.PrivacyPolicyDialog
+            {
+                XamlRoot = this.XamlRoot
+            };
+            _ = dialog.ShowAsync();
         }
     }
 }

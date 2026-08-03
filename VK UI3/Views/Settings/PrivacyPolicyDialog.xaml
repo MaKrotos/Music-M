@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentDialog
+    x:Class="VK_UI3.Views.Settings.PrivacyPolicyDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VK_UI3.Views.Settings"
+    Title="Политика конфиденциальности"
+    CloseButtonText="Закрыть"
+    DefaultButton="Close"
+    AutomationProperties.Name="Диалог политики конфиденциальности"
+    AutomationProperties.HelpText="Содержит полный текст политики конфиденциальности приложения">
+
+    <ScrollViewer MaxHeight="500" VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="12" Padding="0,0,0,12">
+            <TextBlock TextWrapping="Wrap" FontWeight="SemiBold" FontSize="18" Text="Политика конфиденциальности VK M" />
+
+            <TextBlock TextWrapping="Wrap" FontWeight="SemiBold" Text="1. Какие данные собираются?" />
+            <TextBlock TextWrapping="Wrap" Text="Приложение собирает ограниченный набор технических данных для анализа стабильности и улучшения функциональности." />
+
+            <TextBlock TextWrapping="Wrap" FontWeight="SemiBold" Text="Техническая информация:" />
+            <TextBlock TextWrapping="Wrap">
+                <Run Text="• Идентификатор пользователя (userID): " />
+                <Run Text="Случайная строка из 100 символов, генерируемая локально при первом запуске. Она не связана с вашим реальным ID ВКонтакте или иными персональными данными." />
+                <LineBreak />
+                <Run Text="• Версия приложения: " />
+                <Run Text="Номер сборки текущей версии программы." />
+                <LineBreak />
+                <Run Text="• Информация об ОС: " />
+                <Run Text="Архитектура операционной системы и архитектура процесса." />
+                <LineBreak />
+                <Run Text="• Количество аккаунтов: " />
+                <Run Text="Общее число добавленных в приложение аккаунтов." />
+                <LineBreak />
+                <Run Text="• Хэш активного аккаунта: " />
+                <Run Text="Анонимизированный идентификатор текущего активного профиля." />
+            </TextBlock>
+
+            <TextBlock TextWrapping="Wrap" FontWeight="SemiBold" Text="Данные об ошибках (исключениях):" />
+            <TextBlock TextWrapping="Wrap" Text="В случае возникновения критической ошибки приложение отправляет отчет, который может содержать тип исключения, сообщение об ошибке, стек вызовов (Stack Trace), который может содержать пути к файлам на вашем компьютере, и технический отчет об ошибке." />
+
+            <TextBlock TextWrapping="Wrap" FontWeight="SemiBold" Text="Опросы:" />
+            <TextBlock TextWrapping="Wrap" Text="Если в приложении отображается опрос, собираются ID опроса, текст выбранной кнопки или введенный вами текстовый ответ." />
+
+            <TextBlock TextWrapping="Wrap" FontWeight="SemiBold" Text="2. Что НЕ собирается?" />
+            <TextBlock TextWrapping="Wrap" Text="Мы строго соблюдаем приватность. Приложение НИКОГДА не собирает и не передает: ваше имя, фамилию, email или номер телефона; пароли, токены авторизации или другие секретные ключи; содержимое ваших переписок, сообщений или комментариев; списки ваших треков, плейлистов или историю прослушивания." />
+
+            <TextBlock TextWrapping="Wrap" FontWeight="SemiBold" Text="3. Зачем нам эти данные?" />
+            <TextBlock TextWrapping="Wrap" Text="Сбор статистики необходим для обнаружения и исправления критических ошибок (крашей), понимания того, какие функции приложения наиболее полезны, и оптимизации производительности приложения под разные архитектуры ОС." />
+
+            <TextBlock TextWrapping="Wrap" FontWeight="SemiBold" Text="4. Как управлять сбором данных?" />
+            <TextBlock TextWrapping="Wrap" Text="Вы можете в любой момент полностью отключить сбор и отправку статистики: Настройки → О приложении → «Отправлять анонимную статистику использования» (выключить переключатель). После отключения этой опции приложение перестанет отправлять любые данные на серверы StatSly." />
+
+            <TextBlock TextWrapping="Wrap" FontWeight="SemiBold" Text="5. Хранение и передача данных" />
+            <TextBlock TextWrapping="Wrap" Text="Данные передаются по протоколу HTTPS на серверы сервиса StatSly (statsly.ru). Мы не продаем и не передаем ваши данные третьим лицам." />
+        </StackPanel>
+    </ScrollViewer>
+</ContentDialog>

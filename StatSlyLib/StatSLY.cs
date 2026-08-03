@@ -13,12 +13,21 @@ namespace StatSlyLib
         public static Uri StatSLYUri { get; } = new Uri("https://statsly.ru/open_api/");
         public string Token { get; set; }
 
+        /// <summary>
+        /// Флаг, указывающий, включена ли отправка статистики.
+        /// По умолчанию true. Устанавливается из настроек приложения.
+        /// </summary>
+        public static bool IsEnabled { get; set; } = true;
+
         public void SetToken(string token) {
             Token = token;
         }
 
         public async Task SendEvent(Event @event) {
 
+            // Если сбор статистики отключён — не отправляем
+            if (!IsEnabled)
+                return;
 
             try
             {
@@ -36,7 +45,7 @@ namespace StatSlyLib
 
             }
             catch (Exception e)
-            { 
+            {
             
             
             }

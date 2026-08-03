@@ -24,5 +24,14 @@ namespace VK_UI3.Views.Settings
 
 
         }
+
+        private void PrivacyPolicyButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new PrivacyPolicyDialog
+            {
+                XamlRoot = this.XamlRoot
+            };
+            _ = dialog.ShowAsync();
+        }
     }
 }
